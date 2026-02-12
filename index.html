@@ -1,119 +1,376 @@
+
 <!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Planejamento Infantil Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Dosis:wght@200;300;400;500;600;700;800&family=Oswald:wght@200;300;400;500;600;700&family=Signika:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="./assets/css/com.css">
-
-    <!-- Título da Página -->
-    <title>Alongamento de unhas Do Zero</title>
-    
-    <style type="text/css">
-      body {
-        color: white;
-        background-image: url("assets/img/bg.jpeg");
-        background-color: rgba(0, 0, 0, 0.6);
-        background-position: center;
-        background-size: cover;
-        background-attachment: fixed;
-        background-blend-mode: darken;
-      }
-    </style>
-
-  <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '668280871612819');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=668280871612819&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-    
-    
-  </head>
-  <body>
-    
-    <header class="py-4">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-8 text-center">
-            <!-- Imagem Ultrasecreto -->
-      
-
-            <!-- Headline -->
-            <h3 class="my-4"><b>WORK-SHOP REVELA: Como Deixar sua Agenda Lotada Nos Próximos 6 Meses Sem depender do Boca-a-boca! </b></h3>
-
-            <!-- VSL -->
-<script src="https://fast.wistia.com/embed/medias/c2f7joina2.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_responsive_padding" style="padding:56.25% 0 0 0;position:relative;"><div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;"><div class="wistia_embed wistia_async_c2f7joina2 videoFoam=true" style="height:100%;position:relative;width:100%"><div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;"><img src="https://fast.wistia.com/embed/medias/c2f7joina2/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" aria-hidden="true" onload="this.parentNode.style.opacity=1;" /></div></div></div></div>
-
-<div class="conteiner1"> </div>
-<div class="conteiner2"> </div>
-
-<style>      
-  .conteiner1{
-    background-color:rgba(163, 30, 30, 0);
-    margin-top: -350px;
-    position:absolute;
-    width: 800px;
-    height: 100px;
-
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react/": "https://esm.sh/react@^19.2.4/"
+  }
 }
-.conteiner2
-{background-color:rgba(163, 30, 30, 0);
-    margin-top: -118px;
-    position:absolute;
-    width: 800px;
-    height: 120px;}
-.conteiner{
-    position: absolute;
-  
-  </style>
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-white text-slate-900 selection:bg-blue-100">
 
+    <!-- Header Banner -->
+    <div id="header-banner" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm px-4 py-3 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+            <p class="text-[10px] md:text-sm font-bold text-slate-800 uppercase tracking-tighter">
+                Oferta válida: <span id="current-date" class="text-red-600 font-extrabold"></span>
+            </p>
+        </div>
+        <a href="#oferta" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-xs md:text-sm font-extrabold transition-all flex items-center gap-2 shadow-md shadow-blue-100">
+            ASSINAR AGORA <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+    </div>
 
+    <!-- Purchase Notification -->
+    <div id="notification" class="fixed top-20 left-1/2 -translate-x-1/2 z-40 transition-all duration-500 transform -translate-y-20 opacity-0 pointer-events-none">
+        <div class="bg-white rounded-full shadow-2xl border border-blue-100 px-6 py-3 flex items-center gap-3 w-[320px] max-w-[90vw]">
+            <div id="notif-initial" class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-inner">J</div>
+            <div>
+                <p class="text-sm font-semibold text-slate-800 leading-tight">
+                    <span id="notif-name">Juliana</span> acabou de assinar!
+                </p>
+                <p class="text-xs text-slate-500">
+                    Plano Professor Infantil Pro • agora
+                </p>
+            </div>
+        </div>
+    </div>
 
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 px-6 bg-soft-gradient relative overflow-hidden">
+        <div class="absolute top-20 -left-20 w-64 h-64 bg-blue-200/30 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 -right-20 w-80 h-80 bg-green-100/40 rounded-full blur-3xl"></div>
 
-
-            <!-- Botão -->
-            <div id="cta1" class="mt-4 d-none">
-              <a href="https://pay.hotmart.com/N10854553C?checkoutMode=10" class="a-btn" style="text-decoration: none;">
-                <span class="span-btn">QUERO APRENDER NAIL DESIGNER!</span>
-                <span class="span-btn2">(Atenção: Vagas Limitadas)</span>
-              </a>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <div class="inline-block bg-blue-100 text-blue-700 font-bold px-5 py-2 rounded-full text-xs uppercase tracking-widest mb-6 shadow-sm">
+                App Planejamento Infantil Pro
+            </div>
+            <h1 class="text-4xl md:text-7xl font-extrabold text-slate-900 mb-6 leading-tight tracking-tight">
+                + DE <span class="text-blue-600">3.000 ATIVIDADES</span> SEMANAIS PRONTAS
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Abra o app, escolha a semana e aplique em sala com segurança. 
+                Um aplicativo completo com atividades da Educação Infantil, organizadas por idade, tema e semana.
+            </p>
+            
+            <!-- Video Container -->
+            <div class="relative max-w-[340px] md:max-w-[400px] mx-auto mb-12 group">
+                <div class="absolute -inset-2 bg-gradient-to-r from-blue-600 via-blue-400 to-green-500 rounded-[3rem] blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+                <div class="relative aspect-[9/16] w-full bg-black rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden border-8 border-white">
+                    <iframe src="https://player.vimeo.com/video/1153737685?h=8346f0d111&autoplay=0&loop=1&title=0&byline=0&portrait=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <!-- Float badge -->
+                <div class="absolute -bottom-4 -right-4 md:-right-8 bg-white p-3 rounded-2xl shadow-xl flex items-center gap-2 border border-slate-100">
+                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase leading-none">Aprovado por</p>
+                        <p class="text-sm font-extrabold text-slate-800 leading-none mt-1">+10k Professoras</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Termos de Uso e Política de Privacidade -->
-            <div class="text-white mt-4"><a href="termos.html" class="text-white">Termos de Uso</a> | <a href="privacidade.html" class="text-white">Política de Privacidade</a></div>
-          </div>
+            <div class="max-w-sm mx-auto">
+                <a href="#oferta" class="block w-full text-center bg-green-500 hover:bg-green-600 text-white font-extrabold py-4 px-6 rounded-2xl text-xl transition-all active:scale-95 shadow-lg shadow-green-200">
+                    👉 Quero acessar o app agora
+                </a>
+                
+                <div class="mt-6 flex justify-center">
+                    <img src="https://i.ibb.co/Qvt3Ycfc/Chat-GPT-Image-12-de-fev-de-2026-17-43-10.png" alt="Banner informativo" class="w-full max-w-[320px] h-auto rounded-xl shadow-md">
+                </div>
+
+                <div class="mt-5 flex items-center justify-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
+                    <span>Compra 100% segura • Acesso imediato</span>
+                </div>
+            </div>
         </div>
-      </div>
-    </header>
+    </section>
 
-    <script type="text/javascript">
-      setTimeout(() => {document.getElementById("cta1").classList.remove("d-none")}, 780000); // temporização da Call to Action (em milissegundos)
-    </script>
+    <!-- Pain Points Section -->
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-10 text-center leading-tight">
+                Você se sente assim na <span class="text-red-500 underline decoration-red-200 underline-offset-4">rotina escolar?</span>
+            </h2>
+            <div class="grid gap-4">
+                <div class="flex items-start gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors group">
+                    <div class="mt-1 flex-shrink-0 bg-red-100 rounded-full p-1 group-hover:scale-110 transition-transform text-red-500"><i data-lucide="x" class="w-4 h-4"></i></div>
+                    <p class="text-slate-700 font-bold text-lg leading-snug">Falta de tempo para montar atividades toda semana</p>
+                </div>
+                <div class="flex items-start gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors group">
+                    <div class="mt-1 flex-shrink-0 bg-red-100 rounded-full p-1 group-hover:scale-110 transition-transform text-red-500"><i data-lucide="x" class="w-4 h-4"></i></div>
+                    <p class="text-slate-700 font-bold text-lg leading-snug">Medo de repetir sempre as mesmas propostas</p>
+                </div>
+                <div class="flex items-start gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors group">
+                    <div class="mt-1 flex-shrink-0 bg-red-100 rounded-full p-1 group-hover:scale-110 transition-transform text-red-500"><i data-lucide="x" class="w-4 h-4"></i></div>
+                    <p class="text-slate-700 font-bold text-lg leading-snug">Insegurança se a atividade é adequada para a idade</p>
+                </div>
+                <div class="flex items-start gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors group">
+                    <div class="mt-1 flex-shrink-0 bg-red-100 rounded-full p-1 group-hover:scale-110 transition-transform text-red-500"><i data-lucide="x" class="w-4 h-4"></i></div>
+                    <p class="text-slate-700 font-bold text-lg leading-snug">Cansaço por levar trabalho para casa todos os dias</p>
+                </div>
+            </div>
+            <p class="mt-10 text-center text-slate-500 font-semibold italic text-lg">"Se você se identificou, esse app foi feito exatamente para você."</p>
+        </div>
+    </section>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="./assets/js/com.js"></script>
-  </body>
+    <!-- Testimonials Section -->
+    <section class="py-20 px-6 bg-slate-50">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-12 text-center">O que dizem professoras que já usam</h2>
+            <div class="grid md:grid-cols-3 gap-8 text-left">
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 group hover:shadow-xl transition-all">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-extrabold">MS</div>
+                        <div><h4 class="font-extrabold text-slate-900">Mariana Silva</h4><p class="text-slate-400 text-xs font-bold uppercase">Professora • 3 a 4 anos</p></div>
+                    </div>
+                    <p class="text-slate-600 italic leading-relaxed">“Antes eu passava horas procurando atividades. Agora é só abrir o app, escolher a semana e imprimir.”</p>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 group hover:shadow-xl transition-all">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-extrabold">CR</div>
+                        <div><h4 class="font-extrabold text-slate-900">Cláudia Rocha</h4><p class="text-slate-400 text-xs font-bold uppercase">Educação Infantil</p></div>
+                    </div>
+                    <p class="text-slate-600 italic leading-relaxed">“O que eu mais amo é a organização por temas e idades. Facilita demais o planejamento.”</p>
+                </div>
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 group hover:shadow-xl transition-all">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-extrabold">RM</div>
+                        <div><h4 class="font-extrabold text-slate-900">Renata Mendes</h4><p class="text-slate-400 text-xs font-bold uppercase">Coordenadora</p></div>
+                    </div>
+                    <p class="text-slate-600 italic leading-relaxed">“Esse app salvou minha rotina. Hoje consigo planejar o mês inteiro em poucos minutos.”</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inside the App Section -->
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4">Tudo em um só lugar</h2>
+            <p class="text-slate-500 text-lg mb-16 font-medium">Materiais organizados por semana, idade e tema, prontos para uso.</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="flex flex-col items-center p-8 bg-blue-50/40 rounded-[2rem] border border-blue-50 group hover:bg-blue-50 transition-colors">
+                    <i data-lucide="file-text" class="w-10 h-10 text-blue-600 mb-4"></i>
+                    <span class="text-slate-700 font-extrabold text-sm">Atividades semanais</span>
+                </div>
+                <div class="flex flex-col items-center p-8 bg-blue-50/40 rounded-[2rem] border border-blue-50 group hover:bg-blue-50 transition-colors">
+                    <i data-lucide="medal" class="w-10 h-10 text-blue-600 mb-4"></i>
+                    <span class="text-slate-700 font-extrabold text-sm">Coordenação motora</span>
+                </div>
+                <div class="flex flex-col items-center p-8 bg-blue-50/40 rounded-[2rem] border border-blue-50 group hover:bg-blue-50 transition-colors">
+                    <i data-lucide="smartphone" class="w-10 h-10 text-blue-600 mb-4"></i>
+                    <span class="text-slate-700 font-extrabold text-sm">Pintura e recorte</span>
+                </div>
+                <div class="flex flex-col items-center p-8 bg-blue-50/40 rounded-[2rem] border border-blue-50 group hover:bg-blue-50 transition-colors">
+                    <i data-lucide="layout-dashboard" class="w-10 h-10 text-blue-600 mb-4"></i>
+                    <span class="text-slate-700 font-extrabold text-sm">Letras e números</span>
+                </div>
+                <div class="flex flex-col items-center p-8 bg-blue-50/40 rounded-[2rem] border border-blue-50 group hover:bg-blue-50 transition-colors">
+                    <i data-lucide="users" class="w-10 h-10 text-blue-600 mb-4"></i>
+                    <span class="text-slate-700 font-extrabold text-sm">Atividades lúdicas</span>
+                </div>
+                <div class="flex flex-col items-center p-8 bg-blue-50/40 rounded-[2rem] border border-blue-50 group hover:bg-blue-50 transition-colors">
+                    <i data-lucide="calendar-days" class="w-10 h-10 text-blue-600 mb-4"></i>
+                    <span class="text-slate-700 font-extrabold text-sm">Datas comemorativas</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Updates Hook Section -->
+    <section class="py-24 px-6 bg-blue-600 text-white rounded-[3rem] mx-4 my-12 overflow-hidden relative shadow-2xl">
+        <div class="absolute top-0 right-0 p-12 opacity-5"><i data-lucide="zap" class="w-96 h-96 rotate-12"></i></div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h2 class="text-4xl md:text-6xl font-extrabold mb-8">Toda semana novos materiais!</h2>
+            <p class="text-blue-100 text-xl mb-12 max-w-2xl mx-auto leading-relaxed">No nosso app você nunca fica sem atividade. Toda semana liberamos novas propostas para facilitar sua rotina.</p>
+            <div class="max-w-sm mx-auto">
+                <a href="#oferta" class="block w-full text-center bg-white text-blue-600 font-extrabold py-5 rounded-2xl text-xl hover:bg-blue-50 transition-all">👉 QUERO RECEBER TUDO AGORA</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Table -->
+    <section id="oferta" class="py-24 px-6 bg-slate-50 scroll-mt-24">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 text-center">Escolha o seu plano</h2>
+            <p class="text-center text-slate-500 mb-20 text-lg font-medium">Acesso imediato e vitalício ao seu novo planejamento.</p>
+            
+            <div class="grid md:grid-cols-2 gap-10 items-stretch max-w-4xl mx-auto text-left">
+                <!-- Basic Plan -->
+                <div class="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-200 shadow-xl flex flex-col relative transition-all hover:translate-y-[-8px]">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600"><div class="w-5 h-5 bg-blue-600 rotate-45"></div></div>
+                        <h3 class="text-2xl font-extrabold text-slate-900">Plano Básico</h3>
+                    </div>
+                    <div class="mb-10">
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">POR APENAS:</p>
+                        <div class="flex items-start">
+                            <span class="text-2xl font-bold text-slate-900 mt-2 mr-1">R$</span>
+                            <span class="text-8xl font-black text-slate-900 leading-none tracking-tighter">17,90</span>
+                            <div class="self-end mb-2 ml-3"><span class="block text-slate-400 text-sm font-bold uppercase">Pagamento Único</span></div>
+                        </div>
+                    </div>
+                    <ul class="space-y-5 mb-12 flex-grow">
+                        <li class="flex items-start gap-3 text-slate-700 font-bold"><i data-lucide="check-circle-2" class="w-5 h-5 text-blue-600"></i> Acesso ao app</li>
+                        <li class="flex items-start gap-3 text-slate-700 font-bold"><i data-lucide="check-circle-2" class="w-5 h-5 text-blue-600"></i> Atividades essenciais</li>
+                        <li class="flex items-start gap-3 text-slate-700 font-bold"><i data-lucide="check-circle-2" class="w-5 h-5 text-blue-600"></i> Acesso vitalício</li>
+                    </ul>
+                    <a href="https://pay.lowify.com.br/checkout?product_id=GOQ4T1" class="block w-full text-center bg-slate-50 hover:bg-slate-100 text-slate-900 font-extrabold py-5 rounded-2xl border-2 border-slate-200">Escolher Básico</a>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="bg-white p-8 md:p-12 rounded-[2.5rem] border-[6px] border-blue-600 shadow-2xl flex flex-col relative transition-all hover:translate-y-[-8px]">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white px-10 py-3 rounded-full text-sm font-black uppercase tracking-[0.2em] shadow-xl z-20">MAIS ESCOLHIDO</div>
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center text-yellow-500"><i data-lucide="star" class="w-7 h-7 fill-yellow-500"></i></div>
+                        <h3 class="text-2xl font-extrabold text-slate-900">Professor Pro</h3>
+                    </div>
+                    <div class="mb-10">
+                        <p class="text-blue-600 text-xs font-bold uppercase tracking-widest mb-2">POR APENAS:</p>
+                        <div class="flex items-start">
+                            <span class="text-2xl font-bold text-slate-900 mt-2 mr-1">R$</span>
+                            <span class="text-8xl font-black text-slate-900 leading-none tracking-tighter">27,90</span>
+                            <div class="self-end mb-2 ml-3"><span class="block text-slate-400 text-sm font-bold uppercase">Pagamento Único</span></div>
+                        </div>
+                    </div>
+                    <ul class="space-y-5 mb-12 flex-grow">
+                        <li class="flex items-start gap-3 text-slate-900 font-bold"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i> Tudo do Básico</li>
+                        <li class="flex items-start gap-3 text-slate-900 font-bold"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i> Atividades por idade</li>
+                        <li class="flex items-start gap-3 text-slate-900 font-bold"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i> Planejamento anual</li>
+                        <li class="flex items-start gap-3 text-slate-900 font-bold"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i> Comunidade exclusiva</li>
+                    </ul>
+                    <a href="https://pay.lowify.com.br/checkout?product_id=GOQ4T1" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-black py-6 rounded-2xl text-xl shadow-2xl shadow-blue-200">👉 Assinar Pro Agora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guarantee Section -->
+    <section class="py-24 px-6 bg-white">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12 bg-slate-50 p-10 md:p-16 rounded-[4rem] border border-slate-100">
+            <div id="guarantee-seal-container" class="shrink-0 scale-110"></div>
+            <div class="text-center md:text-left">
+                <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-6">Garantia Risco Zero</h2>
+                <p class="text-slate-500 text-lg leading-relaxed mb-8">Oferecemos 7 dias de garantia incondicional. Se não gostar, devolvemos seu dinheiro imediatamente. Sem burocracia.</p>
+                <div class="flex flex-col sm:flex-row items-center gap-6">
+                    <div class="flex items-center gap-2 text-slate-800 font-black uppercase text-xs tracking-widest"><i data-lucide="shield-check" class="w-6 h-6 text-green-500"></i> Compra Protegida</div>
+                    <a href="#oferta" class="text-blue-600 font-extrabold underline decoration-blue-200 underline-offset-8">Começar teste grátis</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recap Section -->
+    <section class="py-24 px-6 bg-slate-900 text-white rounded-t-[4rem]">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-black mb-16 text-center">O que você recebe <span class="text-blue-400">ao entrar hoje</span></h2>
+            <div class="grid md:grid-cols-2 gap-6 mb-16 text-left">
+                <div class="flex items-center gap-4 bg-white/5 p-5 rounded-2xl border border-white/5"><i data-lucide="check-circle-2" class="w-6 h-6 text-blue-400"></i> <span class="font-bold text-lg">Acesso vitalício</span></div>
+                <div class="flex items-center gap-4 bg-white/5 p-5 rounded-2xl border border-white/5"><i data-lucide="check-circle-2" class="w-6 h-6 text-blue-400"></i> <span class="font-bold text-lg">Atividades p/ imprimir</span></div>
+                <div class="flex items-center gap-4 bg-white/5 p-5 rounded-2xl border border-white/5"><i data-lucide="check-circle-2" class="w-6 h-6 text-blue-400"></i> <span class="font-bold text-lg">Organização por semana</span></div>
+                <div class="flex items-center gap-4 bg-white/5 p-5 rounded-2xl border border-white/5"><i data-lucide="check-circle-2" class="w-6 h-6 text-blue-400"></i> <span class="font-bold text-lg">Suporte especializado</span></div>
+            </div>
+            <div class="max-w-md mx-auto">
+                <a href="#oferta" class="block w-full text-center bg-green-500 text-white font-black py-6 rounded-2xl text-2xl">SIM! QUERO TUDO ISSO</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-24 px-6 bg-white">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-12 text-center">Tire suas dúvidas</h2>
+            <div id="faq-container" class="space-y-2 text-left">
+                <!-- Item 1 -->
+                <div class="faq-item border-b border-slate-200 py-4">
+                    <button class="faq-toggle w-full flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">1) É indicado para qual idade?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer overflow-hidden max-h-0 transition-all duration-300">
+                        <p class="py-4 text-slate-600">O app possui atividades completas para toda a Educação Infantil (Berçário, Maternal e Pré-Escola).</p>
+                    </div>
+                </div>
+                <!-- Item 2 -->
+                <div class="faq-item border-b border-slate-200 py-4">
+                    <button class="faq-toggle w-full flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">2) Posso imprimir quantas vezes quiser?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer overflow-hidden max-h-0 transition-all duration-300">
+                        <p class="py-4 text-slate-600">Sim! O material é seu para sempre e você pode imprimir quantas vezes forem necessárias para suas turmas.</p>
+                    </div>
+                </div>
+                <!-- Item 3 -->
+                <div class="faq-item border-b border-slate-200 py-4">
+                    <button class="faq-toggle w-full flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">3) O pagamento é mensalidade?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer overflow-hidden max-h-0 transition-all duration-300">
+                        <p class="py-4 text-slate-600">Não. O pagamento é único. Você paga uma vez e tem acesso vitalício e a todas as atualizações futuras.</p>
+                    </div>
+                </div>
+                <!-- Item 4 -->
+                <div class="faq-item border-b border-slate-200 py-4">
+                    <button class="faq-toggle w-full flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">4) Como recebo o acesso?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer overflow-hidden max-h-0 transition-all duration-300">
+                        <p class="py-4 text-slate-600">Imediatamente após a confirmação do pagamento você receberá um e-mail com seus dados de acesso ao aplicativo.</p>
+                    </div>
+                </div>
+                <!-- Item 5 -->
+                <div class="faq-item border-b border-slate-200 py-4">
+                    <button class="faq-toggle w-full flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">5) Tenho suporte se precisar?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer overflow-hidden max-h-0 transition-all duration-300">
+                        <p class="py-4 text-slate-600">Sim, temos uma equipe de suporte pronta para te ajudar via WhatsApp e E-mail.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-24 px-6 bg-slate-50 border-t border-slate-200 text-center">
+        <div class="max-w-2xl mx-auto">
+            <div class="w-16 h-16 bg-blue-600 rounded-3xl mx-auto mb-8 flex items-center justify-center text-white"><i data-lucide="layout-dashboard" class="w-8 h-8"></i></div>
+            <h2 class="text-3xl font-black text-slate-900 mb-12">Pare de levar trabalho para casa.</h2>
+            <div class="max-w-sm mx-auto mb-16">
+                <a href="#oferta" class="block w-full text-center bg-green-500 text-white font-extrabold py-4 rounded-2xl text-xl">ASSINAR COM DESCONTO</a>
+            </div>
+            <div class="pt-12 border-t border-slate-200 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                &copy; 2024 App Planejamento Infantil Pro • Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>lucide.createIcons();</script>
+<script type="module" src="/index.tsx"></script>
+</body>
 </html>
-
-
