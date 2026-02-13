@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 App Infantil Pro*</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-background"></div>
+        <div class="login-container">
+            <div class="login-card">
+                <div class="logo">
+                    <div class="logo-icon">📚</div>
+                    <h1 class="login-title">App Infantil Pro*</h1>
+                </div>
+                <p class="login-subtitle">Acesse suas atividades exclusivas</p>
+                
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <input type="text" id="userName" placeholder="👤 Seu nome" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="📧 Seu e-mail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="password" id="password" placeholder="🔒 Sua senha" required>
+                    </div>
+                    
+                    <button type="submit" class="login-button">
+                        <span>🚀 Entrar no App</span>
+                    </button>
+                </form>
+                
+                <p class="login-note">Digite qualquer e-mail e senha para acessar</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Principal -->
+    <div class="app-container" id="mainApp" style="display: none;">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1>📚 App Infantil Pro*</h1>
+                    <p class="welcome-text" id="welcomeText">Olá, Professor(a)!</p>
+                </div>
+                <div class="user-avatar">👨‍🏫</div>
+            </div>
+        </header>
+
+        <!-- Conteúdo Principal -->
+        <main class="content" id="content">
+            <!-- Aba Principal -->
+            <div class="tab-content active" id="tab-principal">
+                <div class="hero-section">
+                    <div class="hero-icon">✨</div>
+                    <h2>Receba atividades novas toda semana</h2>
+                    <p>Para professores que querem praticidade e mais tempo livre!</p>
+                </div>
+
+                <div class="cards-grid">
+                    <!-- Card: 7 Áreas da Educação -->
+                    <div class="card">
+                        <div class="card-icon">🎓</div>
+                        <h3>7 Áreas da Educação</h3>
+                        <div class="education-areas">
+                            <span class="area-tag">👶 Ed. Infantil</span>
+                            <span class="area-tag">✏️ Alfabetização</span>
+                            <span class="area-tag">📖 Português</span>
+                            <span class="area-tag">🔢 Matemática</span>
+                            <span class="area-tag">🧪 Ciências</span>
+                            <span class="area-tag">🌍 Geografia</span>
+                            <span class="area-tag">📜 História</span>
+                        </div>
+                    </div>
+
+                    <!-- Card: Benefícios -->
+                    <div class="card featured">
+                        <div class="card-icon">🌟</div>
+                        <h3>Seus Benefícios</h3>
+                        <div class="benefits-list">
+                            <div class="benefit-item">⏰ Ganhe tempo</div>
+                            <div class="benefit-item">🎨 Materiais criativos</div>
+                            <div class="benefit-item">📈 Mais qualidade</div>
+                            <div class="benefit-item">🚀 Mais confiança</div>
+                        </div>
+                    </div>
+
+                    <!-- Card: Bônus -->
+                    <div class="card">
+                        <div class="card-icon">🎁</div>
+                        <h3>10 Bônus Exclusivos</h3>
+                        <p>Atividades extras e materiais complementares para suas aulas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Download -->
+            <div class="tab-content" id="tab-download">
+                <div class="download-hero">
+                    <div class="download-icon">📥</div>
+                    <h2>Baixar Pacote Completo</h2>
+                    <p>Acesse todas as atividades agora</p>
+                </div>
+
+                <div class="download-card">
+                    <div class="price-section">
+                        <div class="old-price">App Infantil Pro</div>
+                        <div class="new-price">Materiais Novos Toda Semana =)</div>
+                    </div>
+                    <p>Atividades prontas em PDF para suas aulas!</p>
+                    <a href="https://drive.google.com/drive/folders/1BCXnLNsb0KpailNW6FoaWSu9JRbVNlsK?usp=sharing" target="_blank" class="btn-download">
+                        <span>📥 Baixar Agora</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Aba Loja -->
+            <div class="tab-content" id="tab-materials">
+                <div class="shop-header">
+                    <h2>🛒 Mais conteudos</h2>
+                    <p>Atividades e pacotes extras</p>
+                </div>
+
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-icon">✏️</div>
+                        <h3>100 Atividades para Crianças com Autismo (TEA)</h3>
+                        <div class="product-price">R$ 9,90</div>
+                        <p>+100 atividades prontas</p>
+                        <a href="https://tx3cursos.pay.yampi.com.br/r/GS03L4J9AF" target="_blank" class="product-btn">Adquirir</a>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-icon">🔢</div>
+                        <h3>101 Atividades Biblicas</h3>
+                        <div class="product-price">R$ 9,90</div>
+                        <p>Todas as séries do fundamental</p>
+                        <a href="https://tx3cursos.pay.yampi.com.br/r/MIHHGK1ODB" target="_blank" class="product-btn">Adquirir</a>
+                    </div>
+
+                    <div class="product-card featured-product">
+                        <div class="popular-badge">⭐ POPULAR</div>
+                        <div class="product-icon">🎯</div>
+                        <h3>Super Combo 4 em 1</h3>
+                        <div class="product-price">R$ 27,00</div>
+                        <p>Ingles + Epanhol + Atividades biblicas + Atualizações</p>
+                        <a href="https://tx3cursos.pay.yampi.com.br/r/JLPYJ8J6CZ" target="_blank" class="product-btn featured-btn">Adquirir Combo</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Grupo de Professores -->
+            <div class="tab-content" id="tab-group">
+                <div class="group-hero">
+                    <div class="group-icon">👥</div>
+                    <h2>Grupo Exclusivo de Professores</h2>
+                    <p>Conecte-se com outros educadores e receba suporte</p>
+                </div>
+
+                <div class="group-benefits">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💬</div>
+                        <h3>Suporte Direto</h3>
+                        <p>Tire suas dúvidas com nossa equipe especializada</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🤝</div>
+                        <h3>Rede de Professores</h3>
+                        <p>Troque experiências com outros educadores</p>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🎯</div>
+                        <h3>Dicas Exclusivas</h3>
+                        <p>Receba materiais e dicas em primeira mão</p>
+                    </div>
+                </div>
+
+                <div class="whatsapp-card">
+                    <div class="whatsapp-content">
+                        <div class="whatsapp-icon">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.471 3.516" fill="#25D366"/>
+                            </svg>
+                        </div>
+                        <div class="whatsapp-text">
+                            <h3>Junte-se ao Nosso Grupo!</h3>
+                            <p>Mais de 500 professores já fazem parte da nossa comunidade</p>
+                        </div>
+                    </div>
+                    <a href="https://chat.whatsapp.com/KoWjKoLz3w24x3AXyqeT0q" target="_blank" class="whatsapp-btn">
+                        <span>📱 Acessar Grupo do WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Aba Conteúdos -->
+            <div class="tab-content" id="tab-content">
+                <div class="content-header">
+                    <h2>📚 Mais Conteúdos</h2>
+                    <p>Recursos adicionais para professores</p>
+                </div>
+
+                <div class="content-cards">
+                    <div class="content-card">
+                        <div class="content-icon">📖</div>
+                        <h3>Biblioteca de Recursos</h3>
+                        <p>Centenas de atividades extras</p>
+                    </div>
+                    
+                    <div class="content-card">
+                        <div class="content-icon">🔄</div>
+                        <h3>Atualizações Mensais</h3>
+                        <p>Novos materiais todo mês</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Configurações -->
+            <div class="tab-content" id="tab-settings">
+                <div class="settings-header">
+                    <h2>⚙️ Configurações</h2>
+                    <p>Personalize sua experiência</p>
+                </div>
+
+                <div class="settings-cards">
+                    <div class="settings-card">
+                        <div class="settings-icon">🎨</div>
+                        <h3>Tema do Aplicativo</h3>
+                        <p>Escolha a cor principal</p>
+                        <div class="color-picker-container">
+                            <button class="color-option active" data-color="blue" style="background: #40c4ff"></button>
+                            <button class="color-option" data-color="purple" style="background: #9c27b0"></button>
+                            <button class="color-option" data-color="green" style="background: #4caf50"></button>
+                            <button class="color-option" data-color="orange" style="background: #ff9800"></button>
+                            <button class="color-option" data-color="pink" style="background: #e91e63"></button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-icon">🎛️</div>
+                        <h3>Preferências</h3>
+                        <p>Notificações e modo de uso</p>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <div class="settings-icon">👤</div>
+                        <h3>Perfil do Usuário</h3>
+                        <p>Gerencie suas informações</p>
+                        <div class="user-info" id="userInfo">
+                            <p><strong>Nome:</strong> <span id="displayName">Professor(a)</span></p>
+                        </div>
+                        <button class="logout-btn" onclick="logout()">🚪 Sair do App</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Navegação Inferior -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-tab="tab-principal">
+                <div class="nav-icon">🏠</div>
+                <span>Início</span>
+            </button>
+            <button class="nav-item" data-tab="tab-download">
+                <div class="nav-icon">📥</div>
+                <span>Baixar</span>
+            </button>
+            <button class="nav-item" data-tab="tab-materials">
+                <div class="nav-icon">🛒</div>
+                <span>Loja</span>
+            </button>
+            <button class="nav-item" data-tab="tab-group">
+                <div class="nav-icon">👥</div>
+                <span>Grupo</span>
+            </button>
+            <button class="nav-item" data-tab="tab-settings">
+                <div class="nav-icon">⚙️</div>
+                <span>Config</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

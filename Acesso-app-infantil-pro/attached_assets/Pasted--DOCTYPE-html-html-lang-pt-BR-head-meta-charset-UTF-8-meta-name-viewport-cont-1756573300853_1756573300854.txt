@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APP do Educador</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-background"></div>
+        <div class="login-container">
+            <div class="login-card">
+                <h1 class="login-title">📚 App do Educador</h1>
+                <p class="login-subtitle">Acesse suas atividades exclusivas</p>
+                
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" placeholder="seu@email.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <input type="password" id="password" placeholder="Sua senha" required>
+                    </div>
+                    
+                    <button type="submit" class="login-button">
+                        <span>Entrar no App</span>
+                    </button>
+                </form>
+                
+                <p class="login-note">Digite qualquer e-mail e senha para acessar</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Principal -->
+    <div class="app-container" id="mainApp" style="display: none;">
+        <main class="content" id="content">
+            <!-- Aba Principal -->
+            <div class="tab-content active" id="tab-principal">
+                <div class="header">
+                    <h1 class="title">📘 App do Educador</h1>
+                    <p class="subtitle">Mais de 300 atividades prontas em PDF para professores que querem praticidade e mais tempo livre!</p>
+                </div>
+
+                <div class="cards-grid">
+                    <!-- Card: 7 Áreas da Educação -->
+                    <div class="card">
+                        <div class="card-icon">
+                            📚
+                        </div>
+                        <h3>7 Áreas da Educação</h3>
+                        <ul class="education-areas">
+                            <li>👶 Educação Infantil</li>
+                            <li>✏️ Alfabetização</li>
+                            <li>📖 Português</li>
+                            <li>🔢 Matemática</li>
+                            <li>🧪 Ciências</li>
+                            <li>🌍 Geografia</li>
+                            <li>📜 História</li>
+                        </ul>
+                    </div>
+
+                    <!-- Card: 10 Bônus Exclusivos -->
+                    <div class="card">
+                        <div class="card-icon">🎁</div>
+                        <h3>10 Bônus Exclusivos</h3>
+                        <p>Atividades extras e materiais complementares para enriquecer ainda mais suas aulas.</p>
+                    </div>
+
+                    <!-- Card: Descrição Principal -->
+                    <div class="card featured">
+                        <div class="card-icon featured-icon">✨</div>
+                        <h3>Professor(a), você não precisa mais perder horas criando atividades!</h3>
+                        <p>Com o App do Educador, você tem acesso imediato a mais de 300 atividades prontas para imprimir e aplicar em sala de aula.</p>
+                    </div>
+
+                    <!-- Card: Benefícios -->
+                    <div class="card benefits">
+                        <div class="card-icon">🌟</div>
+                        <h3>Seus Benefícios</h3>
+                        <div class="benefit-item">⏰ <strong>Ganhe tempo</strong> — Atividades prontas em PDF, sem precisar criar do zero.</div>
+                        <div class="benefit-item">🎨 <strong>Materiais criativos</strong> — Encante seus alunos com conteúdos envolventes.</div>
+                        <div class="benefit-item">📈 <strong>Mais valor</strong> — Eleve a qualidade das suas aulas.</div>
+                        <div class="benefit-item">🚀 <strong>Mais confiança</strong> — Conteúdo criado por especialistas em educação.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba 2: Baixar Pack -->
+            <div class="tab-content" id="tab-download">
+                <div class="header">
+                    <h1 class="title">📥 Baixar Pacote Completo</h1>
+                    <p class="subtitle">Acesse todas as atividades agora</p>
+                </div>
+                <div class="download-section">
+                    <div class="card">
+                        <div class="card-icon">⬇️</div>
+                        <h3>Download Disponível</h3>
+                        <p>Clique no botão abaixo para baixar o App do Educador com todos os materiais.</p>
+                        <a href="https://checkout.seulink.com" target="_blank" class="btn-primary">📥 Baixar Agora</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba 3: Loja -->
+            <div class="tab-content" id="tab-materials">
+                <div class="header">
+                    <h1 class="title">🛒 Loja de Materiais</h1>
+                    <p class="subtitle">Atividades e pacotes extras</p>
+                </div>
+                <div class="materials-grid">
+                    <!-- Produto 1 -->
+                    <div class="material-card">
+                        <h3>Pacote de Atividades de Alfabetização</h3>
+                        <p class="material-price">R$ 9,90</p>
+                        <p>Mais de 100 atividades prontas para imprimir.</p>
+                        <a href="https://checkout.seulink.com" target="_blank" class="material-button">Adquirir Agora</a>
+                    </div>
+
+                    <!-- Produto 2 -->
+                    <div class="material-card">
+                        <h3>Pacote de Matemática</h3>
+                        <p class="material-price">R$ 9,90</p>
+                        <p>Atividades criativas para todas as séries do fundamental.</p>
+                        <a href="https://checkout.seulink.com" target="_blank" class="material-button">Adquirir Agora</a>
+                    </div>
+
+                    <!-- Produto 3 -->
+                    <div class="material-card featured-product">
+                        <div class="popular-badge">⭐ MAIS POPULAR</div>
+                        <h3>Super Combo Educador (4 em 1)</h3>
+                        <p class="material-price">R$ 27,00</p>
+                        <p>Inclui Alfabetização, Matemática, Português e Ciências em um só pacote.</p>
+                        <a href="https://checkout.seulink.com" target="_blank" class="material-button featured-button">Adquirir Super Combo</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba 4: Conteúdos -->
+            <div class="tab-content" id="tab-content">
+                <div class="header">
+                    <h1 class="title">📚 Mais Conteúdos</h1>
+                    <p class="subtitle">Recursos adicionais para professores</p>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>📖 Biblioteca de Recursos</h3>
+                        <p>Acesse nossa biblioteca com centenas de atividades extras.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔄 Atualizações</h3>
+                        <p>Receba novos pacotes e materiais todos os meses.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba 5: Configurações -->
+            <div class="tab-content" id="tab-settings">
+                <div class="header">
+                    <h1 class="title">⚙️ Configurações</h1>
+                    <p class="subtitle">Personalize sua experiência</p>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>🎛️ Preferências</h3>
+                        <p>Configure suas notificações e modo de uso.</p>
+                    </div>
+                    <div class="card">
+                        <h3>👤 Perfil</h3>
+                        <p>Gerencie suas informações de usuário.</p>
+                        <button class="btn-primary logout-btn" onclick="logout()">Sair do App</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Navegação inferior -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-tab="tab-principal">🏠 Principal</button>
+            <button class="nav-item" data-tab="tab-download">⬇️ Baixar</button>
+            <button class="nav-item" data-tab="tab-materials">🛒 Loja</button>
+            <button class="nav-item" data-tab="tab-content">📚 Conteúdos</button>
+            <button class="nav-item" data-tab="tab-settings">⚙️ Configurações</button>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
