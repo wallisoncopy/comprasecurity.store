@@ -202,87 +202,6 @@
                 </div>
             </div>
 
-            <!-- Aba Gerador IA -->
-            <div class="tab-content" id="tab-ia">
-                <div class="ia-header">
-                    <div class="ia-hero-icon">🤖</div>
-                    <h2>Criar Atividade com IA</h2>
-                    <p>Gere atividades personalizadas em segundos!</p>
-                </div>
-
-                <div class="ia-form">
-                    <div class="ia-field">
-                        <label>📚 Disciplina</label>
-                        <select id="ia-disciplina">
-                            <option value="">Selecione a disciplina...</option>
-                            <option value="Português">Português</option>
-                            <option value="Matemática">Matemática</option>
-                            <option value="Ciências">Ciências</option>
-                            <option value="História">História</option>
-                            <option value="Geografia">Geografia</option>
-                            <option value="Artes">Artes</option>
-                            <option value="Educação Física">Educação Física</option>
-                            <option value="Inglês">Inglês</option>
-                            <option value="Educação Infantil">Educação Infantil</option>
-                        </select>
-                    </div>
-
-                    <div class="ia-field">
-                        <label>🎓 Ano / Série</label>
-                        <select id="ia-serie">
-                            <option value="">Selecione o ano...</option>
-                            <option value="Maternal (3-4 anos)">Maternal (3-4 anos)</option>
-                            <option value="Pré-escola (5-6 anos)">Pré-escola (5-6 anos)</option>
-                            <option value="1º ano do Ensino Fundamental">1º ano</option>
-                            <option value="2º ano do Ensino Fundamental">2º ano</option>
-                            <option value="3º ano do Ensino Fundamental">3º ano</option>
-                            <option value="4º ano do Ensino Fundamental">4º ano</option>
-                            <option value="5º ano do Ensino Fundamental">5º ano</option>
-                        </select>
-                    </div>
-
-                    <div class="ia-field">
-                        <label>🌟 Tema da Atividade</label>
-                        <input type="text" id="ia-tema" placeholder="Ex: animais da fazenda, família, números..." maxlength="80">
-                    </div>
-
-                    <div class="ia-field">
-                        <label>📝 Tipo de Atividade</label>
-                        <select id="ia-tipo">
-                            <option value="">Selecione o tipo...</option>
-                            <option value="Folha de exercícios">Folha de exercícios</option>
-                            <option value="Cruzadinha">Cruzadinha</option>
-                            <option value="Complete as lacunas">Complete as lacunas</option>
-                            <option value="Relacionar colunas">Relacionar colunas</option>
-                            <option value="Produção de texto guiada">Produção de texto</option>
-                            <option value="Atividade lúdica e jogo didático">Atividade lúdica</option>
-                            <option value="Ditado de palavras">Ditado de palavras</option>
-                            <option value="Interpretação de texto">Interpretação de texto</option>
-                        </select>
-                    </div>
-
-                    <button id="btn-gerar" class="ia-btn-gerar" onclick="generateActivity()">
-                        ✨ Gerar Atividade
-                    </button>
-                </div>
-
-                <div id="ia-loading" class="ia-loading" style="display:none;">
-                    <div class="ia-spinner"></div>
-                    <p>Criando sua atividade...</p>
-                </div>
-
-                <div id="ia-result" class="ia-result" style="display:none;">
-                    <div class="ia-result-title">✅ Atividade Pronta!</div>
-                    <div id="ia-content" class="ia-content"></div>
-                    <button class="ia-btn-pdf" onclick="downloadPDF()">
-                        📄 Baixar em PDF
-                    </button>
-                    <button class="ia-btn-nova" onclick="resetIA()">
-                        🔄 Gerar Nova Atividade
-                    </button>
-                </div>
-            </div>
-
             <!-- Aba Configurações -->
             <div class="tab-content" id="tab-settings">
                 <div class="settings-header">
@@ -333,10 +252,6 @@
                 <div class="nav-icon">📥</div>
                 <span>Baixar</span>
             </button>
-            <button class="nav-item" data-tab="tab-ia">
-                <div class="nav-icon">✨</div>
-                <span>IA</span>
-            </button>
             <button class="nav-item" data-tab="tab-materials">
                 <div class="nav-icon">🛒</div>
                 <span>Loja</span>
@@ -352,7 +267,6 @@
         </nav>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
