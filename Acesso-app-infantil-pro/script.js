@@ -502,7 +502,7 @@ window.copyToClipboard = copyToClipboard;
 // GERADOR DE ATIVIDADES COM IA
 // Obtenha sua chave gratuita em: https://aistudio.google.com
 // ============================================================
-const GEMINI_API_KEY = 'SUA_CHAVE_GEMINI_AQUI';
+const GEMINI_API_KEY = 'AIzaSyAwf9_cakILYziCQH_Rw5bR61btwQwGAaQ';
 
 let lastGeneratedActivity = '';
 let lastActivityMeta = {};
