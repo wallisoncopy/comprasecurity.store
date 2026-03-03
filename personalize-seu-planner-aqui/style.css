@@ -1,0 +1,430 @@
+/* ─── Reset & Base ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #eff6ff;
+  min-height: 100vh;
+  color: #1e3a5f;
+}
+
+/* ─── App Wrapper ─────────────────────────────── */
+.app-wrapper {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 0 0 80px;
+}
+
+/* ─── Header ─────────────────────────────────── */
+.app-header {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: white;
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-icon {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.app-header h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.app-header p {
+  font-size: 0.82rem;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* ─── Steps Bar ───────────────────────────────── */
+.steps-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px 8px;
+  gap: 0;
+  background: white;
+  border-bottom: 1px solid #dbeafe;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e0e7ff;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.step span {
+  font-size: 0.68rem;
+  color: #9ca3af;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.step.active .step-circle {
+  background: #1d4ed8;
+  color: white;
+  box-shadow: 0 0 0 3px #bfdbfe;
+}
+
+.step.active span {
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.step.done .step-circle {
+  background: #22c55e;
+  color: white;
+}
+
+.step.done span {
+  color: #16a34a;
+}
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: #e5e7eb;
+  margin: 0 6px;
+  margin-bottom: 20px;
+  max-width: 50px;
+}
+
+/* ─── Step Content ────────────────────────────── */
+.step-content {
+  display: none;
+  padding: 16px;
+  animation: fadeIn 0.2s ease;
+}
+
+.step-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Card ────────────────────────────────────── */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px 20px;
+  box-shadow: 0 2px 12px rgba(29, 78, 216, 0.08);
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 4px;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* ─── Form ────────────────────────────────────── */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #dbeafe;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  color: #1e3a5f;
+  background: #f8faff;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #3b82f6;
+  background: white;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ─── Section Items ───────────────────────────── */
+.sections-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.section-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.section-item input[type="checkbox"] {
+  display: none;
+}
+
+.section-item.checked {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.section-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.section-text {
+  flex: 1;
+}
+
+.section-text strong {
+  display: block;
+  font-size: 0.88rem;
+  color: #1e3a5f;
+}
+
+.section-text span {
+  font-size: 0.76rem;
+  color: #9ca3af;
+}
+
+.checkmark {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: transparent;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.section-item.checked .checkmark {
+  background: #3b82f6;
+  color: white;
+}
+
+/* ─── Theme Cards ─────────────────────────────── */
+.themes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.theme-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.theme-card input[type="radio"] { display: none; }
+
+.theme-card.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.theme-preview {
+  height: 60px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-preview.azul { background: #dbeafe; }
+.theme-preview.rosa { background: #fce7f3; }
+.theme-preview.verde { background: #dcfce7; }
+.theme-preview.neutro { background: #f3f4f6; }
+
+.preview-header {
+  height: 20px;
+  border-radius: 6px 6px 0 0;
+}
+
+.theme-preview.azul .preview-header { background: #1d4ed8; }
+.theme-preview.rosa .preview-header { background: #db2777; }
+.theme-preview.verde .preview-header { background: #16a34a; }
+.theme-preview.neutro .preview-header { background: #6b7280; }
+
+.preview-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+}
+
+.preview-lines div {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.12);
+}
+
+.theme-card strong {
+  display: block;
+  font-size: 0.82rem;
+  color: #1e3a5f;
+}
+
+.theme-card span {
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+.selected-badge {
+  display: none;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.theme-card.selected .selected-badge { display: block; }
+
+/* ─── Summary ─────────────────────────────────── */
+.summary-box {
+  background: #f0f9ff;
+  border: 1.5px solid #bae6fd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+}
+
+.summary-box .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid #e0f2fe;
+}
+
+.summary-box .row:last-child { border-bottom: none; }
+.summary-box .row span:first-child { color: #6b7280; }
+.summary-box .row span:last-child { font-weight: 600; color: #1e3a5f; }
+
+/* ─── Generate Area ───────────────────────────── */
+.generate-area {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.generate-icon { font-size: 3rem; margin-bottom: 12px; }
+.generate-area h3 { font-size: 1.1rem; color: #1d4ed8; margin-bottom: 8px; }
+.generate-area p { font-size: 0.82rem; color: #6b7280; margin-bottom: 20px; line-height: 1.5; }
+
+.btn-generate {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.3);
+}
+
+.btn-generate:active { transform: scale(0.98); }
+.btn-generate:disabled { opacity: 0.6; cursor: default; }
+
+.generate-note {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* ─── Buttons ─────────────────────────────────── */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s;
+  box-shadow: 0 3px 10px rgba(29,78,216,0.2);
+}
+
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-secondary {
+  padding: 12px 20px;
+  background: white;
+  color: #6b7280;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-row .btn-primary { flex: 1; }

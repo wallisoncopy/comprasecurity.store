@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🗓️ Personalize seu Planner aqui</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-icon">🗓️</div>
+      <div>
+        <h1>Planner do Professor</h1>
+        <p>Personalize e gere o seu planner em PDF</p>
+      </div>
+    </header>
+
+    <!-- Steps Indicator -->
+    <div class="steps-bar">
+      <div class="step active" id="step-dot-1">
+        <div class="step-circle">1</div>
+        <span>Dados</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-2">
+        <div class="step-circle">2</div>
+        <span>Seções</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-3">
+        <div class="step-circle">3</div>
+        <span>Estilo</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-4">
+        <div class="step-circle">4</div>
+        <span>Gerar</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Dados -->
+    <section class="step-content active" id="step-1">
+      <div class="card">
+        <h2>✏️ Seus Dados Profissionais</h2>
+        <p class="card-desc">Essas informações vão aparecer na capa do seu planner.</p>
+
+        <div class="form-group">
+          <label>Seu nome completo</label>
+          <input type="text" id="prof-nome" placeholder="Ex: Profª Ana Paula Silva" maxlength="60">
+        </div>
+        <div class="form-group">
+          <label>Nome da escola</label>
+          <input type="text" id="prof-escola" placeholder="Ex: Escola Municipal Monteiro Lobato" maxlength="60">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Turma / Série</label>
+            <select id="prof-turma">
+              <option value="">Selecione...</option>
+              <option>Maternal I</option>
+              <option>Maternal II</option>
+              <option>Pré I</option>
+              <option>Pré II</option>
+              <option>1º Ano</option>
+              <option>2º Ano</option>
+              <option>3º Ano</option>
+              <option>4º Ano</option>
+              <option>5º Ano</option>
+              <option>Multisseriado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ano letivo</label>
+            <input type="number" id="prof-ano" value="2026" min="2025" max="2030">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Número de alunos</label>
+          <input type="number" id="prof-alunos" placeholder="Ex: 28" min="1" max="60">
+        </div>
+
+        <button class="btn-primary" onclick="goStep(2)">Próximo →</button>
+      </div>
+    </section>
+
+    <!-- Step 2: Seções -->
+    <section class="step-content" id="step-2">
+      <div class="card">
+        <h2>📋 Escolha as Seções</h2>
+        <p class="card-desc">Selecione o que deseja incluir no seu planner.</p>
+
+        <div class="sections-grid">
+          <label class="section-item checked">
+            <input type="checkbox" value="capa" checked>
+            <div class="section-icon">🎨</div>
+            <div class="section-text">
+              <strong>Capa Personalizada</strong>
+              <span>Com seus dados e logotipo</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item checked">
+            <input type="checkbox" value="semanal" checked>
+            <div class="section-icon">📅</div>
+            <div class="section-text">
+              <strong>Planejamento Semanal</strong>
+              <span>40 semanas (ano inteiro)</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item checked">
+            <input type="checkbox" value="chamada" checked>
+            <div class="section-icon">✅</div>
+            <div class="section-text">
+              <strong>Lista de Chamada</strong>
+              <span>Registro de presença mensal</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item">
+            <input type="checkbox" value="alunos">
+            <div class="section-icon">👧</div>
+            <div class="section-text">
+              <strong>Ficha por Aluno</strong>
+              <span>Anotações individuais de desenvolvimento</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item checked">
+            <input type="checkbox" value="calendario" checked>
+            <div class="section-icon">📆</div>
+            <div class="section-text">
+              <strong>Calendário Mensal</strong>
+              <span>12 meses com espaço para eventos</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item">
+            <input type="checkbox" value="metas">
+            <div class="section-icon">🎯</div>
+            <div class="section-text">
+              <strong>Metas do Bimestre</strong>
+              <span>4 bimestres com objetivos e resultados</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item">
+            <input type="checkbox" value="atividades">
+            <div class="section-icon">📝</div>
+            <div class="section-text">
+              <strong>Plano de Atividades</strong>
+              <span>Por disciplina com espaço para descrição</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item">
+            <input type="checkbox" value="comunicados">
+            <div class="section-icon">📩</div>
+            <div class="section-text">
+              <strong>Registro de Comunicados</strong>
+              <span>Controle de bilhetes enviados aos pais</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item">
+            <input type="checkbox" value="checklist">
+            <div class="section-icon">☑️</div>
+            <div class="section-text">
+              <strong>Checklist Diário</strong>
+              <span>Rotina e tarefas do dia a dia</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+
+          <label class="section-item">
+            <input type="checkbox" value="notas">
+            <div class="section-icon">📊</div>
+            <div class="section-text">
+              <strong>Registro de Notas</strong>
+              <span>Grade de avaliações por aluno</span>
+            </div>
+            <div class="checkmark">✓</div>
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="goStep(1)">← Voltar</button>
+          <button class="btn-primary" onclick="goStep(3)">Próximo →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 3: Estilo -->
+    <section class="step-content" id="step-3">
+      <div class="card">
+        <h2>🎨 Escolha o Estilo</h2>
+        <p class="card-desc">Selecione a paleta de cores do seu planner.</p>
+
+        <div class="themes-grid">
+          <label class="theme-card selected" id="theme-azul">
+            <input type="radio" name="theme" value="azul" checked>
+            <div class="theme-preview azul">
+              <div class="preview-header"></div>
+              <div class="preview-lines">
+                <div></div><div></div><div></div>
+              </div>
+            </div>
+            <strong>Azul Clássico</strong>
+            <span>Profissional e moderno</span>
+            <div class="selected-badge">✓ Selecionado</div>
+          </label>
+
+          <label class="theme-card" id="theme-rosa">
+            <input type="radio" name="theme" value="rosa">
+            <div class="theme-preview rosa">
+              <div class="preview-header"></div>
+              <div class="preview-lines">
+                <div></div><div></div><div></div>
+              </div>
+            </div>
+            <strong>Rosa Delicado</strong>
+            <span>Elegante e feminino</span>
+            <div class="selected-badge">✓ Selecionado</div>
+          </label>
+
+          <label class="theme-card" id="theme-verde">
+            <input type="radio" name="theme" value="verde">
+            <div class="theme-preview verde">
+              <div class="preview-header"></div>
+              <div class="preview-lines">
+                <div></div><div></div><div></div>
+              </div>
+            </div>
+            <strong>Verde Natureza</strong>
+            <span>Tranquilo e equilibrado</span>
+            <div class="selected-badge">✓ Selecionado</div>
+          </label>
+
+          <label class="theme-card" id="theme-neutro">
+            <input type="radio" name="theme" value="neutro">
+            <div class="theme-preview neutro">
+              <div class="preview-header"></div>
+              <div class="preview-lines">
+                <div></div><div></div><div></div>
+              </div>
+            </div>
+            <strong>Neutro Claro</strong>
+            <span>Minimalista e limpo</span>
+            <div class="selected-badge">✓ Selecionado</div>
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="goStep(2)">← Voltar</button>
+          <button class="btn-primary" onclick="goStep(4)">Próximo →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 4: Gerar -->
+    <section class="step-content" id="step-4">
+      <div class="card">
+        <h2>🎉 Tudo pronto!</h2>
+        <p class="card-desc">Revise seu planner e clique para gerar o PDF.</p>
+
+        <div class="summary-box" id="summary-box">
+          <!-- preenchido por JS -->
+        </div>
+
+        <div class="generate-area">
+          <div class="generate-icon">📄</div>
+          <h3>Seu Planner Personalizado</h3>
+          <p>O PDF será gerado diretamente no seu dispositivo e estará pronto para imprimir ou salvar.</p>
+
+          <button class="btn-generate" id="btn-gerar" onclick="gerarPDF()">
+            <span id="btn-text">📥 Gerar meu Planner em PDF</span>
+          </button>
+
+          <p class="generate-note">✅ Gratuito · Sem anúncios · Sem envio de dados</p>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="goStep(3)">← Voltar</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- jsPDF via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
