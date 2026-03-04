@@ -91,18 +91,42 @@ function buildSummary() {
     checklist: 'Checklist Diário', notas: 'Registro de Notas'
   };
 
-  const rows = [
-    ['Professora', state.dados.nome],
-    ['Escola', state.dados.escola],
-    ['Turma', state.dados.turma + ' · ' + state.dados.ano],
-    ['Alunos', state.dados.alunos + ' alunos'],
-    ['Tema', tema.name],
-    ['Seções', state.secoes.map(s => nomesSec[s] || s).join(', ')]
+  const grupos = [
+    {
+      titulo: 'Seus Dados',
+      step: 1,
+      linhas: [
+        ['Professora', state.dados.nome],
+        ['Escola', state.dados.escola],
+        ['Turma', state.dados.turma + ' · ' + state.dados.ano],
+        ['Alunos', state.dados.alunos + ' alunos'],
+      ]
+    },
+    {
+      titulo: 'Seções Selecionadas',
+      step: 2,
+      linhas: [
+        ['Seções', state.secoes.map(s => nomesSec[s] || s).join(', ') || 'Nenhuma selecionada']
+      ]
+    },
+    {
+      titulo: 'Tema Visual',
+      step: 3,
+      linhas: [
+        ['Tema', tema.name]
+      ]
+    }
   ];
 
-  document.getElementById('summary-box').innerHTML = rows.map(([k, v]) =>
-    `<div class="row"><span>${k}</span><span>${v}</span></div>`
-  ).join('');
+  document.getElementById('summary-box').innerHTML = grupos.map(g => `
+    <div class="summary-group">
+      <div class="summary-group-header">
+        <strong>${g.titulo}</strong>
+        <button class="btn-edit-group" onclick="goStep(${g.step})">✏️ Editar</button>
+      </div>
+      ${g.linhas.map(([k, v]) => `<div class="row"><span>${k}</span><span>${v}</span></div>`).join('')}
+    </div>
+  `).join('');
 }
 
 // ─── Geração de PDF ────────────────────────────
