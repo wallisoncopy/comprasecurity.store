@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Kit Psicólogo Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root { --violet-glow: rgba(124,58,237,0.25); }
+    body { font-family:'Plus Jakarta Sans',sans-serif; background:#f5f3ff; color:#0f172a; }
+    .bg-grad { background: radial-gradient(circle at top right, rgba(139,92,246,.1), transparent), radial-gradient(circle at bottom left, rgba(109,40,217,.05), transparent); }
+    .neo { box-shadow: 0 10px 40px -10px rgba(0,0,0,.05), 0 0 20px var(--violet-glow); }
+    .glass { background:rgba(255,255,255,.88); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); }
+    .tab-on { color:#7c3aed; }
+    .tab-off { color:#94a3b8; }
+    @keyframes sIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    .anim { animation:sIn .35s cubic-bezier(.16,1,.3,1) forwards; }
+    .safe { padding-bottom:env(safe-area-inset-bottom); }
+    .overlay { position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center; }
+    .mbox { background:#fff;border-radius:28px 28px 0 0;width:100%;max-width:448px;max-height:90vh;overflow-y:auto;padding:24px 20px 40px; }
+    .btn-v { background:#7c3aed;color:#fff;font-weight:800;border-radius:16px;padding:14px 20px;width:100%;text-align:center;cursor:pointer;border:none;font-family:inherit;font-size:15px; }
+    .btn-o { background:#fff;color:#7c3aed;font-weight:700;border:2px solid #ddd6fe;border-radius:16px;padding:13px 20px;width:100%;text-align:center;cursor:pointer;font-family:inherit;font-size:15px; }
+    .lbl { display:block;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px; }
+    .inp { width:100%;background:#f8fafc;padding:12px 14px;border-radius:14px;border:1.5px solid #e2e8f0;outline:none;font-size:15px;font-family:inherit;transition:border-color .2s; }
+    .inp:focus { border-color:#7c3aed; }
+    .card { background:#fff;border:1px solid #ede9fe;border-radius:24px;padding:16px; }
+    .sechead { font-size:11px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.08em; }
+    input[type=checkbox],input[type=radio] { accent-color:#7c3aed; }
+  </style>
+</head>
+<body class="bg-grad">
+
+<header class="sticky top-0 z-40 glass border-b border-violet-100">
+  <div class="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+    <div>
+      <div class="text-violet-700 font-extrabold text-lg">App Kit Psicólogo Pro</div>
+      <div id="topTitle" class="text-[11px] tracking-[.22em] text-violet-500 font-bold uppercase">INÍCIO</div>
+    </div>
+    <button onclick="goTo('config')" class="h-11 w-11 rounded-2xl bg-white border border-violet-100 neo flex items-center justify-center">
+      <i class="fas fa-cog text-violet-600 text-[15px]"></i>
+    </button>
+  </div>
+</header>
+
+<main class="min-h-screen">
+  <div id="app-content" class="max-w-md mx-auto px-4 pt-4 pb-28 anim"></div>
+</main>
+
+<nav class="fixed bottom-0 left-0 right-0 glass border-t border-violet-100 safe z-50">
+  <div class="max-w-md mx-auto px-4 py-3">
+    <div class="grid grid-cols-5 gap-1">
+      <button class="nb tab-on flex flex-col items-center gap-1 py-2 rounded-2xl" data-t="home" onclick="goTo('home')">
+        <i class="fas fa-home text-lg"></i><span class="text-[10px] font-extrabold">Início</span>
+      </button>
+      <button class="nb tab-off flex flex-col items-center gap-1 py-2 rounded-2xl" data-t="pacientes" onclick="goTo('pacientes')">
+        <i class="fas fa-users text-lg"></i><span class="text-[10px] font-extrabold">Pacientes</span>
+      </button>
+      <button class="nb tab-off flex flex-col items-center gap-1 py-2 rounded-2xl" data-t="protocolos" onclick="goTo('protocolos')">
+        <i class="fas fa-clipboard-list text-lg"></i><span class="text-[10px] font-extrabold">Protocolos</span>
+      </button>
+      <button class="nb tab-off flex flex-col items-center gap-1 py-2 rounded-2xl" data-t="documentos" onclick="goTo('documentos')">
+        <i class="fas fa-file-pdf text-lg"></i><span class="text-[10px] font-extrabold">Documentos</span>
+      </button>
+      <button class="nb tab-off flex flex-col items-center gap-1 py-2 rounded-2xl" data-t="config" onclick="goTo('config')">
+        <i class="fas fa-cog text-lg"></i><span class="text-[10px] font-extrabold">Config</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="mc"></div>
+
+<script>
+// ── GLOBALS ─────────────────────────────────────────
+var DB = {
+  get: function(k,d){try{return JSON.parse(localStorage.getItem(k))||d;}catch(e){return d;}},
+  set: function(k,v){localStorage.setItem(k,JSON.stringify(v));},
+  init: function(){
+    if(!localStorage.getItem('pp')) DB.set('pp',{name:'',crp:'',cidade:'',telefone:'',email:'',esp:''});
+    if(!localStorage.getItem('pac')) DB.set('pac',[]);
+    if(!localStorage.getItem('ses')) DB.set('ses',[]);
+  }
+};
+DB.init();
+
+var U = {
+  id: function(){return Date.now().toString(36)+Math.random().toString(36).substr(2);},
+  hoje: function(){return new Date().toLocaleDateString('pt-BR');},
+  hojeISO: function(){return new Date().toISOString().split('T')[0];},
+  idade: function(n){if(!n)return'';var d=new Date(n),t=new Date(),a=t.getFullYear()-d.getFullYear();var m=t.getMonth()-d.getMonth();if(m<0||(m===0&&t.getDate()<d.getDate()))a--;return a+' anos';},
+  esc: function(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+};
+
+var TITLES = {home:'INÍCIO',pacientes:'PACIENTES',protocolos:'PROTOCOLOS',documentos:'DOCUMENTOS',config:'CONFIGURAÇÕES',anamnese_adulto:'ANAMNESE ADULTO',anamnese_infantil:'ANAMNESE INFANTIL',paciente_det:'PRONTUÁRIO',doc_escola:'REL. ESCOLA',doc_decl:'DECLARAÇÃO',doc_enc:'ENCAMINHAMENTO',doc_laudo:'LAUDO PSICOLÓGICO'};
+
+function goTo(v,d){
+  d=d||{};
+  var tabs=['home','pacientes','protocolos','documentos','config'];
+  document.querySelectorAll('.nb').forEach(function(b){
+    var t=b.getAttribute('data-t');
+    var on=(t===v)||(v!=='home'&&v.indexOf(t)===0&&t!=='home'&&tabs.indexOf(t)>-1);
+    b.classList.toggle('tab-on',on);
+    b.classList.toggle('tab-off',!on);
+  });
+  var title=TITLES[v]||v.toUpperCase();
+  document.getElementById('topTitle').textContent=title;
+  var el=document.getElementById('app-content');
+  el.className='max-w-md mx-auto px-4 pt-4 pb-28 anim';
+  void el.offsetWidth;
+  var renders={
+    home: pgHome,
+    pacientes: pgPacientes,
+    paciente_det: pgPacienteDet,
+    protocolos: pgProtocolos,
+    anamnese_adulto: pgAnamneseAdulto,
+    anamnese_infantil: pgAnamneseInfantil,
+    proto_ansi: pgProtoAnsi,
+    proto_depr: pgProtoDepr,
+    proto_tdah: pgProtoTDAH,
+    proto_tea: pgProtoTEA,
+    proto_familiar: pgProtoFamiliar,
+    proto_auto: pgProtoAuto,
+    proto_phq9: pgProtoPhq9,
+    proto_gad7: pgProtoGad7,
+    documentos: pgDocumentos,
+    doc_escola: pgDocEscola,
+    doc_decl: pgDocDecl,
+    doc_enc: pgDocEnc,
+    doc_laudo: pgDocLaudo,
+    doc_tcle: pgDocTcle,
+    doc_plano: pgDocPlano,
+    config: pgConfig
+  };
+  if(renders[v]){renders[v](el,d);}else{pgHome(el,d);}
+  window.scrollTo(0,0);
+}
+
+// ── HOME ─────────────────────────────────────────────
+function pgHome(el){
+  var p=DB.get('pp',{});
+  var pacs=DB.get('pac',[]);
+  var sess=DB.get('ses',[]);
+  var hoje=U.hojeISO();
+  var shoje=sess.filter(function(s){return s.data===hoje;}).length;
+  el.innerHTML='<div class="space-y-4">'+
+    '<div class="rounded-[28px] bg-gradient-to-br from-violet-700 to-violet-500 text-white p-6 neo">'+
+      '<div class="text-[11px] font-bold tracking-[.2em] uppercase opacity-90">Bem-vindo(a)</div>'+
+      '<h1 class="text-2xl font-extrabold mt-1 leading-tight">Olá, '+(p.name?p.name.split(' ')[0]:'Psicólogo(a)')+'!</h1>'+
+      '<p class="mt-1 text-white/85 text-sm">Seu consultório digital. Rápido, seguro e profissional.</p>'+
+      '<div class="mt-4 inline-flex items-center gap-2 bg-white/15 border border-white/20 rounded-full px-3 py-1.5 text-xs font-bold">'+
+        '<span class="h-2 w-2 rounded-full bg-white"></span> Acesso vitalício · Pagamento único</div>'+
+    '</div>'+
+    '<div class="grid grid-cols-3 gap-3">'+
+      '<div class="card text-center neo"><div class="text-2xl font-black text-violet-600">'+pacs.length+'</div><div class="text-[10px] font-bold text-slate-400 uppercase mt-1">Pacientes</div></div>'+
+      '<div class="card text-center neo"><div class="text-2xl font-black text-violet-600">'+sess.length+'</div><div class="text-[10px] font-bold text-slate-400 uppercase mt-1">Sessões</div></div>'+
+      '<div class="card text-center neo"><div class="text-2xl font-black text-violet-600">'+shoje+'</div><div class="text-[10px] font-bold text-slate-400 uppercase mt-1">Hoje</div></div>'+
+    '</div>'+
+    '<div class="text-xs font-extrabold text-slate-500 uppercase tracking-wider px-1">Atalhos rápidos</div>'+
+    '<button onclick="goTo(\'pacientes\')" class="w-full flex items-center gap-4 card neo">'+
+      '<div class="w-12 h-12 bg-violet-100 rounded-2xl flex items-center justify-center text-violet-600 text-xl flex-shrink-0"><i class="fas fa-user-plus"></i></div>'+
+      '<div class="text-left flex-1"><div class="font-extrabold text-slate-800">Pacientes</div><div class="text-xs text-slate-400">Cadastrar e acompanhar prontuários</div></div>'+
+      '<i class="fas fa-chevron-right text-slate-300 text-sm"></i></button>'+
+    '<button onclick="goTo(\'protocolos\')" class="w-full flex items-center gap-4 card neo">'+
+      '<div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 text-xl flex-shrink-0"><i class="fas fa-clipboard-check"></i></div>'+
+      '<div class="text-left flex-1"><div class="font-extrabold text-slate-800">Protocolos Clínicos</div><div class="text-xs text-slate-400">Anamnese, ansiedade, TDAH, TEA e mais</div></div>'+
+      '<i class="fas fa-chevron-right text-slate-300 text-sm"></i></button>'+
+    '<button onclick="goTo(\'documentos\')" class="w-full flex items-center gap-4 card neo">'+
+      '<div class="w-12 h-12 bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600 text-xl flex-shrink-0"><i class="fas fa-file-pdf"></i></div>'+
+      '<div class="text-left flex-1"><div class="font-extrabold text-slate-800">Gerar Documentos</div><div class="text-xs text-slate-400">Laudos, relatórios, declarações</div></div>'+
+      '<i class="fas fa-chevron-right text-slate-300 text-sm"></i></button>'+
+    (!p.name?'<div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-3"><i class="fas fa-exclamation-circle text-amber-500 mt-0.5"></i><div><div class="text-sm font-bold text-amber-800">Configure seu perfil</div><div class="text-xs text-amber-600 mt-0.5">Adicione nome e CRP para os documentos ficarem completos.</div><button onclick="goTo(\'config\')" class="mt-2 text-xs font-bold text-amber-700 underline">Configurar agora</button></div></div>':'')+
+    '</div>';
+}
+
+// ── PACIENTES ────────────────────────────────────────
+function pgPacientes(el){
+  var pacs=DB.get('pac',[]);
+  el.innerHTML='<div class="space-y-4">'+
+    '<div class="flex items-center justify-between">'+
+      '<h2 class="text-xl font-extrabold">Pacientes</h2>'+
+      '<button onclick="modalPac()" class="bg-violet-600 text-white px-4 py-2 rounded-2xl text-sm font-extrabold flex items-center gap-2 neo"><i class="fas fa-plus text-xs"></i> Novo</button>'+
+    '</div>'+
+    '<div class="relative"><i class="fas fa-search absolute left-4 top-3.5 text-slate-300"></i>'+
+      '<input type="text" oninput="filtrarPacs(this.value)" class="w-full pl-10 pr-4 py-3 bg-white rounded-2xl border border-violet-100 outline-none text-sm" placeholder="Buscar paciente..."></div>'+
+    '<div id="lp" class="space-y-3">'+listaPacs(pacs)+'</div>'+
+  '</div>';
+}
+
+function listaPacs(pacs){
+  if(!pacs.length) return '<div class="text-center py-12 text-slate-400"><i class="fas fa-user-slash text-4xl mb-3 block opacity-30"></i><div class="font-semibold">Nenhum paciente cadastrado</div><div class="text-sm mt-1">Clique em <b>Novo</b> para começar</div></div>';
+  return pacs.map(cardPac).join('');
+}
+
+function cardPac(p){
+  var sess=DB.get('ses',[]).filter(function(s){return s.pid===p.id;}).length;
+  var ini=(p.nome||'?')[0].toUpperCase();
+  var cors=['bg-violet-100 text-violet-700','bg-indigo-100 text-indigo-700','bg-rose-100 text-rose-700','bg-emerald-100 text-emerald-700'];
+  var c=cors[p.nome.charCodeAt(0)%4];
+  return '<button onclick="goTo(\'paciente_det\',{id:\''+p.id+'\'})" class="w-full text-left card neo">'+
+    '<div class="flex items-center gap-3">'+
+      '<div class="w-12 h-12 rounded-2xl '+c+' flex items-center justify-center font-extrabold text-lg flex-shrink-0">'+ini+'</div>'+
+      '<div class="flex-1 min-w-0"><div class="font-extrabold text-slate-800 truncate">'+U.esc(p.nome)+'</div>'+
+        '<div class="text-xs text-slate-400">'+(p.tipo==='infantil'?'Infantil':'Adulto')+' · '+(U.idade(p.nasc)||'Idade não informada')+'</div></div>'+
+      '<div class="text-right flex-shrink-0"><div class="text-xs font-bold text-violet-600">'+sess+' sessão'+(sess!==1?'ões':'')+'</div><i class="fas fa-chevron-right text-slate-300 text-xs mt-1"></i></div>'+
+    '</div></button>';
+}
+
+window.filtrarPacs=function(q){
+  var lp=document.getElementById('lp');if(!lp)return;
+  var pacs=DB.get('pac',[]);
+  var f=q?pacs.filter(function(p){return p.nome.toLowerCase().indexOf(q.toLowerCase())>-1;}):pacs;
+  lp.innerHTML=listaPacs(f);
+};
+
+window.modalPac=function(id){
+  var p=id?DB.get('pac',[]).find(function(x){return x.id===id;}):null;
+  document.getElementById('mc').innerHTML='<div class="overlay" onclick="if(event.target===this)closeMC()">'+
+    '<div class="mbox"><div class="flex items-center justify-between mb-5"><h3 class="text-lg font-extrabold">'+(id?'Editar':'Novo')+' Paciente</h3><button onclick="closeMC()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold">✕</button></div>'+
+    '<form id="fp" class="space-y-4">'+
+      '<div><label class="lbl">Nome completo *</label><input class="inp" name="nome" value="'+U.esc(p&&p.nome||'')+'" placeholder="Ex: Ana Lima" required></div>'+
+      '<div class="grid grid-cols-2 gap-3"><div><label class="lbl">Data nasc.</label><input type="date" class="inp" name="nasc" value="'+(p&&p.nasc||'')+'"></div>'+
+        '<div><label class="lbl">Tipo</label><select class="inp" name="tipo"><option value="adulto" '+(p&&p.tipo==='adulto'?'selected':'')+'>Adulto</option><option value="infantil" '+(p&&p.tipo==='infantil'?'selected':'')+'>Infantil</option></select></div></div>'+
+      '<div><label class="lbl">Telefone</label><input class="inp" name="tel" value="'+U.esc(p&&p.tel||'')+'" placeholder="(11) 99999-9999"></div>'+
+      '<div><label class="lbl">Queixa principal</label><textarea class="inp" name="queixa" rows="3" placeholder="Motivo da consulta...">'+U.esc(p&&p.queixa||'')+'</textarea></div>'+
+      (p?'<div><label class="lbl">Responsável</label><input class="inp" name="resp" value="'+U.esc(p&&p.resp||'')+'" placeholder="Nome do responsável (se infantil)"></div>':'')+
+      '<button type="submit" class="btn-v">'+(id?'Salvar':'Cadastrar')+'</button>'+
+      (id?'<button type="button" onclick="delPac(\''+id+'\')" class="w-full text-center text-rose-500 font-bold text-sm mt-2 py-2">Excluir paciente</button>':'')+
+    '</form></div></div>';
+  document.getElementById('fp').onsubmit=function(e){
+    e.preventDefault();
+    var fd=new FormData(e.target),d=Object.fromEntries(fd.entries());
+    var pacs=DB.get('pac',[]);
+    if(id){var i=pacs.findIndex(function(x){return x.id===id;});if(i>-1)pacs[i]=Object.assign(pacs[i],d);}
+    else{d.id=U.id();d.criado=U.hojeISO();pacs.unshift(d);}
+    DB.set('pac',pacs);closeMC();goTo('pacientes');
+  };
+};
+
+window.delPac=function(id){
+  if(!confirm('Excluir este paciente e todas as suas sessões?'))return;
+  DB.set('pac',DB.get('pac',[]).filter(function(p){return p.id!==id;}));
+  DB.set('ses',DB.get('ses',[]).filter(function(s){return s.pid!==id;}));
+  closeMC();goTo('pacientes');
+};
+
+// ── DETALHE PACIENTE ─────────────────────────────────
+function pgPacienteDet(el,d){
+  var pac=DB.get('pac',[]).find(function(p){return p.id===d.id;});
+  if(!pac){goTo('pacientes');return;}
+  var sess=DB.get('ses',[]).filter(function(s){return s.pid===d.id;}).sort(function(a,b){return b.data.localeCompare(a.data);});
+  el.innerHTML='<div class="space-y-4">'+
+    '<div class="card neo">'+
+      '<div class="flex items-start gap-3">'+
+        '<div class="w-14 h-14 rounded-2xl bg-violet-100 flex items-center justify-center text-violet-700 font-extrabold text-2xl flex-shrink-0">'+(pac.nome||'?')[0].toUpperCase()+'</div>'+
+        '<div class="flex-1"><div class="font-extrabold text-lg text-slate-800">'+U.esc(pac.nome)+'</div>'+
+          '<div class="text-sm text-slate-500">'+(pac.tipo==='infantil'?'👶 Infantil':'🧑 Adulto')+' · '+(U.idade(pac.nasc)||'Idade não informada')+'</div>'+
+          (pac.queixa?'<div class="text-xs text-slate-400 mt-1">'+U.esc(pac.queixa)+'</div>':'')+
+        '</div>'+
+        '<button onclick="modalPac(\''+d.id+'\')" class="w-9 h-9 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-600"><i class="fas fa-pen text-xs"></i></button>'+
+      '</div>'+
+      (pac.tel?'<div class="mt-3 flex gap-2"><a href="https://wa.me/55'+pac.tel.replace(/\D/g,'')+'" target="_blank" class="flex-1 flex items-center justify-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-700 font-bold text-sm py-2.5 rounded-xl"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="tel:'+pac.tel+'" class="flex-1 flex items-center justify-center gap-2 bg-slate-50 border border-slate-100 text-slate-700 font-bold text-sm py-2.5 rounded-xl"><i class="fas fa-phone"></i> Ligar</a></div>':'')+
+    '</div>'+
+    '<div class="flex items-center justify-between"><div class="text-sm font-extrabold text-slate-700">Sessões ('+sess.length+')</div>'+
+      '<button onclick="modalSessao(\''+d.id+'\')" class="bg-violet-600 text-white px-4 py-2 rounded-2xl text-sm font-extrabold flex items-center gap-2 neo"><i class="fas fa-plus text-xs"></i> Nova sessão</button></div>'+
+    '<div class="space-y-3">'+
+      (sess.length===0?'<div class="text-center py-8 text-slate-400 card"><i class="fas fa-calendar-times text-3xl mb-2 block opacity-30"></i><div class="text-sm">Nenhuma sessão registrada</div></div>':
+        sess.map(function(s){return '<div class="card neo"><div class="flex items-start justify-between gap-2"><div class="flex-1">'+
+          '<div class="text-xs font-bold text-violet-500 uppercase">'+new Date(s.data+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+'</div>'+
+          '<div class="font-bold text-slate-800 mt-1">'+U.esc(s.titulo||'Sessão')+'</div>'+
+          (s.cont?'<div class="text-sm text-slate-500 mt-1">'+U.esc(s.cont)+'</div>':'')+
+          '</div><button onclick="delSessao(\''+s.id+'\',\''+d.id+'\')" class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400"><i class="fas fa-trash text-xs"></i></button></div>'+
+          (s.humor?'<div class="mt-2"><span class="text-xs font-bold px-2.5 py-1 rounded-full bg-violet-50 border border-violet-100 text-violet-600">Humor: '+U.esc(s.humor)+'</span></div>':'')+
+          '</div>';}).join(''))+
+    '</div>'+
+    '<div class="grid grid-cols-2 gap-3">'+
+      '<button onclick="pdfSessoes(\''+d.id+'\')" class="card neo flex flex-col items-center gap-2 py-4"><i class="fas fa-file-pdf text-rose-500 text-xl"></i><span class="text-xs font-bold text-slate-700">Relatório de Sessões</span></button>'+
+      '<button onclick="pdfDecl(\''+d.id+'\')" class="card neo flex flex-col items-center gap-2 py-4"><i class="fas fa-certificate text-violet-500 text-xl"></i><span class="text-xs font-bold text-slate-700">Declaração</span></button>'+
+    '</div>'+
+  '</div>';
+}
+
+window.modalSessao=function(pid){
+  document.getElementById('mc').innerHTML='<div class="overlay" onclick="if(event.target===this)closeMC()">'+
+    '<div class="mbox"><div class="flex items-center justify-between mb-5"><h3 class="text-lg font-extrabold">Nova Sessão</h3><button onclick="closeMC()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold">✕</button></div>'+
+    '<form id="fs" class="space-y-4">'+
+      '<div><label class="lbl">Data *</label><input type="date" class="inp" name="data" value="'+U.hojeISO()+'" required></div>'+
+      '<div><label class="lbl">Título / Tema</label><input class="inp" name="titulo" placeholder="Ex: Sessão de ansiedade, Avaliação inicial..."></div>'+
+      '<div><label class="lbl">Conteúdo / Evolução</label><textarea class="inp" name="cont" rows="5" placeholder="Descreva o que foi trabalhado..."></textarea></div>'+
+      '<div><label class="lbl">Estado emocional</label><select class="inp" name="humor"><option value="">—</option><option>Estável</option><option>Ansioso(a)</option><option>Deprimido(a)</option><option>Agitado(a)</option><option>Tranquilo(a)</option><option>Engajado(a)</option><option>Resistente</option></select></div>'+
+      '<div><label class="lbl">Plano / Próxima sessão</label><textarea class="inp" name="prox" rows="2" placeholder="Objetivos..."></textarea></div>'+
+      '<button type="submit" class="btn-v">Salvar sessão</button>'+
+    '</form></div></div>';
+  document.getElementById('fs').onsubmit=function(e){
+    e.preventDefault();
+    var d=Object.fromEntries(new FormData(e.target).entries());
+    d.id=U.id();d.pid=pid;d.criado=new Date().toISOString();
+    var ses=DB.get('ses',[]);ses.unshift(d);DB.set('ses',ses);
+    closeMC();goTo('paciente_det',{id:pid});
+  };
+};
+
+window.delSessao=function(sid,pid){
+  if(!confirm('Excluir esta sessão?'))return;
+  DB.set('ses',DB.get('ses',[]).filter(function(s){return s.id!==sid;}));
+  goTo('paciente_det',{id:pid});
+};
+
+// ── PROTOCOLOS ────────────────────────────────────────
+function pgProtocolos(el){
+  var items=[
+    {v:'anamnese_adulto',ico:'fa-user',c:'bg-violet-100 text-violet-700',t:'Anamnese — Adulto',d:'Levantamento clínico completo do paciente adulto'},
+    {v:'anamnese_infantil',ico:'fa-child',c:'bg-indigo-100 text-indigo-700',t:'Anamnese — Infantil',d:'Anamnese com dados do responsável e desenvolvimento'},
+    {v:'proto_ansi',ico:'fa-brain',c:'bg-amber-100 text-amber-700',t:'Protocolo — Ansiedade',d:'Triagem e registro para transtornos ansiosos'},
+    {v:'proto_depr',ico:'fa-heart-broken',c:'bg-rose-100 text-rose-700',t:'Protocolo — Depressão',d:'Avaliação de sintomas depressivos'},
+    {v:'proto_tdah',ico:'fa-bolt',c:'bg-sky-100 text-sky-700',t:'Protocolo — TDAH',d:'Critérios diagnósticos e observações clínicas'},
+    {v:'proto_tea',ico:'fa-puzzle-piece',c:'bg-teal-100 text-teal-700',t:'Protocolo — TEA',d:'Triagem para Transtorno do Espectro Autista'},
+    {v:'proto_familiar',ico:'fa-people-roof',c:'bg-orange-100 text-orange-700',t:'Sessão Familiar',d:'Registro de atendimento familiar/sistêmico'},
+    {v:'proto_auto',ico:'fa-star',c:'bg-pink-100 text-pink-700',t:'Auto-Avaliação do Paciente',d:'Escalas de bem-estar e qualidade de vida'},
+    {v:'proto_phq9',ico:'fa-sad-tear',c:'bg-rose-100 text-rose-700',t:'PHQ-9 — Triagem de Depressão',d:'Escala validada • pontuação automática'},
+    {v:'proto_gad7',ico:'fa-wind',c:'bg-amber-100 text-amber-700',t:'GAD-7 — Triagem de Ansiedade',d:'Escala validada • pontuação automática'},
+  ];
+  el.innerHTML='<div class="space-y-4"><div><h2 class="text-xl font-extrabold">Protocolos Clínicos</h2><p class="text-sm text-slate-400 mt-1">Selecione para preencher e gerar PDF</p></div>'+
+    '<div class="space-y-3">'+items.map(function(i){return '<button onclick="goTo(\''+i.v+'\')" class="w-full text-left card neo">'+
+      '<div class="flex items-center gap-4"><div class="w-12 h-12 '+i.c+' rounded-2xl flex items-center justify-center text-xl flex-shrink-0"><i class="fas '+i.ico+'"></i></div>'+
+      '<div class="flex-1"><div class="font-extrabold text-slate-800">'+i.t+'</div><div class="text-xs text-slate-400 mt-0.5">'+i.d+'</div></div>'+
+      '<i class="fas fa-chevron-right text-slate-300 text-sm"></i></div></button>';}).join('')+
+    '</div></div>';
+}
+
+// ── ANAMNESE ADULTO ───────────────────────────────────
+function pgAnamneseAdulto(el){
+  el.innerHTML='<div class="space-y-5"><div><h2 class="text-xl font-extrabold">Anamnese — Adulto</h2><p class="text-sm text-slate-400 mt-1">Preencha e gere o PDF</p></div>'+
+  '<form id="faa" class="space-y-5">'+
+  sec('Identificação','fa-id-card')+
+  field('Nome completo *','nome','text','Nome do paciente',true)+
+  grid2(field('Data nasc.','nasc','date','',false),selF('Sexo','sexo',['Masculino','Feminino','Outro']))+
+  selF('Estado civil','ecivil',['Solteiro(a)','Casado(a)','Divorciado(a)','Viúvo(a)','União estável'])+
+  field('Profissão','prof','text','Ex: Professora, Engenheiro')+
+  field('Telefone','tel','text','(11) 99999-9999')+
+  field('Encaminhado por','enc','text','Nome do profissional')+
+  sec('Queixa Principal','fa-comment-medical')+
+  area('Motivo da consulta *','queixa','Nas palavras do paciente...',3,true)+
+  field('Desde quando?','desde','text','Ex: Há 6 meses...')+
+  area('O que já tentou fazer?','tent','Tratamentos anteriores...',2)+
+  sec('Histórico de Saúde','fa-notes-medical')+
+  area('Diagnósticos anteriores','diag','Ex: Depressão (2019)...',2)+
+  area('Medicamentos em uso','meds','Nome, dose, frequência...',2)+
+  area('Histórico psicológico','hpsi','Tratamentos anteriores...',2)+
+  area('Histórico familiar','hfam','Depressão, ansiedade na família...',2)+
+  sec('Contexto de Vida','fa-home')+
+  field('Com quem reside?','moradia','text','Sozinho, com cônjuge...')+
+  selF('Qualidade do sono','sono',['Boa','Regular','Ruim — dificuldade para dormir','Dorme demais'])+
+  field('Atividade física','afis','text','Tipo e frequência')+
+  field('Uso de álcool/substâncias','subst','text','Tipo, frequência...')+
+  sec('Impressão Clínica','fa-sticky-note')+
+  area('Impressão clínica inicial','impr','Aparência, comportamento, estado afetivo...',4)+
+  field('Hipótese diagnóstica','hipot','text','CID-10 / DSM-5')+
+  area('Plano terapêutico','plano','Abordagem, frequência, objetivos...',3)+
+  '</form>'+
+  '<button onclick="document.getElementById(\'faa\').requestSubmit()" class="btn-v"><i class="fas fa-file-pdf mr-2"></i>Gerar PDF</button>'+
+  '<button onclick="goTo(\'protocolos\')" class="btn-o">← Voltar</button>'+
+  '</div>';
+  document.getElementById('faa').onsubmit=function(e){e.preventDefault();pdfAnamnese(Object.fromEntries(new FormData(e.target).entries()),'adulto');};
+}
+
+// ── ANAMNESE INFANTIL ─────────────────────────────────
+function pgAnamneseInfantil(el){
+  var ctxs=['Em casa','Na escola','Com colegas','Com adultos','Em público','Em todos os ambientes'];
+  var difs=['Leitura','Escrita','Matemática','Atenção','Comportamento','Comunicação','Outras'];
+  el.innerHTML='<div class="space-y-5"><div><h2 class="text-xl font-extrabold">Anamnese — Infantil</h2><p class="text-sm text-slate-400 mt-1">Preencha e gere o PDF</p></div>'+
+  '<form id="fai" class="space-y-5">'+
+  sec('Dados da Criança','fa-child')+
+  field('Nome completo *','nome','text','Nome da criança',true)+
+  grid2(field('Data nasc.','nasc','date','',false),selF('Sexo','sexo',['Masculino','Feminino','Outro']))+
+  field('Escola / Série','escola','text','Nome da escola e série')+
+  field('Encaminhado por','enc','text','Escola, pediatra, família...')+
+  sec('Responsável','fa-user-friends')+
+  field('Nome do responsável *','resp','text','Nome completo',true)+
+  selF('Parentesco','parent',['Mãe','Pai','Avó/Avô','Tia/Tio','Outro'])+
+  grid2(field('Telefone','tel','text','(11) 99999-9999',false),field('E-mail','email','email','email@...',false))+
+  selF('Configuração familiar','familia',['Biparental','Monoparental — mãe','Monoparental — pai','Avós','Recasamento'])+
+  sec('Queixa Principal','fa-comment-medical')+
+  area('Motivo da consulta *','queixa','Nas palavras do responsável...',3,true)+
+  field('Desde quando?','desde','text','Ex: Há 1 ano...')+
+  '<div class="card neo space-y-3"><div class="sechead">Em quais contextos ocorre?</div>'+
+  ctxs.map(function(c){return '<label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="ctx" value="'+c+'"> '+c+'</label>';}).join('')+'</div>'+
+  sec('Desenvolvimento','fa-baby')+
+  selF('Gestação','gest',['Normal, sem intercorrências','Com intercorrências','Uso de medicamentos'])+
+  selF('Parto','parto',['Normal','Cesárea','Fórceps','Prematuro'])+
+  field('Primeiras palavras','ppal','text','Com qual idade?')+
+  field('Primeiros passos','ppas','text','Com qual idade?')+
+  area('Histórico de adoecimento','doenc','Doenças, cirurgias...',2)+
+  sec('Comportamento Escolar','fa-school')+
+  selF('Rendimento escolar','rend',['Bom','Regular','Baixo','Muito baixo / Repetência'])+
+  field('Relação com professores','rprof','text','Boa, conflituosa...')+
+  field('Relação com colegas','rcol','text','Faz amizades? Sofre bullying?')+
+  '<div class="card neo space-y-3"><div class="sechead">Dificuldades específicas</div>'+
+  difs.map(function(d){return '<label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="dif" value="'+d+'"> '+d+'</label>';}).join('')+'</div>'+
+  sec('Impressão Clínica','fa-sticky-note')+
+  area('Comportamento na entrevista','comp','Como a criança se apresentou...',3)+
+  field('Hipótese diagnóstica','hipot','text','CID-10 / DSM-5')+
+  area('Plano terapêutico','plano','Abordagem, objetivos, orientação família...',3)+
+  '</form>'+
+  '<button onclick="document.getElementById(\'fai\').requestSubmit()" class="btn-v"><i class="fas fa-file-pdf mr-2"></i>Gerar PDF</button>'+
+  '<button onclick="goTo(\'protocolos\')" class="btn-o">← Voltar</button>'+
+  '</div>';
+  document.getElementById('fai').onsubmit=function(e){e.preventDefault();pdfAnamnese(Object.fromEntries(new FormData(e.target).entries()),'infantil');};
+}
+
+// ── PROTOCOLO GENÉRICO ────────────────────────────────
+function pgProto(el,titulo,desc,campos,voltaV){
+  voltaV=voltaV||'protocolos';
+  el.innerHTML='<div class="space-y-5"><div><h2 class="text-xl font-extrabold">'+titulo+'</h2><p class="text-sm text-slate-400 mt-1">'+desc+'</p></div>'+
+  '<form id="fpr" class="space-y-5">'+
+  sec('Paciente','fa-id-card')+
+  field('Nome do paciente *','nome','text','Nome completo',true)+
+  grid2(field('Data','dt','date',U.hojeISO(),false),field('Sessão nº','sn','number','1',false))+
+  campos+
+  sec('Observações e Plano','fa-sticky-note')+
+  area('Observações clínicas','obs','Comportamento, respostas...',4)+
+  area('Plano de intervenção','plano','Estratégias, próximos passos...',3)+
+  '</form>'+
+  '<button onclick="document.getElementById(\'fpr\').requestSubmit()" class="btn-v"><i class="fas fa-file-pdf mr-2"></i>Gerar PDF</button>'+
+  '<button onclick="goTo(\''+voltaV+'\')" class="btn-o">← Voltar</button>'+
+  '</div>';
+  document.getElementById('fpr').onsubmit=function(e){e.preventDefault();pdfProto(Object.fromEntries(new FormData(e.target).entries()),titulo);};
+}
+
+function pgProtoAnsi(el){
+  pgProto(el,'Protocolo — Ansiedade','Triagem e registro para transtornos ansiosos',
+  sec('Sintomas','fa-search')+
+  cboxs('Sintomas físicos','sf',['Taquicardia','Sudorese','Tremores','Falta de ar','Tontura','Náusea','Tensão muscular','Insônia','Fadiga'])+
+  cboxs('Sintomas cognitivos','sc',['Pensamentos catastróficos','Dificuldade de concentração','Ruminação','Medo de perder o controle','Preocupação excessiva'])+
+  escala('Intensidade geral (1=sem ansiedade | 10=máxima)','int')+
+  sec('Contexto','fa-clipboard')+
+  area('Situações que desencadeiam','gat','Gatilhos...',2)+
+  area('Estratégias que o paciente já usa','estr','O que tenta fazer...',2)+
+  selF('Sono','sono',['Normal','Insônia de início','Insônia de manutenção','Sono excessivo']));
+}
+
+function pgProtoDepr(el){
+  pgProto(el,'Protocolo — Depressão','Avaliação de sintomas depressivos',
+  sec('Critérios DSM-5 (últimas 2 semanas)','fa-search')+
+  cboxs('Sintomas presentes','sd',['Humor depressivo na maior parte do dia','Perda de interesse/prazer (anedonia)','Perda ou ganho de peso','Insônia ou hipersonia','Agitação ou retardo psicomotor','Fadiga ou perda de energia','Sentimentos de inutilidade ou culpa','Dificuldade de concentração','Pensamentos de morte / ideação suicida'])+
+  escala('Gravidade (1=leve | 10=grave)','grav')+
+  selF('Risco de suicídio','risco',['Ausente','Ideação passiva','Ideação ativa sem plano','Ideação ativa com plano','Tentativa recente'])+
+  sec('Contexto','fa-clipboard')+
+  area('Fatores precipitantes','fp','Perdas, lutos, conflitos...',2)+
+  area('Episódios anteriores','eant','Já teve outros episódios?',2));
+}
+
+function pgProtoTDAH(el){
+  pgProto(el,'Protocolo — TDAH','Critérios diagnósticos e observações clínicas',
+  sec('Desatenção','fa-search')+
+  cboxs('Sintomas de desatenção (há +6 meses)','des',['Não mantém atenção em detalhes','Dificuldade de manter atenção em tarefas','Parece não ouvir quando chamado','Não segue instruções até o fim','Dificuldade de organizar tarefas','Evita tarefas com esforço mental sustentado','Perde objetos','Facilmente distraído','Esquecimentos frequentes'])+
+  sec('Hiperatividade/Impulsividade','fa-bolt')+
+  cboxs('Sintomas H/I','hi',['Mexe mãos/pés ou se remexe','Levanta quando deve sentar','Age como se "movido a motor"','Fala demais','Responde antes da pergunta terminar','Dificuldade de aguardar a vez','Interrompe ou se intromete'])+
+  sec('Contexto','fa-clipboard')+
+  selF('Tipo predominante (hipótese)','tipo',['Desatento','Hiperativo/Impulsivo','Combinado'])+
+  selF('Gravidade estimada','grav',['Leve','Moderado','Grave'])+
+  cboxs('Prejuízo funcional em','prej',['Escola/trabalho','Relacionamentos','Casa','Social','Autoestima'])+
+  area('Medicação em uso','med','Nome, dose...',2));
+}
+
+function pgProtoTEA(el){
+  pgProto(el,'Protocolo — TEA','Triagem para Transtorno do Espectro Autista',
+  sec('Comunicação Social','fa-search')+
+  cboxs('Déficits na comunicação social','cs',['Dificuldade em reciprocidade socioemocional','Déficits em comportamentos não-verbais','Dificuldade em relacionamentos','Pouco contato visual','Não aponta para compartilhar interesse','Não responde ao nome','Linguagem atrasada ou ausente','Ecolalia'])+
+  sec('Comportamentos Repetitivos','fa-rotate')+
+  cboxs('Padrões restritos e repetitivos','cr',['Movimentos estereotipados','Insistência na mesmice/rotinas','Interesses muito restritos e intensos','Hiper ou hipossensibilidade sensorial','Uso repetitivo de objetos','Resistência a mudanças'])+
+  sec('Contexto','fa-clipboard')+
+  selF('Nível de suporte (DSM-5)','niv',['Nível 1 — exige suporte','Nível 2 — exige suporte substancial','Nível 3 — exige suporte muito substancial'])+
+  area('Histórico de desenvolvimento','hdev','Marcos, regressão...',2)+
+  area('Acompanhamentos atuais','acomp','Fono, TO, neuropediatria...',2));
+}
+
+function pgProtoFamiliar(el){
+  pgProto(el,'Sessão Familiar','Registro de atendimento familiar/sistêmico',
+  sec('Participantes','fa-people-roof')+
+  area('Membros presentes','part','Ex: Mãe (Ana), Pai (João)...',2)+
+  area('Dinâmica observada','din','Comunicação, alianças, conflitos...',3)+
+  sec('Conteúdo da Sessão','fa-clipboard')+
+  area('Tema principal trabalhado','tema','O que foi discutido...',3)+
+  area('Intervenções realizadas','interv','Técnicas, perguntas circulares...',3));
+}
+
+function pgProtoAuto(el){
+  pgProto(el,'Auto-Avaliação do Paciente','Escalas de bem-estar e qualidade de vida',
+  sec('Escalas (1=mínimo | 10=máximo)','fa-star')+
+  escala('Bem-estar geral','beg')+
+  escala('Qualidade do sono','qsono')+
+  escala('Qualidade dos relacionamentos','qrel')+
+  escala('Satisfação no trabalho/escola','strab')+
+  escala('Nível de ansiedade atual','anx')+
+  escala('Humor / Disposição','hum')+
+  sec('Percepção do Paciente','fa-comment')+
+  area('O que está indo bem?','bem','...',2)+
+  area('O que está difícil?','dif','...',2)+
+  area('O que quer trabalhar hoje?','obj','...',2));
+}
+
+// ── DOCUMENTOS ────────────────────────────────────────
+function pgDocumentos(el){
+  var its=[
+    {v:'doc_escola',ico:'fa-school',c:'bg-blue-100 text-blue-700',t:'Relatório para Escola',d:'Evolução e recomendações para a instituição de ensino'},
+    {v:'doc_decl',ico:'fa-certificate',c:'bg-violet-100 text-violet-700',t:'Declaração de Comparecimento',d:'Comprova que o paciente esteve em atendimento'},
+    {v:'doc_enc',ico:'fa-share-square',c:'bg-emerald-100 text-emerald-700',t:'Encaminhamento',d:'Encaminha para outro profissional de saúde'},
+    {v:'doc_laudo',ico:'fa-file-medical',c:'bg-rose-100 text-rose-700',t:'Laudo Psicológico',d:'Documento formal com impressão diagnóstica'},
+    {v:'doc_tcle',ico:'fa-file-signature',c:'bg-teal-100 text-teal-700',t:'TCLE — Termo de Consentimento',d:'Consentimento livre e esclarecido (obrigatório CFP)'},
+    {v:'doc_plano',ico:'fa-map',c:'bg-indigo-100 text-indigo-700',t:'Plano Terapêutico',d:'Objetivos, abordagem, frequência e intervenções'},
+  ];
+  el.innerHTML='<div class="space-y-4"><div><h2 class="text-xl font-extrabold">Documentos</h2><p class="text-sm text-slate-400 mt-1">Gere documentos profissionais em PDF</p></div>'+
+    '<div class="space-y-3">'+its.map(function(i){return '<button onclick="goTo(\''+i.v+'\')" class="w-full text-left card neo">'+
+      '<div class="flex items-center gap-4"><div class="w-12 h-12 '+i.c+' rounded-2xl flex items-center justify-center text-xl flex-shrink-0"><i class="fas '+i.ico+'"></i></div>'+
+      '<div class="flex-1"><div class="font-extrabold text-slate-800">'+i.t+'</div><div class="text-xs text-slate-400 mt-0.5">'+i.d+'</div></div>'+
+      '<i class="fas fa-chevron-right text-slate-300 text-sm"></i></div></button>';}).join('')+'</div></div>';
+}
+
+function pgDocEscola(el){
+  el.innerHTML=docForm('Relatório para Escola',
+    field('Nome do aluno *','nome','text','Nome completo',true)+
+    grid2(field('Data nasc.','nasc','date','',false),field('Série/Turma','serie','text','Ex: 3º ano EF',false))+
+    field('Escola','escola','text','Nome da instituição')+
+    field('Período de acompanhamento','periodo','text','Ex: março a junho/2025')+
+    field('Frequência das sessões','freq','text','Ex: semanalmente')+
+    area('Evolução observada','evol','Descreva a evolução...',4)+
+    area('Recomendações para a escola','rec','Adaptações, suporte necessário...',4)+
+    field('Data do documento','ddata','date',U.hojeISO()),
+    'documentos');
+  document.getElementById('fdoc').onsubmit=function(e){e.preventDefault();pdfEscola(Object.fromEntries(new FormData(e.target).entries()));};
+}
+
+function pgDocDecl(el){
+  el.innerHTML=docForm('Declaração de Comparecimento',
+    field('Nome do paciente *','nome','text','Nome completo',true)+
+    grid2(field('Data da consulta *','dc','date',U.hojeISO(),true),field('Horário','hor','text','Ex: 14h às 15h',false))+
+    selF('Finalidade','fin',['Atestado para trabalho','Atestado para escola','Comprovante pessoal','Plano de saúde'])+
+    field('Data do documento','ddata','date',U.hojeISO()),
+    'documentos');
+  document.getElementById('fdoc').onsubmit=function(e){e.preventDefault();pdfDecl(Object.fromEntries(new FormData(e.target).entries()));};
+}
+
+function pgDocEnc(el){
+  el.innerHTML=docForm('Encaminhamento',
+    field('Nome do paciente *','nome','text','Nome completo',true)+
+    selF('Encaminhar para','esp',['Psiquiatria','Neurologia','Neuropsicologia','Fonoaudiologia','Terapia Ocupacional','Pediatria','Neuropediatria','Outro'])+
+    area('Motivo do encaminhamento','motivo','Hipótese e justificativa clínica...',4)+
+    area('Informações adicionais','info','Histórico relevante...',3)+
+    field('Data','ddata','date',U.hojeISO()),
+    'documentos');
+  document.getElementById('fdoc').onsubmit=function(e){e.preventDefault();pdfEnc(Object.fromEntries(new FormData(e.target).entries()));};
+}
+
+function pgDocLaudo(el){
+  el.innerHTML=docForm('Laudo Psicológico',
+    field('Nome do paciente *','nome','text','Nome completo',true)+
+    grid2(field('Data nasc.','nasc','date','',false),field('Finalidade','fin','text','Ex: INSS, escola...',false))+
+    field('Período / nº de sessões','periodo','text','Ex: 12 sessões, março-junho/2025')+
+    area('Procedimentos realizados','proc','Entrevistas, testes...',3)+
+    area('Análise e resultados','anal','Funcionamento cognitivo, emocional...',5)+
+    area('Conclusão / Hipótese diagnóstica','concl','CID-10 / DSM-5...',4)+
+    area('Recomendações','rec','Acompanhamentos, adaptações...',3)+
+    field('Data do laudo','ddata','date',U.hojeISO()),
+    'documentos');
+  document.getElementById('fdoc').onsubmit=function(e){e.preventDefault();pdfLaudo(Object.fromEntries(new FormData(e.target).entries()));};
+}
+
+function docForm(titulo,campos,voltaV){
+  return '<div class="space-y-5"><div><h2 class="text-xl font-extrabold">'+titulo+'</h2><p class="text-sm text-slate-400 mt-1">Preencha e gere o PDF</p></div>'+
+    '<form id="fdoc" class="space-y-4"><div class="card neo space-y-4">'+campos+'</div>'+
+    '<button type="submit" class="btn-v"><i class="fas fa-file-pdf mr-2"></i>Gerar PDF</button>'+
+    '<button type="button" onclick="goTo(\''+voltaV+'\')" class="btn-o">← Voltar</button></form></div>';
+}
+
+// ── PHQ-9 ─────────────────────────────────────────────
+function pgProtoPhq9(el){
+  var opts=['Nenhuma vez','Vários dias','Mais da metade dos dias','Quase todo dia'];
+  var qs=[
+    'Pouco interesse ou prazer em fazer as coisas',
+    'Sentindo-se para baixo, deprimido(a) ou sem esperança',
+    'Dificuldade para adormecer ou permanecer dormindo, ou dormindo mais do que o normal',
+    'Sentindo-se cansado(a) ou com pouca energia',
+    'Falta de apetite ou comendo demais',
+    'Sentindo-se mal consigo mesmo(a) — ou achando que é um fracasso',
+    'Dificuldade para se concentrar nas coisas (ler, assistir TV etc.)',
+    'Movimentando-se ou falando devagar / ou agitado(a) de forma incomum',
+    'Pensamentos de que seria melhor estar morto(a) ou de se machucar'
+  ];
+  var rows=qs.map(function(q,i){
+    var rads=opts.map(function(o,j){
+      return '<label class="flex-1 flex flex-col items-center gap-1 cursor-pointer text-center"><input type="radio" name="q'+i+'" value="'+j+'" onchange="calcPhq9()"><span class="text-[10px] font-medium text-slate-500 leading-tight">'+o+'</span></label>';
+    }).join('');
+    return '<div class="card neo space-y-3"><p class="text-sm font-semibold text-slate-700">'+(i+1)+'. '+q+'</p><div class="flex gap-2">'+rads+'</div></div>';
+  }).join('');
+  el.innerHTML='<div class="space-y-4">'+
+    '<div><h2 class="text-xl font-extrabold">PHQ-9</h2><p class="text-sm text-slate-400 mt-1">Triagem para Depressão — últimas 2 semanas</p></div>'+
+    '<div id="phq9score" class="card neo flex items-center justify-between"><div><div class="sechead">Pontuação</div><div id="phq9val" class="text-3xl font-extrabold text-violet-700">0 / 27</div></div><div id="phq9class" class="px-4 py-2 rounded-2xl text-xs font-extrabold bg-slate-100 text-slate-400">Mínimo</div></div>'+
+    '<div><label class="lbl">Nome do paciente</label><input class="inp" id="phq9nome" placeholder="Nome completo"></div>'+
+    '<div><label class="lbl">Data</label><input type="date" class="inp" id="phq9data" value="'+U.hojeISO()+'"></div>'+
+    rows+
+    '<button onclick="gerarPhq9()" class="btn-v"><i class="fas fa-file-pdf mr-2"></i>Gerar PDF</button>'+
+    '<button onclick="goTo(\'protocolos\')" class="btn-o">← Voltar</button>'+
+  '</div>';
+}
+window.calcPhq9=function(){
+  var t=0,f=true;
+  for(var i=0;i<9;i++){var r=document.querySelector('input[name="q'+i+'"]:checked');if(r)t+=+r.value;else f=false;}
+  document.getElementById('phq9val').textContent=t+' / 27';
+  var cl=t<=4?'Mínimo':t<=9?'Leve':t<=14?'Moderado':t<=19?'Mod. Grave':'Grave';
+  var cc=t<=4?'bg-green-100 text-green-700':t<=9?'bg-yellow-100 text-yellow-700':t<=14?'bg-orange-100 text-orange-700':t<=19?'bg-red-100 text-red-700':'bg-red-200 text-red-800';
+  var cb=document.getElementById('phq9class');
+  cb.textContent=cl;cb.className='px-4 py-2 rounded-2xl text-xs font-extrabold '+cc;
+};
+window.gerarPhq9=function(){
+  var qs=['Pouco interesse ou prazer em fazer as coisas','Sentindo-se para baixo, deprimido(a) ou sem esperança','Dificuldade para adormecer/permanecer dormindo','Sentindo-se cansado(a) ou com pouca energia','Falta de apetite ou comendo demais','Sentindo-se mal consigo mesmo(a)','Dificuldade para se concentrar','Movimentação ou fala incomum','Pensamentos de se machucar'];
+  var opts=['Nenhuma vez','Vários dias','Mais da metade dos dias','Quase todo dia'];
+  var nome=document.getElementById('phq9nome').value||'Não informado';
+  var data=document.getElementById('phq9data').value;
+  var t=0;var resps=[];
+  for(var i=0;i<9;i++){var r=document.querySelector('input[name="q'+i+'"]:checked');var v=r?+r.value:0;t+=v;resps.push({q:qs[i],r:opts[v]||opts[0],v:v});}
+  var cl=t<=4?'Mínimo':t<=9?'Leve':t<=14?'Moderado':t<=19?'Moderadamente Grave':'Grave';
+  var doc=novoDoc();var y=header(doc,'PHQ-9 — Triagem de Depressão');
+  y=linha(doc,'Paciente',nome,y);
+  y=linha(doc,'Data',dtBR(data),y);
+  y+=4;
+  doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(80,80,80);
+  doc.text('Nas últimas 2 semanas, com que frequência você foi incomodado(a) pelos problemas abaixo?',15,y);y+=8;
+  resps.forEach(function(r,i){
+    if(y>260){doc.addPage();rodape(doc);y=20;}
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(60,60,60);
+    doc.text((i+1)+'. '+r.q,15,y);y+=5;
+    doc.setFont('helvetica','normal');doc.setFontSize(9);
+    var cor=r.v===0?[34,197,94]:r.v===1?[234,179,8]:r.v===2?[249,115,22]:[239,68,68];
+    doc.setTextColor(cor[0],cor[1],cor[2]);
+    doc.text('▶ '+r.r+' ('+r.v+' ponto'+(r.v!==1?'s':'')+')',20,y);y+=7;
+    doc.setTextColor(0,0,0);
+  });
+  y+=4;
+  doc.setFillColor(124,58,237);doc.roundedRect(15,y,180,22,4,4,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
+  doc.text('Pontuação Total: '+t+' / 27 — '+cl,105,y+13,{align:'center'});
+  y+=30;doc.setTextColor(80,80,80);doc.setFontSize(8);doc.setFont('helvetica','normal');
+  doc.text('Referência: 0-4 Mínimo | 5-9 Leve | 10-14 Moderado | 15-19 Mod. Grave | 20-27 Grave',15,y);
+  y+=10;
+  if(t>=15){
+    doc.setFillColor(254,226,226);doc.roundedRect(15,y,180,14,3,3,'F');
+    doc.setTextColor(185,28,28);doc.setFont('helvetica','bold');doc.setFontSize(9);
+    doc.text('⚠ Pontuação elevada. Avaliação clínica e encaminhamento recomendados.',105,y+9,{align:'center'});
+    y+=18;
+  }
+  y=assinatura(doc,data,y);
+  rodape(doc);
+  doc.save('PHQ9_'+nome.replace(/\s/g,'_')+'.pdf');
+};
+
+// ── GAD-7 ─────────────────────────────────────────────
+function pgProtoGad7(el){
+  var opts=['Nenhuma vez','Vários dias','Mais da metade dos dias','Quase todo dia'];
+  var qs=[
+    'Sentir-se nervoso(a), ansioso(a) ou no limite',
+    'Não conseguir parar ou controlar as preocupações',
+    'Preocupar-se muito com diversas coisas',
+    'Dificuldade em relaxar',
+    'Ficar tão agitado(a) que é difícil ficar parado(a)',
+    'Tornar-se facilmente irritável ou irritado(a)',
+    'Sentir medo como se algo terrível fosse acontecer'
+  ];
+  var rows=qs.map(function(q,i){
+    var rads=opts.map(function(o,j){
+      return '<label class="flex-1 flex flex-col items-center gap-1 cursor-pointer text-center"><input type="radio" name="g'+i+'" value="'+j+'" onchange="calcGad7()"><span class="text-[10px] font-medium text-slate-500 leading-tight">'+o+'</span></label>';
+    }).join('');
+    return '<div class="card neo space-y-3"><p class="text-sm font-semibold text-slate-700">'+(i+1)+'. '+q+'</p><div class="flex gap-2">'+rads+'</div></div>';
+  }).join('');
+  el.innerHTML='<div class="space-y-4">'+
+    '<div><h2 class="text-xl font-extrabold">GAD-7</h2><p class="text-sm text-slate-400 mt-1">Triagem para Ansiedade — últimas 2 semanas</p></div>'+
+    '<div id="gad7score" class="card neo flex items-center justify-between"><div><div class="sechead">Pontuação</div><div id="gad7val" class="text-3xl font-extrabold text-amber-600">0 / 21</div></div><div id="gad7class" class="px-4 py-2 rounded-2xl text-xs font-extrabold bg-slate-100 text-slate-400">Mínimo</div></div>'+
+    '<div><label class="lbl">Nome do paciente</label><input class="inp" id="gad7nome" placeholder="Nome completo"></div>'+
+    '<div><label class="lbl">Data</label><input type="date" class="inp" id="gad7data" value="'+U.hojeISO()+'"></div>'+
+    rows+
+    '<button onclick="gerarGad7()" class="btn-v"><i class="fas fa-file-pdf mr-2"></i>Gerar PDF</button>'+
+    '<button onclick="goTo(\'protocolos\')" class="btn-o">← Voltar</button>'+
+  '</div>';
+}
+window.calcGad7=function(){
+  var t=0;
+  for(var i=0;i<7;i++){var r=document.querySelector('input[name="g'+i+'"]:checked');if(r)t+=+r.value;}
+  document.getElementById('gad7val').textContent=t+' / 21';
+  var cl=t<=4?'Mínimo':t<=9?'Leve':t<=14?'Moderado':'Grave';
+  var cc=t<=4?'bg-green-100 text-green-700':t<=9?'bg-yellow-100 text-yellow-700':t<=14?'bg-orange-100 text-orange-700':'bg-red-200 text-red-800';
+  var cb=document.getElementById('gad7class');
+  cb.textContent=cl;cb.className='px-4 py-2 rounded-2xl text-xs font-extrabold '+cc;
+};
+window.gerarGad7=function(){
+  var qs=['Sentir-se nervoso(a), ansioso(a) ou no limite','Não conseguir parar ou controlar as preocupações','Preocupar-se muito com diversas coisas','Dificuldade em relaxar','Ficar tão agitado(a) que é difícil ficar parado(a)','Tornar-se facilmente irritável ou irritado(a)','Sentir medo como se algo terrível fosse acontecer'];
+  var opts=['Nenhuma vez','Vários dias','Mais da metade dos dias','Quase todo dia'];
+  var nome=document.getElementById('gad7nome').value||'Não informado';
+  var data=document.getElementById('gad7data').value;
+  var t=0;var resps=[];
+  for(var i=0;i<7;i++){var r=document.querySelector('input[name="g'+i+'"]:checked');var v=r?+r.value:0;t+=v;resps.push({q:qs[i],r:opts[v]||opts[0],v:v});}
+  var cl=t<=4?'Mínimo':t<=9?'Leve':t<=14?'Moderado':'Grave';
+  var doc=novoDoc();var y=header(doc,'GAD-7 — Triagem de Ansiedade');
+  y=linha(doc,'Paciente',nome,y);
+  y=linha(doc,'Data',dtBR(data),y);
+  y+=4;
+  doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(80,80,80);
+  doc.text('Nas últimas 2 semanas, com que frequência você foi incomodado(a) pelos problemas abaixo?',15,y);y+=8;
+  resps.forEach(function(r,i){
+    if(y>260){doc.addPage();rodape(doc);y=20;}
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(60,60,60);
+    doc.text((i+1)+'. '+r.q,15,y);y+=5;
+    doc.setFont('helvetica','normal');doc.setFontSize(9);
+    var cor=r.v===0?[34,197,94]:r.v===1?[234,179,8]:r.v===2?[249,115,22]:[239,68,68];
+    doc.setTextColor(cor[0],cor[1],cor[2]);
+    doc.text('▶ '+r.r+' ('+r.v+' ponto'+(r.v!==1?'s':'')+')',20,y);y+=7;
+    doc.setTextColor(0,0,0);
+  });
+  y+=4;
+  doc.setFillColor(217,119,6);doc.roundedRect(15,y,180,22,4,4,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
+  doc.text('Pontuação Total: '+t+' / 21 — '+cl,105,y+13,{align:'center'});
+  y+=30;doc.setTextColor(80,80,80);doc.setFontSize(8);doc.setFont('helvetica','normal');
+  doc.text('Referência: 0-4 Mínimo | 5-9 Leve | 10-14 Moderado | 15-21 Grave',15,y);
+  y+=10;
+  if(t>=15){
+    doc.setFillColor(254,226,226);doc.roundedRect(15,y,180,14,3,3,'F');
+    doc.setTextColor(185,28,28);doc.setFont('helvetica','bold');doc.setFontSize(9);
+    doc.text('⚠ Pontuação elevada. Avaliação clínica e encaminhamento recomendados.',105,y+9,{align:'center'});
+    y+=18;
+  }
+  y=assinatura(doc,data,y);
+  rodape(doc);
+  doc.save('GAD7_'+nome.replace(/\s/g,'_')+'.pdf');
+};
+
+// ── TCLE ──────────────────────────────────────────────
+function pgDocTcle(el){
+  var p=DB.get('pp',{});
+  el.innerHTML=docForm('TCLE — Termo de Consentimento',
+    field('Nome do paciente (ou responsável) *','nome','text','Nome completo',true)+
+    field('CPF do paciente','cpf','text','000.000.000-00')+
+    selF('Tipo de atendimento','tipo',['Psicoterapia individual — adulto','Psicoterapia individual — infantil','Psicoterapia de casal','Psicoterapia familiar','Avaliação psicológica','Orientação parental'])+
+    field('Frequência','freq','text','Ex: Semanal, 50 minutos por sessão')+
+    field('Local do atendimento','local','text','Ex: Consultório particular')+
+    area('Objetivos gerais do atendimento','obj','Descreva brevemente...',2)+
+    field('Valor da sessão (opcional)','valor','text','Ex: R$ 150,00')+
+    field('Política de cancelamento','cancel','text','Ex: 48 horas de antecedência',false)+
+    field('Data','ddata','date',U.hojeISO()),
+    'documentos');
+  document.getElementById('fdoc').onsubmit=function(e){e.preventDefault();pdfTcle(Object.fromEntries(new FormData(e.target).entries()));};
+}
+
+function pdfTcle(d){
+  var p=perfil();
+  var doc=novoDoc();var y=header(doc,'Termo de Consentimento Livre e Esclarecido');
+  y+=2;
+  doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);
+  var texto=[
+    'Eu, '+d.nome+(d.cpf?', CPF '+d.cpf:'')+', declaro que fui devidamente informado(a) sobre o processo '+
+    'de atendimento psicológico que será realizado por '+(p.name||'[profissional]')+(p.crp?', '+p.crp:'')+
+    (p.esp?', '+p.esp:'')+', e consinto livremente em participar.',
+    '',
+    'MODALIDADE: '+(d.tipo||'Psicoterapia')+'.',
+    'FREQUÊNCIA: '+(d.freq||'A combinar')+'.',
+    'LOCAL: '+(d.local||'A combinar')+'.',
+    (d.obj?'OBJETIVOS: '+d.obj+'.':''),
+    (d.valor?'VALOR DA SESSÃO: '+d.valor+'.':''),
+    (d.cancel?'CANCELAMENTO: '+d.cancel+'.':''),
+    '',
+    'CONFIDENCIALIDADE',
+    'As informações obtidas durante o atendimento são confidenciais e sigilosas, sendo protegidas pelo '+
+    'Código de Ética Profissional do Psicólogo (Resolução CFP 010/05) e pelo sigilo profissional. '+
+    'O sigilo poderá ser quebrado apenas nas situações previstas em lei (risco de vida iminente do '+
+    'paciente ou de terceiros) ou mediante autorização expressa do paciente.',
+    '',
+    'DIREITOS DO PACIENTE',
+    '• Receber informações claras sobre o processo terapêutico a qualquer momento.',
+    '• Interromper o atendimento quando desejar, sem qualquer prejuízo.',
+    '• Solicitar encaminhamento a outro profissional se necessário.',
+    '• Ter acesso ao seu prontuário psicológico conforme legislação vigente.',
+    '',
+    'CONSENTIMENTO',
+    'Declaro ter lido e compreendido as informações acima, concordando com os termos deste documento.'
+  ];
+  texto.forEach(function(ln){
+    if(!ln){y+=4;return;}
+    if(ln===ln.toUpperCase()&&ln.length<40){
+      doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(124,58,237);
+      doc.text(ln,15,y);y+=6;doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);
+    } else {
+      var ls=doc.splitTextToSize(ln,180);
+      if(y+ls.length*5>270){doc.addPage();rodape(doc);y=20;}
+      doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text(ls,15,y);y+=ls.length*5+2;
+    }
+  });
+  y+=10;
+  // assinaturas lado a lado
+  if(y>240){doc.addPage();rodape(doc);y=20;}
+  doc.setDrawColor(180,180,180);
+  doc.line(15,y+20,95,y+20);doc.line(115,y+20,195,y+20);
+  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,100,100);
+  doc.text('Paciente / Responsável',15,y+25);
+  doc.text(p.name||'Psicólogo(a)',115,y+25);
+  doc.text(dtBR(d.ddata),15,y+30);
+  doc.text((p.crp||''),115,y+30);
+  rodape(doc);
+  doc.save('TCLE_'+d.nome.replace(/\s/g,'_')+'.pdf');
+}
+
+// ── PLANO TERAPÊUTICO ─────────────────────────────────
+function pgDocPlano(el){
+  el.innerHTML=docForm('Plano Terapêutico',
+    field('Nome do paciente *','nome','text','Nome completo',true)+
+    grid2(field('Data nasc.','nasc','date','',false),selF('Modalidade','modal',['Individual','Infantil','Casal','Familiar','Grupo']))+
+    field('Hipótese diagnóstica','diag','text','CID-10 / DSM-5')+
+    field('Abordagem terapêutica','abord','text','Ex: TCC, Psicanálise, Gestalt, Sistêmica')+
+    selF('Frequência das sessões','freq',['1x por semana','2x por semana','Quinzenal','Mensal (manutenção)'])+
+    field('Duração estimada do tratamento','duracao','text','Ex: 3 a 6 meses')+
+    area('Queixa e demanda inicial','queixa','Principais queixas e contexto...',3)+
+    area('Objetivos terapêuticos','obj','Liste os objetivos principais...',4)+
+    area('Intervenções planejadas','interv','Técnicas, estratégias, recursos...',4)+
+    area('Critérios de alta / conclusão','alta','Como saberemos que os objetivos foram alcançados...',3)+
+    field('Data do plano','ddata','date',U.hojeISO()),
+    'documentos');
+  document.getElementById('fdoc').onsubmit=function(e){e.preventDefault();pdfPlano(Object.fromEntries(new FormData(e.target).entries()));};
+}
+
+function pdfPlano(d){
+  var p=perfil();
+  var doc=novoDoc();var y=header(doc,'Plano Terapêutico');
+  y=linha(doc,'Paciente',d.nome,y);
+  if(d.nasc)y=linha(doc,'Data de Nascimento',dtBR(d.nasc),y);
+  y=linha(doc,'Modalidade',d.modal||'Individual',y);
+  if(d.diag)y=linha(doc,'Hipótese Diagnóstica',d.diag,y);
+  y+=4;
+  var secs=[
+    ['Abordagem Terapêutica',d.abord||'—'],
+    ['Frequência',d.freq||'—'],
+    ['Duração Estimada',d.duracao||'—'],
+    ['Queixa e Demanda',d.queixa],
+    ['Objetivos Terapêuticos',d.obj],
+    ['Intervenções Planejadas',d.interv],
+    ['Critérios de Alta',d.alta]
+  ];
+  secs.forEach(function(s){
+    if(!s[1])return;
+    if(y>240){doc.addPage();rodape(doc);y=20;}
+    y=secPDF(doc,s[0],y);
+    var ls=doc.splitTextToSize(s[1],175);
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(60,60,60);
+    doc.text(ls,18,y);y+=ls.length*5+6;
+  });
+  y=assinatura(doc,d.ddata,y);
+  rodape(doc);
+  doc.save('PlanoTerapeutico_'+d.nome.replace(/\s/g,'_')+'.pdf');
+}
+
+// ── CONFIG ────────────────────────────────────────────
+function pgConfig(el){
+  var p=DB.get('pp',{});
+  var logo=localStorage.getItem('logo')||'';
+  var prevHTML=logo
+    ?'<img src="'+logo+'" style="max-height:72px;border-radius:10px;border:1.5px solid #ede9fe;object-fit:contain;">'
+    :'<div class="flex flex-col items-center gap-1 text-violet-300"><i class="fas fa-image text-3xl"></i><span class="text-xs">Sem logo</span></div>';
+  el.innerHTML='<div class="space-y-5"><div><h2 class="text-xl font-extrabold">Configurações</h2><p class="text-sm text-slate-400 mt-1">Seus dados aparecem em todos os documentos</p></div>'+
+  // ── Logo ──
+  '<div class="card neo space-y-3">'+
+    '<div class="sechead"><i class="fas fa-image mr-1"></i> Logo do Consultório</div>'+
+    '<div class="flex items-center gap-4">'+
+      '<div id="logo-prev" class="w-24 h-20 rounded-2xl bg-violet-50 border-2 border-dashed border-violet-200 flex items-center justify-center overflow-hidden">'+prevHTML+'</div>'+
+      '<div class="flex-1 space-y-2">'+
+        '<label class="btn-o cursor-pointer text-center block"><i class="fas fa-upload mr-2"></i>Escolher imagem<input type="file" id="logoFile" accept="image/*" class="hidden"></label>'+
+        '<button onclick="removeLogo()" class="text-xs text-rose-400 font-semibold w-full text-center">Remover logo</button>'+
+      '</div>'+
+    '</div>'+
+    '<p class="text-xs text-slate-400">Aparece no cabeçalho dos PDFs. PNG ou JPG, de preferência fundo transparente.</p>'+
+  '</div>'+
+  // ── Dados ──
+  '<form id="fcfg" class="space-y-4"><div class="card neo space-y-4">'+
+    '<div class="sechead"><i class="fas fa-user mr-1"></i> Dados Profissionais</div>'+
+    '<div><label class="lbl">Nome completo *</label><input class="inp" name="name" value="'+U.esc(p.name||'')+'" placeholder="Ex: Dra. Ana Lima" required></div>'+
+    '<div><label class="lbl">CRP *</label><input class="inp" name="crp" value="'+U.esc(p.crp||'')+'" placeholder="Ex: CRP 06/123456"></div>'+
+    '<div><label class="lbl">Especialidade / Abordagem</label><input class="inp" name="esp" value="'+U.esc(p.esp||'')+'" placeholder="Ex: Psicóloga Clínica — TCC"></div>'+
+    '<div><label class="lbl">Cidade / UF</label><input class="inp" name="cidade" value="'+U.esc(p.cidade||'')+'" placeholder="São Paulo / SP"></div>'+
+    grid2('<div><label class="lbl">Telefone</label><input class="inp" name="tel" value="'+U.esc(p.tel||'')+'" placeholder="(11) 99999-9999"></div>',
+          '<div><label class="lbl">E-mail</label><input type="email" class="inp" name="email" value="'+U.esc(p.email||'')+'" placeholder="email@..."></div>')+
+  '</div>'+
+  '<button type="submit" class="btn-v">Salvar configurações</button></form>'+
+  '<div class="card neo"><div class="sechead mb-2">Dados e privacidade</div><p class="text-xs text-slate-400">Todos os dados ficam apenas no seu dispositivo.</p>'+
+  '<button onclick="if(confirm(\'Apagar TODOS os dados?\'))limparDados()" class="mt-3 text-rose-500 font-bold text-sm">Apagar todos os dados</button></div>'+
+  '</div>';
+  // logo upload
+  document.getElementById('logoFile').onchange=function(e){
+    var f=e.target.files[0]; if(!f) return;
+    var r=new FileReader();
+    r.onload=function(ev){
+      localStorage.setItem('logo',ev.target.result);
+      var prev=document.getElementById('logo-prev');
+      prev.innerHTML='<img src="'+ev.target.result+'" style="max-height:72px;border-radius:10px;border:1.5px solid #ede9fe;object-fit:contain;">';
+    };
+    r.readAsDataURL(f);
+  };
+  document.getElementById('fcfg').onsubmit=function(e){e.preventDefault();DB.set('pp',Object.fromEntries(new FormData(e.target).entries()));alert('✅ Salvo!');goTo('home');};
+}
+
+window.removeLogo=function(){
+  localStorage.removeItem('logo');
+  var prev=document.getElementById('logo-prev');
+  if(prev) prev.innerHTML='<div class="flex flex-col items-center gap-1 text-violet-300"><i class="fas fa-image text-3xl"></i><span class="text-xs">Sem logo</span></div>';
+};
+
+window.limparDados=function(){localStorage.clear();DB.init();goTo('home');};
+
+// ── HTML HELPERS ─────────────────────────────────────
+function sec(tit,ico){return '<div class="card neo"><div class="sechead mb-3"><i class="fas '+ico+' mr-1"></i>'+tit+'</div>';}
+function fend(){return '</div>';}
+function field(lbl,nm,tipo,ph,req){
+  return '<div><label class="lbl">'+lbl+'</label><input type="'+(tipo||'text')+'" class="inp" name="'+nm+'" '+(ph?'placeholder="'+ph+'"':'')+' '+(req?'required':'')+' '+(tipo==='date'&&ph?'value="'+ph+'"':'')+'></div>';
+}
+function area(lbl,nm,ph,rows,req){
+  return '<div><label class="lbl">'+lbl+'</label><textarea class="inp" name="'+nm+'" rows="'+(rows||3)+'" '+(ph?'placeholder="'+ph+'"':'')+' '+(req?'required':'')+'></textarea></div>';
+}
+function selF(lbl,nm,opts){
+  return '<div><label class="lbl">'+lbl+'</label><select class="inp" name="'+nm+'"><option value="">—</option>'+opts.map(function(o){return '<option>'+o+'</option>';}).join('')+'</select></div>';
+}
+function grid2(a,b){return '<div class="grid grid-cols-2 gap-3">'+a+b+'</div>';}
+function cboxs(lbl,nm,opts){
+  return '<div class="card neo space-y-2"><div class="sechead">'+lbl+'</div>'+opts.map(function(o){return '<label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" name="'+nm+'" value="'+o+'"> '+o+'</label>';}).join('')+'</div>';
+}
+function escala(lbl,nm){
+  var ns='';for(var i=1;i<=10;i++){var c=i<=3?'text-green-600':i<=6?'text-amber-600':'text-rose-600';ns+='<label class="flex flex-col items-center gap-1 cursor-pointer"><input type="radio" name="'+nm+'" value="'+i+'"><span class="text-xs font-bold '+c+'">'+i+'</span></label>';}
+  return '<div><label class="lbl">'+lbl+'</label><div class="flex gap-2 mt-2">'+ns+'</div></div>';
+}
+
+// ── PDF ───────────────────────────────────────────────
+function perfil(){return DB.get('pp',{});}
+
+function novoDoc(){var j=window.jspdf;return new j.jsPDF({unit:'mm',format:'a4'});}
+
+function header(doc,titulo){
+  var p=perfil();
+  var logo=localStorage.getItem('logo')||'';
+  doc.setFillColor(124,58,237);doc.rect(0,0,210,28,'F');
+  // logo no canto direito
+  if(logo){
+    try{doc.addImage(logo,'',175,3,22,22);}catch(e){}
+  }
+  doc.setTextColor(255,255,255);doc.setFontSize(14);doc.setFont('helvetica','bold');
+  doc.text(titulo,15,12);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text((p.name||'')+((p.crp)?' | '+p.crp:'')+((p.esp)?' | '+p.esp:''),15,20);
+  doc.setTextColor(0,0,0);
+  return 36;
+}
+
+function linha(doc,lbl,val,y){
+  if(!val)return y;
+  doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(100,100,100);
+  doc.text(String(lbl).toUpperCase(),15,y);y+=5;
+  doc.setFontSize(10);doc.setFont('helvetica','normal');doc.setTextColor(30,30,30);
+  var ls=doc.splitTextToSize(String(val),180);
+  ls.forEach(function(l){if(y>270){doc.addPage();y=20;}doc.text(l,15,y);y+=5.5;});
+  return y+2;
+}
+
+function secPDF(doc,tit,y){
+  if(y>255){doc.addPage();y=20;}
+  doc.setFillColor(245,243,255);doc.rect(10,y-4,190,8,'F');
+  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(124,58,237);
+  doc.text(tit,15,y+1);doc.setTextColor(0,0,0);
+  return y+8;
+}
+
+function rodape(doc){
+  var p=perfil();var np=doc.internal.getNumberOfPages();
+  for(var i=1;i<=np;i++){
+    doc.setPage(i);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(150,150,150);
+    doc.text((p.name||'')+((p.crp)?' — '+p.crp:'')+' · '+U.hoje(),15,285);
+    doc.text('Pág. '+i+'/'+np,195,285,{align:'right'});
+    doc.setDrawColor(200,200,200);doc.line(15,282,195,282);
+  }
+}
+
+function assinatura(doc,dataDoc,y){
+  var p=perfil();
+  y+=15;doc.setFontSize(10);doc.setFont('helvetica','normal');doc.setTextColor(30,30,30);
+  if(dataDoc)doc.text(dataDoc,105,y,{align:'center'});
+  y+=20;doc.line(60,y,150,y);
+  y+=5;doc.text(p.name||'',105,y,{align:'center'});
+  y+=4;doc.setFontSize(9);doc.text((p.crp||'')+((p.esp)?' · '+p.esp:''),105,y,{align:'center'});
+  return y;
+}
+
+function dtBR(iso){return iso?new Date(iso+'T12:00:00').toLocaleDateString('pt-BR'):'';}
+
+function pdfAnamnese(d,tipo){
+  var doc=novoDoc();var y=header(doc,tipo==='infantil'?'ANAMNESE — INFANTIL':'ANAMNESE — ADULTO');
+  y=linha(doc,'Paciente',d.nome,y);
+  if(tipo==='infantil')y=linha(doc,'Responsável',d.resp,y);
+  y=linha(doc,'Data de Nascimento',dtBR(d.nasc),y);
+  y=linha(doc,'Queixa principal',d.queixa,y);
+  y=linha(doc,'Desde quando',d.desde,y);
+  if(tipo==='adulto'){
+    y=linha(doc,'Diagnósticos anteriores',d.diag,y);y=linha(doc,'Medicamentos',d.meds,y);
+    y=linha(doc,'Histórico psicológico',d.hpsi,y);y=linha(doc,'Histórico familiar',d.hfam,y);
+    y=linha(doc,'Profissão',d.prof,y);y=linha(doc,'Com quem reside',d.moradia,y);
+    y=linha(doc,'Sono',d.sono,y);y=linha(doc,'Atividade física',d.afis,y);
+    y=linha(doc,'Uso de substâncias',d.subst,y);
+    if(d.impr){y=secPDF(doc,'IMPRESSÃO CLÍNICA',y);y=linha(doc,'',d.impr,y);}
+  }else{
+    y=linha(doc,'Escola / Série',d.escola,y);y=linha(doc,'Gestação',d.gest,y);
+    y=linha(doc,'Parto',d.parto,y);y=linha(doc,'Primeiras palavras',d.ppal,y);
+    y=linha(doc,'Rendimento escolar',d.rend,y);y=linha(doc,'Relação com colegas',d.rcol,y);
+    y=linha(doc,'Comportamento entrevista',d.comp,y);
+  }
+  y=linha(doc,'Hipótese diagnóstica',d.hipot,y);y=linha(doc,'Plano terapêutico',d.plano,y);
+  rodape(doc);doc.save('Anamnese_'+tipo+'_'+(d.nome||'paciente').replace(/\s/g,'_')+'.pdf');
+}
+
+function pdfProto(d,titulo){
+  var doc=novoDoc();var y=header(doc,titulo.toUpperCase());
+  y=linha(doc,'Paciente',d.nome,y);y=linha(doc,'Data',dtBR(d.dt),y);y=linha(doc,'Sessão nº',d.sn,y);
+  Object.keys(d).forEach(function(k){if(['nome','dt','sn'].indexOf(k)>-1||!d[k])return;y=linha(doc,k.replace(/_/g,' '),d[k],y);});
+  rodape(doc);doc.save((titulo+' '+(d.nome||'paciente')).replace(/[^a-z0-9 ]/gi,'_').replace(/\s+/g,'_')+'.pdf');
+}
+
+function pdfEscola(d){
+  var doc=novoDoc();var y=header(doc,'RELATÓRIO PARA ESCOLA');
+  y=linha(doc,'Aluno',d.nome,y);y=linha(doc,'Data de Nascimento',dtBR(d.nasc),y);
+  y=linha(doc,'Escola / Série',(d.escola||'')+' — '+(d.serie||''),y);
+  y=linha(doc,'Período',d.periodo,y);y=linha(doc,'Frequência',d.freq,y);
+  if(d.evol){y=secPDF(doc,'EVOLUÇÃO OBSERVADA',y);y=linha(doc,'',d.evol,y);}
+  if(d.rec){y=secPDF(doc,'RECOMENDAÇÕES',y);y=linha(doc,'',d.rec,y);}
+  assinatura(doc,dtBR(d.ddata),y);
+  rodape(doc);doc.save('Relatorio_Escola_'+(d.nome||'paciente').replace(/\s/g,'_')+'.pdf');
+}
+
+function pdfDecl(d){
+  var doc=novoDoc();var y=header(doc,'DECLARAÇÃO DE COMPARECIMENTO');
+  y+=10;doc.setFontSize(11);doc.setFont('helvetica','normal');
+  var txt='Declaro para os devidos fins que o(a) paciente '+d.nome+', compareceu a atendimento psicológico na data de '+dtBR(d.dc)+(d.hor?', das '+d.hor:'')+'. Finalidade: '+(d.fin||'')+'.';
+  doc.splitTextToSize(txt,180).forEach(function(l){doc.text(l,15,y);y+=7;});
+  assinatura(doc,dtBR(d.ddata),y);
+  rodape(doc);doc.save('Declaracao_'+(d.nome||'paciente').replace(/\s/g,'_')+'.pdf');
+}
+
+function pdfEnc(d){
+  var doc=novoDoc();var y=header(doc,'ENCAMINHAMENTO');
+  y=linha(doc,'Paciente',d.nome,y);y=linha(doc,'Encaminhar para',d.esp,y);
+  if(d.motivo){y=secPDF(doc,'MOTIVO',y);y=linha(doc,'',d.motivo,y);}
+  if(d.info){y=secPDF(doc,'INFORMAÇÕES ADICIONAIS',y);y=linha(doc,'',d.info,y);}
+  assinatura(doc,dtBR(d.ddata),y);
+  rodape(doc);doc.save('Encaminhamento_'+(d.nome||'paciente').replace(/\s/g,'_')+'.pdf');
+}
+
+function pdfLaudo(d){
+  var doc=novoDoc();var y=header(doc,'LAUDO PSICOLÓGICO');
+  y=linha(doc,'Paciente',d.nome,y);y=linha(doc,'Data de Nascimento',dtBR(d.nasc),y);
+  y=linha(doc,'Finalidade',d.fin,y);y=linha(doc,'Período / Sessões',d.periodo,y);
+  if(d.proc){y=secPDF(doc,'PROCEDIMENTOS',y);y=linha(doc,'',d.proc,y);}
+  if(d.anal){y=secPDF(doc,'ANÁLISE E RESULTADOS',y);y=linha(doc,'',d.anal,y);}
+  if(d.concl){y=secPDF(doc,'CONCLUSÃO / HIPÓTESE DIAGNÓSTICA',y);y=linha(doc,'',d.concl,y);}
+  if(d.rec){y=secPDF(doc,'RECOMENDAÇÕES',y);y=linha(doc,'',d.rec,y);}
+  assinatura(doc,dtBR(d.ddata),y);
+  rodape(doc);doc.save('Laudo_'+(d.nome||'paciente').replace(/\s/g,'_')+'.pdf');
+}
+
+window.pdfSessoes=function(pid){
+  var pac=DB.get('pac',[]).find(function(p){return p.id===pid;});
+  var sess=DB.get('ses',[]).filter(function(s){return s.pid===pid;}).sort(function(a,b){return a.data.localeCompare(b.data);});
+  if(!pac)return;
+  var doc=novoDoc();var y=header(doc,'RELATÓRIO DE SESSÕES');
+  y=linha(doc,'Paciente',pac.nome,y);y=linha(doc,'Total de sessões',String(sess.length),y);
+  sess.forEach(function(s,i){
+    y=secPDF(doc,'SESSÃO '+(i+1)+' — '+dtBR(s.data),y);
+    if(s.titulo)y=linha(doc,'Tema',s.titulo,y);
+    if(s.cont)y=linha(doc,'Conteúdo',s.cont,y);
+    if(s.humor)y=linha(doc,'Estado emocional',s.humor,y);
+    if(s.prox)y=linha(doc,'Próxima sessão',s.prox,y);
+  });
+  rodape(doc);doc.save('Relatorio_Sessoes_'+(pac.nome||'paciente').replace(/\s/g,'_')+'.pdf');
+};
+
+window.pdfDecl=function(pid){
+  var pac=DB.get('pac',[]).find(function(p){return p.id===pid;});
+  if(!pac)return;
+  var doc=novoDoc();var y=header(doc,'DECLARAÇÃO DE COMPARECIMENTO');
+  y+=10;doc.setFontSize(11);doc.setFont('helvetica','normal');
+  var txt='Declaro para os devidos fins que o(a) paciente '+pac.nome+', esteve em atendimento psicológico nesta data: '+U.hoje()+'.';
+  doc.splitTextToSize(txt,180).forEach(function(l){doc.text(l,15,y);y+=7;});
+  assinatura(doc,U.hoje(),y);
+  rodape(doc);doc.save('Declaracao_'+(pac.nome||'paciente').replace(/\s/g,'_')+'.pdf');
+};
+
+window.closeMC=function(){document.getElementById('mc').innerHTML='';};
+
+// ── INIT ─────────────────────────────────────────────
+goTo('home');
+</script>
+</body>
+</html>
