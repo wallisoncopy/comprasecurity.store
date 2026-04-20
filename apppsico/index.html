@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Kit Psicólogo Pro | Protocolos e Documentos Clínicos Prontos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --v50:  #f5f3ff;
+            --v100: #ede9fe;
+            --v400: #a78bfa;
+            --v500: #7c3aed;
+            --v600: #6d28d9;
+            --v700: #5b21b6;
+            --v800: #4c1d95;
+            --v900: #2e1065;
+            --slate-900: #0f172a;
+        }
+
+        .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #2e1065 50%, #0f172a 100%); }
+
+        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(109,40,217,0.2); }
+
+        .pulse-btn { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(109,40,217,0.4); }
+            50%       { box-shadow: 0 0 0 12px rgba(109,40,217,0); }
+        }
+
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .faq-answer.open { max-height: 300px; }
+
+        @keyframes slideIn { from { transform: translateX(-120%); } to { transform: translateX(0); } }
+        .popup-toast { animation: slideIn 0.4s ease; }
+
+        body { background-color: #f8fafc; color: #1e293b; line-height: 1.6; }
+
+        /* ── HEADER ── */
+        header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 50;
+        }
+        .header-content {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-badge {
+            background: #f5f3ff; color: var(--v700);
+            padding: 0.5rem 1rem; border-radius: 0.375rem;
+            font-size: 0.875rem; font-weight: 500;
+        }
+
+        /* ── HERO ── */
+        .hero { padding: 4rem 2rem; text-align: center; }
+        .hero-container { max-width: 900px; margin: 0 auto; }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; color: white; }
+        .hero p { font-size: 1.25rem; color: rgba(255,255,255,0.9); margin-bottom: 2rem; }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--v600), var(--v500));
+            color: white; padding: 1rem 2rem;
+            border-radius: 0.5rem; font-weight: 600;
+            text-decoration: none; transition: all 0.3s;
+            border: none; cursor: pointer;
+        }
+        .cta-button:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(109,40,217,0.35); }
+
+        /* ── STATS ── */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem; margin: 3rem auto; max-width: 900px;
+        }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 2.5rem; font-weight: 800; color: var(--v400); }
+        .stat-label { color: rgba(255,255,255,0.7); font-size: 0.875rem; margin-top: 0.5rem; }
+
+        /* ── SECTION ── */
+        .section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .section h2 { font-size: 2rem; font-weight: 700; margin-bottom: 3rem; text-align: center; color: var(--slate-900); }
+
+        /* ── PROBLEMS ── */
+        .problems-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+        .problem-card { background: white; padding: 2rem; border-radius: 0.75rem; border-left: 4px solid var(--v500); }
+        .problem-card h3 { font-size: 1.25rem; margin: 1rem 0; color: var(--slate-900); }
+
+        /* ── FEATURES ── */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+        .feature-card { background: white; padding: 2rem; border-radius: 0.75rem; text-align: center; border: 1px solid #e2e8f0; }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1rem; font-weight: 600; color: var(--slate-900); margin-bottom: 0.5rem; }
+        .feature-card p { color: #64748b; font-size: 0.875rem; }
+
+        /* ── TESTIMONIALS ── */
+        .testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .testimonial-card { background: white; padding: 2rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; }
+        .stars { color: #fbbf24; margin-bottom: 1rem; }
+        .testimonial-text { color: #475569; margin-bottom: 1rem; font-style: italic; }
+        .testimonial-author { font-weight: 600; color: var(--slate-900); font-size: 0.875rem; }
+
+        /* ── PRICING ── */
+        .pricing-section { background: white; padding: 4rem 2rem; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto; }
+
+        .pricing-card { border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 2rem; position: relative; }
+        .pricing-card.featured { border-color: var(--v500); box-shadow: 0 10px 30px rgba(109,40,217,0.15); }
+
+        .pricing-badge {
+            position: absolute; top: -12px; right: 20px;
+            background: var(--v500); color: white;
+            padding: 0.5rem 1rem; border-radius: 0.375rem;
+            font-size: 0.75rem; font-weight: 700;
+        }
+
+        .pricing-name { font-size: 1.5rem; font-weight: 700; color: var(--slate-900); margin-bottom: 1rem; }
+        .pricing-price { font-size: 2rem; font-weight: 800; color: var(--v600); margin-bottom: 0.5rem; }
+        .pricing-period { color: #64748b; font-size: 0.875rem; margin-bottom: 2rem; }
+
+        .pricing-features { list-style: none; margin-bottom: 2rem; }
+        .pricing-features li { padding: 0.75rem 0; color: #475569; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; }
+        .pricing-features li:before { content: "✓"; color: var(--v600); font-weight: bold; margin-right: 0.75rem; }
+        .pricing-features li:last-child { border-bottom: none; }
+
+        /* ── FAQ ── */
+        .faq-section { max-width: 800px; margin: 0 auto; padding: 4rem 2rem; }
+        .faq-item { margin-bottom: 1rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; overflow: hidden; }
+        .faq-question {
+            background: #f8fafc; padding: 1.5rem; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: 600; color: var(--slate-900);
+            width: 100%; border: none; text-align: left;
+        }
+        .faq-question:hover { background: #f1f5f9; }
+        .faq-icon { font-size: 1.5rem; color: var(--v600); }
+        .faq-answer { background: white; padding: 1.5rem; color: #475569; border-top: 1px solid #e2e8f0; }
+
+        /* ── GUARANTEE ── */
+        .guarantee-section {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 4rem 2rem; margin: 4rem 0; border-radius: 1rem;
+        }
+        .guarantee-content { max-width: 800px; margin: 0 auto; text-align: center; }
+        .guarantee-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .guarantee-list { list-style: none; text-align: left; margin-top: 2rem; }
+        .guarantee-list li { padding: 0.75rem 0; display: flex; align-items: center; color: var(--slate-900); }
+        .guarantee-list li:before { content: "✓"; color: var(--v600); font-weight: bold; margin-right: 0.75rem; font-size: 1.25rem; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 2rem; left: 2rem;
+            background: white; padding: 1rem 1.5rem;
+            border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex; align-items: center; gap: 1rem;
+            z-index: 1000; animation: slideIn 0.4s ease;
+        }
+        .toast-icon { font-size: 1.5rem; }
+        .toast-text { color: #475569; font-size: 0.875rem; }
+        .toast-name { font-weight: 600; color: var(--slate-900); }
+
+        /* ── STEP CARD ── */
+        .step-card { background: white; padding: 2rem; border-radius: 0.75rem; margin-bottom: 2rem; }
+        .step-tag { color: var(--v600); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; font-weight: 700; }
+        .step-title { font-size: 1.5rem; color: var(--slate-900); margin-bottom: 1rem; font-weight: 700; }
+        .step-highlight { color: var(--v600); font-weight: 600; }
+
+        footer { background: var(--slate-900); color: white; padding: 2rem; text-align: center; margin-top: 4rem; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .stats { grid-template-columns: 1fr 1fr; gap: 1rem; }
+            .section h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="header-content">
+        <h1 style="font-size:1.5rem;color:var(--slate-900);">App Kit Psicólogo Pro</h1>
+        <div class="header-badge">✅ Acesso imediato · Sem anúncios · Dados só no seu dispositivo</div>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero hero-gradient">
+    <div class="hero-container">
+        <p style="color:rgba(255,255,255,0.8);font-size:0.875rem;margin-bottom:1rem;">
+            Acesso imediato após compra | <strong>Garantia de 7 dias</strong> sem perguntas
+        </p>
+        <h2 style="color:rgba(255,255,255,0.7);font-size:0.875rem;margin-bottom:2rem;">Para Psicólogos e Psicólogas</h2>
+
+        <h1>Pare de Criar Documentos do Zero.<br>Anamnese, Protocolos e PDFs Clínicos<br>Prontos Para Usar Agora.</h1>
+
+        <p>O app completo para psicólogos que querem atender com mais profissionalismo e parar de perder horas toda semana criando documentação do zero.</p>
+
+        <div style="margin:2rem 0;">
+            <img src="https://i.ibb.co/Y4tDq9Rs/Chat-GPT-Image-19-de-abr-de-2026-14-05-18.png"
+                 alt="App Kit Psicólogo Pro — Mockup completo"
+                 style="max-width:560px;width:100%;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+        </div>
+
+        <a href="#preco" class="cta-button pulse-btn">Quero Acesso Agora →</a>
+
+        <p style="color:rgba(255,255,255,0.8);font-size:0.875rem;margin-top:1.5rem;">
+            Acesso vitalício • Funciona no celular • Sem mensalidade
+        </p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item"><div class="stat-number">12+</div><div class="stat-label">protocolos clínicos</div></div>
+        <div class="stat-item"><div class="stat-number">6</div><div class="stat-label">tipos de documentos</div></div>
+        <div class="stat-item"><div class="stat-number">7 dias</div><div class="stat-label">garantia total</div></div>
+        <div class="stat-item"><div class="stat-number">1x</div><div class="stat-label">acesso vitalício</div></div>
+    </div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="section">
+    <h2>Você reconhece alguma dessas situações?</h2>
+    <p style="text-align:center;color:#64748b;margin-bottom:3rem;">Se sim, o App Kit Psicólogo Pro foi feito para você.</p>
+
+    <div class="problems-grid">
+        <div class="problem-card card-hover">
+            <div style="font-size:2rem;">😩</div>
+            <h3>Passa horas criando documentos e fichas do zero</h3>
+            <p style="color:#64748b;">Toda semana o mesmo ciclo: buscar modelo, adaptar no Word, formatar, salvar.</p>
+        </div>
+        <div class="problem-card card-hover">
+            <div style="font-size:2rem;">📂</div>
+            <h3>Modelos espalhados em pastas e Google Drive</h3>
+            <p style="color:#64748b;">Na hora da sessão, perde tempo procurando o protocolo ou documento certo.</p>
+        </div>
+        <div class="problem-card card-hover">
+            <div style="font-size:2rem;">😰</div>
+            <h3>Insegurança ao escolher o protocolo adequado</h3>
+            <p style="color:#64748b;">Sem uma ferramenta estruturada, cada avaliação vira uma pesquisa demorada.</p>
+        </div>
+        <div class="problem-card card-hover">
+            <div style="font-size:2rem;">📝</div>
+            <h3>TCLE, laudos e planos terapêuticos sem padrão</h3>
+            <p style="color:#64748b;">Documentos que são obrigatórios ainda são feitos de forma artesanal e demorada.</p>
+        </div>
+    </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="section" style="background:white;">
+    <h2>Tudo que você precisa. Em um único lugar. Pronto para usar.</h2>
+    <p style="text-align:center;color:#64748b;margin-bottom:3rem;">Abra o app, escolha o protocolo e em segundos você tem o documento certo para cada paciente.</p>
+
+    <div class="features-grid">
+        <div class="feature-card card-hover">
+            <div class="feature-icon">📋</div>
+            <h3>Anamnese Completa</h3>
+            <p>Adulto e infantil. Campos por seção — identificação, queixa, histórico, contexto e impressão clínica.</p>
+        </div>
+        <div class="feature-card card-hover">
+            <div class="feature-icon">📊</div>
+            <h3>PHQ-9 e GAD-7</h3>
+            <p>Escalas validadas com pontuação automática. O app calcula o score e classifica o nível em tempo real.</p>
+        </div>
+        <div class="feature-card card-hover">
+            <div class="feature-icon">🧠</div>
+            <h3>Protocolos Clínicos</h3>
+            <p>Ansiedade, depressão, TDAH, TEA, terapia familiar e auto-avaliação — prontos para aplicar.</p>
+        </div>
+        <div class="feature-card card-hover">
+            <div class="feature-icon">📄</div>
+            <h3>TCLE Profissional</h3>
+            <p>Termo de Consentimento conforme resolução CFP. Preenchido e em PDF em minutos.</p>
+        </div>
+        <div class="feature-card card-hover">
+            <div class="feature-icon">🗺️</div>
+            <h3>Plano Terapêutico</h3>
+            <p>Objetivos, abordagem, frequência, intervenções e critérios de alta em um único documento.</p>
+        </div>
+        <div class="feature-card card-hover">
+            <div class="feature-icon">📑</div>
+            <h3>PDFs Automáticos</h3>
+            <p>Laudo, encaminhamento e declaração de comparecimento — gerados com 1 clique, com seu logo e CRP.</p>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+    <h2>Como Funciona na Prática</h2>
+    <p style="text-align:center;color:#64748b;margin-bottom:3rem;">Veja o App em Ação. Cada Etapa do Atendimento.</p>
+
+    <div class="step-card">
+        <div class="step-tag">1 Início do Atendimento</div>
+        <div class="step-title">A Central do Seu Consultório — Tudo a 1 Toque de Distância.</div>
+        <p style="color:#475569;margin-bottom:1rem;">Abra o app e veja todo o seu arsenal clínico organizado na tela. Pacientes, protocolos, escalas e documentos — separados por categoria, prontos para usar. Sem navegar em dezenas de pastas. Sem lembrar onde salvou cada modelo.</p>
+        <p class="step-highlight">✓ Acesso instantâneo a todos os protocolos e documentos</p>
+        <div style="text-align:center;margin-top:1.5rem;">
+            <img src="https://i.ibb.co/wh3gVxh1/Captura-de-Tela-2026-04-19-a-s-13-44-29.png"
+                 alt="App Kit Psicólogo Pro — Tela Inicial"
+                 style="max-width:260px;width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(109,40,217,0.18);border:1px solid #ede9fe;">
+        </div>
+    </div>
+
+    <div class="step-card">
+        <div class="step-tag">2 Gestão de Pacientes</div>
+        <div class="step-title">Cadastre Pacientes e Tenha Todo o Histórico Organizado em Um Só Lugar.</div>
+        <p style="color:#475569;margin-bottom:1rem;">Cadastre o paciente uma vez e acesse todo o histórico de sessões, documentos gerados e evoluções. Sem caderno, sem papel solto. Tudo vinculado ao paciente e disponível na hora que precisar.</p>
+        <p class="step-highlight">✓ Prontuário completo com histórico de sessões e documentos</p>
+        <div style="text-align:center;margin-top:1.5rem;">
+            <img src="https://i.ibb.co/nN5393GT/Captura-de-Tela-2026-04-19-a-s-13-46-48.png"
+                 alt="App Kit Psicólogo Pro — Cadastro de Paciente"
+                 style="max-width:260px;width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(109,40,217,0.18);border:1px solid #ede9fe;">
+        </div>
+    </div>
+
+    <div class="step-card">
+        <div class="step-tag">3 Protocolos Clínicos Completos</div>
+        <div class="step-title">Preencha o Protocolo na Tela. PHQ-9, GAD-7, TDAH, TEA e Muito Mais.</div>
+        <p style="color:#475569;margin-bottom:1rem;">Interface limpa e objetiva. Preencha a anamnese, aplique o PHQ-9 (com score automático) ou qualquer protocolo diretamente no app durante a sessão. O resultado já aparece calculado e classificado — mínimo, leve, moderado ou grave. Sem fazer conta, sem consultar tabela.</p>
+        <p class="step-highlight">✓ 8 protocolos clínicos · Score automático no PHQ-9 e GAD-7 · Funciona offline</p>
+        <div style="display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;">
+            <img src="https://i.ibb.co/Kj350rqX/Captura-de-Tela-2026-04-19-a-s-13-47-14.png"
+                 alt="App Kit Psicólogo Pro — Lista de Protocolos"
+                 style="max-width:220px;width:calc(50% - 0.5rem);border-radius:16px;box-shadow:0 8px 32px rgba(109,40,217,0.18);border:1px solid #ede9fe;">
+            <img src="https://i.ibb.co/nM3gRxW8/Captura-de-Tela-2026-04-19-a-s-13-47-25.png"
+                 alt="App Kit Psicólogo Pro — PHQ-9 e GAD-7"
+                 style="max-width:220px;width:calc(50% - 0.5rem);border-radius:16px;box-shadow:0 8px 32px rgba(109,40,217,0.18);border:1px solid #ede9fe;">
+        </div>
+    </div>
+
+    <div class="step-card">
+        <div class="step-tag">4 Documentos Clínicos Prontos</div>
+        <div class="step-title">TCLE, Laudo, Encaminhamento e Declaração — Todos em Um Só Lugar.</div>
+        <p style="color:#475569;margin-bottom:1rem;">Chega de criar documento do zero. Relatório para escola, declaração de comparecimento, encaminhamento, laudo psicológico e TCLE conforme resolução CFP — tudo pronto, tudo em PDF profissional. Basta preencher os dados do paciente e tocar em gerar.</p>
+        <p class="step-highlight">✓ TCLE conforme CFP · Laudo com impressão diagnóstica · PDF em segundos</p>
+        <div style="text-align:center;margin-top:1.5rem;">
+            <img src="https://i.ibb.co/vNt8tVb/Captura-de-Tela-2026-04-19-a-s-13-48-00.png"
+                 alt="App Kit Psicólogo Pro — Documentos Clínicos"
+                 style="max-width:260px;width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(109,40,217,0.18);border:1px solid #ede9fe;">
+        </div>
+    </div>
+
+    <div class="step-card">
+        <div class="step-tag">5 PDF com sua Logo e CRP</div>
+        <div class="step-title">Seu Logo, seu CRP, seu Nome — em Todos os Documentos. Automático.</div>
+        <p style="color:#475569;margin-bottom:1rem;">Configure seus dados uma vez só: nome, CRP, especialidade e logomarca do consultório. A partir daí, todo PDF gerado já sai com sua identidade profissional no cabeçalho. Nível de organização que antes só consultório com secretária tinha.</p>
+        <p class="step-highlight">✓ PDF profissional com logo · Pronto para prontuário ou devolutiva</p>
+        <div style="display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;">
+            <img src="https://i.ibb.co/fzypCZmy/Captura-de-Tela-2026-04-19-a-s-13-48-27.png"
+                 alt="App Kit Psicólogo Pro — Configurações e Logo"
+                 style="max-width:220px;width:calc(50% - 0.5rem);border-radius:16px;box-shadow:0 8px 32px rgba(109,40,217,0.18);border:1px solid #ede9fe;">
+            <img src="https://i.ibb.co/XxjwDB5d/Captura-de-Tela-2026-04-19-a-s-13-50-38.png"
+                 alt="App Kit Psicólogo Pro — PDF Gerado"
+                 style="max-width:220px;width:calc(50% - 0.5rem);border-radius:16px;box-shadow:0 8px 32px rgba(109,40,217,0.18);border:1px solid #ede9fe;">
+        </div>
+    </div>
+</section>
+
+<!-- CTA MID -->
+<section class="section" style="text-align:center;background:white;">
+    <h2>Pronto para começar?</h2>
+    <h3 style="font-size:1.25rem;color:#475569;margin-bottom:2rem;">É assim que cada atendimento seu vai ser daqui pra frente.</h3>
+    <a href="#preco" class="cta-button">Quero Usar Isso Agora →</a>
+    <p style="color:#64748b;font-size:0.875rem;margin-top:1rem;">Acesso imediato · Sem instalação · Funciona no celular</p>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+    <h2>O que psicólogas estão dizendo</h2>
+    <div class="testimonials">
+        <div class="testimonial-card card-hover">
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-text">"Economizo pelo menos 3 horas por semana. Antes ficava até meia-noite criando documento. Agora abro o app e pronto."</p>
+            <p class="testimonial-author">Mariana C.</p>
+            <p style="color:#64748b;font-size:0.75rem;">Psicóloga Clínica — SP</p>
+        </div>
+        <div class="testimonial-card card-hover">
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-text">"O PHQ-9 com pontuação automática foi um divisor de águas. Não erro mais na classificação e o PDF sai profissional na hora."</p>
+            <p class="testimonial-author">Fernanda L.</p>
+            <p style="color:#64748b;font-size:0.75rem;">Psicóloga TCC — MG</p>
+        </div>
+        <div class="testimonial-card card-hover">
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-text">"Estou abrindo o consultório e esse app me deu estrutura que eu não tinha. TCLE, plano terapêutico, laudo — tudo pronto em minutos."</p>
+            <p class="testimonial-author">Ana Beatriz S.</p>
+            <p style="color:#64748b;font-size:0.75rem;">Psicóloga — RJ</p>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="preco">
+    <h2 style="font-size:2rem;margin-bottom:1rem;text-align:center;">Escolha o seu plano</h2>
+    <p style="text-align:center;color:#64748b;margin-bottom:3rem;">Acesso imediato após a compra. Sem mensalidade, sem pegadinha.</p>
+
+    <div class="pricing-grid">
+        <!-- BASICO -->
+        <div class="pricing-card">
+            <div class="pricing-name">Básico</div>
+            <div class="pricing-price">R$ 17,90</div>
+            <div class="pricing-period">pagamento único</div>
+            <ul class="pricing-features">
+                <li>Anamnese adulto e infantil em PDF</li>
+                <li>PHQ-9 e GAD-7 com score automático</li>
+                <li>6 protocolos clínicos (ansiedade, depressão, TDAH, TEA, familiar, auto-avaliação)</li>
+                <li>TCLE, laudo, encaminhamento e declaração</li>
+                <li>Gestão de pacientes e sessões</li>
+                <li>Acesso vitalício</li>
+            </ul>
+            <!-- SUBSTITUA PELO SEU LINK -->
+            <a href="SEU_LINK_BASICO_AQUI" class="cta-button" style="display:block;text-align:center;">Escolher Básico</a>
+        </div>
+
+        <!-- PROFISSIONAL -->
+        <div class="pricing-card featured">
+            <div class="pricing-badge">⭐ Mais Escolhido</div>
+            <div class="pricing-name">Profissional Pro</div>
+            <div class="pricing-price">R$ 27,90</div>
+            <div class="pricing-period">pagamento único</div>
+            <ul class="pricing-features">
+                <li>Tudo do plano Básico</li>
+                <li>Plano terapêutico estruturado</li>
+                <li>PDFs com seu logo e dados personalizados</li>
+                <li>Atualizações com novos protocolos inclusos</li>
+                <li>Suporte direto via WhatsApp</li>
+                <li>Acesso à comunidade exclusiva</li>
+            </ul>
+            <!-- SUBSTITUA PELO SEU LINK -->
+            <a href="SEU_LINK_PRO_AQUI" class="cta-button" style="display:block;text-align:center;">Assinar Profissional Agora</a>
+        </div>
+    </div>
+
+    <div style="text-align:center;margin-top:2rem;color:#64748b;font-size:0.875rem;">
+        🔒 Pagamento 100% seguro &nbsp;⚡ Acesso em minutos &nbsp;↩️ 7 dias de garantia
+    </div>
+</section>
+
+<!-- GUARANTEE -->
+<div style="padding:0 2rem;">
+    <section class="guarantee-section">
+        <div class="guarantee-content">
+            <div class="guarantee-icon">🛡️</div>
+            <h2>Garantia Incondicional de 7 Dias</h2>
+            <p>Se em até 7 dias você não se sentir mais organizada e profissional no consultório, ou simplesmente achar que o app não é para você, <strong>devolvemos 100% do seu dinheiro. Sem perguntas.</strong></p>
+            <ul class="guarantee-list">
+                <li>Acesso vitalício ao app</li>
+                <li>PDFs profissionais com seu logo e CRP</li>
+                <li>Todos os protocolos e documentos inclusos</li>
+                <li>Suporte direto via WhatsApp</li>
+            </ul>
+        </div>
+    </section>
+</div>
+
+<!-- FAQ -->
+<section class="faq-section">
+    <h2 style="margin-bottom:3rem;">Perguntas Frequentes</h2>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Como vou receber o acesso?</span>
+            <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+            <p>Após a confirmação do pagamento, você recebe o link de acesso direto no e-mail. É instantâneo — em menos de 5 minutos você já está dentro do app.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Funciona no celular?</span>
+            <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+            <p>Sim! O app foi desenvolvido mobile-first e funciona perfeitamente em qualquer smartphone. Não precisa instalar nada — abre direto no navegador.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Os dados dos meus pacientes ficam seguros?</span>
+            <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+            <p>Sim. Todos os dados ficam salvos apenas no seu dispositivo. Nada é enviado para servidores externos. O app funciona offline e é 100% privado.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            <span>O PHQ-9 e GAD-7 são as versões validadas?</span>
+            <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+            <p>Sim. As escalas seguem os itens oficiais da versão brasileira validada. O app aplica, pontua automaticamente e gera o PDF com a classificação de gravidade.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            <span>O TCLE está de acordo com as normas do CFP?</span>
+            <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+            <p>Sim. O TCLE foi estruturado conforme a Resolução CFP 010/2000, incluindo sigilo profissional, direitos do paciente e campo de assinatura dupla.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            <span>É realmente vitalício?</span>
+            <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+            <p>Sim. Paga uma vez, usa para sempre. Não tem mensalidade, não tem renovação.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            <span>E se eu não gostar?</span>
+            <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+            <p>Garantia de 7 dias sem perguntas. Se não ficar satisfeita por qualquer motivo, é só pedir o reembolso e devolvemos 100% do valor pago.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="section" style="text-align:center;background:white;">
+    <h2>Pronta para atender com mais profissionalismo?</h2>
+    <p style="color:#64748b;margin-bottom:2rem;">Documentação clínica completa, organizada e profissional — no celular, em segundos.</p>
+    <a href="#preco" class="cta-button">Quero Acesso Agora →</a>
+    <p style="color:#64748b;font-size:0.875rem;margin-top:1rem;">🔒 Pagamento seguro • Acesso imediato • Garantia 7 dias</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>App Kit Psicólogo Pro • Todos os direitos reservados</p>
+    <p style="font-size:0.875rem;margin-top:1rem;">✅ Acesso imediato · Dados apenas no seu dispositivo · Sem mensalidade</p>
+</footer>
+
+<!-- TOAST -->
+<div id="toast" style="display:none;position:fixed;bottom:2rem;left:2rem;background:white;padding:1rem 1.5rem;border-radius:0.5rem;box-shadow:0 10px 25px rgba(0,0,0,0.1);display:none;align-items:center;gap:1rem;z-index:1000;">
+    <div style="font-size:1.5rem;">🎉</div>
+    <div>
+        <p style="font-weight:600;color:#0f172a;" id="toast-name"></p>
+        <p style="color:#475569;font-size:0.875rem;">acabou de comprar o App Kit Psicólogo Pro</p>
+    </div>
+</div>
+
+<script>
+    function toggleFaq(btn) {
+        var answer = btn.nextElementSibling;
+        var icon = btn.querySelector('.faq-icon');
+        answer.classList.toggle('open');
+        icon.textContent = answer.classList.contains('open') ? '−' : '+';
+    }
+
+    var names = [
+        'Mariana de SP','Fernanda do RJ','Ana Paula de MG','Juliana de PR',
+        'Beatriz de SC','Camila de BA','Patricia de GO','Larissa de RS',
+        'Renata de CE','Luciana de PE','Aline de DF','Vanessa de ES'
+    ];
+    var idx = 0;
+
+    function showToast() {
+        var toast = document.getElementById('toast');
+        document.getElementById('toast-name').textContent = names[idx % names.length];
+        idx++;
+        toast.style.display = 'flex';
+        setTimeout(function(){ toast.style.display = 'none'; }, 4000);
+    }
+
+    setTimeout(function(){
+        showToast();
+        setInterval(showToast, 18000);
+    }, 6000);
+</script>
+
+</body>
+</html>
