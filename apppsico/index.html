@@ -186,7 +186,13 @@
 <header>
     <div class="header-content">
         <h1 style="font-size:1.5rem;color:var(--slate-900);">App Kit Psicólogo Pro</h1>
-        <div class="header-badge">✅ Acesso imediato · Sem anúncios · Dados só no seu dispositivo</div>
+        <div class="header-badge">⏳ Oferta válida hoje, <span id="data-hoje"></span> — garanta agora</div>
+        <script>
+          var d = new Date();
+          var dias = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+          var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+          document.getElementById('data-hoje').textContent = dias[d.getDay()] + ', ' + d.getDate() + ' de ' + meses[d.getMonth()];
+        </script>
     </div>
 </header>
 
