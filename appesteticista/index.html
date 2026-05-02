@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>App Kit Esteticista Pro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+  :root {
+    --pink: #db2777;
+    --pink-dark: #9d174d;
+    --pink-darker: #831843;
+    --pink-light: #fdf2f8;
+    --pink-border: #fbcfe8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f9fafb; color: #1f2937; }
+  .sidebar { position: fixed; left: 0; top: 0; height: 100vh; width: 220px; background: var(--pink-darker); color: white; z-index: 100; display: flex; flex-direction: column; }
+  .sidebar-logo { padding: 1.5rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; color: #fbcfe8; }
+  .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+  .nav-section { padding: 0.5rem 1rem 0.25rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-top: 0.5rem; }
+  .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1rem; cursor: pointer; font-size: 0.82rem; color: rgba(255,255,255,0.75); transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+  .nav-item.active { background: rgba(255,255,255,0.12); color: white; border-left-color: #f9a8d4; }
+  .nav-item i { width: 16px; text-align: center; font-size: 0.8rem; }
+  .main { margin-left: 220px; min-height: 100vh; }
+  .topbar { background: white; border-bottom: 1px solid #e5e7eb; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar-title { font-size: 1rem; font-weight: 600; color: #111827; }
+  .content { padding: 1.5rem; }
+  .card { background: white; border-radius: 0.75rem; border: 1px solid #e5e7eb; padding: 1.5rem; margin-bottom: 1rem; }
+  .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: var(--pink); color: white; }
+  .btn-primary:hover { background: var(--pink-dark); }
+  .btn-outline { background: white; color: var(--pink); border: 1px solid var(--pink-border); }
+  .btn-outline:hover { background: var(--pink-light); }
+  .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+  .btn-danger { background: #fee2e2; color: #dc2626; }
+  .form-group { margin-bottom: 1rem; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 500; color: #374151; margin-bottom: 0.35rem; }
+  .form-control { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.875rem; color: #111827; background: white; }
+  .form-control:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 2px rgba(219,39,119,0.15); }
+  select.form-control { appearance: none; }
+  textarea.form-control { resize: vertical; min-height: 80px; }
+  .badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.72rem; font-weight: 500; }
+  .badge-pink { background: #fce7f3; color: var(--pink-dark); }
+  .badge-green { background: #dcfce7; color: #15803d; }
+  .badge-blue { background: #dbeafe; color: #1d4ed8; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .stat-card { background: white; border-radius: 0.75rem; border: 1px solid #e5e7eb; padding: 1.25rem; }
+  .stat-number { font-size: 1.75rem; font-weight: 700; color: var(--pink); }
+  .stat-label { font-size: 0.78rem; color: #6b7280; margin-top: 0.25rem; }
+  .table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .table th { text-align: left; padding: 0.6rem 0.75rem; background: #f9fafb; border-bottom: 1px solid #e5e7eb; font-weight: 500; color: #6b7280; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .table td { padding: 0.75rem; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+  .table tr:hover td { background: #fdf2f8; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .section-title { font-size: 1.1rem; font-weight: 600; color: #111827; }
+  .view { display: none; }
+  .view.active { display: block; }
+  .protocol-card { background: white; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; cursor: pointer; transition: all 0.15s; }
+  .protocol-card:hover { border-color: var(--pink); box-shadow: 0 0 0 2px rgba(219,39,119,0.1); }
+  .protocol-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .protocol-card p { font-size: 0.78rem; color: #6b7280; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 0.75rem; width: 90%; max-width: 680px; max-height: 90vh; overflow-y: auto; padding: 1.5rem; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+  .modal-title { font-size: 1rem; font-weight: 600; }
+  .close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #9ca3af; }
+  .radio-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .radio-option { display: flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; cursor: pointer; font-size: 0.8rem; }
+  .radio-option input { accent-color: var(--pink); }
+  .checklist-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; font-size: 0.85rem; }
+  .checklist-item input[type=checkbox] { accent-color: var(--pink); width: 15px; height: 15px; }
+  .sidebar { transition: transform 0.25s ease; }
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; }
+  .sidebar-overlay.open { display: block; }
+  .hamburger-btn { display: none; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #374151; padding: 0.25rem; line-height: 1; }
+  .bottom-nav { display: none; }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); z-index: 100; }
+    .sidebar.open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,0.25); }
+    .main { margin-left: 0; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .hamburger-btn { display: flex; align-items: center; }
+    .content { padding: 1rem; padding-bottom: 5.5rem; }
+    .bottom-nav {
+      display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+      background: white; border-top: 2px solid #fce7f3; z-index: 80;
+      height: 62px; box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+    }
+    .bottom-nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 0.15rem; cursor: pointer; font-size: 0.6rem;
+      color: #9ca3af; padding: 0.5rem 0.25rem; transition: color 0.15s; border: none; background: none;
+    }
+    .bottom-nav-item i { font-size: 1.05rem; }
+    .bottom-nav-item span { line-height: 1; }
+    .bottom-nav-item.active { color: var(--pink); }
+    .bottom-nav-item.active i { color: var(--pink); }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div style="font-size:1rem;color:white;margin-bottom:0.25rem;">💄 Esteticista Pro</div>
+    <div style="font-size:0.7rem;opacity:0.6;">Kit Profissional</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="navigate('dashboard')"><i class="fas fa-home"></i> Dashboard</div>
+    <div class="nav-item" onclick="navigate('clientes')"><i class="fas fa-users"></i> Clientes</div>
+    <div class="nav-item" onclick="navigate('pacotes')"><i class="fas fa-layer-group"></i> Pacotes</div>
+    <div class="nav-item" onclick="navigate('fotos')"><i class="fas fa-camera"></i> Fotos Antes/Depois</div>
+
+    <div class="nav-section">Documentos</div>
+    <div class="nav-item" onclick="navigate('anamnese')"><i class="fas fa-clipboard-list"></i> Anamnese de Pele</div>
+    <div class="nav-item" onclick="navigate('evolucao')"><i class="fas fa-chart-line"></i> Ficha de Evolução</div>
+    <div class="nav-item" onclick="navigate('tcle')"><i class="fas fa-file-signature"></i> TCLE</div>
+    <div class="nav-item" onclick="navigate('orcamento')"><i class="fas fa-file-invoice-dollar"></i> Orçamento</div>
+
+    <div class="nav-section">Protocolos</div>
+    <div class="nav-item" onclick="navigate('protocolos')"><i class="fas fa-spa"></i> Todos os Protocolos</div>
+
+    <div class="nav-section">Sistema</div>
+    <div class="nav-item" onclick="navigate('config')"><i class="fas fa-cog"></i> Configurações</div>
+  </nav>
+</div>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:0.6rem;">
+      <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+    </div>
+    <div style="display:flex;gap:0.5rem;align-items:center;">
+      <span style="font-size:0.78rem;color:#6b7280;" id="clinic-name-display"></span>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard" class="view active">
+      <div class="grid-3" style="margin-bottom:1rem;">
+        <div class="stat-card">
+          <div class="stat-number" id="stat-clientes">0</div>
+          <div class="stat-label">Clientes cadastradas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-sessoes">0</div>
+          <div class="stat-label">Fichas de evolução</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-docs">0</div>
+          <div class="stat-label">Documentos gerados</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-header">
+          <div class="section-title">Acesso Rápido</div>
+        </div>
+        <div class="grid-3">
+          <div class="protocol-card" onclick="navigate('anamnese')">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem;">📋</div>
+            <h3>Anamnese de Pele</h3>
+            <p>Avaliação completa da cliente</p>
+          </div>
+          <div class="protocol-card" onclick="navigate('evolucao')">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem;">📈</div>
+            <h3>Ficha de Evolução</h3>
+            <p>Registro de sessões</p>
+          </div>
+          <div class="protocol-card" onclick="navigate('tcle')">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem;">✍️</div>
+            <h3>TCLE</h3>
+            <p>Termo de consentimento</p>
+          </div>
+          <div class="protocol-card" onclick="navigate('protocolos')">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem;">💆</div>
+            <h3>Protocolos</h3>
+            <p>Limpeza, peeling, drenagem...</p>
+          </div>
+          <div class="protocol-card" onclick="navigate('orcamento')">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem;">💰</div>
+            <h3>Orçamento</h3>
+            <p>Proposta de tratamento</p>
+          </div>
+          <div class="protocol-card" onclick="navigate('clientes')">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem;">👩</div>
+            <h3>Clientes</h3>
+            <p>Gerenciar cadastros</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div id="view-clientes" class="view">
+      <div class="section-header">
+        <div class="section-title">Clientes</div>
+        <button class="btn btn-primary" onclick="openModal('modal-cliente')"><i class="fas fa-plus"></i> Nova Cliente</button>
+      </div>
+      <div class="card" style="padding:0;">
+        <table class="table">
+          <thead><tr><th>Nome</th><th>Telefone</th><th>Tipo de Pele</th><th>Cadastro</th><th>Ações</th></tr></thead>
+          <tbody id="tabela-clientes"><tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:2rem;">Nenhuma cliente cadastrada</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ANAMNESE -->
+    <div id="view-anamnese" class="view">
+      <div class="section-header">
+        <div class="section-title">Anamnese de Pele</div>
+        <button class="btn btn-primary" onclick="gerarPDFAnamnese()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
+      </div>
+      <div class="card">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Nome da Cliente *</label>
+            <input class="form-control" id="an-nome" placeholder="Nome completo"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data de Nascimento</label>
+            <input class="form-control" type="date" id="an-nascimento"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telefone</label>
+            <input class="form-control" id="an-tel" placeholder="(00) 00000-0000"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-mail</label>
+            <input class="form-control" id="an-email" placeholder="email@exemplo.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Profissão</label>
+            <input class="form-control" id="an-profissao" placeholder="Profissão"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data da Avaliação</label>
+            <input class="form-control" type="date" id="an-data"/>
+          </div>
+        </div>
+
+        <hr style="margin:1rem 0;border-color:#f3f4f6;"/>
+        <div style="font-weight:600;margin-bottom:0.75rem;color:#374151;">Avaliação da Pele</div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Tipo de Pele</label>
+            <select class="form-control" id="an-tipo-pele">
+              <option value="">Selecione</option>
+              <option>Normal</option><option>Seca</option><option>Oleosa</option>
+              <option>Mista</option><option>Sensível</option><option>Acneica</option>
+              <option>Madura</option><option>Desidratada</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fotótipo (Fitzpatrick)</label>
+            <select class="form-control" id="an-fototipo">
+              <option value="">Selecione</option>
+              <option>I — Muito clara, sempre queima</option>
+              <option>II — Clara, queima facilmente</option>
+              <option>III — Média, queima moderadamente</option>
+              <option>IV — Morena, raramente queima</option>
+              <option>V — Escura, raramente queima</option>
+              <option>VI — Muito escura, nunca queima</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Textura da Pele</label>
+            <select class="form-control" id="an-textura">
+              <option value="">Selecione</option>
+              <option>Lisa</option><option>Áspera</option><option>Irregular</option>
+              <option>Com poros dilatados</option><option>Com cravos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tônus</label>
+            <select class="form-control" id="an-tonus">
+              <option value="">Selecione</option>
+              <option>Firme</option><option>Flácido</option><option>Moderadamente flácido</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Alterações visíveis</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="checkbox" name="alt" value="Acne"/> Acne</label>
+            <label class="radio-option"><input type="checkbox" name="alt" value="Manchas"/> Manchas</label>
+            <label class="radio-option"><input type="checkbox" name="alt" value="Rugas"/> Rugas</label>
+            <label class="radio-option"><input type="checkbox" name="alt" value="Flacidez"/> Flacidez</label>
+            <label class="radio-option"><input type="checkbox" name="alt" value="Rosácea"/> Rosácea</label>
+            <label class="radio-option"><input type="checkbox" name="alt" value="Melasma"/> Melasma</label>
+            <label class="radio-option"><input type="checkbox" name="alt" value="Oleosidade excessiva"/> Oleosidade</label>
+            <label class="radio-option"><input type="checkbox" name="alt" value="Poros dilatados"/> Poros dilatados</label>
+            <label class="radio-option"><input type="checkbox" name="alt" value="Cicatrizes"/> Cicatrizes</label>
+          </div>
+        </div>
+
+        <hr style="margin:1rem 0;border-color:#f3f4f6;"/>
+        <div style="font-weight:600;margin-bottom:0.75rem;color:#374151;">Saúde e Histórico</div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Está gestante ou amamentando?</label>
+            <select class="form-control" id="an-gestante">
+              <option value="Não">Não</option><option>Gestante</option><option>Amamentando</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Usa protetor solar diariamente?</label>
+            <select class="form-control" id="an-protetor">
+              <option value="">Selecione</option>
+              <option>Sim, diariamente</option><option>Às vezes</option><option>Não usa</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Doenças ou condições de saúde</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="checkbox" name="doenca" value="Diabetes"/> Diabetes</label>
+            <label class="radio-option"><input type="checkbox" name="doenca" value="Hipertensão"/> Hipertensão</label>
+            <label class="radio-option"><input type="checkbox" name="doenca" value="Epilepsia"/> Epilepsia</label>
+            <label class="radio-option"><input type="checkbox" name="doenca" value="Marca-passo"/> Marca-passo</label>
+            <label class="radio-option"><input type="checkbox" name="doenca" value="Câncer"/> Câncer</label>
+            <label class="radio-option"><input type="checkbox" name="doenca" value="Lúpus"/> Lúpus</label>
+            <label class="radio-option"><input type="checkbox" name="doenca" value="Vitiligo"/> Vitiligo</label>
+            <label class="radio-option"><input type="checkbox" name="doenca" value="Coagulopatia"/> Coagulopatia</label>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Medicamentos em uso</label>
+            <textarea class="form-control" id="an-medicamentos" placeholder="Liste os medicamentos ou deixe em branco"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alergias conhecidas</label>
+            <textarea class="form-control" id="an-alergias" placeholder="Alergias a cosméticos, metais, etc."></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rotina de skincare atual</label>
+          <textarea class="form-control" id="an-rotina" placeholder="Descreva a rotina de cuidados atual da cliente"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Objetivo do tratamento</label>
+          <textarea class="form-control" id="an-objetivo" placeholder="O que a cliente deseja melhorar?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observações da profissional</label>
+          <textarea class="form-control" id="an-obs" placeholder="Observações adicionais"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="gerarPDFAnamnese()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
+      </div>
+    </div>
+
+    <!-- FICHA DE EVOLUÇÃO -->
+    <div id="view-evolucao" class="view">
+      <div class="section-header">
+        <div class="section-title">Ficha de Evolução</div>
+        <button class="btn btn-primary" onclick="gerarPDFEvolucao()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
+      </div>
+      <div class="card">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Nome da Cliente *</label>
+            <input class="form-control" id="ev-nome" placeholder="Nome completo"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data da Sessão *</label>
+            <input class="form-control" type="date" id="ev-data"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Número da Sessão</label>
+            <input class="form-control" type="number" id="ev-sessao-num" placeholder="Ex: 1, 2, 3..."/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Procedimento Realizado</label>
+            <select class="form-control" id="ev-procedimento">
+              <option value="">Selecione</option>
+              <option>Limpeza de Pele Profunda</option>
+              <option>Peeling Químico</option>
+              <option>Peeling Físico</option>
+              <option>Drenagem Linfática Facial</option>
+              <option>Massagem Modeladora</option>
+              <option>Radiofrequência Facial</option>
+              <option>Radiofrequência Corporal</option>
+              <option>Microagulhamento</option>
+              <option>Hidratação Profunda</option>
+              <option>Dermaplaning</option>
+              <option>Criolipólise</option>
+              <option>Ultrassom Estético</option>
+              <option>Outro</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Produtos Utilizados</label>
+          <textarea class="form-control" id="ev-produtos" placeholder="Liste os produtos utilizados na sessão"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reação da Pele / Intercorrências</label>
+          <textarea class="form-control" id="ev-reacao" placeholder="Como a pele reagiu ao procedimento?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Orientações Pós-Procedimento</label>
+          <textarea class="form-control" id="ev-orientacoes" placeholder="Cuidados que a cliente deve ter após a sessão"></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Próxima Sessão</label>
+            <input class="form-control" type="date" id="ev-proxima"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Observações</label>
+            <textarea class="form-control" id="ev-obs" placeholder="Observações adicionais"></textarea>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="gerarPDFEvolucao()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
+      </div>
+    </div>
+
+    <!-- TCLE -->
+    <div id="view-tcle" class="view">
+      <div class="section-header">
+        <div class="section-title">Termo de Consentimento (TCLE)</div>
+        <button class="btn btn-primary" onclick="gerarPDFTCLE()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
+      </div>
+      <div class="card">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Nome da Cliente *</label>
+            <input class="form-control" id="tc-nome" placeholder="Nome completo"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CPF da Cliente</label>
+            <input class="form-control" id="tc-cpf" placeholder="000.000.000-00"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Procedimento(s) Autorizado(s)</label>
+            <input class="form-control" id="tc-procedimento" placeholder="Ex: Peeling Químico, Microagulhamento"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data</label>
+            <input class="form-control" type="date" id="tc-data"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade</label>
+          <input class="form-control" id="tc-cidade" placeholder="Cidade / Estado"/>
+        </div>
+        <div style="background:#fdf2f8;border:1px solid #fbcfe8;border-radius:0.5rem;padding:1rem;margin:1rem 0;font-size:0.82rem;color:#374151;line-height:1.6;">
+          <strong>Prévia do TCLE:</strong><br/><br/>
+          Eu, <em>[nome da cliente]</em>, CPF <em>[cpf]</em>, declaro que fui devidamente informada sobre o procedimento estético <em>[procedimento]</em>, seus benefícios, riscos e cuidados necessários. Concordo com a realização do procedimento e declaro que as informações prestadas na anamnese são verdadeiras. Estou ciente de que resultados podem variar de pessoa para pessoa e que devo seguir as orientações pós-procedimento.
+        </div>
+        <button class="btn btn-primary" onclick="gerarPDFTCLE()"><i class="fas fa-file-pdf"></i> Gerar PDF com Assinatura</button>
+      </div>
+    </div>
+
+    <!-- ORÇAMENTO -->
+    <div id="view-orcamento" class="view">
+      <div class="section-header">
+        <div class="section-title">Orçamento / Proposta</div>
+        <button class="btn btn-primary" onclick="gerarPDFOrcamento()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
+      </div>
+      <div class="card">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Nome da Cliente *</label>
+            <input class="form-control" id="orc-nome" placeholder="Nome completo"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data</label>
+            <input class="form-control" type="date" id="orc-data"/>
+          </div>
+        </div>
+        <div id="itens-orcamento">
+          <div class="item-orc" style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:0.5rem;margin-bottom:0.5rem;">
+            <input class="form-control" placeholder="Procedimento" class="orc-item-nome"/>
+            <input class="form-control" type="number" placeholder="Sessões" class="orc-item-qtd"/>
+            <input class="form-control" type="number" placeholder="R$ valor" class="orc-item-valor"/>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="addItemOrcamento()" style="margin-bottom:1rem;"><i class="fas fa-plus"></i> Adicionar item</button>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Validade da proposta</label>
+            <input class="form-control" id="orc-validade" placeholder="Ex: 15 dias"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Observações</label>
+            <textarea class="form-control" id="orc-obs" placeholder="Condições de pagamento, pacote, etc."></textarea>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="gerarPDFOrcamento()"><i class="fas fa-file-pdf"></i> Gerar PDF</button>
+      </div>
+    </div>
+
+    <!-- PROTOCOLOS -->
+    <div id="view-protocolos" class="view">
+      <div class="section-title" style="margin-bottom:1rem;">Protocolos de Atendimento</div>
+      <div class="grid-3">
+        <div class="protocol-card" onclick="openProtocolo('limpeza')">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">🧴</div>
+          <h3>Limpeza de Pele Profunda</h3>
+          <p>Protocolo completo passo a passo</p>
+          <span class="badge badge-pink" style="margin-top:0.5rem;">Facial</span>
+        </div>
+        <div class="protocol-card" onclick="openProtocolo('peeling')">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">✨</div>
+          <h3>Peeling Químico</h3>
+          <p>AHA, BHA e TCA — orientações</p>
+          <span class="badge badge-pink" style="margin-top:0.5rem;">Facial</span>
+        </div>
+        <div class="protocol-card" onclick="openProtocolo('drenagem')">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">💆</div>
+          <h3>Drenagem Linfática</h3>
+          <p>Facial e corporal</p>
+          <span class="badge badge-blue" style="margin-top:0.5rem;">Facial/Corporal</span>
+        </div>
+        <div class="protocol-card" onclick="openProtocolo('modeladora')">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">💪</div>
+          <h3>Massagem Modeladora</h3>
+          <p>Redução de medidas e celulite</p>
+          <span class="badge badge-blue" style="margin-top:0.5rem;">Corporal</span>
+        </div>
+        <div class="protocol-card" onclick="openProtocolo('radiofrequencia')">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">⚡</div>
+          <h3>Radiofrequência</h3>
+          <p>Facial e corporal — parâmetros</p>
+          <span class="badge badge-green" style="margin-top:0.5rem;">Facial/Corporal</span>
+        </div>
+        <div class="protocol-card" onclick="openProtocolo('microagulhamento')">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">🔬</div>
+          <h3>Microagulhamento</h3>
+          <p>Indução de colágeno — cuidados</p>
+          <span class="badge badge-green" style="margin-top:0.5rem;">Facial</span>
+        </div>
+        <div class="protocol-card" onclick="openProtocolo('hidratacao')">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">💧</div>
+          <h3>Hidratação Profunda</h3>
+          <p>Ativo hidratante intensivo</p>
+          <span class="badge badge-pink" style="margin-top:0.5rem;">Facial</span>
+        </div>
+        <div class="protocol-card" onclick="openProtocolo('anticelulite')">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">🌀</div>
+          <h3>Protocolo Anticelulite</h3>
+          <p>Combinação de técnicas</p>
+          <span class="badge badge-blue" style="margin-top:0.5rem;">Corporal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACOTES -->
+    <div id="view-pacotes" class="view">
+      <div class="section-header">
+        <div class="section-title">Pacotes de Sessões</div>
+        <button class="btn btn-primary" onclick="openModal('modal-pacote')"><i class="fas fa-plus"></i> Novo Pacote</button>
+      </div>
+      <div id="lista-pacotes"><div class="card" style="text-align:center;color:#9ca3af;padding:3rem;">Nenhum pacote cadastrado</div></div>
+    </div>
+
+    <!-- FOTOS -->
+    <div id="view-fotos" class="view">
+      <div class="section-header">
+        <div class="section-title">Fotos Antes / Depois</div>
+        <button class="btn btn-primary" onclick="openModal('modal-foto')"><i class="fas fa-camera"></i> Adicionar</button>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <select class="form-control" id="foto-filtro-cliente" onchange="renderFotos()" style="max-width:280px;">
+          <option value="">Todas as clientes</option>
+        </select>
+      </div>
+      <div id="galeria-fotos"><div style="text-align:center;color:#9ca3af;padding:3rem;">Nenhuma foto registrada</div></div>
+    </div>
+
+    <!-- CONFIG -->
+    <div id="view-config" class="view">
+      <div class="section-title" style="margin-bottom:1rem;">Configurações</div>
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label">Nome da Profissional / Clínica</label>
+          <input class="form-control" id="cfg-nome" placeholder="Ex: Dra. Ana Silva — Estética Avançada"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone / WhatsApp</label>
+          <input class="form-control" id="cfg-tel" placeholder="(00) 00000-0000"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Registro (CREF / CRN / CRTT)</label>
+          <input class="form-control" id="cfg-registro" placeholder="Ex: CRTT-SP 00000"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Endereço / Cidade</label>
+          <input class="form-control" id="cfg-endereco" placeholder="Rua, número — Cidade/UF"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Logo da Clínica (aparece nos PDFs)</label>
+          <input type="file" accept="image/*" onchange="carregarLogo(this)" style="display:block;margin-bottom:0.5rem;font-size:0.85rem;"/>
+          <div id="logo-preview" style="display:none;margin-top:0.5rem;">
+            <img id="logo-img" style="max-height:60px;border-radius:4px;border:1px solid #e5e7eb;"/>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="salvarConfig()"><i class="fas fa-save"></i> Salvar Configurações</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL CLIENTE -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nova Cliente</div>
+      <button class="close-btn" onclick="closeModal('modal-cliente')">×</button>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Nome *</label>
+        <input class="form-control" id="cl-nome" placeholder="Nome completo"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Telefone</label>
+        <input class="form-control" id="cl-tel" placeholder="(00) 00000-0000"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-mail</label>
+        <input class="form-control" id="cl-email" placeholder="email@exemplo.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo de Pele</label>
+        <select class="form-control" id="cl-pele">
+          <option value="">Selecione</option>
+          <option>Normal</option><option>Seca</option><option>Oleosa</option>
+          <option>Mista</option><option>Sensível</option><option>Acneica</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+      <button class="btn btn-outline" onclick="closeModal('modal-cliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCliente()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PROTOCOLO -->
+<div class="modal-overlay" id="modal-protocolo">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="proto-title">Protocolo</div>
+      <button class="close-btn" onclick="closeModal('modal-protocolo')">×</button>
+    </div>
+    <div id="proto-content" style="font-size:0.85rem;line-height:1.7;color:#374151;"></div>
+    <div style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <button class="btn btn-primary btn-sm" id="btn-folheto-pos" onclick="gerarFolhetoPosAtual()"><i class="fas fa-file-pdf"></i> Folheto Pós-Procedimento (PDF)</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-protocolo')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PACOTE -->
+<div class="modal-overlay" id="modal-pacote">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Novo Pacote de Sessões</div>
+      <button class="close-btn" onclick="closeModal('modal-pacote')">×</button>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Cliente *</label>
+        <input class="form-control" id="pac-cliente" placeholder="Nome da cliente"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Procedimento *</label>
+        <select class="form-control" id="pac-procedimento">
+          <option value="">Selecione</option>
+          <option>Limpeza de Pele Profunda</option>
+          <option>Peeling Químico</option>
+          <option>Drenagem Linfática</option>
+          <option>Massagem Modeladora</option>
+          <option>Radiofrequência</option>
+          <option>Microagulhamento</option>
+          <option>Hidratação Profunda</option>
+          <option>Protocolo Anticelulite</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Total de Sessões</label>
+        <input class="form-control" type="number" id="pac-total" placeholder="Ex: 10" min="1"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor do Pacote (R$)</label>
+        <input class="form-control" type="number" id="pac-valor" placeholder="Ex: 500.00"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data de Início</label>
+        <input class="form-control" type="date" id="pac-inicio"/>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end;margin-top:0.5rem;">
+      <button class="btn btn-outline" onclick="closeModal('modal-pacote')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarPacote()">Criar Pacote</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FOTO -->
+<div class="modal-overlay" id="modal-foto">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Adicionar Foto Antes/Depois</div>
+      <button class="close-btn" onclick="closeModal('modal-foto')">×</button>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Cliente *</label>
+        <input class="form-control" id="foto-cliente" placeholder="Nome da cliente"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Procedimento / Sessão</label>
+        <input class="form-control" id="foto-procedimento" placeholder="Ex: Peeling — Sessão 3"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Data</label>
+      <input class="form-control" type="date" id="foto-data"/>
+    </div>
+    <div class="grid-2" style="gap:1rem;">
+      <div class="form-group">
+        <label class="form-label">Foto ANTES</label>
+        <input type="file" accept="image/*" id="foto-antes-input" style="font-size:0.8rem;margin-bottom:0.5rem;" onchange="previewFoto(this,'foto-antes-preview','antes')"/>
+        <img id="foto-antes-preview" style="display:none;width:100%;border-radius:0.5rem;max-height:160px;object-fit:cover;"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Foto DEPOIS</label>
+        <input type="file" accept="image/*" id="foto-depois-input" style="font-size:0.8rem;margin-bottom:0.5rem;" onchange="previewFoto(this,'foto-depois-preview','depois')"/>
+        <img id="foto-depois-preview" style="display:none;width:100%;border-radius:0.5rem;max-height:160px;object-fit:cover;"/>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end;margin-top:0.5rem;">
+      <button class="btn btn-outline" onclick="closeModal('modal-foto')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarFoto()"><i class="fas fa-save"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const { jsPDF } = window.jspdf;
+
+// ── STATE ────────────────────────────────────────────
+let clientes = JSON.parse(localStorage.getItem('est_clientes') || '[]');
+let config = JSON.parse(localStorage.getItem('est_config') || '{}');
+let logoBase64 = localStorage.getItem('est_logo') || '';
+let docsGerados = parseInt(localStorage.getItem('est_docs') || '0');
+let sessoesGeradas = parseInt(localStorage.getItem('est_sessoes') || '0');
+let pacotes = JSON.parse(localStorage.getItem('est_pacotes') || '[]');
+let fotos = JSON.parse(localStorage.getItem('est_fotos') || '[]');
+let _fotoAntes = '', _fotoDepois = '';
+
+// ── NAVIGATION ──────────────────────────────────────
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+function navigate(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  const titles = {
+    dashboard:'Dashboard', clientes:'Clientes', anamnese:'Anamnese de Pele',
+    evolucao:'Ficha de Evolução', tcle:'TCLE', orcamento:'Orçamento',
+    protocolos:'Protocolos', config:'Configurações',
+    pacotes:'Pacotes de Sessões', fotos:'Fotos Antes/Depois'
+  };
+  document.getElementById('topbar-title').textContent = titles[view] || view;
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if(n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+view+"'")) n.classList.add('active');
+  });
+  // Update bottom nav active state
+  const bnMap = {dashboard:'bn-dashboard',clientes:'bn-clientes',anamnese:'bn-anamnese',protocolos:'bn-protocolos',config:'bn-config'};
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  if(bnMap[view]) { const el = document.getElementById(bnMap[view]); if(el) el.classList.add('active'); }
+  // Close sidebar on mobile after navigation
+  closeSidebar();
+  updateStats();
+  if(view === 'config') loadConfig();
+}
+
+// ── STATS ───────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-clientes').textContent = clientes.length;
+  document.getElementById('stat-sessoes').textContent = sessoesGeradas;
+  document.getElementById('stat-docs').textContent = docsGerados;
+  if(config.nome) document.getElementById('clinic-name-display').textContent = config.nome;
+}
+
+// ── CLIENTES ─────────────────────────────────────────
+function salvarCliente() {
+  const nome = document.getElementById('cl-nome').value.trim();
+  if(!nome) { alert('Nome é obrigatório'); return; }
+  const c = {
+    id: Date.now(), nome,
+    tel: document.getElementById('cl-tel').value,
+    email: document.getElementById('cl-email').value,
+    pele: document.getElementById('cl-pele').value,
+    data: new Date().toLocaleDateString('pt-BR')
+  };
+  clientes.push(c);
+  localStorage.setItem('est_clientes', JSON.stringify(clientes));
+  closeModal('modal-cliente');
+  renderClientes();
+  ['cl-nome','cl-tel','cl-email'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cl-pele').value = '';
+  updateStats();
+}
+
+function renderClientes() {
+  const tb = document.getElementById('tabela-clientes');
+  if(!clientes.length) {
+    tb.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:2rem;">Nenhuma cliente cadastrada</td></tr>';
+    return;
+  }
+  tb.innerHTML = clientes.map(c => `
+    <tr>
+      <td><strong>${c.nome}</strong></td>
+      <td>${c.tel||'—'}</td>
+      <td>${c.pele||'—'}</td>
+      <td>${c.data}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="excluirCliente(${c.id})"><i class="fas fa-trash"></i></button></td>
+    </tr>`).join('');
+}
+
+function excluirCliente(id) {
+  if(!confirm('Excluir esta cliente?')) return;
+  clientes = clientes.filter(c => c.id !== id);
+  localStorage.setItem('est_clientes', JSON.stringify(clientes));
+  renderClientes();
+  updateStats();
+}
+
+// ── PACOTES ──────────────────────────────────────────
+function salvarPacote() {
+  const cliente = document.getElementById('pac-cliente').value.trim();
+  if(!cliente){ alert('Informe o nome da cliente'); return; }
+  const total = parseInt(document.getElementById('pac-total').value)||10;
+  const p = {
+    id: Date.now(), cliente,
+    procedimento: document.getElementById('pac-procedimento').value,
+    total, realizadas: 0,
+    valor: document.getElementById('pac-valor').value,
+    inicio: document.getElementById('pac-inicio').value || new Date().toISOString().split('T')[0]
+  };
+  pacotes.push(p);
+  localStorage.setItem('est_pacotes', JSON.stringify(pacotes));
+  closeModal('modal-pacote');
+  renderPacotes();
+  document.getElementById('pac-cliente').value='';
+  document.getElementById('pac-procedimento').value='';
+  document.getElementById('pac-total').value='';
+  document.getElementById('pac-valor').value='';
+  document.getElementById('pac-inicio').value='';
+}
+
+function registrarSessaoPacote(id) {
+  const p = pacotes.find(x=>x.id===id); if(!p) return;
+  if(p.realizadas >= p.total){ alert('Pacote já concluído!'); return; }
+  p.realizadas++;
+  localStorage.setItem('est_pacotes', JSON.stringify(pacotes));
+  renderPacotes();
+}
+
+function excluirPacote(id) {
+  if(!confirm('Excluir este pacote?')) return;
+  pacotes = pacotes.filter(p=>p.id!==id);
+  localStorage.setItem('est_pacotes', JSON.stringify(pacotes));
+  renderPacotes();
+}
+
+function renderPacotes() {
+  const container = document.getElementById('lista-pacotes');
+  if(!pacotes.length){
+    container.innerHTML='<div class="card" style="text-align:center;color:#9ca3af;padding:3rem;">Nenhum pacote cadastrado</div>'; return;
+  }
+  const sorted=[...pacotes].sort((a,b)=>(b.realizadas<b.total?1:0)-(a.realizadas<a.total?1:0));
+  container.innerHTML=sorted.map(p=>{
+    const pct=Math.min(100,Math.round((p.realizadas/p.total)*100));
+    const concluido=p.realizadas>=p.total;
+    const barColor=concluido?'#15803d':'var(--pink)';
+    return `<div class="card" style="margin-bottom:0.75rem;${concluido?'opacity:0.75;':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+        <div><strong>${p.cliente}</strong><div style="font-size:0.8rem;color:#6b7280;">${p.procedimento}</div></div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          ${concluido?'<span class="badge badge-green">Concluído</span>':'<span class="badge badge-pink">Em andamento</span>'}
+          <button class="btn btn-danger btn-sm" onclick="excluirPacote(${p.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+      <div style="margin-bottom:0.5rem;">
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.3rem;">
+          <span>${p.realizadas} de ${p.total} sessões</span>
+          <span style="font-weight:700;color:${barColor};">${pct}%</span>
+        </div>
+        <div style="background:#f3f4f6;border-radius:999px;height:10px;overflow:hidden;">
+          <div style="width:${pct}%;height:100%;background:${barColor};border-radius:999px;transition:width 0.4s;"></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;">
+        <div style="font-size:0.76rem;color:#9ca3af;">
+          ${p.valor?'R$ '+parseFloat(p.valor).toFixed(2)+' · ':''}Início: ${new Date(p.inicio+'T12:00:00').toLocaleDateString('pt-BR')}
+          ${!concluido?' · '+(p.total-p.realizadas)+' restante(s)':''}
+        </div>
+        ${!concluido?`<button class="btn btn-primary btn-sm" onclick="registrarSessaoPacote(${p.id})"><i class="fas fa-check"></i> Registrar Sessão</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── FOTOS ────────────────────────────────────────────
+function previewFoto(input, previewId, tipo) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById(previewId);
+    img.src = e.target.result; img.style.display='block';
+    if(tipo==='antes') _fotoAntes = e.target.result;
+    else _fotoDepois = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function salvarFoto() {
+  const cliente = document.getElementById('foto-cliente').value.trim();
+  if(!cliente){ alert('Informe o nome da cliente'); return; }
+  const foto = {
+    id: Date.now(), cliente,
+    procedimento: document.getElementById('foto-procedimento').value,
+    data: document.getElementById('foto-data').value || new Date().toISOString().split('T')[0],
+    antes: _fotoAntes, depois: _fotoDepois
+  };
+  fotos.push(foto);
+  try { localStorage.setItem('est_fotos', JSON.stringify(fotos)); }
+  catch(e) { alert('Foto salva na sessão. Para salvar permanentemente use imagens menores.'); }
+  closeModal('modal-foto');
+  renderFotos();
+  _fotoAntes=''; _fotoDepois='';
+  document.getElementById('foto-antes-preview').style.display='none';
+  document.getElementById('foto-depois-preview').style.display='none';
+  document.getElementById('foto-cliente').value='';
+  document.getElementById('foto-procedimento').value='';
+}
+
+function excluirFoto(id) {
+  if(!confirm('Excluir este registro?')) return;
+  fotos=fotos.filter(f=>f.id!==id);
+  localStorage.setItem('est_fotos', JSON.stringify(fotos));
+  renderFotos();
+}
+
+function renderFotos() {
+  const filtro = document.getElementById('foto-filtro-cliente')?.value||'';
+  // Populate dropdown
+  const sel = document.getElementById('foto-filtro-cliente');
+  if(sel){
+    const nomes=[...new Set(fotos.map(f=>f.cliente))].sort();
+    sel.innerHTML='<option value="">Todas as clientes</option>'+nomes.map(n=>`<option value="${n}" ${n===filtro?'selected':''}>${n}</option>`).join('');
+  }
+  const lista = filtro ? fotos.filter(f=>f.cliente===filtro) : fotos;
+  const container = document.getElementById('galeria-fotos');
+  if(!lista.length){
+    container.innerHTML='<div style="text-align:center;color:#9ca3af;padding:3rem;background:white;border-radius:0.75rem;border:1px solid #e5e7eb;">Nenhuma foto registrada ainda</div>'; return;
+  }
+  container.innerHTML=lista.map(f=>`
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+        <div><strong>${f.cliente}</strong>${f.procedimento?`<span style="color:#6b7280;font-size:0.8rem;"> · ${f.procedimento}</span>`:''}</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <span style="font-size:0.75rem;color:#9ca3af;">${f.data?new Date(f.data+'T12:00:00').toLocaleDateString('pt-BR'):''}</span>
+          <button class="btn btn-danger btn-sm" onclick="excluirFoto(${f.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+      <div class="grid-2" style="gap:1rem;">
+        <div>
+          <div style="font-size:0.72rem;font-weight:700;color:#6b7280;margin-bottom:0.4rem;text-align:center;letter-spacing:0.05em;">ANTES</div>
+          ${f.antes?`<img src="${f.antes}" style="width:100%;border-radius:0.5rem;object-fit:cover;max-height:200px;border:2px solid #e5e7eb;"/>`:'<div style="background:#f9fafb;border:2px dashed #d1d5db;border-radius:0.5rem;height:120px;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:1.5rem;">📷</div>'}
+        </div>
+        <div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--pink);margin-bottom:0.4rem;text-align:center;letter-spacing:0.05em;">DEPOIS</div>
+          ${f.depois?`<img src="${f.depois}" style="width:100%;border-radius:0.5rem;object-fit:cover;max-height:200px;border:2px solid var(--pink-border);"/>`:'<div style="background:#fdf2f8;border:2px dashed var(--pink-border);border-radius:0.5rem;height:120px;display:flex;align-items:center;justify-content:center;color:var(--pink-border);font-size:1.5rem;">📷</div>'}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── MODAL ────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── CONFIG ───────────────────────────────────────────
+function loadConfig() {
+  if(config.nome) document.getElementById('cfg-nome').value = config.nome;
+  if(config.tel) document.getElementById('cfg-tel').value = config.tel;
+  if(config.registro) document.getElementById('cfg-registro').value = config.registro;
+  if(config.endereco) document.getElementById('cfg-endereco').value = config.endereco;
+  if(logoBase64) {
+    document.getElementById('logo-preview').style.display = 'block';
+    document.getElementById('logo-img').src = logoBase64;
+  }
+}
+
+function salvarConfig() {
+  config = {
+    nome: document.getElementById('cfg-nome').value,
+    tel: document.getElementById('cfg-tel').value,
+    registro: document.getElementById('cfg-registro').value,
+    endereco: document.getElementById('cfg-endereco').value
+  };
+  localStorage.setItem('est_config', JSON.stringify(config));
+  updateStats();
+  alert('✅ Configurações salvas!');
+}
+
+function carregarLogo(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    logoBase64 = e.target.result;
+    localStorage.setItem('est_logo', logoBase64);
+    document.getElementById('logo-preview').style.display = 'block';
+    document.getElementById('logo-img').src = logoBase64;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── PDF HELPERS ──────────────────────────────────────
+function pdfHeader(doc, titulo) {
+  doc.setFillColor(131, 24, 67);
+  doc.rect(0, 0, 210, 28, 'F');
+  if(logoBase64) {
+    try { doc.addImage(logoBase64, '', 175, 3, 22, 22); } catch(e){}
+  }
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(14); doc.setFont('helvetica','bold');
+  doc.text(titulo, 14, 12);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  if(config.nome) doc.text(config.nome, 14, 19);
+  if(config.registro) doc.text(config.registro, 14, 24);
+  doc.setTextColor(31,41,55);
+}
+
+function pdfFooter(doc) {
+  const p = doc.internal.getNumberOfPages();
+  for(let i=1;i<=p;i++){
+    doc.setPage(i);
+    doc.setDrawColor(219,39,119);
+    doc.setLineWidth(0.3);
+    doc.line(14, 285, 196, 285);
+    doc.setFontSize(8); doc.setTextColor(107,114,128);
+    doc.text(config.nome||'App Kit Esteticista Pro', 14, 290);
+    doc.text(`Página ${i}/${p}`, 196, 290, {align:'right'});
+    if(config.tel) doc.text(config.tel, 105, 290, {align:'center'});
+  }
+}
+
+function incrementDoc() {
+  docsGerados++;
+  localStorage.setItem('est_docs', docsGerados);
+}
+
+// ── PDF ANAMNESE ─────────────────────────────────────
+function gerarPDFAnamnese() {
+  const nome = document.getElementById('an-nome').value.trim();
+  if(!nome) { alert('Informe o nome da cliente'); return; }
+  const doc = new jsPDF();
+  pdfHeader(doc, 'Anamnese de Pele');
+  let y = 35;
+  const add = (label, val, bold=false) => {
+    if(y > 270) { doc.addPage(); pdfHeader(doc,'Anamnese de Pele'); y=35; }
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+    doc.text(label, 14, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
+    doc.text(val||'—', 80, y);
+    y += 7;
+  };
+  const sep = (t) => {
+    if(y > 260) { doc.addPage(); pdfHeader(doc,'Anamnese de Pele'); y=35; }
+    y += 3;
+    doc.setFillColor(253,242,248);
+    doc.rect(14, y-4, 182, 8, 'F');
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+    doc.text(t, 16, y+1);
+    doc.setTextColor(31,41,55);
+    y += 10;
+  };
+  sep('DADOS DA CLIENTE');
+  add('Nome:', nome);
+  add('Data de Nasc.:', document.getElementById('an-nascimento').value ? new Date(document.getElementById('an-nascimento').value+'T12:00:00').toLocaleDateString('pt-BR') : '—');
+  add('Telefone:', document.getElementById('an-tel').value);
+  add('E-mail:', document.getElementById('an-email').value);
+  add('Profissão:', document.getElementById('an-profissao').value);
+  add('Data da Avaliação:', document.getElementById('an-data').value ? new Date(document.getElementById('an-data').value+'T12:00:00').toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR'));
+  sep('AVALIAÇÃO DA PELE');
+  add('Tipo de Pele:', document.getElementById('an-tipo-pele').value);
+  add('Fotótipo:', document.getElementById('an-fototipo').value);
+  add('Textura:', document.getElementById('an-textura').value);
+  add('Tônus:', document.getElementById('an-tonus').value);
+  const alts = [...document.querySelectorAll('input[name="alt"]:checked')].map(e=>e.value).join(', ');
+  add('Alterações:', alts||'Nenhuma');
+  sep('SAÚDE E HISTÓRICO');
+  add('Gestante/Amamentando:', document.getElementById('an-gestante').value);
+  add('Protetor Solar:', document.getElementById('an-protetor').value);
+  const doencas = [...document.querySelectorAll('input[name="doenca"]:checked')].map(e=>e.value).join(', ');
+  add('Doenças:', doencas||'Nenhuma');
+  add('Medicamentos:', document.getElementById('an-medicamentos').value);
+  add('Alergias:', document.getElementById('an-alergias').value);
+  if(y > 240) { doc.addPage(); pdfHeader(doc,'Anamnese de Pele'); y=35; }
+  sep('OBJETIVOS E OBSERVAÇÕES');
+  const addBlock = (label, val) => {
+    if(!val) return;
+    if(y > 250) { doc.addPage(); pdfHeader(doc,'Anamnese de Pele'); y=35; }
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+    doc.text(label, 14, y); y += 6;
+    doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
+    const lines = doc.splitTextToSize(val, 180);
+    doc.text(lines, 14, y); y += lines.length * 5 + 4;
+  };
+  addBlock('Rotina Atual:', document.getElementById('an-rotina').value);
+  addBlock('Objetivo:', document.getElementById('an-objetivo').value);
+  addBlock('Observações:', document.getElementById('an-obs').value);
+  // Assinatura
+  y += 10;
+  if(y > 255) { doc.addPage(); pdfHeader(doc,'Anamnese de Pele'); y=35; }
+  doc.setDrawColor(107,114,128); doc.setLineWidth(0.3);
+  doc.line(14, y+15, 90, y+15);
+  doc.line(120, y+15, 196, y+15);
+  doc.setFontSize(8); doc.setTextColor(107,114,128);
+  doc.text('Assinatura da Cliente', 14, y+20);
+  doc.text('Assinatura da Profissional', 120, y+20);
+  pdfFooter(doc);
+  doc.save(`anamnese-${nome.replace(/\s+/g,'-').toLowerCase()}.pdf`);
+  incrementDoc();
+}
+
+// ── PDF EVOLUÇÃO ─────────────────────────────────────
+function gerarPDFEvolucao() {
+  const nome = document.getElementById('ev-nome').value.trim();
+  if(!nome) { alert('Informe o nome da cliente'); return; }
+  const doc = new jsPDF();
+  pdfHeader(doc, 'Ficha de Evolução');
+  let y = 35;
+  const add = (label, val) => {
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+    doc.text(label, 14, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
+    doc.text(val||'—', 80, y);
+    y += 7;
+  };
+  add('Cliente:', nome);
+  add('Sessão Nº:', document.getElementById('ev-sessao-num').value);
+  add('Data:', document.getElementById('ev-data').value ? new Date(document.getElementById('ev-data').value+'T12:00:00').toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR'));
+  add('Procedimento:', document.getElementById('ev-procedimento').value);
+  y += 4;
+  const block = (label, val) => {
+    if(!val) return;
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+    doc.text(label, 14, y); y += 6;
+    doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
+    const lines = doc.splitTextToSize(val, 180);
+    doc.text(lines, 14, y); y += lines.length * 5 + 5;
+  };
+  block('Produtos Utilizados:', document.getElementById('ev-produtos').value);
+  block('Reação da Pele:', document.getElementById('ev-reacao').value);
+  block('Orientações Pós:', document.getElementById('ev-orientacoes').value);
+  block('Observações:', document.getElementById('ev-obs').value);
+  if(document.getElementById('ev-proxima').value) {
+    add('Próxima Sessão:', new Date(document.getElementById('ev-proxima').value+'T12:00:00').toLocaleDateString('pt-BR'));
+  }
+  y += 10;
+  doc.setDrawColor(107,114,128); doc.setLineWidth(0.3);
+  doc.line(14, y+15, 90, y+15);
+  doc.line(120, y+15, 196, y+15);
+  doc.setFontSize(8); doc.setTextColor(107,114,128);
+  doc.text('Assinatura da Cliente', 14, y+20);
+  doc.text('Assinatura da Profissional', 120, y+20);
+  pdfFooter(doc);
+  doc.save(`evolucao-${nome.replace(/\s+/g,'-').toLowerCase()}.pdf`);
+  sessoesGeradas++;
+  localStorage.setItem('est_sessoes', sessoesGeradas);
+  incrementDoc();
+}
+
+// ── PDF TCLE ─────────────────────────────────────────
+function gerarPDFTCLE() {
+  const nome = document.getElementById('tc-nome').value.trim();
+  if(!nome) { alert('Informe o nome da cliente'); return; }
+  const doc = new jsPDF();
+  pdfHeader(doc, 'Termo de Consentimento Livre e Esclarecido');
+  let y = 35;
+  doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+  doc.text('TCLE — PROCEDIMENTO ESTÉTICO', 105, y, {align:'center'}); y += 10;
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
+  const proc = document.getElementById('tc-procedimento').value || '________________';
+  const cpf = document.getElementById('tc-cpf').value || '________________';
+  const cidade = document.getElementById('tc-cidade').value || '________________';
+  const data = document.getElementById('tc-data').value ? new Date(document.getElementById('tc-data').value+'T12:00:00').toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+  const texto = `Eu, ${nome}, portador(a) do CPF ${cpf}, declaro que fui devidamente informada(o) sobre o procedimento estético "${proc}", incluindo seus objetivos, técnicas utilizadas, benefícios esperados, possíveis riscos, efeitos colaterais e cuidados pós-procedimento.\n\nDeclaro que todas as informações prestadas na ficha de anamnese são verdadeiras e que não omiti dados relevantes sobre meu estado de saúde.\n\nEstou ciente de que:\n• Os resultados podem variar individualmente e não há garantia de resultado específico;\n• Devo seguir rigorosamente as orientações pós-procedimento fornecidas pela profissional;\n• Devo comunicar qualquer reação adversa imediatamente;\n• O procedimento será realizado por profissional habilitada.\n\nConcordo livremente com a realização do procedimento e autorizo a ${config.nome||'profissional responsável'} a executá-lo.\n\n${cidade}, ${data}.`;
+  const lines = doc.splitTextToSize(texto, 180);
+  doc.text(lines, 14, y); y += lines.length * 5 + 15;
+  doc.setDrawColor(107,114,128); doc.setLineWidth(0.3);
+  doc.line(14, y, 90, y);
+  doc.line(120, y, 196, y);
+  y += 5;
+  doc.setFontSize(8); doc.setTextColor(107,114,128);
+  doc.text(nome, 14, y);
+  doc.text(config.nome||'Profissional Responsável', 120, y);
+  y += 4;
+  doc.text('Assinatura da Cliente', 14, y);
+  doc.text('Assinatura da Profissional', 120, y);
+  if(config.registro) { y+=4; doc.text(config.registro, 120, y); }
+  pdfFooter(doc);
+  doc.save(`tcle-${nome.replace(/\s+/g,'-').toLowerCase()}.pdf`);
+  incrementDoc();
+}
+
+// ── PDF ORÇAMENTO ────────────────────────────────────
+function addItemOrcamento() {
+  const div = document.createElement('div');
+  div.className = 'item-orc';
+  div.style = 'display:grid;grid-template-columns:2fr 1fr 1fr;gap:0.5rem;margin-bottom:0.5rem;';
+  div.innerHTML = `<input class="form-control" placeholder="Procedimento" class="orc-item-nome"/>
+    <input class="form-control" type="number" placeholder="Sessões" class="orc-item-qtd"/>
+    <input class="form-control" type="number" placeholder="R$ valor" class="orc-item-valor"/>`;
+  document.getElementById('itens-orcamento').appendChild(div);
+}
+
+function gerarPDFOrcamento() {
+  const nome = document.getElementById('orc-nome').value.trim();
+  if(!nome) { alert('Informe o nome da cliente'); return; }
+  const doc = new jsPDF();
+  pdfHeader(doc, 'Proposta de Tratamento');
+  let y = 35;
+  doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+  doc.text('Cliente:', 14, y);
+  doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
+  doc.text(nome, 80, y); y += 7;
+  const data = document.getElementById('orc-data').value ? new Date(document.getElementById('orc-data').value+'T12:00:00').toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+  doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+  doc.text('Data:', 14, y);
+  doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
+  doc.text(data, 80, y); y += 12;
+  // Tabela
+  doc.setFillColor(131,24,67);
+  doc.rect(14, y-5, 182, 8, 'F');
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('Procedimento', 16, y); doc.text('Sessões', 130, y); doc.text('Valor (R$)', 168, y);
+  y += 8; doc.setTextColor(31,41,55); doc.setFont('helvetica','normal');
+  let total = 0;
+  document.querySelectorAll('.item-orc').forEach((item, i) => {
+    const inputs = item.querySelectorAll('input');
+    const proc = inputs[0]?.value||''; const qtd = inputs[1]?.value||''; const val = parseFloat(inputs[2]?.value||0);
+    if(!proc) return;
+    if(i%2===0) { doc.setFillColor(253,242,248); doc.rect(14,y-4,182,7,'F'); }
+    doc.text(proc, 16, y); doc.text(qtd, 130, y); doc.text('R$ '+val.toFixed(2), 168, y);
+    total += val; y += 8;
+  });
+  y += 3;
+  doc.setDrawColor(131,24,67); doc.setLineWidth(0.5); doc.line(14, y, 196, y); y += 6;
+  doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+  doc.text('TOTAL:', 130, y); doc.text('R$ '+total.toFixed(2), 168, y); y += 12;
+  doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55); doc.setFontSize(9);
+  const validade = document.getElementById('orc-validade').value;
+  if(validade) { doc.text('Validade desta proposta: '+validade, 14, y); y += 7; }
+  const obs = document.getElementById('orc-obs').value;
+  if(obs) { const lines = doc.splitTextToSize(obs,180); doc.text(lines,14,y); y += lines.length*5+5; }
+  pdfFooter(doc);
+  doc.save(`orcamento-${nome.replace(/\s+/g,'-').toLowerCase()}.pdf`);
+  incrementDoc();
+}
+
+// ── PROTOCOLOS ───────────────────────────────────────
+const protocolos = {
+  limpeza: {
+    titulo: '🧴 Limpeza de Pele Profunda',
+    conteudo: `<strong>Indicação:</strong> Peles oleosas, acneicas, com cravos e poros dilatados.<br/><br/>
+<strong>Contraindicações:</strong> Lesões abertas, infecção ativa, rosácea em crise, uso de isotretinoína.<br/><br/>
+<strong>Materiais:</strong> Demaquilante, sabonete, esfoliante, vapor de ozônio, extrator, máscara calmante, protetor solar.<br/><br/>
+<strong>Protocolo:</strong><br/>
+1. Demaquilar com produto bifásico (2-3 min)<br/>
+2. Limpeza com sabonete específico para o tipo de pele<br/>
+3. Esfoliação suave (5 min)<br/>
+4. Vapor de ozônio por 8-10 min para abertura dos poros<br/>
+5. Extração manual com espátula e extrator (com luvas)<br/>
+6. Aplicação de produto calmante/cicatrizante<br/>
+7. Máscara argila ou calmante por 15-20 min<br/>
+8. Tonificação e hidratação<br/>
+9. Protetor solar FPS 30+<br/><br/>
+<strong>Orientações pós:</strong> Não maquiar por 24h, não expor ao sol, não espremer cravos, usar protetor solar diariamente.`
+  },
+  peeling: {
+    titulo: '✨ Peeling Químico',
+    conteudo: `<strong>Indicação:</strong> Manchas, melasma, acne, fotoenvelhecimento, cicatrizes superficiais.<br/><br/>
+<strong>Contraindicações:</strong> Gestação, amamentação, lesões ativas, uso recente de isotretinoína (6 meses), pele muito sensível.<br/><br/>
+<strong>Tipos mais utilizados:</strong><br/>
+• <strong>AHA (Glicólico/Mandélico):</strong> Peles oleosas e acneicas. Concentração 20-70%.<br/>
+• <strong>BHA (Salicílico):</strong> Antisséptico, ideal para acne. Concentração 20-30%.<br/>
+• <strong>TCA (Tricloroacético):</strong> Manchas e cicatrizes. Uso profissional avançado.<br/><br/>
+<strong>Protocolo:</strong><br/>
+1. Limpeza e desengorduramento da pele<br/>
+2. Aplicação do agente peeling com pincel, camada uniforme<br/>
+3. Aguardar o tempo de ação (conforme produto e pH)<br/>
+4. Neutralização (se necessário) com água ou solução neutralizante<br/>
+5. Enxágue completo<br/>
+6. Aplicação de produto calmante e regenerador<br/>
+7. Protetor solar FPS 50+<br/><br/>
+<strong>Orientações pós:</strong> Descamação esperada por 3-7 dias. Não esfregar, não puxar a pele, hidratação intensa, FPS 50+ obrigatório, evitar sol.`
+  },
+  drenagem: {
+    titulo: '💆 Drenagem Linfática',
+    conteudo: `<strong>Indicação:</strong> Edemas, pós-operatório, celulite, retenção de líquidos, sinusite (drenagem facial).<br/><br/>
+<strong>Contraindicações:</strong> Infecção local, trombose, insuficiência cardíaca descompensada, câncer ativo sem autorização médica.<br/><br/>
+<strong>Técnica Vodder (mais utilizada):</strong><br/>
+1. Posicionar a cliente confortavelmente<br/>
+2. Iniciar pelo pescoço — estímulo dos linfonodos cervicais (suaves círculos)<br/>
+3. Movimentos lentos, rítmicos, pressão mínima (40 mmHg)<br/>
+4. Progressão centrípeta (das extremidades para o centro)<br/>
+5. Frequência: 1 pompa/seg<br/>
+6. Duração: 40-60 min (corporal) / 20-30 min (facial)<br/><br/>
+<strong>Pressões por região:</strong><br/>
+• Rosto: levíssima (10-20 mmHg)<br/>
+• Pescoço/axila: suave (20-40 mmHg)<br/>
+• Membros: moderada (40-60 mmHg)<br/><br/>
+<strong>Orientações pós:</strong> Beber bastante água, evitar álcool, movimentar o corpo.`
+  },
+  modeladora: {
+    titulo: '💪 Massagem Modeladora',
+    conteudo: `<strong>Indicação:</strong> Celulite, flacidez corporal, redução de medidas, tonificação.<br/><br/>
+<strong>Contraindicações:</strong> Varizes graves, trombose, gestação, infecções cutâneas, lesões abertas.<br/><br/>
+<strong>Técnicas utilizadas:</strong><br/>
+• Amassamento profundo<br/>
+• Rolamento de pele (pétrissage)<br/>
+• Fricção profunda<br/>
+• Ventosa/pressão negativa<br/><br/>
+<strong>Protocolo:</strong><br/>
+1. Aplicar óleo ou creme modelador<br/>
+2. Drenagem leve para preparar o tecido (5 min)<br/>
+3. Amassamento das regiões-alvo (20-30 min)<br/>
+4. Rolamento de pele — desfibrosamento (10 min)<br/>
+5. Fricção profunda nas áreas de celulite<br/>
+6. Finalizar com drenagem leve<br/>
+7. Aplicar creme redutor com massagem de absorção<br/><br/>
+<strong>Sessões recomendadas:</strong> 2x por semana, mínimo 10 sessões.<br/><br/>
+<strong>Orientações pós:</strong> Beber água, não banhar com água muito quente, manter atividade física.`
+  },
+  radiofrequencia: {
+    titulo: '⚡ Radiofrequência',
+    conteudo: `<strong>Indicação:</strong> Flacidez facial e corporal, celulite, gordura localizada, rejuvenescimento.<br/><br/>
+<strong>Contraindicações:</strong> Gestação, marca-passo, metal no local de aplicação, câncer ativo, epilepsia, febre.<br/><br/>
+<strong>Parâmetros gerais:</strong><br/>
+• Frequência: 0,5 a 1 MHz (tecidos mais profundos) / 1 a 3 MHz (superficial)<br/>
+• Temperatura alvo: 39-42°C (facial) / 40-42°C (corporal)<br/>
+• Tempo por área: 3-5 min<br/>
+• Movimentos: lentos e circulares, sempre em movimento<br/><br/>
+<strong>Protocolo Facial:</strong><br/>
+1. Limpeza e desengorduramento<br/>
+2. Aplicar gel condutor<br/>
+3. Iniciar com intensidade baixa, aumentar gradualmente<br/>
+4. Trabalhar: testa, zigomático, mandíbula, pescoço<br/>
+5. Verificar temperatura com termômetro infravermelho<br/>
+6. Finalizar com sérum e protetor solar<br/><br/>
+<strong>Protocolo Corporal:</strong><br/>
+1. Aplicar gel condutor na área<br/>
+2. Movimentos amplos e lentos<br/>
+3. Temperatura: 40-42°C por 3-5 min por área<br/>
+4. Finalizar com creme modelador<br/><br/>
+<strong>Sessões:</strong> 6-10 sessões semanais ou quinzenais.`
+  },
+  microagulhamento: {
+    titulo: '🔬 Microagulhamento',
+    conteudo: `<strong>Indicação:</strong> Cicatrizes de acne, estrias, manchas, rejuvenescimento, queda de cabelo.<br/><br/>
+<strong>Contraindicações:</strong> Acne ativa, gestação, queloides, uso de anticoagulantes, dermatites ativas, herpes ativa.<br/><br/>
+<strong>Profundidades (roller/caneta):</strong><br/>
+• 0,25-0,5mm: Penetração de ativos, skincare<br/>
+• 0,5-1,0mm: Manchas, estrias superficiais<br/>
+• 1,0-1,5mm: Cicatrizes de acne, rejuvenescimento<br/>
+• 1,5-2,5mm: Estrias profundas, cicatrizes graves<br/><br/>
+<strong>Protocolo:</strong><br/>
+1. Limpeza e antissepsia da pele<br/>
+2. Aplicar anestesia tópica (30-60 min antes se necessário)<br/>
+3. Remover anestesia com soro fisiológico<br/>
+4. Aplicar ativo desejado (vitamina C, HA, fator de crescimento)<br/>
+5. Realizar microagulhamento com movimentos verticais, horizontais e diagonais<br/>
+6. Repetir 4-6 vezes por área<br/>
+7. Aplicar ativo novamente após procedimento<br/>
+8. Máscara calmante (LED vermelho ou alginato)<br/>
+9. Protetor solar FPS 50+<br/><br/>
+<strong>Pós-procedimento:</strong> Eritema por 24-72h é normal. Não maquiar por 48h, FPS 50+ obrigatório, não expor ao sol por 15 dias.`
+  },
+  hidratacao: {
+    titulo: '💧 Hidratação Profunda',
+    conteudo: `<strong>Indicação:</strong> Peles desidratadas, sensíveis, pós-procedimento, ressecamento.<br/><br/>
+<strong>Contraindicações:</strong> Alergia aos ativos utilizados.<br/><br/>
+<strong>Ativos hidratantes principais:</strong><br/>
+• Ácido Hialurônico: Retenção de água, volumização<br/>
+• Glicerina: Umectante, barreira de proteção<br/>
+• Ceramidas: Restauração da barreira cutânea<br/>
+• Niacinamida: Anti-inflamatório, hidratação<br/>
+• Pantenol: Calmante e hidratante<br/><br/>
+<strong>Protocolo:</strong><br/>
+1. Limpeza suave com produto pH neutro<br/>
+2. Esfoliação leve (opcional, se não houver contraindicação)<br/>
+3. Tonificação com água termal ou tônico calmante<br/>
+4. Aplicação de sérum com ácido hialurônico<br/>
+5. Máscara hidratante (alginato, folha ou gel) por 20 min<br/>
+6. Remoção e aplicação de creme hidratante<br/>
+7. Protetor solar para finalizar<br/><br/>
+<strong>Sessões recomendadas:</strong> 1x por semana por 4-6 semanas, depois mensal de manutenção.`
+  },
+  anticelulite: {
+    titulo: '🌀 Protocolo Anticelulite',
+    conteudo: `<strong>Indicação:</strong> Celulite graus I ao IV, gordura localizada, flacidez corporal.<br/><br/>
+<strong>Contraindicações:</strong> Gestação, varizes graves, trombose, lesões cutâneas abertas.<br/><br/>
+<strong>Graus de celulite:</strong><br/>
+• Grau I: Visível só com pressão — protocolo preventivo<br/>
+• Grau II: Visível em pé — massagem + RF<br/>
+• Grau III: Visível deitada — combinação intensiva<br/>
+• Grau IV: Dor ao toque — protocolo médico/estético combinado<br/><br/>
+<strong>Protocolo Combinado (mais eficaz):</strong><br/>
+1. Drenagem linfática (20 min) — preparo do tecido<br/>
+2. Radiofrequência nas áreas (15-20 min) — aquecimento profundo<br/>
+3. Massagem modeladora (20 min) — desfibrosamento<br/>
+4. Ventosa/pressão negativa (10 min) — quebra de fibrose<br/>
+5. Finalizar com creme redutor e massagem de absorção<br/><br/>
+<strong>Frequência:</strong> 2x por semana, mínimo 12 sessões.<br/><br/>
+<strong>Resultados esperados:</strong> Visíveis a partir da 4ª-6ª sessão com manutenção de dieta e exercícios.<br/><br/>
+<strong>Orientações:</strong> Hidratação abundante, exercício aeróbico 3x/semana, reduzir sódio e gordura saturada.`
+  }
+};
+
+let _protocoloAtual = '';
+function openProtocolo(key) {
+  const p = protocolos[key];
+  if(!p) return;
+  _protocoloAtual = key;
+  document.getElementById('proto-title').textContent = p.titulo;
+  document.getElementById('proto-content').innerHTML = p.conteudo;
+  openModal('modal-protocolo');
+}
+
+// ── FOLHETO PÓS-PROCEDIMENTO ─────────────────────────
+const posProc = {
+  limpeza: {
+    titulo: 'Limpeza de Pele Profunda',
+    itens: [
+      'Não se maquie nas primeiras 24 horas após o procedimento.',
+      'Evite exposição ao sol por pelo menos 48 horas.',
+      'Não esprema cravos ou espinhas nos próximos dias.',
+      'Use apenas sabonete suave para lavar o rosto — sem esfoliantes.',
+      'Aplique protetor solar FPS 30+ diariamente.',
+      'A pele pode ficar levemente avermelhada por algumas horas — é normal.',
+      'Mantenha hidratação abundante com seu hidratante habitual.',
+      'Evite academias e atividades que causem suor excessivo por 24h.'
+    ]
+  },
+  peeling: {
+    titulo: 'Peeling Químico',
+    itens: [
+      'Descamação da pele é esperada entre 3 e 7 dias — NÃO arranque ou esfregue.',
+      'Hidrate intensamente com o produto indicado pela profissional.',
+      'Use protetor solar FPS 50+ obrigatoriamente, mesmo em dias nublados.',
+      'Evite exposição ao sol por no mínimo 15 dias.',
+      'Não use ácidos, retinol ou esfoliantes enquanto houver descamação.',
+      'Não se maquie enquanto houver pele descamando.',
+      'Se sentir ardência intensa ou bolhas, entre em contato imediatamente.',
+      'Beba bastante água para auxiliar na regeneração da pele.'
+    ]
+  },
+  drenagem: {
+    titulo: 'Drenagem Linfática',
+    itens: [
+      'Beba no mínimo 2 litros de água ao longo do dia.',
+      'Evite consumo de álcool e alimentos ricos em sódio por 24h.',
+      'Pratique uma caminhada leve após a sessão para potencializar o resultado.',
+      'Não tome banho muito quente logo após o procedimento.',
+      'Use meias de compressão se indicadas pela profissional.',
+      'Mantenha as pernas elevadas ao deitar para potencializar o efeito.',
+      'Evite cruzar as pernas ao sentar.'
+    ]
+  },
+  modeladora: {
+    titulo: 'Massagem Modeladora',
+    itens: [
+      'Beba bastante água — pelo menos 2 litros ao longo do dia.',
+      'Não tome banho muito quente nas próximas 2 horas.',
+      'Evite bebidas alcoólicas por 24 horas.',
+      'Mantenha atividade física regular para potencializar os resultados.',
+      'Aplique o creme modelador indicado pela profissional diariamente.',
+      'Evite alimentos muito salgados que causem retenção de líquidos.',
+      'Leve pode aparecer hematomas (roxos) — são normais e passam em 3-5 dias.'
+    ]
+  },
+  radiofrequencia: {
+    titulo: 'Radiofrequência',
+    itens: [
+      'A pele pode ficar levemente avermelhada e aquecida por algumas horas — é normal.',
+      'Aplique o sérum ou creme hidratante indicado pela profissional.',
+      'Use protetor solar FPS 30+ no rosto se o procedimento foi facial.',
+      'Beba bastante água para potencializar a produção de colágeno.',
+      'Evite sauna e banhos muito quentes por 24 horas.',
+      'Não aplique ácidos ou retinol por 48 horas (uso facial).',
+      'Mantenha os retornos conforme agendado para melhores resultados.'
+    ]
+  },
+  microagulhamento: {
+    titulo: 'Microagulhamento',
+    itens: [
+      'Eritema (vermelhidão) e leve inchaço por 24-72 horas são absolutamente normais.',
+      'NÃO se maquie por 48 horas após o procedimento.',
+      'Use protetor solar FPS 50+ obrigatoriamente.',
+      'Evite exposição ao sol por pelo menos 15 dias.',
+      'Não use ácidos, vitamina C, retinol ou esfoliantes por 7 dias.',
+      'Não frequente academia, sauna ou piscina por 48 horas.',
+      'Aplique apenas o produto calmante indicado pela profissional.',
+      'Em caso de reação incomum ou sinais de infecção, entre em contato.'
+    ]
+  },
+  hidratacao: {
+    titulo: 'Hidratação Profunda',
+    itens: [
+      'Mantenha a rotina de hidratação indicada pela profissional.',
+      'Use protetor solar FPS 30+ diariamente.',
+      'Beba bastante água ao longo do dia.',
+      'Evite produtos com álcool nas próximas 24 horas.',
+      'Não se maquie por pelo menos 4 horas após o procedimento.',
+      'Para melhores resultados, realize sessões de manutenção conforme indicado.'
+    ]
+  },
+  anticelulite: {
+    titulo: 'Protocolo Anticelulite',
+    itens: [
+      'Beba pelo menos 2 litros de água ao longo do dia.',
+      'Aplique o creme anticelulite indicado 2x ao dia com massagem circular.',
+      'Evite alimentos ultraprocessados, refrigerantes e excesso de sal.',
+      'Pratique atividade física regularmente — caminhada mínima de 30 min/dia.',
+      'Evite bebidas alcoólicas por 24 horas.',
+      'Podem aparecer pequenos hematomas — são normais e passageiros.',
+      'Mantenha os retornos semanais para evolução do resultado.',
+      'Use meia-calça de compressão se indicada pela profissional.'
+    ]
+  }
+};
+
+function gerarFolhetoPosAtual() {
+  const key = _protocoloAtual;
+  const info = posProc[key];
+  if(!info){ alert('Folheto não disponível para este protocolo.'); return; }
+  const doc = new jsPDF();
+  pdfHeader(doc, 'Cuidados Pós-Procedimento');
+  let y = 35;
+  // Título do procedimento
+  doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+  doc.text(info.titulo, 105, y, {align:'center'}); y += 10;
+  // Faixa decorativa
+  doc.setFillColor(253,242,248);
+  doc.rect(14, y, 182, 8, 'F');
+  doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(131,24,67);
+  doc.text('ORIENTAÇÕES IMPORTANTES — SIGA PARA MELHORES RESULTADOS', 105, y+5.5, {align:'center'});
+  y += 16;
+  // Itens
+  doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55); doc.setFontSize(10);
+  info.itens.forEach((item, i) => {
+    if(y > 262){ doc.addPage(); pdfHeader(doc,'Cuidados Pós-Procedimento'); y=35; }
+    // Círculo numerado
+    doc.setFillColor(219,39,119);
+    doc.circle(20, y-1.5, 3.5, 'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text(String(i+1), 20, y-0.5, {align:'center'});
+    // Texto
+    doc.setTextColor(31,41,55); doc.setFontSize(9.5); doc.setFont('helvetica','normal');
+    const lines = doc.splitTextToSize(item, 164);
+    doc.text(lines, 27, y);
+    y += lines.length * 6 + 4;
+  });
+  // Faixa dúvidas
+  y += 4;
+  if(y > 255){ doc.addPage(); pdfHeader(doc,'Cuidados Pós-Procedimento'); y=35; }
+  doc.setFillColor(131,24,67);
+  doc.rect(14, y, 182, 18, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(10); doc.setFont('helvetica','bold');
+  doc.text('Dúvidas? Entre em contato:', 105, y+7, {align:'center'});
+  doc.setFontSize(11); doc.setFont('helvetica','bold');
+  doc.text(config.tel||'(00) 00000-0000', 105, y+14, {align:'center'});
+  pdfFooter(doc);
+  const nomeArq = info.titulo.replace(/\s+/g,'-').toLowerCase();
+  doc.save(`pos-procedimento-${nomeArq}.pdf`);
+  incrementDoc();
+}
+
+// ── INIT ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // set today date in date fields
+  const today = new Date().toISOString().split('T')[0];
+  ['an-data','ev-data','tc-data','orc-data','pac-inicio','foto-data'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = today;
+  });
+  renderClientes();
+  renderPacotes();
+  renderFotos();
+  updateStats();
+  loadConfig();
+});
+</script>
+
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav">
+  <button class="bottom-nav-item active" id="bn-dashboard" onclick="navigate('dashboard')">
+    <i class="fas fa-home"></i><span>Início</span>
+  </button>
+  <button class="bottom-nav-item" id="bn-clientes" onclick="navigate('clientes')">
+    <i class="fas fa-users"></i><span>Clientes</span>
+  </button>
+  <button class="bottom-nav-item" id="bn-anamnese" onclick="navigate('anamnese')">
+    <i class="fas fa-clipboard-list"></i><span>Anamnese</span>
+  </button>
+  <button class="bottom-nav-item" id="bn-protocolos" onclick="navigate('protocolos')">
+    <i class="fas fa-spa"></i><span>Protocolos</span>
+  </button>
+  <button class="bottom-nav-item" id="bn-config" onclick="navigate('config')">
+    <i class="fas fa-cog"></i><span>Config</span>
+  </button>
+</nav>
+</body>
+</html>
