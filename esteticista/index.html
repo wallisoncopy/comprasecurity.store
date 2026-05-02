@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>App Esteticista Pro — Organize sua Clínica de Estética</title>
+<meta name="description" content="App para esteticistas com 30+ protocolos, ficha de anamnese, PDFs profissionais, fotos antes e depois e muito mais. Acesso vitalício por apenas R$17."/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --rosa:#db2777;
+  --rosa-escuro:#9d174d;
+  --rosa-mais-escuro:#831843;
+  --rosa-claro:#fdf2f8;
+  --rosa-borda:#fbcfe8;
+  --dark:#1C1917;
+  --dark2:#292524;
+  --dark3:#44403c;
+  --text:#1C1917;
+  --gray:#6b7280;
+  --white:#fff;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+
+/* TOPBAR */
+.topbar{
+  background:var(--rosa-mais-escuro);
+  color:#fff;
+  text-align:center;
+  padding:.6rem 1rem;
+  font-size:.85rem;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.topbar span{opacity:.85;margin:0 .5rem}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,#1C1917 0%,#3b0764 60%,#831843 100%);
+  color:#fff;
+  padding:3.5rem 1.5rem 4rem;
+  text-align:center;
+}
+.hero-badge{
+  display:inline-block;
+  background:rgba(219,39,119,.25);
+  border:1px solid rgba(219,39,119,.5);
+  color:#f9a8d4;
+  font-size:.8rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:.35rem 1rem;
+  border-radius:999px;
+  margin-bottom:1.2rem;
+}
+.hero h1{
+  font-size:clamp(1.7rem,5vw,2.8rem);
+  font-weight:800;
+  line-height:1.2;
+  max-width:720px;
+  margin:0 auto 1rem;
+}
+.hero h1 span{color:#f472b6}
+.hero-sub{
+  font-size:1.05rem;
+  opacity:.85;
+  max-width:560px;
+  margin:0 auto 2rem;
+  line-height:1.6;
+}
+.hero-mockup{
+  max-width:320px;
+  margin:0 auto 2rem;
+  filter:drop-shadow(0 24px 48px rgba(219,39,119,.35));
+}
+.hero-mockup img{width:100%;display:block;border-radius:24px}
+.btn-hero{
+  display:inline-block;
+  background:var(--rosa);
+  color:#fff;
+  font-size:1.15rem;
+  font-weight:800;
+  padding:1rem 2.5rem;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  transition:background .2s,transform .15s;
+  box-shadow:0 4px 20px rgba(219,39,119,.4);
+  text-decoration:none;
+}
+.btn-hero:hover{background:var(--rosa-escuro);transform:translateY(-2px)}
+.hero-note{margin-top:.9rem;font-size:.82rem;opacity:.6}
+
+/* NUMEROS */
+.numeros{
+  background:var(--rosa);
+  color:#fff;
+  padding:2rem 1.5rem;
+}
+.numeros-grid{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:1.5rem 3rem;
+  max-width:800px;
+  margin:0 auto;
+  text-align:center;
+}
+.num-item strong{font-size:2rem;font-weight:900;display:block;line-height:1}
+.num-item span{font-size:.82rem;opacity:.85;margin-top:.2rem;display:block}
+
+/* DOR */
+.dor{
+  padding:4rem 1.5rem;
+  background:#fff;
+}
+.section-label{
+  text-align:center;
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--rosa);
+  margin-bottom:.6rem;
+}
+.section-title{
+  text-align:center;
+  font-size:clamp(1.4rem,4vw,2rem);
+  font-weight:800;
+  max-width:620px;
+  margin:0 auto 2.5rem;
+  line-height:1.25;
+}
+.dor-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:1rem;
+  max-width:900px;
+  margin:0 auto;
+}
+.dor-card{
+  background:#FFF1F5;
+  border:1px solid #fbcfe8;
+  border-radius:10px;
+  padding:1.2rem 1.4rem;
+  display:flex;
+  gap:.8rem;
+  align-items:flex-start;
+}
+.dor-card .icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}
+.dor-card p{font-size:.92rem;color:#6b1234;line-height:1.5}
+
+/* SOLUCAO */
+.solucao{
+  padding:4rem 1.5rem;
+  background:var(--rosa-claro);
+}
+.feat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1.2rem;
+  max-width:960px;
+  margin:0 auto;
+}
+.feat-card{
+  background:#fff;
+  border-radius:10px;
+  padding:1.4rem;
+  border-top:3px solid var(--rosa);
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.feat-card .feat-icon{font-size:1.6rem;margin-bottom:.6rem}
+.feat-card h3{font-size:.95rem;font-weight:700;margin-bottom:.4rem;color:var(--dark)}
+.feat-card p{font-size:.85rem;color:var(--gray);line-height:1.5}
+
+/* SHOWCASE */
+.showcase{
+  background:var(--dark);
+  padding:1rem 0 4rem;
+  color:#fff;
+}
+.showcase-header{
+  text-align:center;
+  padding:3rem 1.5rem 0;
+}
+.showcase-header .section-label{color:#f9a8d4}
+.showcase-header .section-title{color:#fff}
+.sc-item{
+  display:flex;
+  align-items:center;
+  gap:3.5rem;
+  max-width:1020px;
+  margin:0 auto;
+  padding:4rem 2rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.sc-item:last-child{border-bottom:none}
+.sc-item.rev{flex-direction:row-reverse}
+.sc-img{
+  flex:0 0 300px;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 16px 48px rgba(0,0,0,.6);
+  border:1px solid rgba(219,39,119,.25);
+}
+.sc-img img{width:100%;display:block}
+.sc-text{flex:1}
+.sc-tag{
+  display:inline-block;
+  background:rgba(219,39,119,.18);
+  border:1px solid rgba(219,39,119,.4);
+  color:#f9a8d4;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:.3rem .9rem;
+  border-radius:999px;
+  margin-bottom:1rem;
+}
+.sc-text h3{
+  font-size:clamp(1.2rem,2.5vw,1.6rem);
+  font-weight:800;
+  line-height:1.25;
+  color:#fff;
+  margin-bottom:.75rem;
+}
+.sc-text p{
+  font-size:.92rem;
+  color:rgba(255,255,255,.6);
+  line-height:1.75;
+  margin-bottom:1.2rem;
+}
+.sc-bullets{list-style:none;margin-bottom:1.5rem}
+.sc-bullets li{
+  font-size:.875rem;
+  color:rgba(255,255,255,.8);
+  padding:.3rem 0;
+  display:flex;gap:.6rem;align-items:flex-start;
+}
+.sc-bullets li .ck{color:#4ade80;flex-shrink:0;margin-top:.05rem}
+.sc-cta{
+  display:inline-block;
+  background:var(--rosa);
+  color:#fff;
+  font-size:.875rem;
+  font-weight:700;
+  padding:.6rem 1.5rem;
+  border-radius:6px;
+  text-decoration:none;
+  transition:background .2s,transform .15s;
+  box-shadow:0 4px 12px rgba(219,39,119,.3);
+}
+.sc-cta:hover{background:var(--rosa-escuro);transform:translateY(-1px)}
+@media(max-width:800px){
+  .sc-item,.sc-item.rev{flex-direction:column;gap:1.8rem;padding:2.5rem 1.2rem}
+  .sc-img{flex:unset;width:100%;max-width:380px;margin:0 auto}
+}
+
+/* DEPOIMENTOS */
+.depos{
+  padding:4rem 1.5rem;
+  background:#f9fafb;
+}
+.dep-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1.2rem;
+  max-width:960px;
+  margin:0 auto;
+}
+.dep-card{
+  background:#fff;
+  border-radius:10px;
+  padding:1.4rem;
+  box-shadow:0 1px 6px rgba(0,0,0,.07);
+  border:1px solid #f3f4f6;
+}
+.dep-stars{color:#f59e0b;font-size:1rem;margin-bottom:.6rem}
+.dep-text{font-size:.9rem;color:#374151;line-height:1.6;margin-bottom:.8rem;font-style:italic}
+.dep-author{font-size:.82rem;font-weight:700;color:var(--rosa)}
+.dep-city{font-size:.78rem;color:var(--gray);margin-top:.1rem}
+
+/* PRECO */
+.preco{
+  background:linear-gradient(135deg,var(--dark) 0%,#3b0764 100%);
+  color:#fff;
+  padding:4rem 1.5rem;
+  text-align:center;
+}
+.preco .section-label{color:#f9a8d4}
+.preco .section-title{color:#fff}
+.preco-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1.2rem;
+  justify-content:center;
+  max-width:760px;
+  margin:2rem auto;
+}
+.preco-card{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  padding:2rem 1.8rem;
+  flex:1;
+  min-width:240px;
+  max-width:340px;
+  position:relative;
+  transition:transform .2s;
+}
+.preco-card:hover{transform:translateY(-4px)}
+.preco-card.destaque{
+  border-color:var(--rosa);
+  background:rgba(219,39,119,.08);
+  box-shadow:0 0 30px rgba(219,39,119,.2);
+}
+.badge-destaque{
+  position:absolute;
+  top:-13px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--rosa);
+  color:#fff;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:.25rem .9rem;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.preco-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:rgba(255,255,255,.7)}
+.preco-valor{
+  font-size:2.8rem;
+  font-weight:900;
+  line-height:1;
+  color:#fff;
+}
+.preco-valor sup{font-size:1.1rem;vertical-align:top;margin-top:.5rem;display:inline-block}
+.preco-desc{font-size:.8rem;color:rgba(255,255,255,.5);margin:.4rem 0 1.2rem}
+.preco-lista{list-style:none;text-align:left;margin-bottom:1.5rem}
+.preco-lista li{
+  font-size:.85rem;
+  color:rgba(255,255,255,.8);
+  padding:.35rem 0;
+  display:flex;
+  gap:.5rem;
+  align-items:flex-start;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.preco-lista li span{color:#4ade80;font-size:.9rem;flex-shrink:0;margin-top:.05rem}
+.btn-preco{
+  display:block;
+  background:var(--rosa);
+  color:#fff;
+  font-size:1rem;
+  font-weight:800;
+  padding:.85rem 1.5rem;
+  border-radius:8px;
+  text-align:center;
+  text-decoration:none;
+  transition:background .2s,transform .15s;
+  box-shadow:0 4px 14px rgba(219,39,119,.35);
+}
+.btn-preco:hover{background:var(--rosa-escuro);transform:translateY(-2px)}
+
+/* GARANTIA */
+.garantia{
+  max-width:680px;
+  margin:2rem auto 0;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  padding:1.5rem;
+  display:flex;
+  gap:1.2rem;
+  align-items:flex-start;
+  text-align:left;
+}
+.garantia-icon{font-size:2.5rem;flex-shrink:0}
+.garantia h4{font-size:.95rem;font-weight:800;margin-bottom:.3rem;color:#fff}
+.garantia p{font-size:.82rem;color:rgba(255,255,255,.65);line-height:1.5}
+
+/* RECEBE */
+.recebe{
+  max-width:680px;
+  margin:1.5rem auto 0;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  padding:1.5rem;
+  text-align:left;
+}
+.recebe h4{font-size:.95rem;font-weight:800;color:#fff;margin-bottom:.8rem}
+.recebe-lista{list-style:none}
+.recebe-lista li{
+  font-size:.85rem;
+  color:rgba(255,255,255,.8);
+  padding:.3rem 0;
+  display:flex;
+  gap:.5rem;
+  align-items:center;
+}
+.recebe-lista li span{color:#4ade80}
+
+/* SEGURANCA */
+.seguranca{
+  max-width:680px;
+  margin:1.5rem auto 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.6rem;
+  justify-content:center;
+}
+.seg-badge{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:6px;
+  padding:.4rem .8rem;
+  font-size:.75rem;
+  color:rgba(255,255,255,.6);
+  display:flex;
+  gap:.4rem;
+  align-items:center;
+}
+
+/* FAQ */
+.faq{
+  padding:4rem 1.5rem;
+  background:#fff;
+}
+.faq-list{
+  max-width:680px;
+  margin:0 auto;
+}
+.faq-item{
+  border-bottom:1px solid #f3f4f6;
+}
+.faq-item summary{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:1.1rem .2rem;
+  cursor:pointer;
+  font-weight:700;
+  font-size:.92rem;
+  color:var(--dark);
+  list-style:none;
+  user-select:none;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{
+  content:'+';
+  font-size:1.3rem;
+  color:var(--rosa);
+  font-weight:300;
+  flex-shrink:0;
+  transition:transform .2s;
+}
+.faq-item[open] summary::after{content:'−'}
+.faq-item p{
+  font-size:.88rem;
+  color:var(--gray);
+  line-height:1.65;
+  padding:.2rem .2rem 1.2rem;
+}
+
+/* FOOTER CTA */
+.footer-cta{
+  background:var(--rosa);
+  color:#fff;
+  text-align:center;
+  padding:3rem 1.5rem;
+}
+.footer-cta h2{font-size:clamp(1.3rem,4vw,1.8rem);font-weight:800;margin-bottom:.8rem;line-height:1.3}
+.footer-cta p{font-size:.9rem;opacity:.85;margin-bottom:1.8rem;max-width:480px;margin-left:auto;margin-right:auto}
+.btn-footer{
+  display:inline-block;
+  background:#fff;
+  color:var(--rosa-mais-escuro);
+  font-size:1rem;
+  font-weight:800;
+  padding:.9rem 2.2rem;
+  border-radius:8px;
+  text-decoration:none;
+  transition:transform .15s;
+  box-shadow:0 4px 14px rgba(0,0,0,.15);
+}
+.btn-footer:hover{transform:translateY(-2px)}
+
+/* FOOTER */
+footer{
+  background:var(--dark);
+  color:rgba(255,255,255,.5);
+  text-align:center;
+  padding:1.8rem 1.5rem;
+  font-size:.78rem;
+  line-height:1.7;
+}
+footer a{color:rgba(255,255,255,.4);text-decoration:underline}
+
+/* POPUP PROVA SOCIAL */
+.social-popup{
+  position:fixed;
+  bottom:1.5rem;
+  left:1.5rem;
+  background:#fff;
+  border:1px solid #f3f4f6;
+  border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  padding:.8rem 1rem;
+  z-index:9999;
+  max-width:260px;
+  display:flex;
+  gap:.7rem;
+  align-items:center;
+  transform:translateX(-320px);
+  transition:transform .4s ease;
+  pointer-events:none;
+}
+.social-popup.show{transform:translateX(0)}
+.sp-avatar{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--rosa),var(--rosa-mais-escuro));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:.9rem;font-weight:700;
+  flex-shrink:0;
+}
+.sp-text{font-size:.75rem;color:#374151;line-height:1.4}
+.sp-name{font-weight:700;color:var(--dark)}
+.sp-time{color:var(--gray);font-size:.7rem;margin-top:.1rem}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .preco-grid{flex-direction:column;align-items:stretch}
+  .preco-card{max-width:100%}
+  .garantia{flex-direction:column;gap:.6rem}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  ✅ Acesso imediato após a compra
+  <span>|</span>
+  🔒 Pagamento único — sem mensalidade
+  <span>|</span>
+  7 dias de garantia
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🌸 Exclusivo para Esteticistas</div>
+  <h1>O app que toda esteticista <span>precisava ter</span> na clínica</h1>
+  <p class="hero-sub">Fichas de anamnese, 30+ protocolos, PDFs profissionais, fotos antes e depois e controle de pacotes — tudo em um só lugar. Sem papel, sem bagunça.</p>
+
+  <div class="hero-mockup">
+    <img src="https://i.ibb.co/vCm7THFM/Chat-GPT-Image-2-de-mai-de-2026-15-21-39.png" alt="App Esteticista Pro no celular"/>
+  </div>
+
+  <a href="#preco" class="btn-hero">🌸 QUERO MEU APP POR R$17</a>
+  <p class="hero-note">⚡ Acesso imediato · Funciona no celular e no computador</p>
+</section>
+
+<!-- NUMEROS -->
+<section class="numeros">
+  <div class="numeros-grid">
+    <div class="num-item">
+      <strong>30+</strong>
+      <span>Protocolos de estética</span>
+    </div>
+    <div class="num-item">
+      <strong>8</strong>
+      <span>Categorias de tratamento</span>
+    </div>
+    <div class="num-item">
+      <strong>7 dias</strong>
+      <span>De garantia total</span>
+    </div>
+    <div class="num-item">
+      <strong>1x</strong>
+      <span>Pagamento único</span>
+    </div>
+  </div>
+</section>
+
+<!-- DOR -->
+<section class="dor">
+  <p class="section-label">⚠️ Você se identifica?</p>
+  <h2 class="section-title">Quantas vezes você já passou por isso na sua clínica?</h2>
+  <div class="dor-grid">
+    <div class="dor-card">
+      <div class="icon">📄</div>
+      <p>Fichas de papel perdidas, rasuradas ou difíceis de encontrar na hora do atendimento</p>
+    </div>
+    <div class="dor-card">
+      <div class="icon">😰</div>
+      <p>Sem histórico claro dos tratamentos da cliente — precisa perguntar de novo o que ela já fez</p>
+    </div>
+    <div class="dor-card">
+      <div class="icon">🕐</div>
+      <p>Horas perdidas preenchendo documentos à mão enquanto poderia estar atendendo</p>
+    </div>
+    <div class="dor-card">
+      <div class="icon">📊</div>
+      <p>Sem controle dos pacotes vendidos — não sabe quantas sessões a cliente ainda tem</p>
+    </div>
+    <div class="dor-card">
+      <div class="icon">📸</div>
+      <p>Fotos antes e depois espalhadas no celular, sem organização por cliente ou tratamento</p>
+    </div>
+    <div class="dor-card">
+      <div class="icon">💌</div>
+      <p>Passa o pós-procedimento verbalmente e a cliente esquece — reclamações e resultados ruins</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUCAO -->
+<section class="solucao">
+  <p class="section-label">✨ A solução</p>
+  <h2 class="section-title">Tudo que você precisa para profissionalizar sua clínica de estética</h2>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon">📋</div>
+      <h3>Ficha de Anamnese Completa</h3>
+      <p>Histórico detalhado de cada cliente: alergias, medicamentos, condições da pele, histórico de tratamentos e muito mais.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🌿</div>
+      <h3>30+ Protocolos de Estética</h3>
+      <p>Pelling, microagulhamento, limpeza de pele, radiofrequência, ultrassom, drenagem e outros protocolos completos.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📄</div>
+      <h3>PDFs Profissionais com sua Logo</h3>
+      <p>Gere fichas e relatórios com o nome e logo da sua clínica. Envie para o cliente pelo WhatsApp em segundos.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📸</div>
+      <h3>Fotos Antes e Depois</h3>
+      <p>Galeria organizada por cliente e por tratamento. Mostre a evolução e prove o resultado do seu trabalho.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📦</div>
+      <h3>Controle de Pacotes de Sessões</h3>
+      <p>Saiba exatamente quantas sessões cada cliente tem disponível. Nunca mais perca o controle dos pacotes vendidos.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">💌</div>
+      <h3>Folheto Pós-Procedimento</h3>
+      <p>PDF com instruções de cuidados pós-tratamento específico para cada protocolo. Profissional e sem retrabalho.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE: APP POR DENTRO -->
+<section class="showcase">
+  <div class="showcase-header">
+    <p class="section-label">📱 Veja o app por dentro</p>
+    <h2 class="section-title">Cada detalhe foi pensado para <span style="color:#f472b6">sua clínica</span></h2>
+  </div>
+
+  <!-- 1 -->
+  <div class="sc-item">
+    <div class="sc-img">
+      <img src="https://i.ibb.co/2DDkp09/Captura-de-Tela-2026-05-02-a-s-14-55-17.png" alt="Dashboard do App Esteticista"/>
+    </div>
+    <div class="sc-text">
+      <span class="sc-tag">📱 Painel Principal</span>
+      <h3>Tudo da sua clínica em um só lugar</h3>
+      <p>Chega de anotar em papel, caderno ou WhatsApp. No App Esteticista Pro você tem uma visão completa da sua clínica assim que abre o app — clientes, protocolos e documentos organizados do jeito que você sempre quis.</p>
+      <ul class="sc-bullets">
+        <li><span class="ck">✓</span> Acesso rápido a qualquer função da clínica</li>
+        <li><span class="ck">✓</span> Interface limpa e fácil de usar no celular</li>
+        <li><span class="ck">✓</span> Tudo em português, pensado para esteticistas</li>
+      </ul>
+      <a href="#preco" class="sc-cta">🌸 Quero esse app</a>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="sc-item rev">
+    <div class="sc-img">
+      <img src="https://i.ibb.co/PpyHtmD/Captura-de-Tela-2026-05-02-a-s-14-55-33.png" alt="Gestão de Clientes"/>
+    </div>
+    <div class="sc-text">
+      <span class="sc-tag">👩 Gestão de Clientes</span>
+      <h3>Cada cliente no lugar certo, com histórico completo</h3>
+      <p>Cadastre suas clientes uma única vez e tenha acesso ao histórico de tratamentos, observações e dados de contato sempre que precisar — mesmo durante o atendimento, direto no celular.</p>
+      <ul class="sc-bullets">
+        <li><span class="ck">✓</span> Histórico de todos os atendimentos por cliente</li>
+        <li><span class="ck">✓</span> Busca rápida pelo nome da cliente</li>
+        <li><span class="ck">✓</span> Dados sempre atualizados e organizados</li>
+      </ul>
+      <a href="#preco" class="sc-cta">🌸 Quero esse app</a>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="sc-item">
+    <div class="sc-img">
+      <img src="https://i.ibb.co/8TxbwtQ/Captura-de-Tela-2026-05-02-a-s-14-55-58.png" alt="Ficha de Anamnese"/>
+    </div>
+    <div class="sc-text">
+      <span class="sc-tag">📋 Ficha de Anamnese</span>
+      <h3>Ficha clínica completa — do jeito que profissional usa</h3>
+      <p>Antes de qualquer procedimento, você precisa saber o histórico da sua cliente. Alergias, medicamentos, condições de saúde, histórico de tratamentos — tudo registrado em uma ficha profissional que gera PDF com o nome da sua clínica.</p>
+      <ul class="sc-bullets">
+        <li><span class="ck">✓</span> Campos específicos para estética facial e corporal</li>
+        <li><span class="ck">✓</span> Contraindicações em destaque para maior segurança</li>
+        <li><span class="ck">✓</span> Gere a ficha em PDF com 1 clique</li>
+      </ul>
+      <a href="#preco" class="sc-cta">🌸 Quero esse app</a>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="sc-item rev">
+    <div class="sc-img">
+      <img src="https://i.ibb.co/fV4dZJZc/Captura-de-Tela-2026-05-02-a-s-14-56-22.png" alt="Protocolos de Estética"/>
+    </div>
+    <div class="sc-text">
+      <span class="sc-tag">🌿 Protocolos</span>
+      <h3>30+ protocolos detalhados na palma da sua mão</h3>
+      <p>De peeling químico a microagulhamento, radiofrequência, limpeza profunda, drenagem linfática e muito mais. Cada protocolo com todos os passos, materiais e observações importantes — consulte durante o atendimento sem constrangimento.</p>
+      <ul class="sc-bullets">
+        <li><span class="ck">✓</span> Organizados por categoria de tratamento</li>
+        <li><span class="ck">✓</span> Detalhes completos de cada procedimento</li>
+        <li><span class="ck">✓</span> Sem precisar de caderno ou apostila</li>
+      </ul>
+      <a href="#preco" class="sc-cta">🌸 Quero esse app</a>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="sc-item">
+    <div class="sc-img">
+      <img src="https://i.ibb.co/zWFb4BnB/Captura-de-Tela-2026-05-02-a-s-14-56-39.png" alt="PDFs Profissionais"/>
+    </div>
+    <div class="sc-text">
+      <span class="sc-tag">📄 PDFs Profissionais</span>
+      <h3>Documentos com o nome da sua clínica — em segundos</h3>
+      <p>Adicione o logo da sua clínica uma única vez e pronto: toda ficha, anamnese e protocolo pode ser exportado em PDF profissional. Envie pelo WhatsApp e surpreenda suas clientes com o nível de serviço que você oferece.</p>
+      <ul class="sc-bullets">
+        <li><span class="ck">✓</span> Logo e nome da clínica no cabeçalho do documento</li>
+        <li><span class="ck">✓</span> Pronto para enviar pelo WhatsApp em segundos</li>
+        <li><span class="ck">✓</span> Diferencia você de 90% das esteticistas do mercado</li>
+      </ul>
+      <a href="#preco" class="sc-cta">🌸 Quero esse app</a>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="sc-item rev">
+    <div class="sc-img">
+      <img src="https://i.ibb.co/HDCykMYz/Captura-de-Tela-2026-05-02-a-s-14-56-52.png" alt="Fotos Antes e Depois"/>
+    </div>
+    <div class="sc-text">
+      <span class="sc-tag">📸 Antes e Depois</span>
+      <h3>Mostre o resultado do seu trabalho sem enrolação</h3>
+      <p>Registre fotos antes e depois de cada procedimento, organizadas por cliente e por tratamento. Prove a evolução da pele, use nas redes sociais e feche mais contratos com evidências visuais reais do seu trabalho.</p>
+      <ul class="sc-bullets">
+        <li><span class="ck">✓</span> Galeria organizada por cliente e por tratamento</li>
+        <li><span class="ck">✓</span> Comparação lado a lado dentro do app</li>
+        <li><span class="ck">✓</span> Banco de resultados para usar no Instagram e captação</li>
+      </ul>
+      <a href="#preco" class="sc-cta">🌸 Quero esse app</a>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="sc-item">
+    <div class="sc-img">
+      <img src="https://i.ibb.co/tTSx6dd1/Captura-de-Tela-2026-05-02-a-s-14-57-21.png" alt="Controle de Pacotes"/>
+    </div>
+    <div class="sc-text">
+      <span class="sc-tag">📦 Pacotes de Sessões</span>
+      <h3>Nunca mais perca o controle de um pacote vendido</h3>
+      <p>Vendeu um pacote de 10 sessões de radiofrequência? O app acompanha cada sessão realizada com barra de progresso visual. Você sabe exatamente o que cada cliente tem disponível — e sua cliente confia ainda mais no seu profissionalismo.</p>
+      <ul class="sc-bullets">
+        <li><span class="ck">✓</span> Barra de progresso visual para cada pacote</li>
+        <li><span class="ck">✓</span> Registro fácil de cada sessão realizada</li>
+        <li><span class="ck">✓</span> Controle profissional sem planilha ou caderno</li>
+      </ul>
+      <a href="#preco" class="sc-cta">🌸 Quero esse app</a>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="sc-item rev">
+    <div class="sc-img">
+      <img src="https://i.ibb.co/7J9snRT4/Captura-de-Tela-2026-05-02-a-s-14-57-33.png" alt="Folheto Pós-Procedimento"/>
+    </div>
+    <div class="sc-text">
+      <span class="sc-tag">💌 Pós-Procedimento</span>
+      <h3>Sua cliente sai com os cuidados na mão — e os resultados aparecem mais rápido</h3>
+      <p>Gere um folheto de pós-procedimento específico para cada protocolo realizado. Sua cliente não precisa lembrar das orientações verbais — ela leva o documento pelo WhatsApp e segue à risca. Menos reclamações. Mais resultados. Mais indicações.</p>
+      <ul class="sc-bullets">
+        <li><span class="ck">✓</span> Instruções específicas por tipo de procedimento</li>
+        <li><span class="ck">✓</span> PDF com logo da clínica para enviar no WhatsApp</li>
+        <li><span class="ck">✓</span> Reduz erros, aumenta resultados e gera mais indicações</li>
+      </ul>
+      <a href="#preco" class="sc-cta">🌸 Quero esse app</a>
+    </div>
+  </div>
+
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="depos">
+  <p class="section-label">💬 O que estão dizendo</p>
+  <h2 class="section-title">Esteticistas que já usam o app</h2>
+  <div class="dep-grid">
+    <div class="dep-card">
+      <div class="dep-stars">⭐⭐⭐⭐⭐</div>
+      <p class="dep-text">"Minha vida mudou depois que comecei a usar. Antes eu tinha fichas espalhadas por todo lado e vivia preocupada em perder o histórico das minhas clientes. Agora tudo está organizado e eu gero o PDF com a logo da minha clínica em segundos!"</p>
+      <div class="dep-author">Camila Rodrigues</div>
+      <div class="dep-city">Esteticista — São Paulo, SP</div>
+    </div>
+    <div class="dep-card">
+      <div class="dep-stars">⭐⭐⭐⭐⭐</div>
+      <p class="dep-text">"O controle de pacotes me salvou! Eu vendia pacotes de 10 sessões e não sabia ao certo quantas ainda restavam para cada cliente. Agora tenho tudo registrado e parece muito mais profissional. Valeu cada centavo!"</p>
+      <div class="dep-author">Fernanda Lima</div>
+      <div class="dep-city">Clínica de Estética — Curitiba, PR</div>
+    </div>
+    <div class="dep-card">
+      <div class="dep-stars">⭐⭐⭐⭐⭐</div>
+      <p class="dep-text">"As fotos antes e depois organizadas por cliente foram um game changer. Agora eu mostro a evolução das minhas clientes pro Instagram de forma super profissional. Consegui novos clientes só por causa das fotos de resultado que eu registro aqui."</p>
+      <div class="dep-author">Juliana Santos</div>
+      <div class="dep-city">Esteticista Facial — Rio de Janeiro, RJ</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECO -->
+<section class="preco" id="preco">
+  <p class="section-label">💸 Investimento</p>
+  <h2 class="section-title">Escolha seu plano e comece hoje</h2>
+
+  <div class="preco-grid">
+
+    <!-- BASICO -->
+    <div class="preco-card">
+      <h3>Básico</h3>
+      <div class="preco-valor"><sup>R$</sup>17</div>
+      <p class="preco-desc">Pagamento único — sem mensalidade</p>
+      <ul class="preco-lista">
+        <li><span>✓</span> App completo de gestão da clínica</li>
+        <li><span>✓</span> 30+ protocolos de estética</li>
+        <li><span>✓</span> Acesso vitalício</li>
+      </ul>
+      <a href="https://pay.lowify.com.br/checkout.php?product_id=JhiBgW" class="btn-preco">GARANTIR POR R$17</a>
+    </div>
+
+    <!-- PRO -->
+    <div class="preco-card destaque">
+      <div class="badge-destaque">⭐ Mais popular</div>
+      <h3>Completo</h3>
+      <div class="preco-valor"><sup>R$</sup>27</div>
+      <p class="preco-desc">Pagamento único — sem mensalidade</p>
+      <ul class="preco-lista">
+        <li><span>✓</span> App completo de gestão da clínica</li>
+        <li><span>✓</span> Ficha de anamnese completa</li>
+        <li><span>✓</span> 30+ protocolos de estética</li>
+        <li><span>✓</span> Geração de PDFs profissionais</li>
+        <li><span>✓</span> Controle de pacotes de sessões</li>
+        <li><span>✓</span> Galeria de fotos antes e depois</li>
+        <li><span>✓</span> Folheto pós-procedimento em PDF</li>
+        <li><span>✓</span> Acesso vitalício</li>
+      </ul>
+      <a href="https://pay.lowify.com.br/go.php?offer=ab6dfcw" class="btn-preco">GARANTIR POR R$27</a>
+    </div>
+
+  </div>
+
+  <!-- GARANTIA -->
+  <div class="garantia">
+    <div class="garantia-icon">🛡️</div>
+    <div>
+      <h4>Garantia incondicional de 7 dias</h4>
+      <p>Se por qualquer motivo você não ficar satisfeita com o app, basta enviar uma mensagem em até 7 dias após a compra e devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.</p>
+    </div>
+  </div>
+
+  <!-- RECEBE -->
+  <div class="recebe">
+    <h4>📦 O que você recebe hoje:</h4>
+    <ul class="recebe-lista">
+      <li><span>✓</span> App Esteticista Pro completo (acesso imediato)</li>
+      <li><span>✓</span> 30+ protocolos de estética detalhados</li>
+      <li><span>✓</span> Geração de PDFs com logo da sua clínica</li>
+      <li><span>✓</span> Galeria de fotos antes e depois por cliente</li>
+      <li><span>✓</span> Controle de pacotes de sessões</li>
+      <li><span>✓</span> Folheto de pós-procedimento em PDF</li>
+      <li><span>✓</span> Funciona no celular, tablet e computador</li>
+      <li><span>✓</span> Sem mensalidade — pague uma vez e use para sempre</li>
+    </ul>
+  </div>
+
+  <!-- SEGURANCA -->
+  <div class="seguranca">
+    <div class="seg-badge">🔒 Compra 100% segura</div>
+    <div class="seg-badge">💳 Cartão ou Pix</div>
+    <div class="seg-badge">🔐 Dados protegidos</div>
+    <div class="seg-badge">⚡ Acesso imediato</div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <p class="section-label">❓ Dúvidas frequentes</p>
+  <h2 class="section-title">Perguntas e respostas</h2>
+  <div class="faq-list">
+
+    <details class="faq-item">
+      <summary>O que exatamente é esse aplicativo?</summary>
+      <p>É um app web que funciona diretamente no navegador do seu celular ou computador — sem precisar instalar nada na App Store ou Play Store. Você acessa, faz login e já começa a usar. Dentro do app você tem ficha de anamnese completa, mais de 30 protocolos de estética, geração de PDFs profissionais com sua logo, galeria de fotos antes e depois, controle de pacotes de sessões e folheto de pós-procedimento para cada tratamento.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Preciso instalar alguma coisa?</summary>
+      <p>Não! O app funciona direto no navegador do celular ou computador. Você recebe o link de acesso após a compra e já começa a usar. Para maior praticidade, você pode salvar o link na tela inicial do celular como se fosse um ícone de app.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Funciona no meu celular?</summary>
+      <p>Sim! O app é totalmente responsivo e foi desenvolvido pensando primeiro no celular. Funciona perfeitamente em iPhone e Android, tablet, notebook ou desktop. Você pode usar durante o atendimento, sem precisar de papel.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Para quem é esse app?</summary>
+      <p>Para esteticistas, esteticistas faciais, micropigmentadoras, dermopigmentadoras, profissionais de estética em geral — qualquer profissional que realiza procedimentos estéticos e precisa organizar fichas de clientes, protocolos e documentação de forma profissional.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Quantos clientes posso cadastrar?</summary>
+      <p>Sem limite! Você pode cadastrar quantas clientes quiser. Todos os dados ficam armazenados no seu dispositivo, com total privacidade.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>E se eu não gostar?</summary>
+      <p>Você tem 7 dias de garantia incondicional. Se por qualquer motivo não ficar satisfeita, basta enviar uma mensagem e devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Tem mensalidade?</summary>
+      <p>Não! É um pagamento único. Você paga uma vez e tem acesso vitalício ao app. Sem assinatura, sem cobrança recorrente, sem surpresas na fatura.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Como recebo o acesso após a compra?</summary>
+      <p>Imediatamente após confirmar o pagamento, você recebe o link de acesso por e-mail e WhatsApp. Em menos de 5 minutos você já está usando o app.</p>
+    </details>
+
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="footer-cta">
+  <h2>Profissionalize sua clínica agora mesmo 🌸</h2>
+  <p>Junte-se a centenas de esteticistas que já organizam sua clínica com o App Esteticista Pro. Por apenas R$17.</p>
+  <a href="#preco" class="btn-footer">🌸 QUERO MEU APP AGORA</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 App Esteticista Pro. Todos os direitos reservados.</p>
+  <p style="margin-top:.4rem">
+    <a href="#preco">Política de Privacidade</a> · <a href="#preco">Termos de Uso</a>
+  </p>
+  <p style="margin-top:.6rem;font-size:.72rem">Este produto é um software digital. Após a confirmação do pagamento, o acesso é liberado automaticamente.<br>Garantia de 7 dias conforme o Código de Defesa do Consumidor (Art. 49).</p>
+</footer>
+
+<!-- POPUP PROVA SOCIAL -->
+<div class="social-popup" id="socialPopup">
+  <div class="sp-avatar" id="spAvatar">C</div>
+  <div class="sp-text">
+    <div class="sp-name" id="spName">Carregando...</div>
+    <div id="spAction">acabou de adquirir o <strong>App Esteticista Pro</strong></div>
+    <div class="sp-time" id="spTime">há 3 minutos</div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+/* sem carousel */
+
+/* ── SOCIAL PROOF POPUP ── */
+const nomes = [
+  'Amanda','Bruna','Camila','Daniela','Eduarda','Fernanda','Gabriela',
+  'Helena','Isabela','Juliana','Karen','Larissa','Mariana','Natalia',
+  'Olivia','Patricia','Rafaela','Sabrina','Taina','Vanessa',
+  'Yasmin','Leticia','Renata','Thais'
+];
+const planos = ['App Completo — R$27','App Completo — R$27','App Completo — R$27','App Completo — R$27','App Completo — R$27'];
+const tempos = ['agora mesmo','há 2 minutos','há 5 minutos','há 8 minutos','há 12 minutos','há 15 minutos'];
+const popup = document.getElementById('socialPopup');
+const spName = document.getElementById('spName');
+const spTime = document.getElementById('spTime');
+const spAvatar = document.getElementById('spAvatar');
+const spAction = document.getElementById('spAction');
+
+function showPopup(){
+  const nome = nomes[Math.floor(Math.random()*nomes.length)];
+  const plano = planos[Math.floor(Math.random()*planos.length)];
+  const tempo = tempos[Math.floor(Math.random()*tempos.length)];
+  spName.textContent = nome;
+  spAvatar.textContent = nome[0];
+  spAction.innerHTML = `adquiriu o <strong>${plano}</strong>`;
+  spTime.textContent = tempo;
+  popup.classList.add('show');
+  setTimeout(()=>popup.classList.remove('show'),4500);
+}
+
+setTimeout(()=>{ showPopup(); setInterval(showPopup,8000); },3000);
+
+/* ── FAQ toggle ── */
+document.querySelectorAll('.faq-item').forEach(item=>{
+  item.addEventListener('toggle',()=>{
+    if(item.open){
+      document.querySelectorAll('.faq-item[open]').forEach(other=>{
+        if(other!==item) other.removeAttribute('open');
+      });
+    }
+  });
+});
+</script>
+
+<!-- UTMIFY — substituir pelo pixel real -->
+<!-- <script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcookies data-utmify-prevent-subids async defer></script> -->
+
+</body>
+</html>
