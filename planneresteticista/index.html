@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planner Esteticista 2026 — Personalize o Seu</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:#fff0f6;min-height:100vh;color:#1f2937}
+
+    /* HEADER */
+    .header{background:linear-gradient(135deg,#be185d 0%,#db2777 50%,#ec4899 100%);padding:48px 20px 40px;text-align:center;position:relative;overflow:hidden}
+    .header::before{content:'✿';position:absolute;top:-20px;left:-10px;font-size:180px;opacity:.07;line-height:1}
+    .header::after{content:'✿';position:absolute;bottom:-40px;right:-10px;font-size:180px;opacity:.07;line-height:1}
+    .header h1{font-size:clamp(26px,6vw,42px);color:#fff;font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+    .header h1 span{color:#fce7f3}
+    .header p{color:#fce7f3;font-size:clamp(14px,3vw,18px);max-width:520px;margin:0 auto;line-height:1.5}
+    .badge{display:inline-block;background:#fff;color:#db2777;font-weight:700;font-size:12px;padding:4px 14px;border-radius:999px;margin-bottom:16px;letter-spacing:.5px}
+
+    /* MAIN CARD */
+    .container{max-width:560px;margin:0 auto;padding:0 16px 60px}
+    .card{background:#fff;border-radius:20px;box-shadow:0 8px 40px rgba(219,39,119,.15);padding:36px 32px;margin-top:-24px;position:relative;z-index:1}
+    .card h2{font-size:20px;color:#be185d;font-weight:700;margin-bottom:6px;text-align:center}
+    .card p{font-size:14px;color:#6b7280;text-align:center;margin-bottom:24px}
+
+    label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;margin-top:16px}
+    input{width:100%;padding:12px 16px;border:2px solid #fce7f3;border-radius:10px;font-size:15px;outline:none;transition:.2s;color:#1f2937;background:#fff}
+    input:focus{border-color:#db2777;box-shadow:0 0 0 3px rgba(219,39,119,.1)}
+    input::placeholder{color:#d1d5db}
+
+    .btn{width:100%;margin-top:24px;padding:16px;background:linear-gradient(135deg,#be185d,#db2777);color:#fff;font-size:17px;font-weight:800;border:none;border-radius:12px;cursor:pointer;letter-spacing:.3px;transition:.2s;box-shadow:0 4px 20px rgba(219,39,119,.35)}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(219,39,119,.45)}
+    .btn:active{transform:translateY(0)}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+    .loading{display:none;text-align:center;margin-top:20px;color:#db2777;font-size:14px;font-weight:600}
+    .loading span{animation:dots 1.2s infinite}
+    @keyframes dots{0%,20%{content:'...'}40%{content:'....'}60%{content:'.....'}80%,100%{content:'...'}}
+
+    /* FEATURES */
+    .features{margin-top:28px}
+    .features h3{font-size:14px;font-weight:700;color:#6b7280;text-align:center;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+    .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .feat{background:#fff5f9;border:1px solid #fce7f3;border-radius:12px;padding:14px 12px;display:flex;align-items:flex-start;gap:10px}
+    .feat-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+    .feat-text strong{display:block;font-size:12px;font-weight:700;color:#be185d;margin-bottom:2px}
+    .feat-text span{font-size:11px;color:#9ca3af;line-height:1.4}
+
+    /* LOGO UPLOAD */
+    .logo-upload{margin-top:16px}
+    .logo-box{border:2px dashed #fce7f3;border-radius:10px;padding:18px;text-align:center;cursor:pointer;transition:.2s;background:#fff5f9;position:relative}
+    .logo-box:hover{border-color:#db2777;background:#fff0f6}
+    .logo-box input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .logo-box p{font-size:13px;color:#9ca3af;margin-top:4px}
+    .logo-box .icon{font-size:28px}
+    .logo-preview{display:none;margin-top:10px;text-align:center}
+    .logo-preview img{max-height:60px;max-width:180px;border-radius:6px;border:1px solid #fce7f3}
+    .logo-preview span{display:block;font-size:11px;color:#db2777;margin-top:4px;font-weight:600}
+
+    /* FOOTER */
+    .footer{text-align:center;margin-top:24px;font-size:12px;color:#9ca3af}
+    .footer strong{color:#db2777}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">✦ EXCLUSIVO PARA QUEM COMPROU ✦</div>
+  <h1>Planner Esteticista <span>2026</span></h1>
+  <p>Personalize com seu nome e baixe agora — 100% gratuito para você</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>Personalize o Seu Planner</h2>
+    <p>Preencha abaixo e clique para gerar o PDF personalizado</p>
+
+    <label for="nome">Seu nome *</label>
+    <input id="nome" type="text" placeholder="Ex: Gabriela Oliveira" maxlength="40">
+
+    <label for="clinica">Nome da clínica (opcional)</label>
+    <input id="clinica" type="text" placeholder="Ex: Studio Bella Pele" maxlength="45">
+
+    <label for="cidade">Cidade (opcional)</label>
+    <input id="cidade" type="text" placeholder="Ex: São Paulo - SP" maxlength="40">
+
+    <label for="instagram">Instagram (opcional)</label>
+    <input id="instagram" type="text" placeholder="@seuestudio" maxlength="40">
+
+    <label for="whatsapp">WhatsApp (opcional)</label>
+    <input id="whatsapp" type="text" placeholder="(11) 99999-9999" maxlength="20">
+
+    <label for="especialidades">Especialidades (opcional)</label>
+    <input id="especialidades" type="text" placeholder="Ex: Limpeza de Pele • Drenagem • Design de Sobrancelha" maxlength="80">
+
+    <div class="logo-upload">
+      <label>Logo da clínica (opcional)</label>
+      <div class="logo-box" onclick="document.getElementById('logoInput').click()">
+        <div class="icon">🖼️</div>
+        <strong style="font-size:13px;color:#374151">Clique para enviar sua logo</strong>
+        <p>PNG, JPG ou SVG • Máx. 2MB</p>
+        <input id="logoInput" type="file" accept="image/*" onchange="previewLogo(event)" style="display:none">
+      </div>
+      <div class="logo-preview" id="logoPreview">
+        <img id="logoImg" src="" alt="Logo">
+        <span>✓ Logo carregada com sucesso</span>
+      </div>
+    </div>
+
+    <button class="btn" onclick="gerarPlanner()" id="btnGerar">
+      ✦ Gerar meu Planner 2026
+    </button>
+    <div class="loading" id="loading">Gerando seu planner personalizado, aguarde...</div>
+
+    <div class="features">
+      <h3>O que está incluído</h3>
+      <div class="feature-grid">
+        <div class="feat"><div class="feat-icon">📅</div><div class="feat-text"><strong>12 Meses</strong><span>Calendário completo 2026 com metas mensais</span></div></div>
+        <div class="feat"><div class="feat-icon">👤</div><div class="feat-text"><strong>Ficha de Cliente</strong><span>Anamnese, protocolos e evolução</span></div></div>
+        <div class="feat"><div class="feat-icon">💰</div><div class="feat-text"><strong>Controle Financeiro</strong><span>Receitas e despesas mês a mês</span></div></div>
+        <div class="feat"><div class="feat-icon">🧴</div><div class="feat-text"><strong>Estoque de Produtos</strong><span>Controle de insumos e reposição</span></div></div>
+        <div class="feat"><div class="feat-icon">🎯</div><div class="feat-text"><strong>Metas Anuais</strong><span>Planejamento dos seus objetivos 2026</span></div></div>
+        <div class="feat"><div class="feat-icon">📝</div><div class="feat-text"><strong>Páginas de Notas</strong><span>Espaço livre para anotações</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">Planner gerado com <strong>❤ Planner Esteticista 2026</strong></div>
+</div>
+
+<script>
+const MONTHS = [
+  {name:'JANEIRO',   days:31, firstDay:4},
+  {name:'FEVEREIRO', days:28, firstDay:0},
+  {name:'MARÇO',     days:31, firstDay:0},
+  {name:'ABRIL',     days:30, firstDay:3},
+  {name:'MAIO',      days:31, firstDay:5},
+  {name:'JUNHO',     days:30, firstDay:1},
+  {name:'JULHO',     days:31, firstDay:3},
+  {name:'AGOSTO',    days:31, firstDay:6},
+  {name:'SETEMBRO',  days:30, firstDay:2},
+  {name:'OUTUBRO',   days:31, firstDay:4},
+  {name:'NOVEMBRO',  days:30, firstDay:0},
+  {name:'DEZEMBRO',  days:31, firstDay:2},
+];
+
+const ROSE       = [219,39,119];
+const ROSE_DARK  = [190,24,93];
+const ROSE_LIGHT = [252,231,243];
+const ROSE_MID   = [249,168,212];
+const DARK       = [31,41,55];
+const GRAY       = [107,114,128];
+const LGRAY      = [229,231,235];
+const WHITE      = [255,255,255];
+const CREAM      = [255,240,246];
+
+let logoDataUrl = null;
+
+function previewLogo(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024){alert('Logo muito grande. Máx. 2MB.');return;}
+  const reader = new FileReader();
+  reader.onload = e => {
+    logoDataUrl = e.target.result;
+    document.getElementById('logoImg').src = logoDataUrl;
+    document.getElementById('logoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function gerarPlanner(){
+  const nome          = document.getElementById('nome').value.trim();
+  const clinica       = document.getElementById('clinica').value.trim();
+  const cidade        = document.getElementById('cidade').value.trim();
+  const instagram     = document.getElementById('instagram').value.trim();
+  const whatsapp      = document.getElementById('whatsapp').value.trim();
+  const especialidades= document.getElementById('especialidades').value.trim();
+  if(!nome){alert('Por favor, insira seu nome!');return;}
+
+  document.getElementById('btnGerar').disabled=true;
+  document.getElementById('loading').style.display='block';
+
+  setTimeout(()=>{
+    try{
+      buildPDF(nome,clinica,cidade,instagram,whatsapp,especialidades,logoDataUrl);
+    }finally{
+      document.getElementById('btnGerar').disabled=false;
+      document.getElementById('loading').style.display='none';
+    }
+  },100);
+}
+
+function buildPDF(nome,clinica,cidade,instagram,whatsapp,especialidades,logoUrl){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF('p','mm','a4');
+  const W=210,H=297;
+
+  // ─── helpers ───────────────────────────────────────────────────────────────
+  const fill=(x,y,w,h,c)=>{doc.setFillColor(...c);doc.rect(x,y,w,h,'F')};
+  const stroke=(x,y,w,h,c,lw=.3)=>{doc.setDrawColor(...c);doc.setLineWidth(lw);doc.rect(x,y,w,h,'S')};
+  const line=(x1,y1,x2,y2,c,lw=.3)=>{doc.setDrawColor(...c);doc.setLineWidth(lw);doc.line(x1,y1,x2,y2)};
+  const txt=(s,x,y,{sz=11,c=DARK,st='normal',al='left'}={})=>{
+    doc.setFontSize(sz);doc.setFont('helvetica',st);doc.setTextColor(...c);
+    doc.text(String(s),x,y,{align:al});
+  };
+  const newPage=()=>doc.addPage();
+
+  // ─── CAPA ──────────────────────────────────────────────────────────────────
+  fill(0,0,W,H,ROSE_DARK);
+  fill(0,0,W,60,ROSE);
+  // faixa decorativa diagonal
+  doc.setFillColor(...ROSE);
+  doc.triangle(0,H,W,H-80,W,H,'F');
+  fill(0,H-20,W,20,[169,20,81]);
+
+  // ornamentos circulares
+  doc.setFillColor(255,255,255);doc.setGState(doc.GState({opacity:.06}));
+  doc.circle(170,50,55,'F');doc.circle(40,240,70,'F');
+  doc.setGState(doc.GState({opacity:1}));
+
+  // linha decorativa topo
+  fill(0,0,W,4,[255,255,255]);
+
+  // título
+  txt('PLANNER',W/2,72,{sz:52,c:WHITE,st:'bold',al:'center'});
+  txt('ESTETICISTA',W/2,92,{sz:36,c:ROSE_MID,st:'bold',al:'center'});
+  txt('2026',W/2,116,{sz:64,c:WHITE,st:'bold',al:'center'});
+
+  // ornamento central
+  doc.setFillColor(...ROSE_MID);doc.circle(W/2,134,3,'F');
+  doc.setFillColor(...ROSE_LIGHT);doc.circle(W/2-8,136,1.5,'F');doc.circle(W/2+8,136,1.5,'F');
+
+  // linha separadora
+  fill(W/2-40,144,80,1.5,ROSE_MID);
+
+  // logo (se existir) — centralizada acima do nome
+  if(logoUrl){
+    try{
+      const lSize=28;
+      doc.addImage(logoUrl,'',W/2-lSize/2,148,lSize,lSize);
+    }catch(e){}
+    txt(nome.toUpperCase(),W/2,184,{sz:15,c:WHITE,st:'bold',al:'center'});
+    if(clinica) txt(clinica,W/2,193,{sz:10,c:ROSE_MID,al:'center'});
+    if(cidade)  txt(cidade, W/2,200,{sz:9,c:ROSE_MID,al:'center'});
+    if(especialidades) txt(especialidades,W/2,208,{sz:7.5,c:ROSE_LIGHT,al:'center'});
+  }else{
+    txt(nome.toUpperCase(),W/2,162,{sz:16,c:WHITE,st:'bold',al:'center'});
+    if(clinica) txt(clinica,W/2,172,{sz:11,c:ROSE_MID,al:'center'});
+    if(cidade)  txt(cidade, W/2,180,{sz:10,c:ROSE_MID,al:'center'});
+    if(especialidades) txt(especialidades,W/2,190,{sz:8,c:ROSE_LIGHT,al:'center'});
+  }
+
+  // redes sociais na capa
+  const sociais=[];
+  if(instagram) sociais.push('IG: '+instagram);
+  if(whatsapp)  sociais.push('WA: '+whatsapp);
+  if(sociais.length){
+    const sy=logoUrl?215:196;
+    txt(sociais.join('   '),W/2,sy,{sz:8.5,c:ROSE_LIGHT,al:'center'});
+  }
+
+  // selo
+  const seloY=logoUrl?224:202;
+  fill(W/2-42,seloY,84,24,WHITE);
+  txt('** 100% Personalizado **',W/2,seloY+14,{sz:10,c:ROSE_DARK,st:'bold',al:'center'});
+
+  // rodapé
+  txt('Criado com carinho para a melhor esteticista de 2026',W/2,H-8,{sz:8,c:ROSE_LIGHT,al:'center'});
+
+  // ─── SOBRE O PLANNER ───────────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,38,ROSE);
+  txt('SOBRE O SEU PLANNER',W/2,23,{sz:16,c:WHITE,st:'bold',al:'center'});
+  txt('Tudo que você precisa para organizar sua clínica em 2026',W/2,33,{sz:9,c:ROSE_LIGHT,al:'center'});
+
+  const items=[
+    ['01','12 Meses Completos','Calendario de Janeiro a Dezembro com espaco para metas, foco do mes e anotacoes semanais.'],
+    ['02','Metas Anuais','Pagina dedicada para planejar seus objetivos de clientes, faturamento e crescimento profissional.'],
+    ['03','Fichas de Cliente','4 fichas detalhadas com anamnese, tipo de pele, protocolos realizados e espaco para evolucao.'],
+    ['04','Controle Financeiro','Tabela mensal para registrar receitas, despesas e calcular sua margem de lucro.'],
+    ['05','Controle de Estoque','Organize seus produtos, insumos e saiba quando repor cada item.'],
+    ['06','Paginas de Notas','Espaco livre para ideias, lembretes, cursos e qualquer anotacao importante.'],
+  ];
+  let iy=52;
+  items.forEach(([num,title,desc])=>{
+    fill(14,iy,W-28,26,CREAM);
+    stroke(14,iy,W-28,26,ROSE_MID,.2);
+    fill(17,iy+5,12,12,ROSE);
+    txt(num,23,iy+14,{sz:7,c:WHITE,st:'bold',al:'center'});
+    txt(title,36,iy+10,{sz:11,c:ROSE_DARK,st:'bold'});
+    txt(desc,36,iy+19,{sz:8,c:GRAY});
+    iy+=31;
+  });
+
+  // índice colunas
+  fill(14,iy+4,W-28,1.5,ROSE_LIGHT);
+  iy+=12;
+  txt('INDICE DO PLANNER',14,iy+8,{sz:11,c:ROSE_DARK,st:'bold'});
+  iy+=16;
+  const idx=[
+    ['Capa Personalizada','1'],['Sobre o Planner','2'],['Metas Anuais 2026','3'],
+    ['Calendário — Janeiro a Dezembro','4 – 15'],
+    ['Fichas de Cliente','16 – 19'],['Controle Financeiro','20'],
+    ['Controle de Estoque','21'],['Páginas de Notas','22 – 23'],['Contracapa','24'],
+  ];
+  idx.forEach(([label,pg])=>{
+    txt('-  '+label,18,iy,{sz:9,c:DARK});
+    txt(pg,W-18,iy,{sz:9,c:ROSE_DARK,st:'bold',al:'right'});
+    iy+=8;
+  });
+
+  txt(`Planner gerado em: ${new Date().toLocaleDateString('pt-BR')}  —  ${nome}`,W/2,H-8,{sz:7,c:LGRAY,al:'center'});
+
+  // ─── METAS ANUAIS 2026 ─────────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,38,ROSE);
+  txt('METAS ANUAIS',W/2,18,{sz:20,c:WHITE,st:'bold',al:'center'});
+  txt('2026',W/2,32,{sz:14,c:ROSE_MID,al:'center'});
+
+  const mSections=[
+    {label:'FATURAMENTO MENSAL META',n:1},
+    {label:'CLIENTES ATIVOS META',n:1},
+    {label:'MAIOR CONQUISTA QUE DESEJO ALCANCAR',n:2},
+    {label:'CURSOS / ESPECIALIZACOES EM 2026',n:3},
+    {label:'NOVOS PROCEDIMENTOS QUE QUERO OFERECER',n:4},
+    {label:'MINHA PALAVRA DO ANO',n:1},
+    {label:'MINHAS 5 METAS MAIS IMPORTANTES',n:5},
+  ];
+
+  let my=46;
+  mSections.forEach(({label,n})=>{
+    fill(14,my,W-28,11,ROSE_LIGHT);
+    txt('>> '+label,18,my+7.5,{sz:9,c:ROSE_DARK,st:'bold'});
+    my+=13;
+    for(let i=0;i<n;i++){
+      line(18,my+5,W-18,my+5,LGRAY,.4);
+      my+=9;
+    }
+    my+=2;
+  });
+
+  // Minha frase motivacional
+  fill(14,my,W-28,20,ROSE);
+  txt('"Minha frase motivacional para 2026"',W/2,my+8,{sz:9,c:WHITE,al:'center'});
+  line(24,my+15,W-24,my+15,WHITE,.4);
+  my+=24;
+
+  txt(`${nome} — Esteticista 2026`,W/2,H-8,{sz:7,c:ROSE_MID,al:'center'});
+
+  // ─── 12 MESES ─────────────────────────────────────────────────────────────
+  const DAY_LABELS=['D','S','T','Q','Q','S','S'];
+
+  MONTHS.forEach((month,mi)=>{
+    newPage();
+    // header faixa
+    fill(0,0,W,40,ROSE);
+    txt(month.name,W/2,22,{sz:26,c:WHITE,st:'bold',al:'center'});
+    txt('2026  -  '+nome,W/2,35,{sz:9,c:ROSE_LIGHT,al:'center'});
+
+    // calendário
+    const calX=14, calY=46, cW=(W-28)/7, cH=9;
+
+    // header dias
+    DAY_LABELS.forEach((d,di)=>{
+      const cx=calX+di*cW;
+      const isWk=di===0||di===6;
+      fill(cx,calY,cW,cH,isWk?ROSE:ROSE_LIGHT);
+      txt(d,cx+cW/2,calY+6.5,{sz:8,c:isWk?WHITE:ROSE_DARK,st:'bold',al:'center'});
+    });
+
+    let day=1,row=1,col=month.firstDay;
+    while(day<=month.days){
+      const cx=calX+col*cW;
+      const cy=calY+row*cH;
+      const isWk=col===0||col===6;
+      fill(cx,cy,cW,cH,isWk?[255,240,250]:WHITE);
+      stroke(cx,cy,cW,cH,LGRAY,.15);
+      txt(day,cx+2,cy+6,{sz:6.5,c:isWk?ROSE_DARK:DARK});
+      day++;col++;
+      if(col===7){col=0;row++;}
+    }
+    // borda total do cal
+    const totalRows=row+(col>0?1:0);
+    stroke(calX,calY,W-28,cH*(totalRows),ROSE_MID,.3);
+
+    // seção de conteúdo abaixo do calendário
+    const afterCal=calY+cH*(row+(col>0?1:0))+6;
+
+    // FOCO DO MÊS
+    fill(14,afterCal,W-28,10,ROSE_DARK);
+    txt('>> FOCO DO MES',18,afterCal+7,{sz:9,c:WHITE,st:'bold'});
+    fill(14,afterCal+10,W-28,14,CREAM);
+    stroke(14,afterCal+10,W-28,14,ROSE_MID,.2);
+    line(18,afterCal+19,W-18,afterCal+19,ROSE_MID,.3);
+
+    // dividir resto em 2 colunas
+    const colW=(W-28)/2-3;
+    const col1x=14, col2x=14+colW+6;
+    let ry=afterCal+28;
+
+    // coluna 1: METAS
+    fill(col1x,ry,colW,9,ROSE_LIGHT);
+    txt('>> METAS DO MES',col1x+4,ry+6.5,{sz:8,c:ROSE_DARK,st:'bold'});
+    ry+=11;
+    for(let i=0;i<5;i++){
+      txt('•',col1x+4,ry+4,{sz:7,c:ROSE});
+      line(col1x+10,ry+5,col1x+colW-4,ry+5,LGRAY,.3);
+      ry+=8;
+    }
+
+    // coluna 2: CLIENTES / FATURAMENTO
+    let ry2=afterCal+28;
+    fill(col2x,ry2,colW,9,ROSE_LIGHT);
+    txt('>> METAS FINANCEIRAS',col2x+4,ry2+6.5,{sz:8,c:ROSE_DARK,st:'bold'});
+    ry2+=11;
+    const finLabels=['Clientes meta:','Faturamento meta:','Ticket médio:','Receita obtida:','Margem:'];
+    finLabels.forEach(lb=>{
+      txt(lb,col2x+4,ry2+4,{sz:7,c:GRAY});
+      line(col2x+38,ry2+5,col2x+colW-4,ry2+5,LGRAY,.3);
+      ry2+=8;
+    });
+
+    // ANOTAÇÕES SEMANAIS
+    const notY=Math.max(ry,ry2)+4;
+    fill(14,notY,W-28,9,ROSE);
+    txt('ANOTACOES SEMANAIS',18,notY+6.5,{sz:9,c:WHITE,st:'bold'});
+    const weeks=['Semana 1','Semana 2','Semana 3','Semana 4'];
+    let wy=notY+11;
+    const wh=(H-notY-20)/4;
+    weeks.forEach((wk,wi)=>{
+      fill(14,wy,W-28,wh,wi%2===0?WHITE:CREAM);
+      stroke(14,wy,W-28,wh,LGRAY,.2);
+      txt(wk,18,wy+5,{sz:7,c:ROSE_DARK,st:'bold'});
+      line(18,wy+wh-3,W-18,wy+wh-3,LGRAY,.2);
+      wy+=wh;
+    });
+
+    txt(`${month.name} 2026  ·  ${nome}`,W/2,H-4,{sz:6.5,c:LGRAY,al:'center'});
+  });
+
+  // ─── FICHAS DE CLIENTE (4) ─────────────────────────────────────────────────
+  for(let f=0;f<4;f++){
+    newPage();
+    fill(0,0,W,18,ROSE);
+    // logo no canto superior direito da ficha
+    if(logoUrl){
+      try{ doc.addImage(logoUrl,'',W-26,1,16,16); }catch(e){}
+    }
+    txt('FICHA DE CLIENTE',18,12,{sz:12,c:WHITE,st:'bold'});
+    if(clinica) txt(clinica,W/2,12,{sz:8,c:ROSE_LIGHT,al:'center'});
+
+    let fy=22;
+    // bloco dados pessoais
+    fill(14,fy,W-28,10,ROSE_LIGHT);
+    txt('DADOS PESSOAIS',18,fy+7,{sz:9,c:ROSE_DARK,st:'bold'});
+    fy+=12;
+
+    const pessoal=[
+      ['Nome completo:',null,'Data nasc.:'],
+      ['Telefone:',null,'Indicação:'],
+      ['Profissão:',null,'Cidade:'],
+    ];
+    pessoal.forEach(([a,,b])=>{
+      txt(a,16,fy+4,{sz:7.5,c:GRAY});
+      line(44,fy+5,105,fy+5,LGRAY,.3);
+      txt(b,110,fy+4,{sz:7.5,c:GRAY});
+      line(130,fy+5,W-16,fy+5,LGRAY,.3);
+      fy+=8;
+    });
+
+    // ANAMNESE
+    fy+=2;
+    fill(14,fy,W-28,10,ROSE_LIGHT);
+    txt('ANAMNESE',18,fy+7,{sz:9,c:ROSE_DARK,st:'bold'});
+    fy+=12;
+    const anam=[
+      'Tipo de pele:',
+      'Alergias / sensibilidades:',
+      'Medicamentos em uso:',
+      'Doenças / condições de saúde:',
+      'Gestante / amamentando:',
+      'Realiza tratamentos em casa:',
+    ];
+    anam.forEach(lb=>{
+      txt(lb,16,fy+4,{sz:7.5,c:GRAY});
+      line(74,fy+5,W-16,fy+5,LGRAY,.3);
+      fy+=8;
+    });
+
+    // PROTOCOLOS REALIZADOS
+    fy+=2;
+    fill(14,fy,W-28,10,ROSE);
+    txt('PROTOCOLOS REALIZADOS',18,fy+7,{sz:9,c:WHITE,st:'bold'});
+    fy+=12;
+    const prHead=['DATA','PROCEDIMENTO','PROD. UTILIZADOS','RESULTADO','OBS'];
+    const prW=[22,46,40,30,30];
+    let px=14;
+    prHead.forEach((h,i)=>{
+      fill(px,fy,prW[i],8,ROSE_LIGHT);
+      stroke(px,fy,prW[i],8,ROSE_MID,.2);
+      txt(h,px+prW[i]/2,fy+5.5,{sz:6,c:ROSE_DARK,st:'bold',al:'center'});
+      px+=prW[i];
+    });
+    fy+=8;
+    for(let r=0;r<7;r++){
+      px=14;
+      prHead.forEach((_,i)=>{
+        fill(px,fy,prW[i],9,r%2===0?WHITE:CREAM);
+        stroke(px,fy,prW[i],9,LGRAY,.15);
+        px+=prW[i];
+      });
+      fy+=9;
+    }
+
+    // EVOLUÇÃO
+    fy+=3;
+    fill(14,fy,W-28,10,ROSE_LIGHT);
+    txt('EVOLUCAO / OBSERVACOES',18,fy+7,{sz:9,c:ROSE_DARK,st:'bold'});
+    fy+=12;
+    const notLines=Math.floor((H-fy-12)/8);
+    for(let i=0;i<notLines;i++){
+      line(16,fy+6,W-16,fy+6,LGRAY,.3);
+      fy+=8;
+    }
+
+    // rodapé da ficha com contato
+    fill(0,H-12,W,12,ROSE_LIGHT);
+    const fichaRodape=[nome];
+    if(whatsapp)  fichaRodape.push('WA: '+whatsapp);
+    if(instagram) fichaRodape.push('IG: '+instagram);
+    txt(fichaRodape.join('   ·   '),W/2,H-4,{sz:6.5,c:ROSE_DARK,al:'center'});
+  }
+
+  // ─── CONTROLE FINANCEIRO ───────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,14,ROSE);
+  txt('CONTROLE FINANCEIRO 2026',W/2,10,{sz:12,c:WHITE,st:'bold',al:'center'});
+
+  let ffy=18;
+  // tabela mensal
+  const fcols=['MÊS','CLIENTES','RECEITA','DESPESAS','LUCRO','MARGEM'];
+  const fwidths=[28,22,28,28,28,22];
+  let fx=10;
+  fcols.forEach((h,i)=>{
+    fill(fx,ffy,fwidths[i],10,ROSE_DARK);
+    stroke(fx,ffy,fwidths[i],10,ROSE,.3);
+    txt(h,fx+fwidths[i]/2,ffy+7,{sz:7,c:WHITE,st:'bold',al:'center'});
+    fx+=fwidths[i];
+  });
+  ffy+=10;
+  MONTHS.forEach((m,mi)=>{
+    fx=10;
+    fill(10,ffy,2,10,ROSE);
+    fwidths.forEach((fw,fi)=>{
+      fill(fx,ffy,fw,10,mi%2===0?WHITE:CREAM);
+      stroke(fx,ffy,fw,10,LGRAY,.15);
+      if(fi===0) txt(m.name.substring(0,3),fx+fw/2,ffy+7,{sz:7,c:ROSE_DARK,st:'bold',al:'center'});
+      fx+=fw;
+    });
+    ffy+=10;
+  });
+  // linha TOTAL
+  fx=10;
+  fwidths.forEach((fw,fi)=>{
+    fill(fx,ffy,fw,10,ROSE_LIGHT);
+    stroke(fx,ffy,fw,10,ROSE_MID,.3);
+    if(fi===0) txt('TOTAL',fx+fw/2,ffy+7,{sz:7.5,c:ROSE_DARK,st:'bold',al:'center'});
+    fx+=fw;
+  });
+  ffy+=16;
+
+  // resumo anual boxes
+  const sumBoxes=[
+    ['Melhor mes:',''],
+    ['Crescimento vs 2025:',''],
+    ['Principal investimento:',''],
+    ['Meta anual atingida:','SIM  /  NAO'],
+  ];
+  const bw=(W-20)/2;
+  sumBoxes.forEach(([label,hint],i)=>{
+    const bx=10+(i%2)*bw, by=ffy+Math.floor(i/2)*26;
+    fill(bx,by,bw-4,22,CREAM);
+    stroke(bx,by,bw-4,22,ROSE_MID,.3);
+    txt('>> '+label,bx+5,by+9,{sz:8,c:ROSE_DARK,st:'bold'});
+    txt(hint,bx+5,by+18,{sz:7.5,c:GRAY});
+    line(bx+5,by+20,bx+bw-9,by+20,LGRAY,.3);
+  });
+
+  txt(`Controle Financeiro 2026  ·  ${nome}`,W/2,H-4,{sz:6.5,c:LGRAY,al:'center'});
+
+  // ─── CONTROLE DE ESTOQUE ───────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,14,ROSE);
+  txt('CONTROLE DE ESTOQUE',W/2,10,{sz:12,c:WHITE,st:'bold',al:'center'});
+
+  let efy=18;
+  const ecols=['PRODUTO / INSUMO','MARCA','QTD','VALIDADE','REPOR QUANDO','FORNECEDOR'];
+  const ewidths=[44,28,14,22,28,36];
+  let efx=10;
+  ecols.forEach((h,i)=>{
+    fill(efx,efy,ewidths[i],10,ROSE_DARK);
+    stroke(efx,efy,ewidths[i],10,ROSE,.3);
+    txt(h,efx+2,efy+7,{sz:5.5,c:WHITE,st:'bold'});
+    efx+=ewidths[i];
+  });
+  efy+=10;
+  for(let r=0;r<22;r++){
+    efx=10;
+    ewidths.forEach((ew)=>{
+      fill(efx,efy,ew,10,r%2===0?WHITE:CREAM);
+      stroke(efx,efy,ew,10,LGRAY,.15);
+      efx+=ew;
+    });
+    efy+=10;
+  }
+
+  // legenda
+  efy+=4;
+  fill(10,efy,W-20,16,ROSE_LIGHT);
+  stroke(10,efy,W-20,16,ROSE_MID,.2);
+  txt('>> Dica: Preencha "Repor Quando" com a quantidade minima. Ex: Repor quando restar 2 unidades.',14,efy+5,{sz:7,c:ROSE_DARK});
+  txt('Organize por categorias: Ativos, Maquiagem, Cosméticos, Equipamentos, Materiais descartáveis.',14,efy+13,{sz:7,c:GRAY});
+
+  txt(`Controle de Estoque 2026  ·  ${nome}`,W/2,H-4,{sz:6.5,c:LGRAY,al:'center'});
+
+  // ─── NOTAS (2 páginas) ────────────────────────────────────────────────────
+  for(let np=0;np<2;np++){
+    newPage();
+    fill(0,0,W,14,ROSE);
+    txt('ANOTACOES LIVRES',W/2,10,{sz:12,c:WHITE,st:'bold',al:'center'});
+
+    let ny=22;
+    while(ny<H-14){
+      const isSec=(ny-22)%40===0&&ny>22;
+      if(isSec){fill(14,ny,W-28,1.5,ROSE_LIGHT);ny+=5;}
+      line(14,ny,W-14,ny,LGRAY,.3);
+      ny+=9;
+    }
+    txt(`Anotações  ·  ${nome}`,W/2,H-4,{sz:6.5,c:LGRAY,al:'center'});
+  }
+
+  // ─── CONTRACAPA ──────────────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,H,ROSE_DARK);
+  fill(0,0,W,H/2+20,[190,24,93]);
+  doc.setFillColor(...ROSE);doc.triangle(0,H/2+20,W,H/2-40,W,H/2+20,'F');
+
+  // ornamentos
+  doc.setFillColor(255,255,255);doc.setGState(doc.GState({opacity:.06}));
+  doc.circle(30,80,60,'F');doc.circle(180,220,55,'F');
+  doc.setGState(doc.GState({opacity:1}));
+
+  // logo na contracapa (centro topo)
+  if(logoUrl){
+    try{ doc.addImage(logoUrl,'',W/2-18,48,36,36); }catch(e){}
+    txt('Parabens,',W/2,96,{sz:18,c:WHITE,al:'center'});
+  }else{
+    doc.setFillColor(255,182,214);doc.circle(W/2,72,8,'F');
+    doc.setFillColor(255,210,230);doc.circle(W/2-14,78,5,'F');doc.circle(W/2+14,78,5,'F');
+    txt('Parabens,',W/2,96,{sz:18,c:WHITE,al:'center'});
+  }
+  const congratY=logoUrl?106:124;
+  txt(nome+'!',W/2,congratY,{sz:22,c:ROSE_LIGHT,st:'bold',al:'center'});
+  fill(W/2-36,congratY+6,72,1.5,ROSE_MID);
+  const msgY=congratY+20;
+  txt('Que 2026 seja o seu melhor ano',W/2,msgY,{sz:13,c:WHITE,al:'center'});
+  txt('como esteticista. Você merece!',W/2,msgY+12,{sz:13,c:WHITE,al:'center'});
+  // redes sociais na contracapa
+  if(instagram||whatsapp){
+    const redes=[];
+    if(instagram) redes.push('IG: '+instagram);
+    if(whatsapp)  redes.push('WA: '+whatsapp);
+    txt(redes.join('   '),W/2,msgY+26,{sz:9,c:ROSE_LIGHT,al:'center'});
+  }
+
+  // box app
+  fill(W/2-55,congratY+40,110,44,WHITE);
+  const boxY=congratY+40;
+  doc.setFillColor(...ROSE);doc.circle(W/2,boxY+10,3,'F');
+  txt('Use o App Esteticista',W/2,boxY+23,{sz:10,c:ROSE_DARK,st:'bold',al:'center'});
+  txt('para anamnese e protocolos completos',W/2,boxY+31,{sz:8,c:GRAY,al:'center'});
+  txt('Por apenas R$ 17,00',W/2,boxY+40,{sz:9,c:ROSE,st:'bold',al:'center'});
+
+  fill(0,H-16,W,16,ROSE);
+  txt('Planner Esteticista 2026 - Todos os direitos reservados',W/2,H-6,{sz:8,c:WHITE,al:'center'});
+
+  // ─── SALVAR ──────────────────────────────────────────────────────────────
+  const fileName=`Planner-Esteticista-2026-${nome.replace(/\s+/g,'-')}.pdf`;
+  doc.save(fileName);
+}
+</script>
+</body>
+</html>
