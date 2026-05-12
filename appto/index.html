@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Terapeuta Ocupacional Pro | Anamnese, COPM, Laudos e Protocolos Prontos</title>
+  <meta name="description" content="O app completo para terapeutas ocupacionais que querem atender com mais qualidade e parar de perder horas criando material do zero." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            to: {
+              50:  '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 50%, #0f172a 100%); }
+    .card-hover { transition: transform .2s, box-shadow .2s; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(2,132,199,.2); }
+    .pulse-btn { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(2,132,199,.4)} 50%{box-shadow:0 0 0 12px rgba(2,132,199,0)} }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+    .faq-answer.open { max-height: 300px; }
+    .popup-toast { animation: slideIn .4s ease; }
+    @keyframes slideIn { from{transform:translateX(-120%)} to{transform:translateX(0)} }
+    .tag-badge {
+      background: linear-gradient(90deg, #0284c7, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* Placeholder de screenshot */
+    .screen-placeholder {
+      width: 100%;
+      aspect-ratio: 9/16;
+      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+      border-radius: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #7dd3fc;
+      color: #0369a1;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900 overflow-x-hidden">
+
+<!-- TOP BAR -->
+<div class="bg-to-700 text-white text-center py-2 px-4 text-sm font-medium">
+  Acesso imediato após compra &nbsp;|&nbsp; <strong>Garantia de 7 dias</strong> sem perguntas
+</div>
+
+<!-- HERO -->
+<section class="hero-gradient text-white py-16 px-4">
+  <div class="max-w-3xl mx-auto text-center">
+    <span class="inline-block bg-to-600/30 border border-to-400/40 text-to-300 text-xs font-semibold px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
+      Para Terapeutas Ocupacionais
+    </span>
+    <h1 class="text-3xl md:text-5xl font-black leading-tight mb-5">
+      Pare de Criar Laudos do Zero.<br/>
+      <span class="text-to-400">Anamnese, COPM, Protocolos e Laudos</span><br/>
+      Prontos Para Usar Agora.
+    </h1>
+    <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+      O app completo para terapeutas ocupacionais que querem atender com mais qualidade e parar de perder horas criando fichas, laudos e relatórios do zero.
+    </p>
+    <div class="flex justify-center mb-8">
+      <img src="https://i.ibb.co/fVN35xLq/Chat-GPT-Image-12-de-mai-de-2026-18-59-04.png"
+           alt="App Terapeuta Ocupacional Pro"
+           class="w-64 md:w-80 rounded-3xl shadow-2xl ring-2 ring-to-400/30" />
+    </div>
+    <a href="#preco" class="inline-block bg-to-500 hover:bg-to-400 text-white font-bold text-lg px-10 py-4 rounded-2xl pulse-btn transition-all mb-4">
+      Quero Acesso Agora →
+    </a>
+    <p class="text-gray-400 text-sm">Acesso vitalício &nbsp;•&nbsp; Sem mensalidade &nbsp;•&nbsp; Funciona no celular</p>
+  </div>
+</section>
+
+<!-- NÚMEROS -->
+<section class="bg-gray-50 border-b border-gray-100 py-10 px-4">
+  <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div>
+      <div class="text-3xl md:text-4xl font-black text-to-600">300+</div>
+      <div class="text-sm text-gray-500 mt-1">fichas e protocolos</div>
+    </div>
+    <div>
+      <div class="text-3xl md:text-4xl font-black text-to-600">8</div>
+      <div class="text-sm text-gray-500 mt-1">áreas de avaliação</div>
+    </div>
+    <div>
+      <div class="text-3xl md:text-4xl font-black text-to-600">7 dias</div>
+      <div class="text-sm text-gray-500 mt-1">garantia total</div>
+    </div>
+    <div>
+      <div class="text-3xl md:text-4xl font-black text-to-600">1x</div>
+      <div class="text-sm text-gray-500 mt-1">acesso vitalício</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOR -->
+<section class="py-16 px-4 bg-white">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-black text-center mb-2">Você reconhece alguma dessas situações?</h2>
+    <p class="text-gray-500 text-center mb-10">Se sim, o App Terapeuta Ocupacional Pro foi feito para você.</p>
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="bg-red-50 border border-red-100 rounded-2xl p-5 flex gap-4">
+        <span class="text-3xl mt-1">😩</span>
+        <div>
+          <p class="font-semibold text-gray-800">Passa horas montando laudos para escola e INSS do zero</p>
+          <p class="text-sm text-gray-500 mt-1">Toda semana o mesmo ciclo: abrir Word, adaptar modelo antigo, formatar, imprimir.</p>
+        </div>
+      </div>
+      <div class="bg-red-50 border border-red-100 rounded-2xl p-5 flex gap-4">
+        <span class="text-3xl mt-1">📂</span>
+        <div>
+          <p class="font-semibold text-gray-800">Fichas de AVD, COPM e anamnese em dezenas de pastas</p>
+          <p class="text-sm text-gray-500 mt-1">Na hora do atendimento, perde tempo procurando o protocolo certo.</p>
+        </div>
+      </div>
+      <div class="bg-red-50 border border-red-100 rounded-2xl p-5 flex gap-4">
+        <span class="text-3xl mt-1">😰</span>
+        <div>
+          <p class="font-semibold text-gray-800">Dificuldade de registrar evolução de sessão de forma organizada</p>
+          <p class="text-sm text-gray-500 mt-1">Anotações espalhadas, sem histórico claro do progresso de cada paciente.</p>
+        </div>
+      </div>
+      <div class="bg-red-50 border border-red-100 rounded-2xl p-5 flex gap-4">
+        <span class="text-3xl mt-1">🔄</span>
+        <div>
+          <p class="font-semibold text-gray-800">Perde tempo com burocracia em vez de atender mais</p>
+          <p class="text-sm text-gray-500 mt-1">Tempo que poderia ser do paciente vai para papelada e relatórios manuais.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUÇÃO -->
+<section class="py-16 px-4 bg-gray-50">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-black mb-2">Tudo que você precisa. Em um único lugar. Pronto para usar.</h2>
+    <p class="text-gray-500 mb-10">Abra o app, escolha a categoria e em segundos você tem o material certo para cada paciente.</p>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">📋</div>
+        <h3 class="font-bold text-gray-800">Anamnese Completa</h3>
+        <p class="text-sm text-gray-500 mt-2">Dados pessoais, diagnóstico, CID-10, histórico do desenvolvimento e medicamentos.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">🎯</div>
+        <h3 class="font-bold text-gray-800">COPM + Escalas</h3>
+        <p class="text-sm text-gray-500 mt-2">Medida Canadense de Desempenho Ocupacional e Escala MIF com scoring automático.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">🧩</div>
+        <h3 class="font-bold text-gray-800">Avaliação TEA</h3>
+        <p class="text-sm text-gray-500 mt-2">Rastreio baseado no DSM-5, integração sensorial e dieta sensorial personalizadas.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">🏠</div>
+        <h3 class="font-bold text-gray-800">AVD e AIVD</h3>
+        <p class="text-sm text-gray-500 mt-2">Avaliação completa de atividades de vida diária com escala de independência.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">📄</div>
+        <h3 class="font-bold text-gray-800">Laudos em PDF Automático</h3>
+        <p class="text-sm text-gray-500 mt-2">Relatório escola, laudo INSS/BPC, relatório de alta e encaminhamento prontos em 1 clique.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">📈</div>
+        <h3 class="font-bold text-gray-800">Evolução de Sessão</h3>
+        <p class="text-sm text-gray-500 mt-2">Registro completo de cada sessão com histórico por paciente e export em PDF.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO / MOCKUPS -->
+<section class="py-16 px-4 hero-gradient text-white">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-black mb-2">Veja o app por dentro</h2>
+    <p class="text-gray-300 mb-10">Tudo na tela do seu celular. Sem instalar, sem complicar.</p>
+    <div class="grid md:grid-cols-3 gap-4 mb-10">
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">📱</div>
+        <h4 class="font-bold mb-1">Interface Simples</h4>
+        <p class="text-sm text-gray-300">Design intuitivo. Qualquer profissional usa sem tutorial.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">⚡</div>
+        <h4 class="font-bold mb-1">Laudo em 3 minutos</h4>
+        <p class="text-sm text-gray-300">Preencha os campos e gere o laudo para escola ou INSS na hora.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">📄</div>
+        <h4 class="font-bold mb-1">PDF em 1 clique</h4>
+        <p class="text-sm text-gray-300">Relatório profissional gerado automaticamente com logo da sua clínica.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">📁</div>
+        <h4 class="font-bold mb-1">Pacientes Salvos</h4>
+        <p class="text-sm text-gray-300">Cadastre e acompanhe cada paciente com histórico completo de sessões.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">🌐</div>
+        <h4 class="font-bold mb-1">Funciona Offline</h4>
+        <p class="text-sm text-gray-300">Sem internet no consultório? Sem problema. App funciona offline.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">🔒</div>
+        <h4 class="font-bold mb-1">Dados no Seu Aparelho</h4>
+        <p class="text-sm text-gray-300">Zero envio de dados. Privacidade total do seu paciente.</p>
+      </div>
+    </div>
+    <a href="#preco" class="inline-block bg-to-500 hover:bg-to-400 text-white font-bold text-lg px-10 py-4 rounded-2xl transition-all">
+      Quero Acesso Agora →
+    </a>
+  </div>
+</section>
+
+<!-- SCREENSHOTS - COMO FUNCIONA NA PRÁTICA -->
+<section class="py-20 px-4 bg-white">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-14">
+      <span class="inline-block bg-to-50 text-to-700 text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">Como Funciona na Prática</span>
+      <h2 class="text-2xl md:text-4xl font-black mb-3">Veja o App em Ação.<br/><span class="text-to-600">Cada Etapa do Atendimento.</span></h2>
+      <p class="text-gray-500 max-w-xl mx-auto">Do cadastro do paciente ao laudo final — tudo integrado, tudo rápido, tudo profissional.</p>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div class="flex-1 order-2 md:order-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-to-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">1</span>
+          <span class="text-to-600 font-semibold text-sm uppercase tracking-wide">Dashboard</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          A Central de Comando do Seu Consultório —<br/><span class="text-to-600">Tudo a 1 Clique de Distância.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          Abra o app e veja todos os seus pacientes, avaliações e protocolos organizados na tela. Anamnese, COPM, AVD, laudos e sessões — separados por categoria, prontos para usar. Sem procurar arquivo, sem abrir Word, sem perder tempo.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-to-700 font-semibold">
+          <span class="text-to-500">✓</span> Acesso instantâneo a todos os protocolos
+        </div>
+      </div>
+      <div class="flex-shrink-0 order-1 md:order-2">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <img src="https://i.ibb.co/hRzM0vjK/Captura-de-Tela-2026-05-12-a-s-16-47-34.png" alt="App TO - Dashboard" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-to-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div class="flex-shrink-0">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <img src="https://i.ibb.co/0pR1X6Zg/Captura-de-Tela-2026-05-12-a-s-16-47-50.png" alt="App TO - Anamnese" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-to-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-to-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">2</span>
+          <span class="text-to-600 font-semibold text-sm uppercase tracking-wide">Anamnese Completa</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          Cadastre o Paciente em Minutos.<br/><span class="text-to-600">Diagnóstico, CID e Histórico Salvos.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          Nome, responsável, diagnóstico, CID-10, histórico do desenvolvimento, medicamentos, escola e outros especialistas — tudo em uma ficha digital completa. Preenche uma vez, usa para todos os laudos gerados depois.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-to-700 font-semibold">
+          <span class="text-to-500">✓</span> Dados do paciente puxados automaticamente nos PDFs
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div class="flex-1 order-2 md:order-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-to-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">3</span>
+          <span class="text-to-600 font-semibold text-sm uppercase tracking-wide">Avaliações e Protocolos</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          COPM, MIF, TEA, AVD, Sensorial.<br/><span class="text-to-600">O Protocolo Certo Para Cada Caso.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          Aplique a Medida Canadense de Desempenho Ocupacional, Escala MIF, rastreio TEA pelo DSM-5, avaliação de AVD e integração sensorial. Toque nos itens na tela e o score é calculado na hora. Sem conta manual, sem tabela de referência.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-to-700 font-semibold">
+          <span class="text-to-500">✓</span> Score automático — zero risco de erro de cálculo
+        </div>
+      </div>
+      <div class="flex-shrink-0 order-1 md:order-2">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <img src="https://i.ibb.co/FLvxYgDz/Captura-de-Tela-2026-05-12-a-s-16-48-03.png" alt="App TO - COPM" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-to-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div class="flex-shrink-0">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <img src="https://i.ibb.co/rKqYLHqH/Captura-de-Tela-2026-05-12-a-s-16-48-18.png" alt="App TO - Evolucao" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-to-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-to-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">4</span>
+          <span class="text-to-600 font-semibold text-sm uppercase tracking-wide">Evolução de Sessão</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          Registre Cada Sessão em Segundos.<br/><span class="text-to-600">Histórico Completo de Cada Paciente.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          Atividades realizadas, resposta do paciente, evolução observada e objetivos para a próxima sessão. Tudo registrado por data e exportável em PDF. Nunca mais confundir anotações de pacientes ou esquecer o que foi feito na última sessão.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-to-700 font-semibold">
+          <span class="text-to-500">✓</span> Histórico organizado por paciente e por data
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="flex flex-col md:flex-row items-center gap-10">
+      <div class="flex-1 order-2 md:order-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-to-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">5</span>
+          <span class="text-to-600 font-semibold text-sm uppercase tracking-wide">Laudos Profissionais</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          Laudo para Escola e INSS em 1 Clique.<br/><span class="text-to-600">Do Atendimento ao Documento em Minutos.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          Relatório para escola, laudo INSS/BPC, relatório de alta, encaminhamento e relatório para plano de saúde — todos gerados em PDF com os dados do paciente e da sua clínica, incluindo logo. Profissional o suficiente para ir direto para a perícia ou coordenação escolar.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-to-700 font-semibold">
+          <span class="text-to-500">✓</span> Logo da sua clínica em todos os documentos
+        </div>
+      </div>
+      <div class="flex-shrink-0 order-1 md:order-2">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <img src="https://i.ibb.co/gbQcR5FK/Captura-de-Tela-2026-05-12-a-s-16-54-34.png" alt="App TO - PDF Laudo" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-to-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA da seção -->
+    <div class="text-center mt-16 p-10 bg-to-50 rounded-3xl border border-to-100">
+      <p class="text-to-700 font-semibold text-sm uppercase tracking-wide mb-2">Pronta para começar?</p>
+      <h3 class="text-2xl font-black text-gray-900 mb-4">É assim que cada atendimento seu vai ser daqui pra frente.</h3>
+      <a href="#preco" class="inline-block bg-to-600 hover:bg-to-500 text-white font-bold text-lg px-10 py-4 rounded-2xl pulse-btn transition-all">
+        Quero Usar Isso Agora →
+      </a>
+      <p class="text-gray-400 text-sm mt-3">Acesso imediato · Sem instalação · Funciona no celular</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="py-16 px-4 bg-white">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-black text-center mb-10">O que terapeutas ocupacionais estão dizendo</h2>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6">
+        <div class="flex text-to-500 mb-3">★★★★★</div>
+        <p class="text-gray-700 text-sm italic mb-4">"Economizo pelo menos 4 horas por semana. Antes passava noites montando laudos para escola. Agora abro o app e está pronto."</p>
+        <div class="text-sm">
+          <p class="font-semibold text-gray-800">Camila R.</p>
+          <p class="text-gray-400">Terapeuta Ocupacional — SP</p>
+        </div>
+      </div>
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6">
+        <div class="flex text-to-500 mb-3">★★★★★</div>
+        <p class="text-gray-700 text-sm italic mb-4">"O laudo para o INSS sempre foi um pesadelo. Com o app, preencho os campos e ele gera tudo formatado e profissional. Incrível."</p>
+        <div class="text-sm">
+          <p class="font-semibold text-gray-800">Fernanda L.</p>
+          <p class="text-gray-400">TO Clínica Infantil — RJ</p>
+        </div>
+      </div>
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6">
+        <div class="flex text-to-500 mb-3">★★★★★</div>
+        <p class="text-gray-700 text-sm italic mb-4">"Uso para os meus pacientes com TEA. A avaliação sensorial e a dieta sensorial em PDF foi o que faltava no meu atendimento."</p>
+        <div class="text-sm">
+          <p class="font-semibold text-gray-800">Beatriz M.</p>
+          <p class="text-gray-400">TO Especialista TEA — MG</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREÇO -->
+<section id="preco" class="py-16 px-4 bg-gray-50">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-black mb-2">Escolha o seu plano</h2>
+    <p class="text-gray-500 mb-10">Acesso imediato após a compra. Sem mensalidade, sem pegadinha.</p>
+    <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+
+      <!-- BÁSICO -->
+      <div class="bg-white border-2 border-gray-200 rounded-3xl p-8 text-left flex flex-col">
+        <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Básico</p>
+        <div class="flex items-end gap-1 mb-1">
+          <span class="text-4xl font-black text-gray-900">R$ 17,00</span>
+        </div>
+        <p class="text-xs text-gray-400 mb-6">pagamento único</p>
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex gap-2 text-sm"><span class="text-to-500 font-bold">✓</span> Anamnese completa com CID-10</li>
+          <li class="flex gap-2 text-sm"><span class="text-to-500 font-bold">✓</span> AVD / AIVD e Escala MIF</li>
+          <li class="flex gap-2 text-sm"><span class="text-to-500 font-bold">✓</span> Evolução de sessão por paciente</li>
+          <li class="flex gap-2 text-sm"><span class="text-to-500 font-bold">✓</span> Acesso vitalício</li>
+        </ul>
+        <a href="https://pay.lowify.com.br/checkout.php?product_id=qVEgTE" class="block text-center border-2 border-to-600 text-to-600 hover:bg-to-50 font-bold py-3 rounded-xl transition-all">
+          Escolher Básico
+        </a>
+      </div>
+
+      <!-- PRO -->
+      <div class="bg-to-600 border-2 border-to-600 rounded-3xl p-8 text-left flex flex-col text-white relative">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-xs font-black px-4 py-1 rounded-full uppercase tracking-wide">
+          ⭐ Mais Escolhido
+        </div>
+        <p class="text-sm font-semibold text-to-200 uppercase tracking-wider mb-1">Profissional Pro</p>
+        <div class="flex items-end gap-1 mb-1">
+          <span class="text-4xl font-black">R$ 27,90</span>
+        </div>
+        <p class="text-xs text-to-200 mb-4">pagamento único</p>
+        <div class="rounded-2xl overflow-hidden mb-5 ring-2 ring-white/20 shadow-xl">
+          <img src="https://i.ibb.co/fVN35xLq/Chat-GPT-Image-12-de-mai-de-2026-18-59-04.png"
+               alt="App TO Pro" class="w-full object-cover" />
+        </div>
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Tudo do plano Básico</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> COPM com scoring automático</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Avaliação TEA, Sensorial e Desenvolvimento</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Laudos escola, INSS/BPC, alta e plano de saúde</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Termo de Consentimento automático</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Logo da clínica em todos os PDFs</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Plano terapêutico e dieta sensorial em PDF</li>
+        </ul>
+        <a href="https://pay.lowify.com.br/go.php?offer=dz8frsm" class="block text-center bg-white text-to-700 hover:bg-to-50 font-bold py-3 rounded-xl transition-all pulse-btn">
+          Assinar Profissional Agora
+        </a>
+      </div>
+
+    </div>
+    <div class="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-500">
+      <span>🔒 Pagamento 100% seguro</span>
+      <span>⚡ Acesso em minutos</span>
+      <span>↩️ 7 dias de garantia</span>
+    </div>
+  </div>
+</section>
+
+<!-- GARANTIA -->
+<section class="py-16 px-4 bg-white">
+  <div class="max-w-2xl mx-auto text-center">
+    <div class="bg-to-50 border-2 border-to-200 rounded-3xl p-10">
+      <div class="text-5xl mb-4">🛡️</div>
+      <h2 class="text-2xl font-black mb-3">Garantia Incondicional de 7 Dias</h2>
+      <p class="text-gray-600 mb-6">
+        Se em até 7 dias você não se sentir mais organizada para atender, ou simplesmente achar que o app não é para você, <strong>devolvemos 100% do seu dinheiro. Sem perguntas.</strong>
+      </p>
+      <ul class="text-sm text-left inline-block space-y-2 text-gray-700">
+        <li class="flex gap-2"><span class="text-to-500">✓</span> Acesso vitalício ao app</li>
+        <li class="flex gap-2"><span class="text-to-500">✓</span> Todos os laudos e fichas prontos para usar</li>
+        <li class="flex gap-2"><span class="text-to-500">✓</span> Funciona offline em qualquer dispositivo</li>
+        <li class="flex gap-2"><span class="text-to-500">✓</span> Logo da sua clínica em todos os documentos</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="py-16 px-4 bg-gray-50">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="text-2xl font-black text-center mb-10">Perguntas Frequentes</h2>
+    <div class="space-y-3">
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          Como vou receber o acesso?
+          <span class="faq-icon text-to-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Após a confirmação do pagamento, você recebe o link de acesso direto no e-mail. É instantâneo — em menos de 5 minutos você já está usando o app.
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          Funciona no celular?
+          <span class="faq-icon text-to-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Sim! O app foi desenvolvido mobile-first e funciona perfeitamente em qualquer smartphone, tablet ou computador. Não precisa instalar nada — abre direto no navegador.
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          Os laudos gerados são documentos oficiais?
+          <span class="faq-icon text-to-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Os PDFs são documentos profissionais com todos os campos necessários para escola e INSS, incluindo seu nome, CREFITO e logo da clínica. O documento técnico é assinado por você como profissional responsável.
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          É realmente vitalício?
+          <span class="faq-icon text-to-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Sim. Paga uma vez, usa para sempre. Não tem mensalidade, não tem renovação anual. Acesso vitalício.
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          E se eu não gostar?
+          <span class="faq-icon text-to-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Garantia de 7 dias sem perguntas. Se não ficar satisfeita por qualquer motivo, é só pedir o reembolso e devolvemos 100% do valor pago.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="hero-gradient text-white py-16 px-4 text-center">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-black mb-3">Pronta para atender sem estresse?</h2>
+    <p class="text-gray-300 mb-8">Centenas de TOs já transformaram sua rotina clínica com o app.</p>
+    <a href="https://pay.lowify.com.br/go.php?offer=dz8frsm" class="inline-block bg-to-500 hover:bg-to-400 text-white font-bold text-xl px-12 py-5 rounded-2xl pulse-btn transition-all mb-4">
+      Quero Acesso Agora →
+    </a>
+    <p class="text-gray-400 text-sm">🔒 Pagamento seguro &nbsp;•&nbsp; Acesso imediato &nbsp;•&nbsp; Garantia 7 dias</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-gray-400 text-center py-6 text-sm">
+  <p>App Terapeuta Ocupacional Pro &nbsp;•&nbsp; Todos os direitos reservados</p>
+  <p class="mt-1">✅ Acesso imediato · Sem anúncios · Sem envio de dados</p>
+</footer>
+
+<!-- POPUP DE COMPRAS RECENTES -->
+<div id="toast" class="fixed bottom-4 left-4 bg-white border border-gray-200 shadow-xl rounded-2xl p-4 flex gap-3 items-center z-50 max-w-xs popup-toast hidden">
+  <div class="text-3xl">🎉</div>
+  <div>
+    <p class="font-semibold text-gray-800 text-sm" id="toast-name">Alguém de SP</p>
+    <p class="text-gray-500 text-xs">acaba de adquirir o App TO Pro</p>
+  </div>
+</div>
+
+<script>
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const icon = btn.querySelector('.faq-icon');
+    answer.classList.toggle('open');
+    icon.textContent = answer.classList.contains('open') ? '−' : '+';
+  }
+
+  const names = ['Camila de SP','Fernanda do RJ','Beatriz de MG','Leticia de PR','Mariana de SC','Rafaela de BA','Juliana de GO','Patricia de RS'];
+  let toastIndex = 0;
+  function showToast() {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-name').textContent = names[toastIndex % names.length];
+    toastIndex++;
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 4000);
+  }
+  setTimeout(() => { showToast(); setInterval(showToast, 18000); }, 6000);
+</script>
+
+<!-- UTMIFY - ADICIONE SEU PIXEL ID -->
+<!--
+<script>
+  window.pixelId = "SEU_PIXEL_ID_AQUI";
+  var a = document.createElement("script");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  document.head.appendChild(a);
+</script>
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-subids async defer></script>
+-->
+</body>
+</html>

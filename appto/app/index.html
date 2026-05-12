@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>App Terapeuta Ocupacional Pro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#0e7490;--pd:#0c4a6e;--pl:#e0f2fe;--pm:#7dd3fc;
+  --g:#f0f9ff;--w:#fff;--dk:#0f172a;--gr:#64748b;--lg:#e2e8f0;
+  --red:#ef4444;--green:#10b981;--yellow:#f59e0b
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f9ff;color:var(--dk);min-height:100vh}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--pd);color:#fff;display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;transition:.3s}
+.sidebar.collapsed{width:56px}
+.sidebar-logo{padding:16px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-logo .logo-icon{width:32px;height:32px;background:var(--pm);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--pd);flex-shrink:0}
+.sidebar-logo span{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden}
+.nav{padding:12px 8px;flex:1;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:.15s;margin-bottom:2px;font-size:13px;white-space:nowrap}
+.nav-item:hover{background:rgba(255,255,255,.1)}
+.nav-item.active{background:var(--p);font-weight:600}
+.nav-item svg{width:18px;height:18px;flex-shrink:0}
+.nav-label{overflow:hidden}
+.main{margin-left:220px;flex:1;transition:.3s}
+
+/* TOPBAR */
+.topbar{background:var(--w);border-bottom:1px solid var(--lg);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar h1{font-size:17px;font-weight:700;color:var(--pd)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--p);color:#fff}
+.btn-primary:hover{background:var(--pd)}
+.btn-outline{background:transparent;border:1.5px solid var(--p);color:var(--p)}
+.btn-outline:hover{background:var(--pl)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-red{background:var(--red);color:#fff}
+
+/* CONTENT */
+.content{padding:24px}
+.page{display:none}
+.page.active{display:block}
+
+/* CARDS */
+.card{background:var(--w);border-radius:12px;border:1px solid var(--lg);padding:20px;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:700;color:var(--pd)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--w);border-radius:10px;border:1px solid var(--lg);padding:14px;text-align:center}
+.stat-num{font-size:26px;font-weight:800;color:var(--p)}
+.stat-label{font-size:11px;color:var(--gr);margin-top:2px}
+
+/* PATIENT LIST */
+.patient-list{display:grid;gap:10px}
+.patient-card{background:var(--w);border:1px solid var(--lg);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s}
+.patient-card:hover{border-color:var(--p);box-shadow:0 2px 8px rgba(14,116,144,.1)}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--pl);color:var(--pd);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.patient-info{flex:1}
+.patient-name{font-weight:600;font-size:14px;color:var(--dk)}
+.patient-meta{font-size:12px;color:var(--gr);margin-top:2px}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600}
+.badge-tea{background:#fef3c7;color:#92400e}
+.badge-motor{background:#dbeafe;color:#1e40af}
+.badge-sensorial{background:#ede9fe;color:#4c1d95}
+.badge-avd{background:#d1fae5;color:#065f46}
+.badge-neuro{background:#fee2e2;color:#7f1d1d}
+
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}
+label.lbl{font-size:12px;font-weight:600;color:var(--gr)}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--lg);border-radius:8px;font-size:13px;color:var(--dk);background:var(--w);outline:none;transition:.15s;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(14,116,144,.08)}
+textarea{resize:vertical;min-height:70px}
+.section-title{font-size:13px;font-weight:700;color:var(--pd);padding:10px 0 6px;border-bottom:2px solid var(--pl);margin:16px 0 12px;grid-column:1/-1}
+
+/* TABS */
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--lg);margin-bottom:20px;overflow-x:auto}
+.tab{padding:9px 16px;font-size:13px;font-weight:600;color:var(--gr);cursor:pointer;border-radius:8px 8px 0 0;white-space:nowrap;transition:.15s;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab.active{color:var(--p);border-bottom-color:var(--p);background:var(--pl)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* EVOLUCAO */
+.sessao-card{background:var(--g);border:1px solid var(--pl);border-radius:10px;padding:14px;margin-bottom:10px}
+.sessao-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sessao-date{font-size:12px;font-weight:700;color:var(--p)}
+
+/* PROTOCOLO CHECKLIST */
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.check-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--g);border-radius:8px;border:1px solid var(--pl);cursor:pointer;font-size:12px;transition:.15s}
+.check-item:hover{border-color:var(--p)}
+.check-item input[type=checkbox]{accent-color:var(--p);width:15px;height:15px;flex-shrink:0}
+.check-item.checked{background:var(--pl);border-color:var(--p)}
+
+/* SCALE */
+.scale-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.scale-label{font-size:12px;color:var(--dk);width:160px;flex-shrink:0}
+.scale-btns{display:flex;gap:4px}
+.scale-btn{width:32px;height:28px;border-radius:6px;border:1.5px solid var(--lg);background:var(--w);cursor:pointer;font-size:11px;font-weight:700;color:var(--gr);transition:.15s}
+.scale-btn:hover{border-color:var(--p);color:var(--p)}
+.scale-btn.sel{background:var(--p);border-color:var(--p);color:#fff}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 24px;color:var(--gr)}
+.empty svg{width:48px;height:48px;margin:0 auto 12px;opacity:.3;display:block}
+.empty p{font-size:14px}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--w);border-radius:16px;width:min(640px,95vw);max-height:90vh;overflow-y:auto;padding:24px;position:relative}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:700;color:var(--pd)}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--gr);padding:4px}
+
+/* LOGO UPLOAD CLINICA */
+.logo-upload-box{border:2px dashed var(--lg);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:.2s;background:var(--g);position:relative;margin-top:8px}
+.logo-upload-box:hover{border-color:var(--p);background:var(--pl)}
+.logo-upload-box p{font-size:12px;color:var(--gr);margin-top:4px}
+.logo-preview-box{display:none;margin-top:10px;text-align:center}
+.logo-preview-box img{max-height:56px;max-width:160px;border-radius:6px;border:1px solid var(--lg)}
+.logo-preview-box span{display:block;font-size:11px;color:var(--p);margin-top:4px;font-weight:600}
+
+/* PDF ACTIONS */
+.pdf-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{width:56px}.sidebar .nav-label,.sidebar .sidebar-logo span{display:none}
+  .main{margin-left:56px}
+  .form-grid,.form-grid-3{grid-template-columns:1fr}
+  .form-full{grid-column:1}
+  .check-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">TO</div>
+    <span>App TO Pro</span>
+  </div>
+  <nav class="nav">
+    <div class="nav-item active" onclick="goPage('dashboard')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </div>
+    <div class="nav-item" onclick="goPage('pacientes')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span class="nav-label">Pacientes</span>
+    </div>
+    <div class="nav-item" onclick="goPage('avaliacao')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+      <span class="nav-label">Avaliacao</span>
+    </div>
+    <div class="nav-item" onclick="goPage('protocolos')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+      <span class="nav-label">Protocolos</span>
+    </div>
+    <div class="nav-item" onclick="goPage('evolucao')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <span class="nav-label">Evolucao</span>
+    </div>
+    <div class="nav-item" onclick="goPage('laudos')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+      <span class="nav-label">Laudos e Relatorios</span>
+    </div>
+    <div class="nav-item" onclick="goPage('clinica')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span class="nav-label">Minha Clinica</span>
+    </div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<div class="main" id="mainContent">
+  <div class="topbar">
+    <h1 id="pageTitle">Dashboard</h1>
+    <div class="topbar-right">
+      <span id="topbarSub" style="font-size:12px;color:var(--gr)"></span>
+      <button class="btn btn-primary btn-sm" onclick="openNewPatient()">+ Novo Paciente</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Pacientes Recentes</span>
+          <button class="btn btn-outline btn-sm" onclick="goPage('pacientes')">Ver todos</button>
+        </div>
+        <div id="recentPatients"></div>
+      </div>
+    </div>
+
+    <!-- PACIENTES -->
+    <div class="page" id="page-pacientes">
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <input id="searchPaciente" placeholder="Buscar paciente..." style="max-width:280px" oninput="renderPatients()">
+        <select id="filterArea" onchange="renderPatients()" style="max-width:200px">
+          <option value="">Todas as areas</option>
+          <option value="TEA">TEA / Autismo</option>
+          <option value="Motor">Desenv. Motor</option>
+          <option value="Sensorial">Integracao Sensorial</option>
+          <option value="AVD">AVD / Independencia</option>
+          <option value="Neurologico">Neurologico</option>
+          <option value="Geriatria">Geriatria</option>
+        </select>
+      </div>
+      <div class="patient-list" id="patientList"></div>
+    </div>
+
+    <!-- AVALIACAO -->
+    <div class="page" id="page-avaliacao">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Selecionar Paciente</span></div>
+        <select id="avalPaciente" onchange="loadAvaliacaoPatient()" style="max-width:320px">
+          <option value="">Selecione um paciente...</option>
+        </select>
+      </div>
+      <div id="avalContent" style="display:none">
+        <div class="tabs" id="avalTabs">
+          <div class="tab active" onclick="switchTab('aval','anamnese')">Anamnese</div>
+          <div class="tab" onclick="switchTab('aval','avd')">AVD / AIVD</div>
+          <div class="tab" onclick="switchTab('aval','sensorial')">Int. Sensorial</div>
+          <div class="tab" onclick="switchTab('aval','tea')">TEA</div>
+          <div class="tab" onclick="switchTab('aval','mif')">Escala MIF</div>
+          <div class="tab" onclick="switchTab('aval','cognitivo')">Cognitivo / Motor</div>
+          <div class="tab" onclick="switchTab('aval','copm')">COPM</div>
+          <div class="tab" onclick="switchTab('aval','desenv')">Desenvolvimento</div>
+        </div>
+        <!-- ANAMNESE TAB -->
+        <div class="tab-content active card" id="aval-anamnese">
+          <div class="form-grid">
+            <div class="section-title">Dados Pessoais</div>
+            <div class="form-group"><label class="lbl">Nome Completo</label><input id="av_nome" placeholder="Nome do paciente"></div>
+            <div class="form-group"><label class="lbl">Data de Nascimento</label><input id="av_nasc" type="date"></div>
+            <div class="form-group"><label class="lbl">Sexo</label><select id="av_sexo"><option>Masculino</option><option>Feminino</option><option>Outro</option></select></div>
+            <div class="form-group"><label class="lbl">Responsavel / Mae-Pai</label><input id="av_resp" placeholder="Nome do responsavel"></div>
+            <div class="form-group"><label class="lbl">Telefone</label><input id="av_tel" placeholder="(00) 00000-0000"></div>
+            <div class="form-group"><label class="lbl">Email</label><input id="av_email" type="email" placeholder="email@email.com"></div>
+            <div class="form-group"><label class="lbl">Escola / Instituicao</label><input id="av_escola" placeholder="Nome da escola"></div>
+            <div class="form-group"><label class="lbl">Ano / Turma</label><input id="av_turma" placeholder="Ex: 3o ano A"></div>
+
+            <div class="section-title">Diagnostico e Historico</div>
+            <div class="form-group"><label class="lbl">Diagnostico Principal</label><input id="av_diag" placeholder="Ex: TEA, PCI, Down, TDAH..."></div>
+            <div class="form-group"><label class="lbl">CID-10</label><input id="av_cid" placeholder="Ex: F84.0, G80.0..."></div>
+            <div class="form-group form-full"><label class="lbl">Queixa Principal / Motivo do Encaminhamento</label><textarea id="av_queixa" placeholder="Descreva o motivo da consulta..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Historico do Desenvolvimento</label><textarea id="av_hist" placeholder="Gestacao, parto, marcos do desenvolvimento, cirurgias, hospitalizacoes..."></textarea></div>
+            <div class="form-group"><label class="lbl">Medicamentos em Uso</label><input id="av_meds" placeholder="Nome e dosagem"></div>
+            <div class="form-group"><label class="lbl">Outros Especialistas</label><input id="av_espec" placeholder="Fonoaudiologo, Psico, Neuro..."></div>
+            <div class="form-group form-full"><label class="lbl">Observacoes Relevantes</label><textarea id="av_obs" placeholder="Alergias, restricoes, informacoes importantes..."></textarea></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveAnamnese()">Salvar Anamnese</button>
+            <button class="btn btn-outline" onclick="pdfAnamnese()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- AVD TAB -->
+        <div class="tab-content card" id="aval-avd">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Marque o nivel de independencia: I = Independente | A = Assistencia Parcial | D = Dependente | N = Nao se aplica</p>
+          <div id="avdTable"></div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveAVD()">Salvar AVD</button>
+            <button class="btn btn-outline" onclick="pdfAVD()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- SENSORIAL TAB -->
+        <div class="tab-content card" id="aval-sensorial">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Avaliacao de Integracao Sensorial — marque a resposta observada</p>
+          <div id="sensorialTable"></div>
+          <div class="form-group" style="margin-top:16px"><label class="lbl">Observacoes Gerais</label><textarea id="sensObs" placeholder="Descricao do perfil sensorial..."></textarea></div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveSensorial()">Salvar</button>
+            <button class="btn btn-outline" onclick="pdfSensorial()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- TEA TAB -->
+        <div class="tab-content card" id="aval-tea">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Rastreio comportamental para TEA — baseado em criterios DSM-5</p>
+          <div id="teaTable"></div>
+          <div class="form-group" style="margin-top:16px"><label class="lbl">Observacoes Clinicas</label><textarea id="teaObs" placeholder="Descricao das observacoes durante avaliacao..."></textarea></div>
+          <div class="form-group" style="margin-top:10px"><label class="lbl">Conclusao / Hipotese Diagnostica</label><textarea id="teaConcl" placeholder="Hipotese diagnostica com base nas observacoes..."></textarea></div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveTEA()">Salvar</button>
+            <button class="btn btn-outline" onclick="pdfTEA()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- MIF TAB -->
+        <div class="tab-content card" id="aval-mif">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Medida de Independencia Funcional (MIF) — escala de 1 a 7</p>
+          <div id="mifTable"></div>
+          <div style="margin-top:16px;display:flex;gap:8px;align-items:center">
+            <span style="font-size:14px;font-weight:700;color:var(--pd)">Pontuacao Total MIF: <span id="mifTotal">0</span>/126</span>
+            <button class="btn btn-primary btn-sm" onclick="saveMIF()">Salvar</button>
+            <button class="btn btn-outline btn-sm" onclick="pdfMIF()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- COGNITIVO TAB -->
+        <div class="tab-content card" id="aval-cognitivo">
+          <div class="form-grid">
+            <div class="section-title">Funcoes Cognitivas</div>
+            <div class="form-group"><label class="lbl">Atencao e Concentracao</label><select id="cog_atencao"><option>Preservada</option><option>Levemente comprometida</option><option>Moderadamente comprometida</option><option>Gravemente comprometida</option></select></div>
+            <div class="form-group"><label class="lbl">Memoria</label><select id="cog_memoria"><option>Preservada</option><option>Levemente comprometida</option><option>Moderadamente comprometida</option><option>Gravemente comprometida</option></select></div>
+            <div class="form-group"><label class="lbl">Linguagem / Comunicacao</label><select id="cog_ling"><option>Verbal fluente</option><option>Verbal limitada</option><option>Nao verbal</option><option>Comunicacao alternativa (CAA)</option></select></div>
+            <div class="form-group"><label class="lbl">Funcoes Executivas</label><select id="cog_exec"><option>Preservadas</option><option>Levemente comprometidas</option><option>Moderadamente comprometidas</option><option>Gravemente comprometidas</option></select></div>
+            <div class="section-title">Funcoes Motoras</div>
+            <div class="form-group"><label class="lbl">Coordenacao Motora Grossa</label><select id="mot_grossa"><option>Normal</option><option>Levemente comprometida</option><option>Moderadamente comprometida</option><option>Gravemente comprometida</option></select></div>
+            <div class="form-group"><label class="lbl">Coordenacao Motora Fina</label><select id="mot_fina"><option>Normal</option><option>Levemente comprometida</option><option>Moderadamente comprometida</option><option>Gravemente comprometida</option></select></div>
+            <div class="form-group"><label class="lbl">Tonus Muscular</label><select id="mot_tonus"><option>Normal</option><option>Hipotonia leve</option><option>Hipotonia moderada</option><option>Hipertonia leve</option><option>Hipertonia moderada</option></select></div>
+            <div class="form-group"><label class="lbl">Marcha / Locomocao</label><select id="mot_marcha"><option>Independente</option><option>Com apoio</option><option>Cadeira de rodas</option><option>Nao deambula</option></select></div>
+            <div class="form-group form-full"><label class="lbl">Observacoes Complementares</label><textarea id="cog_obs"></textarea></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveCognitivo()">Salvar</button>
+            <button class="btn btn-outline" onclick="pdfCognitivo()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- COPM TAB -->
+        <div class="tab-content card" id="aval-copm">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:14px"><strong>COPM — Medida Canadense de Desempenho Ocupacional</strong><br>O paciente/responsavel identifica atividades que tem dificuldade. Avalie Desempenho e Satisfacao de 1 (nao consegue) a 10 (consegue perfeitamente).</p>
+          <div id="copmTable"></div>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span style="font-size:13px;font-weight:700;color:var(--pd)">Media Desempenho: <span id="copmDesempenho">-</span> | Media Satisfacao: <span id="copmSatisfacao">-</span></span>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveCOPM()">Salvar COPM</button>
+            <button class="btn btn-outline" onclick="pdfCOPM()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- DESENVOLVIMENTO TAB -->
+        <div class="tab-content card" id="aval-desenv">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:14px"><strong>Avaliacao do Desenvolvimento Infantil</strong> — baseado em marcos do desenvolvimento. Marque: A = Adquirido | EP = Em processo | NA = Nao adquirido</p>
+          <div id="desenvolvTable"></div>
+          <div class="form-group" style="margin-top:14px"><label class="lbl">Observacoes Clinicas</label><textarea id="desenvObs" placeholder="Observacoes sobre o desenvolvimento..."></textarea></div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveDesenv()">Salvar</button>
+            <button class="btn btn-outline" onclick="pdfDesenv()">Gerar PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROTOCOLOS -->
+    <div class="page" id="page-protocolos">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><span class="card-title">Selecionar Paciente</span></div>
+        <select id="protPaciente" onchange="loadProtocolo()" style="max-width:320px">
+          <option value="">Selecione um paciente...</option>
+        </select>
+      </div>
+      <div id="protContent" style="display:none">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('prot','plano')">Plano Terapeutico</div>
+          <div class="tab" onclick="switchTab('prot','habilidades')">Habilidades Funcionais</div>
+          <div class="tab" onclick="switchTab('prot','tea_inter')">Intervencao TEA</div>
+          <div class="tab" onclick="switchTab('prot','sensorio')">Dieta Sensorial</div>
+        </div>
+        <!-- PLANO TERAPEUTICO -->
+        <div class="tab-content active card" id="prot-plano">
+          <div class="form-grid">
+            <div class="section-title">Objetivos Terapeuticos</div>
+            <div class="form-group form-full"><label class="lbl">Objetivo Geral</label><textarea id="pt_geral" placeholder="Objetivo principal da intervencao terapeutica..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Objetivos de Curto Prazo (1-3 meses)</label><textarea id="pt_curto" placeholder="1. \n2. \n3. "></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Objetivos de Medio Prazo (3-6 meses)</label><textarea id="pt_medio" placeholder="1. \n2. \n3. "></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Objetivos de Longo Prazo (6-12 meses)</label><textarea id="pt_longo" placeholder="1. \n2. \n3. "></textarea></div>
+            <div class="form-group"><label class="lbl">Frequencia das Sessoes</label><select id="pt_freq"><option>1x por semana</option><option>2x por semana</option><option>3x por semana</option><option>Diaria</option><option>Quinzenal</option></select></div>
+            <div class="form-group"><label class="lbl">Duracao da Sessao</label><select id="pt_dur"><option>30 minutos</option><option>45 minutos</option><option>60 minutos</option><option>90 minutos</option></select></div>
+            <div class="form-group form-full"><label class="lbl">Estrategias e Abordagens</label><textarea id="pt_estrat" placeholder="Abordagens utilizadas: SI, ABA, PECS, DIR/Floortime, Bobath..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Orientacoes para Familia / Escola</label><textarea id="pt_orient" placeholder="Orientacoes para generalizacao das habilidades..."></textarea></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="savePlano()">Salvar Plano</button>
+            <button class="btn btn-outline" onclick="pdfPlano()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- HABILIDADES FUNCIONAIS -->
+        <div class="tab-content card" id="prot-habilidades">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:14px">Marque as habilidades trabalhadas e o nivel de desempenho atual</p>
+          <div id="habTable"></div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveHab()">Salvar</button>
+            <button class="btn btn-outline" onclick="pdfHab()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- TEA INTERVENCAO -->
+        <div class="tab-content card" id="prot-tea_inter">
+          <div class="form-grid">
+            <div class="section-title">Comunicacao e Linguagem</div>
+            <div class="form-group"><label class="lbl">Tipo de Comunicacao</label><select id="ti_com"><option>Verbal</option><option>CAA - Prancha de Comunicacao</option><option>PECS</option><option>Gestos / Sinais</option><option>Misto</option></select></div>
+            <div class="form-group"><label class="lbl">Nivel de Comunicacao Funcional</label><select id="ti_nivel"><option>Nao se comunica intencionalmente</option><option>Comunicacao pre-intencional</option><option>Comunicacao intencional nao simbolica</option><option>Comunicacao simbolica emergente</option><option>Comunicacao simbolica funcional</option></select></div>
+            <div class="form-group form-full"><label class="lbl">Estrategias de Comunicacao Utilizadas</label><textarea id="ti_estrat_com"></textarea></div>
+
+            <div class="section-title">Comportamento e Regulacao</div>
+            <div class="form-group form-full"><label class="lbl">Comportamentos Desafiadores Identificados</label><textarea id="ti_comp" placeholder="Descreva comportamentos, frequencia e contexto..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Estrategias de Regulacao Emocional</label><textarea id="ti_reg" placeholder="Estrategias utilizadas para autorregulacao..."></textarea></div>
+
+            <div class="section-title">Habilidades Sociais</div>
+            <div class="form-group form-full"><label class="lbl">Objetivos Sociais Trabalhados</label><textarea id="ti_social" placeholder="Contato visual, jogos compartilhados, imitacao..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Recursos e Materiais Utilizados</label><textarea id="ti_recursos" placeholder="Materiais sensoriais, jogos, tecnologia assistiva..."></textarea></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveTEAinter()">Salvar</button>
+            <button class="btn btn-outline" onclick="pdfTEAinter()">Gerar PDF</button>
+          </div>
+        </div>
+        <!-- DIETA SENSORIAL -->
+        <div class="tab-content card" id="prot-sensorio">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:14px">Plano de atividades sensoriais para regulacao ao longo do dia</p>
+          <div class="form-grid">
+            <div class="form-group form-full"><label class="lbl">Perfil Sensorial Resumido</label><textarea id="ds_perfil" placeholder="Hiper/hipossensibilidade por sistema sensorial..."></textarea></div>
+            <div class="section-title">Atividades por Periodo</div>
+            <div class="form-group form-full"><label class="lbl">Manha (antes da escola)</label><textarea id="ds_manha" placeholder="Ex: Escovacao profunda, atividades proprioceptivas..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Na Escola / Intervalo</label><textarea id="ds_escola" placeholder="Ex: Almofada de assento, pausa sensorial..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Tarde / Apos escola</label><textarea id="ds_tarde" placeholder="Ex: Atividade fisica, banho de pressao..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Noite (preparo para dormir)</label><textarea id="ds_noite" placeholder="Ex: Massagem, musica calma, rotina visual..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Orientacoes para Familia</label><textarea id="ds_orient" placeholder="Como a familia pode apoiar a dieta sensorial em casa..."></textarea></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveDieta()">Salvar</button>
+            <button class="btn btn-outline" onclick="pdfDieta()">Gerar PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVOLUCAO -->
+    <div class="page" id="page-evolucao">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><span class="card-title">Selecionar Paciente</span></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <select id="evolPaciente" onchange="loadEvolucao()" style="max-width:280px">
+            <option value="">Selecione um paciente...</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="novaSessao()">+ Nova Sessao</button>
+        </div>
+      </div>
+      <div id="evolContent"></div>
+    </div>
+
+    <!-- LAUDOS -->
+    <div class="page" id="page-laudos">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><span class="card-title">Selecionar Paciente</span></div>
+        <select id="laudoPaciente" onchange="loadLaudos()" style="max-width:320px">
+          <option value="">Selecione um paciente...</option>
+        </select>
+      </div>
+      <div id="laudoContent" style="display:none">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('laud','escola')">Relatorio para Escola</div>
+          <div class="tab" onclick="switchTab('laud','inss')">Laudo INSS / BPC</div>
+          <div class="tab" onclick="switchTab('laud','alta')">Relatorio de Alta</div>
+          <div class="tab" onclick="switchTab('laud','encam')">Encaminhamento</div>
+          <div class="tab" onclick="switchTab('laud','plano')">Plano de Saude</div>
+          <div class="tab" onclick="switchTab('laud','termo')">Termo Consentimento</div>
+        </div>
+        <!-- ESCOLA -->
+        <div class="tab-content active card" id="laud-escola">
+          <div class="form-grid">
+            <div class="form-group form-full"><label class="lbl">Escola Destinataria</label><input id="esc_escola" placeholder="Nome da escola e endereco"></div>
+            <div class="form-group form-full"><label class="lbl">A/C: Coordenacao / Professora</label><input id="esc_prof" placeholder="Nome da coordenadora ou professora"></div>
+            <div class="form-group form-full"><label class="lbl">Resumo do Caso</label><textarea id="esc_resumo" placeholder="Breve descricao do caso e motivo do acompanhamento..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Desempenho Funcional na Escola</label><textarea id="esc_desempenho" placeholder="Como o aluno se desempenha em ambiente escolar..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Habilidades e Dificuldades</label><textarea id="esc_hab" placeholder="Pontos fortes e areas de dificuldade..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Recomendacoes e Adaptacoes Necessarias</label><textarea id="esc_rec" placeholder="Adaptacoes curriculares, recursos de acessibilidade, estrategias..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Orientacoes para a Professora</label><textarea id="esc_orient" placeholder="Como a professora pode apoiar o aluno em sala de aula..."></textarea></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="pdfEscola()">Gerar PDF - Relatorio Escola</button>
+            <button class="btn btn-outline btn-sm" onclick="saveEscola()">Salvar Rascunho</button>
+          </div>
+        </div>
+        <!-- INSS -->
+        <div class="tab-content card" id="laud-inss">
+          <div class="form-grid">
+            <div class="form-group"><label class="lbl">Tipo de Beneficio</label><select id="ins_tipo"><option>BPC - LOAS</option><option>Aposentadoria por Invalidez</option><option>Auxilio-Doenca</option><option>Revisao de Beneficio</option></select></div>
+            <div class="form-group"><label class="lbl">Data da Pericia</label><input id="ins_data" type="date"></div>
+            <div class="form-group form-full"><label class="lbl">Descricao da Deficiencia / Incapacidade</label><textarea id="ins_def" placeholder="Descricao objetiva da deficiencia e seu impacto funcional..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Impacto nas AVDs e Participacao Social</label><textarea id="ins_avd" placeholder="Como a deficiencia impacta as atividades diarias e participacao..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Prognostico e Necessidade de Suporte</label><textarea id="ins_prog" placeholder="Perspectiva de melhora, grau de dependencia, necessidade de cuidador..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Parecer da Terapeuta Ocupacional</label><textarea id="ins_parecer" placeholder="Conclusao tecnica sobre a incapacidade para o beneficio..."></textarea></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-primary" onclick="pdfINSS()">Gerar PDF - Laudo INSS</button></div>
+        </div>
+        <!-- ALTA -->
+        <div class="tab-content card" id="laud-alta">
+          <div class="form-grid">
+            <div class="form-group"><label class="lbl">Data de Inicio do Atendimento</label><input id="alt_inicio" type="date"></div>
+            <div class="form-group"><label class="lbl">Data de Alta</label><input id="alt_fim" type="date"></div>
+            <div class="form-group"><label class="lbl">Total de Sessoes Realizadas</label><input id="alt_sessoes" type="number" placeholder="Ex: 48"></div>
+            <div class="form-group"><label class="lbl">Motivo da Alta</label><select id="alt_motivo"><option>Objetivos atingidos</option><option>Alta a pedido da familia</option><option>Alta administrativa</option><option>Encaminhamento para outro servico</option></select></div>
+            <div class="form-group form-full"><label class="lbl">Resumo do Atendimento</label><textarea id="alt_resumo" placeholder="Evolucao geral do paciente durante o periodo de atendimento..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Objetivos Alcancados</label><textarea id="alt_alc" placeholder="Liste as conquistas e objetivos atingidos..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Recomendacoes para Alta</label><textarea id="alt_rec" placeholder="Orientacoes para manutencao dos resultados..."></textarea></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-primary" onclick="pdfAlta()">Gerar PDF - Relatorio de Alta</button></div>
+        </div>
+        <!-- ENCAMINHAMENTO -->
+        <div class="tab-content card" id="laud-encam">
+          <div class="form-grid">
+            <div class="form-group"><label class="lbl">Encaminhar para</label><select id="enc_para"><option>Neurologista</option><option>Psiquiatra</option><option>Geneticista</option><option>Fonoaudiologo</option><option>Psicologo</option><option>Fisioterapeuta</option><option>Neuropediatra</option><option>Outro</option></select></div>
+            <div class="form-group"><label class="lbl">Urgencia</label><select id="enc_urg"><option>Rotina</option><option>Prioritario</option><option>Urgente</option></select></div>
+            <div class="form-group form-full"><label class="lbl">Motivo do Encaminhamento</label><textarea id="enc_motivo" placeholder="Justificativa clinica para o encaminhamento..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Informacoes Clinicas Relevantes</label><textarea id="enc_info" placeholder="Informacoes importantes para o profissional de destino..."></textarea></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-primary" onclick="pdfEncam()">Gerar PDF - Encaminhamento</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLINICA -->
+    <div class="page" id="page-clinica">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">Dados da Clinica</div>
+        <div class="form-grid">
+          <div class="form-group form-full"><label class="lbl">Nome da Clinica / Consultorio</label><input id="cl_nome" placeholder="Ex: Clinica TO Vida Plena"></div>
+          <div class="form-group"><label class="lbl">Nome da Terapeuta</label><input id="cl_to" placeholder="Dra. Nome Sobrenome"></div>
+          <div class="form-group"><label class="lbl">CREFITO</label><input id="cl_crp" placeholder="Ex: CREFITO 3/12345-TO"></div>
+          <div class="form-group"><label class="lbl">Telefone / WhatsApp</label><input id="cl_tel" placeholder="(00) 00000-0000"></div>
+          <div class="form-group"><label class="lbl">Email</label><input id="cl_email" type="email"></div>
+          <div class="form-group form-full"><label class="lbl">Endereco</label><input id="cl_end" placeholder="Rua, numero, bairro, cidade - UF"></div>
+          <div class="form-group form-full"><label class="lbl">Cidade / UF</label><input id="cl_cidade" placeholder="Ex: Sao Paulo - SP"></div>
+        </div>
+        <div style="margin-top:16px">
+          <label class="lbl">Logo da Clinica (aparece em todos os PDFs)</label>
+          <div class="logo-upload-box" onclick="document.getElementById('cl_logo_input').click()">
+            <div style="font-size:28px">🖼</div>
+            <strong style="font-size:13px;color:var(--dk)">Clique para enviar a logo</strong>
+            <p>PNG ou JPG — max 2MB</p>
+            <input id="cl_logo_input" type="file" accept="image/*" style="display:none" onchange="previewClinicaLogo(event)">
+          </div>
+          <div class="logo-preview-box" id="cl_logo_preview">
+            <img id="cl_logo_img" src="" alt="Logo">
+            <span>Logo carregada — aparecera nos PDFs</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button class="btn btn-primary" onclick="saveClinica()">Salvar Dados</button>
+          <button class="btn btn-outline" onclick="removerLogo()">Remover Logo</button>
+        </div>
+        <!-- PLANO DE SAUDE -->
+        <div class="tab-content card" id="laud-plano">
+          <div class="form-grid">
+            <div class="form-group"><label class="lbl">Plano de Saude</label><input id="ps_plano" placeholder="Ex: Unimed, Amil, SulAmerica..."></div>
+            <div class="form-group"><label class="lbl">N. da Carteirinha</label><input id="ps_carteira" placeholder="Numero do beneficiario"></div>
+            <div class="form-group"><label class="lbl">Codigo do Procedimento</label><input id="ps_codigo" placeholder="Ex: 50000071"></div>
+            <div class="form-group"><label class="lbl">Periodo de Atendimento</label><input id="ps_periodo" placeholder="Ex: Jan a Mar 2026"></div>
+            <div class="form-group"><label class="lbl">Sessoes Realizadas</label><input id="ps_sessoes" type="number" placeholder="Ex: 12"></div>
+            <div class="form-group"><label class="lbl">Sessoes Solicitadas</label><input id="ps_sol" type="number" placeholder="Ex: 12"></div>
+            <div class="form-group form-full"><label class="lbl">Justificativa Clinica</label><textarea id="ps_just" placeholder="Justificativa medica para continuidade do tratamento..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Evolucao e Resposta ao Tratamento</label><textarea id="ps_evol" placeholder="Descricao da evolucao do paciente durante o periodo..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Objetivos para Proximo Periodo</label><textarea id="ps_obj" placeholder="Metas terapeuticas para o proximo periodo de autorizacao..."></textarea></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-primary" onclick="pdfPlanoSaude()">Gerar PDF - Relatorio Plano de Saude</button></div>
+        </div>
+        <!-- TERMO DE CONSENTIMENTO -->
+        <div class="tab-content card" id="laud-termo">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:14px">Termo de Consentimento Livre e Esclarecido (TCLE) — gerado automaticamente com os dados do paciente e da clinica.</p>
+          <div class="form-grid">
+            <div class="form-group form-full"><label class="lbl">Observacoes adicionais ao termo (opcional)</label><textarea id="termo_obs" placeholder="Informacoes especificas sobre o tratamento que devem constar no termo..."></textarea></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-primary" onclick="pdfTermo()">Gerar PDF - Termo de Consentimento</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- MODAL NOVO PACIENTE -->
+<div class="modal-overlay" id="modalNovoPaciente">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Novo Paciente</span>
+      <button class="modal-close" onclick="closeModal('modalNovoPaciente')">x</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group form-full"><label class="lbl">Nome Completo *</label><input id="np_nome" placeholder="Nome do paciente"></div>
+      <div class="form-group"><label class="lbl">Data de Nascimento</label><input id="np_nasc" type="date"></div>
+      <div class="form-group"><label class="lbl">Responsavel</label><input id="np_resp" placeholder="Nome do responsavel"></div>
+      <div class="form-group"><label class="lbl">Telefone</label><input id="np_tel" placeholder="(00) 00000-0000"></div>
+      <div class="form-group"><label class="lbl">Area Principal</label>
+        <select id="np_area">
+          <option value="TEA">TEA / Autismo</option>
+          <option value="Motor">Desenv. Motor</option>
+          <option value="Sensorial">Integracao Sensorial</option>
+          <option value="AVD">AVD / Independencia</option>
+          <option value="Neurologico">Neurologico</option>
+          <option value="Geriatria">Geriatria</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="lbl">Diagnostico</label><input id="np_diag" placeholder="Ex: TEA, PCI, TDAH..."></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:20px">
+      <button class="btn btn-primary" onclick="saveNewPatient()">Salvar Paciente</button>
+      <button class="btn btn-outline" onclick="closeModal('modalNovoPaciente')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SESSAO -->
+<div class="modal-overlay" id="modalSessao">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Registro de Sessao</span>
+      <button class="modal-close" onclick="closeModal('modalSessao')">x</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label class="lbl">Data da Sessao</label><input id="sess_data" type="date"></div>
+      <div class="form-group"><label class="lbl">Duracao</label><select id="sess_dur"><option>30 min</option><option>45 min</option><option>60 min</option><option>90 min</option></select></div>
+      <div class="form-group form-full"><label class="lbl">Atividades Realizadas</label><textarea id="sess_ativ" placeholder="Descreva as atividades e tecnicas utilizadas..."></textarea></div>
+      <div class="form-group form-full"><label class="lbl">Resposta do Paciente</label><textarea id="sess_resp" placeholder="Como o paciente respondeu as intervencoes..."></textarea></div>
+      <div class="form-group form-full"><label class="lbl">Evolucao Observada</label><textarea id="sess_evol" placeholder="Avancos, dificuldades e comportamentos observados..."></textarea></div>
+      <div class="form-group form-full"><label class="lbl">Objetivos para Proxima Sessao</label><textarea id="sess_prox" placeholder="O que sera trabalhado na proxima sessao..."></textarea></div>
+      <div class="form-group"><label class="lbl">Humor / Estado</label>
+        <select id="sess_humor"><option>Calmo e cooperativo</option><option>Agitado</option><option>Resistente</option><option>Ansioso</option><option>Alegre e engajado</option><option>Cansado</option></select>
+      </div>
+      <div class="form-group"><label class="lbl">Presenca de Familiar</label>
+        <select id="sess_familiar"><option>Sim</option><option>Nao</option></select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:20px">
+      <button class="btn btn-primary" onclick="saveSessao()">Salvar Sessao</button>
+      <button class="btn btn-outline" onclick="closeModal('modalSessao')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+let DB = JSON.parse(localStorage.getItem('toDB') || '{"patients":[],"clinica":{}}');
+const save = () => localStorage.setItem('toDB', JSON.stringify(DB));
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+const TITLES = {dashboard:'Dashboard',pacientes:'Pacientes',avaliacao:'Avaliacao',protocolos:'Protocolos',evolucao:'Evolucao de Sessao',laudos:'Laudos e Relatorios',clinica:'Minha Clinica'};
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item')[['dashboard','pacientes','avaliacao','protocolos','evolucao','laudos','clinica'].indexOf(id)].classList.add('active');
+  document.getElementById('pageTitle').textContent = TITLES[id];
+  if(id==='dashboard') renderDashboard();
+  if(id==='pacientes') renderPatients();
+  if(id==='avaliacao'||id==='protocolos'||id==='evolucao'||id==='laudos') populateSelects();
+}
+
+// ─── PATIENTS ───────────────────────────────────────────────────────────────
+function openNewPatient(){document.getElementById('modalNovoPaciente').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function calcAge(nasc){
+  if(!nasc)return'';
+  const d=new Date(nasc),n=new Date();
+  let a=n.getFullYear()-d.getFullYear();
+  if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate()))a--;
+  return a+' anos';
+}
+function saveNewPatient(){
+  const nome=document.getElementById('np_nome').value.trim();
+  if(!nome){alert('Informe o nome do paciente');return;}
+  const p={id:Date.now(),nome,nasc:document.getElementById('np_nasc').value,resp:document.getElementById('np_resp').value,tel:document.getElementById('np_tel').value,area:document.getElementById('np_area').value,diag:document.getElementById('np_diag').value,sessoes:[],dados:{}};
+  DB.patients.unshift(p);save();
+  closeModal('modalNovoPaciente');
+  ['np_nome','np_nasc','np_resp','np_tel','np_diag'].forEach(id=>document.getElementById(id).value='');
+  renderDashboard();renderPatients();populateSelects();
+}
+function badgeClass(area){return{'TEA':'badge-tea','Motor':'badge-motor','Sensorial':'badge-sensorial','AVD':'badge-avd','Neurologico':'badge-neuro'}[area]||'badge-avd';}
+function renderPatients(){
+  const q=document.getElementById('searchPaciente').value.toLowerCase();
+  const ar=document.getElementById('filterArea').value;
+  const list=DB.patients.filter(p=>(!q||p.nome.toLowerCase().includes(q))&&(!ar||p.area===ar));
+  const el=document.getElementById('patientList');
+  if(!list.length){el.innerHTML='<div class="empty"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg><p>Nenhum paciente encontrado</p></div>';return;}
+  el.innerHTML=list.map(p=>`<div class="patient-card" onclick="openPatient(${p.id})"><div class="avatar">${p.nome.charAt(0)}</div><div class="patient-info"><div class="patient-name">${p.nome}</div><div class="patient-meta">${calcAge(p.nasc)}${p.resp?' · Resp: '+p.resp:''} · ${p.sessoes.length} sessoes</div></div><span class="badge ${badgeClass(p.area)}">${p.area}</span></div>`).join('');
+}
+function openPatient(id){
+  const p=DB.patients.find(x=>x.id===id);if(!p)return;
+  document.getElementById('avalPaciente').value=id;
+  loadAvaliacaoPatient();
+  goPage('avaliacao');
+}
+function renderDashboard(){
+  const n=DB.patients.length;
+  const tea=DB.patients.filter(p=>p.area==='TEA').length;
+  const totalSess=DB.patients.reduce((a,p)=>a+p.sessoes.length,0);
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat"><div class="stat-num">${n}</div><div class="stat-label">Pacientes Ativos</div></div>
+    <div class="stat"><div class="stat-num">${tea}</div><div class="stat-label">Pacientes TEA</div></div>
+    <div class="stat"><div class="stat-num">${totalSess}</div><div class="stat-label">Sessoes Registradas</div></div>
+    <div class="stat"><div class="stat-num">${DB.patients.filter(p=>p.sessoes.length>0).length}</div><div class="stat-label">Em Acompanhamento</div></div>`;
+  const rec=DB.patients.slice(0,5);
+  document.getElementById('recentPatients').innerHTML=rec.length?rec.map(p=>`<div class="patient-card" onclick="openPatient(${p.id})"><div class="avatar">${p.nome.charAt(0)}</div><div class="patient-info"><div class="patient-name">${p.nome}</div><div class="patient-meta">${calcAge(p.nasc)} · ${p.sessoes.length} sessoes</div></div><span class="badge ${badgeClass(p.area)}">${p.area}</span></div>`).join(''):'<div class="empty"><p>Nenhum paciente cadastrado ainda.</p></div>';
+}
+
+// ─── SELECTS ────────────────────────────────────────────────────────────────
+function populateSelects(){
+  ['avalPaciente','protPaciente','evolPaciente','laudoPaciente'].forEach(sid=>{
+    const el=document.getElementById(sid);
+    const cur=el.value;
+    el.innerHTML='<option value="">Selecione um paciente...</option>'+DB.patients.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+    if(cur)el.value=cur;
+  });
+}
+
+// ─── TABS ───────────────────────────────────────────────────────────────────
+function switchTab(group,tab){
+  const prefix={'aval':'aval-','prot':'prot-','laud':'laud-'}[group]||group+'-';
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el=>{el.classList.remove('active');});
+  document.getElementById(prefix+tab).classList.add('active');
+  const tabs=document.querySelectorAll(`.tabs`);
+  tabs.forEach(tabContainer=>{
+    const items=tabContainer.querySelectorAll('.tab');
+    items.forEach((t,i)=>{
+      if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes(tab))t.classList.add('active');
+      else t.classList.remove('active');
+    });
+  });
+}
+
+// ─── AVALIACAO ───────────────────────────────────────────────────────────────
+function loadAvaliacaoPatient(){
+  const id=document.getElementById('avalPaciente').value;
+  document.getElementById('avalContent').style.display=id?'block':'none';
+  if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);
+  if(!p)return;
+  const d=p.dados||{};
+  document.getElementById('av_nome').value=p.nome;
+  document.getElementById('av_nasc').value=p.nasc||'';
+  const fields=['resp','tel','email','escola','turma','diag','cid','queixa','hist','meds','espec','obs'];
+  fields.forEach(f=>{const el=document.getElementById('av_'+f);if(el)el.value=d['av_'+f]||'';});
+  renderAVD(d);renderSensorial(d);renderTEA(d);renderMIF(d);
+  const cogFields=['atencao','memoria','ling','exec'];
+  cogFields.forEach(f=>{const el=document.getElementById('cog_'+f);if(el&&d['cog_'+f])el.value=d['cog_'+f];});
+  const motFields=['grossa','fina','tonus','marcha'];
+  motFields.forEach(f=>{const el=document.getElementById('mot_'+f);if(el&&d['mot_'+f])el.value=d['mot_'+f];});
+  if(d.cog_obs)document.getElementById('cog_obs').value=d.cog_obs;
+  if(d.sensObs)document.getElementById('sensObs').value=d.sensObs;
+  if(d.teaObs)document.getElementById('teaObs').value=d.teaObs;
+  if(d.teaConcl)document.getElementById('teaConcl').value=d.teaConcl;
+  if(d.desenvObs)document.getElementById('desenvObs').value=d.desenvObs;
+  renderCOPM(d);renderDesenvolvimento(d);
+}
+
+// AVD TABLE
+const AVD_ITEMS={
+  'Autocuidado':['Alimentacao','Higiene oral','Banho','Vestuario superior','Vestuario inferior','Uso do sanitario','Controle de bexiga','Controle intestinal'],
+  'Mobilidade':['Transferencia cama/cadeira','Transferencia sanitario','Deambulacao / marcha','Subir e descer escadas','Locomocao em cadeira de rodas'],
+  'AIVD':['Preparo de alimentos','Gestao do lar','Uso do telefone','Compras','Gestao financeira','Uso de transporte','Uso de medicamentos']
+};
+function renderAVD(d){
+  let h='';
+  Object.entries(AVD_ITEMS).forEach(([cat,items])=>{
+    h+=`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--pd);padding:6px 0;border-bottom:1px solid var(--pl);margin-bottom:8px">${cat}</div>`;
+    items.forEach(item=>{
+      const key='avd_'+item.replace(/\s+/g,'_');
+      const val=d[key]||'';
+      h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:12px;color:var(--dk);width:200px">${item}</span><div style="display:flex;gap:4px">`;
+      ['I','A','D','N'].forEach(opt=>{
+        h+=`<button onclick="setScale('${key}','${opt}',this)" class="scale-btn${val===opt?' sel':''}">${opt}</button>`;
+      });
+      h+=`</div></div>`;
+    });
+    h+='</div>';
+  });
+  document.getElementById('avdTable').innerHTML=h;
+}
+
+// SENSORIAL TABLE
+const SENS_ITEMS={
+  'Processamento Tatil':['Hipersensibilidade tatil','Hiposensibilidade tatil','Discriminacao tatil prejudicada','Defensividade tatil'],
+  'Processamento Vestibular':['Intolerancia ao movimento','Busca excessiva por movimento','Dificuldade de equilibrio','Inseguranca gravitacional'],
+  'Processamento Proprioceptivo':['Busca por pressao profunda','Dificuldade de coordenacao','Postura inadequada'],
+  'Processamento Visual':['Hipersensibilidade a luz','Dificuldade de rastreamento','Hipossensibilidade visual'],
+  'Processamento Auditivo':['Hipersensibilidade auditiva','Dificuldade de discriminacao auditiva','Busca por sons intensos'],
+  'Processamento Oral':['Hipersensibilidade oral','Hiposensibilidade oral','Mastigacao excessiva (morder objetos)']
+};
+function renderSensorial(d){
+  let h='';
+  Object.entries(SENS_ITEMS).forEach(([cat,items])=>{
+    h+=`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--pd);padding:6px 0;border-bottom:1px solid var(--pl);margin-bottom:8px">${cat}</div><div class="check-grid">`;
+    items.forEach(item=>{
+      const key='sens_'+item.replace(/\s+/g,'_');
+      const checked=d[key]?'checked':'';
+      h+=`<label class="check-item${d[key]?' checked':''}"><input type="checkbox" ${checked} onchange="toggleCheck('${key}',this)">${item}</label>`;
+    });
+    h+='</div></div>';
+  });
+  document.getElementById('sensorialTable').innerHTML=h;
+}
+
+// TEA TABLE
+const TEA_ITEMS={
+  'Comunicacao Social':['Dificuldade em iniciar/manter conversa','Uso limitado/ausente de gestos','Dificuldade com linguagem nao verbal','Ausencia de jogos simbolicos','Dificuldade de contato visual'],
+  'Comportamentos Repetitivos':['Movimentos esteriotipados (stimming)','Insistencia em rotinas/rituais','Interesses restritos e intensos','Hiper ou hipossensibilidade sensorial','Ecolalia (repetir palavras/frases)'],
+  'Interacao Social':['Dificuldade de imitar o outro','Pouco interesse em brincar com pares','Dificuldade de compreender emocoes','Dificuldade de compartilhar atencao']
+};
+function renderTEA(d){
+  let h='';
+  Object.entries(TEA_ITEMS).forEach(([cat,items])=>{
+    h+=`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--pd);padding:6px 0;border-bottom:1px solid var(--pl);margin-bottom:8px">${cat}</div><div class="check-grid">`;
+    items.forEach(item=>{
+      const key='tea_'+item.replace(/\s+/g,'_');
+      h+=`<label class="check-item${d[key]?' checked':''}"><input type="checkbox" ${d[key]?'checked':''} onchange="toggleCheck('${key}',this)">${item}</label>`;
+    });
+    h+='</div></div>';
+  });
+  document.getElementById('teaTable').innerHTML=h;
+}
+
+// MIF TABLE
+const MIF_CATS={
+  'Autocuidado':['Alimentacao','Higiene pessoal','Banho','Vestuario - parte superior','Vestuario - parte inferior','Higiene perineal'],
+  'Controle de Esfincters':['Bexiga','Intestino'],
+  'Mobilidade':['Transferencia cama/cadeira/cadeira de rodas','Transferencia - vaso sanitario','Transferencia - banheira/chuveiro'],
+  'Locomocao':['Marcha/Cadeira de rodas','Escadas'],
+  'Comunicacao':['Compreensao','Expressao'],
+  'Cognicao Social':['Interacao social','Resolucao de problemas','Memoria']
+};
+function renderMIF(d){
+  let h='';
+  Object.entries(MIF_CATS).forEach(([cat,items])=>{
+    h+=`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--pd);padding:6px 0;border-bottom:1px solid var(--pl);margin-bottom:8px">${cat}</div>`;
+    items.forEach(item=>{
+      const key='mif_'+item.replace(/\s+/g,'_').replace(/\//g,'_');
+      const val=parseInt(d[key])||0;
+      h+=`<div class="scale-row"><span class="scale-label" style="font-size:11px">${item}</span><div class="scale-btns">`;
+      [1,2,3,4,5,6,7].forEach(n=>{h+=`<button class="scale-btn${val===n?' sel':''}" onclick="setMIF('${key}',${n},this)">${n}</button>`;});
+      h+=`</div></div>`;
+    });
+    h+='</div>';
+  });
+  document.getElementById('mifTable').innerHTML=h;
+  updateMIFTotal(d);
+}
+function updateMIFTotal(d){
+  const total=Object.entries(d).filter(([k])=>k.startsWith('mif_')).reduce((a,[,v])=>a+(parseInt(v)||0),0);
+  document.getElementById('mifTotal').textContent=total;
+}
+
+// HABILIDADES
+const HAB_ITEMS=['Higiene pessoal basica','Alimentacao independente','Vestuario simples','Abotoar/desabotoar','Amarrar cadarco','Uso do sanitario','Escrita funcional','Uso de tesoura','Organizacao de mochila','Uso de transporte coletivo','Preparo de lanche simples','Gestao de dinheiro basica','Uso de celular/tablet','Participacao em grupo','Jogo simples com pares'];
+function renderHabilidades(d){
+  let h='<div class="check-grid">';
+  HAB_ITEMS.forEach(item=>{
+    const key='hab_'+item.replace(/\s+/g,'_');
+    h+=`<label class="check-item${d[key]?' checked':''}"><input type="checkbox" ${d[key]?'checked':''} onchange="toggleCheckProt('${key}',this)">${item}</label>`;
+  });
+  h+='</div>';
+  document.getElementById('habTable').innerHTML=h;
+}
+
+function toggleCheck(key,el){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  p.dados[key]=el.checked;
+  el.closest('.check-item').classList.toggle('checked',el.checked);
+  save();
+}
+function toggleCheckProt(key,el){
+  const id=document.getElementById('protPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  p.dados[key]=el.checked;
+  el.closest('.check-item').classList.toggle('checked',el.checked);
+  save();
+}
+function setScale(key,val,btn){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  p.dados[key]=val;save();
+  btn.closest('div').querySelectorAll('.scale-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function setMIF(key,val,btn){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  p.dados[key]=val;save();
+  btn.closest('div').querySelectorAll('.scale-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  updateMIFTotal(p.dados);
+}
+
+function saveAnamnese(){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  ['resp','tel','email','escola','turma','diag','cid','queixa','hist','meds','espec','obs'].forEach(f=>{
+    const el=document.getElementById('av_'+f);if(el)p.dados['av_'+f]=el.value;
+  });
+  p.nasc=document.getElementById('av_nasc').value;
+  save();alert('Anamnese salva!');
+}
+function saveAVD(){const id=document.getElementById('avalPaciente').value;if(id){save();alert('AVD salvo!');}}
+function saveSensorial(){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  p.dados.sensObs=document.getElementById('sensObs').value;
+  save();alert('Avaliacao sensorial salva!');
+}
+function saveTEA(){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  p.dados.teaObs=document.getElementById('teaObs').value;
+  p.dados.teaConcl=document.getElementById('teaConcl').value;
+  save();alert('Avaliacao TEA salva!');
+}
+function saveMIF(){const id=document.getElementById('avalPaciente').value;if(id){save();alert('MIF salvo!');}}
+function saveCognitivo(){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  ['atencao','memoria','ling','exec'].forEach(f=>{const el=document.getElementById('cog_'+f);if(el)p.dados['cog_'+f]=el.value;});
+  ['grossa','fina','tonus','marcha'].forEach(f=>{const el=document.getElementById('mot_'+f);if(el)p.dados['mot_'+f]=el.value;});
+  p.dados.cog_obs=document.getElementById('cog_obs').value;
+  save();alert('Avaliacao cognitiva/motora salva!');
+}
+
+// ─── PROTOCOLOS ──────────────────────────────────────────────────────────────
+function loadProtocolo(){
+  const id=document.getElementById('protPaciente').value;
+  document.getElementById('protContent').style.display=id?'block':'none';
+  if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  const d=p.dados||{};
+  ['geral','curto','medio','longo','freq','dur','estrat','orient'].forEach(f=>{const el=document.getElementById('pt_'+f);if(el)el.value=d['pt_'+f]||'';});
+  ['com','nivel','estrat_com','comp','reg','social','recursos'].forEach(f=>{const el=document.getElementById('ti_'+f);if(el)el.value=d['ti_'+f]||'';});
+  ['perfil','manha','escola','tarde','noite','orient'].forEach(f=>{const el=document.getElementById('ds_'+f);if(el)el.value=d['ds_'+f]||'';});
+  renderHabilidades(d);
+}
+function savePlano(){
+  const id=document.getElementById('protPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  ['geral','curto','medio','longo','freq','dur','estrat','orient'].forEach(f=>{const el=document.getElementById('pt_'+f);if(el)p.dados['pt_'+f]=el.value;});
+  save();alert('Plano terapeutico salvo!');
+}
+function saveHab(){const id=document.getElementById('protPaciente').value;if(id){save();alert('Habilidades salvas!');}}
+function saveTEAinter(){
+  const id=document.getElementById('protPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  ['com','nivel','estrat_com','comp','reg','social','recursos'].forEach(f=>{const el=document.getElementById('ti_'+f);if(el)p.dados['ti_'+f]=el.value;});
+  save();alert('Intervencao TEA salva!');
+}
+function saveDieta(){
+  const id=document.getElementById('protPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  ['perfil','manha','escola','tarde','noite','orient'].forEach(f=>{const el=document.getElementById('ds_'+f);if(el)p.dados['ds_'+f]=el.value;});
+  save();alert('Dieta sensorial salva!');
+}
+
+// ─── EVOLUCAO ────────────────────────────────────────────────────────────────
+let currentEvolId=null;
+function loadEvolucao(){
+  currentEvolId=document.getElementById('evolPaciente').value;
+  renderSessoes();
+}
+function novaSessao(){
+  if(!currentEvolId){alert('Selecione um paciente primeiro');return;}
+  document.getElementById('sess_data').value=new Date().toISOString().split('T')[0];
+  ['ativ','resp','evol','prox'].forEach(f=>document.getElementById('sess_'+f).value='');
+  document.getElementById('modalSessao').classList.add('open');
+}
+function saveSessao(){
+  const p=DB.patients.find(x=>x.id==currentEvolId);if(!p)return;
+  const s={id:Date.now(),data:document.getElementById('sess_data').value,dur:document.getElementById('sess_dur').value,ativ:document.getElementById('sess_ativ').value,resp:document.getElementById('sess_resp').value,evol:document.getElementById('sess_evol').value,prox:document.getElementById('sess_prox').value,humor:document.getElementById('sess_humor').value,familiar:document.getElementById('sess_familiar').value};
+  p.sessoes.unshift(s);save();
+  closeModal('modalSessao');renderSessoes();renderDashboard();
+}
+function renderSessoes(){
+  const el=document.getElementById('evolContent');
+  const p=DB.patients.find(x=>x.id==currentEvolId);
+  if(!p){el.innerHTML='';return;}
+  if(!p.sessoes.length){el.innerHTML='<div class="empty"><p>Nenhuma sessao registrada para este paciente.</p></div>';return;}
+  el.innerHTML=p.sessoes.map((s,i)=>`
+    <div class="sessao-card">
+      <div class="sessao-header">
+        <span class="sessao-date">Sessao ${p.sessoes.length-i} - ${s.data?new Date(s.data+'T12:00:00').toLocaleDateString('pt-BR'):''} - ${s.dur}</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:11px;color:var(--gr)">${s.humor}</span>
+          <button class="btn btn-outline btn-sm" onclick="pdfSessaoSingle(${currentEvolId},${s.id})">PDF</button>
+          <button class="btn btn-sm" style="background:var(--red);color:#fff" onclick="deleteSessao(${s.id})">x</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+        ${s.ativ?`<div><strong style="color:var(--pd)">Atividades:</strong><p style="color:var(--gr);margin-top:2px">${s.ativ}</p></div>`:''}
+        ${s.resp?`<div><strong style="color:var(--pd)">Resposta:</strong><p style="color:var(--gr);margin-top:2px">${s.resp}</p></div>`:''}
+        ${s.evol?`<div><strong style="color:var(--pd)">Evolucao:</strong><p style="color:var(--gr);margin-top:2px">${s.evol}</p></div>`:''}
+        ${s.prox?`<div><strong style="color:var(--pd)">Proxima sessao:</strong><p style="color:var(--gr);margin-top:2px">${s.prox}</p></div>`:''}
+      </div>
+    </div>`).join('');
+}
+function deleteSessao(sid){
+  if(!confirm('Excluir esta sessao?'))return;
+  const p=DB.patients.find(x=>x.id==currentEvolId);if(!p)return;
+  p.sessoes=p.sessoes.filter(s=>s.id!==sid);save();renderSessoes();
+}
+
+// ─── LAUDOS ──────────────────────────────────────────────────────────────────
+function loadLaudos(){
+  const id=document.getElementById('laudoPaciente').value;
+  document.getElementById('laudoContent').style.display=id?'block':'none';
+  if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  const d=p.dados||{};
+  ['escola','prof','resumo','desempenho','hab','rec','orient'].forEach(f=>{const el=document.getElementById('esc_'+f);if(el)el.value=d['esc_'+f]||'';});
+  ['tipo','data','def','avd','prog','parecer'].forEach(f=>{const el=document.getElementById('ins_'+f);if(el)el.value=d['ins_'+f]||'';});
+  ['inicio','fim','sessoes','motivo','resumo','alc','rec'].forEach(f=>{const el=document.getElementById('alt_'+f);if(el)el.value=d['alt_'+f]||'';});
+}
+function saveEscola(){
+  const id=document.getElementById('laudoPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  ['escola','prof','resumo','desempenho','hab','rec','orient'].forEach(f=>{const el=document.getElementById('esc_'+f);if(el)p.dados['esc_'+f]=el.value;});
+  save();alert('Rascunho salvo!');
+}
+
+// ─── CLINICA ─────────────────────────────────────────────────────────────────
+function previewClinicaLogo(event){
+  const file=event.target.files[0];if(!file)return;
+  if(file.size>2*1024*1024){alert('Logo muito grande. Max 2MB.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    DB.clinica=DB.clinica||{};
+    DB.clinica.logoData=e.target.result;
+    document.getElementById('cl_logo_img').src=e.target.result;
+    document.getElementById('cl_logo_preview').style.display='block';
+    save();
+  };
+  reader.readAsDataURL(file);
+}
+function removerLogo(){
+  if(DB.clinica)DB.clinica.logoData=null;
+  document.getElementById('cl_logo_preview').style.display='none';
+  document.getElementById('cl_logo_input').value='';
+  save();alert('Logo removida.');
+}
+function saveClinica(){
+  const prev=DB.clinica||{};
+  DB.clinica={...prev,nome:document.getElementById('cl_nome').value,to:document.getElementById('cl_to').value,crp:document.getElementById('cl_crp').value,tel:document.getElementById('cl_tel').value,email:document.getElementById('cl_email').value,end:document.getElementById('cl_end').value,cidade:document.getElementById('cl_cidade').value};
+  save();alert('Dados da clinica salvos!');
+}
+function loadClinica(){
+  const c=DB.clinica||{};
+  ['nome','to','crp','tel','email','end','cidade'].forEach(f=>{const el=document.getElementById('cl_'+f);if(el)el.value=c[f]||'';});
+  if(c.logoData){document.getElementById('cl_logo_img').src=c.logoData;document.getElementById('cl_logo_preview').style.display='block';}
+}
+
+// ─── COPM ────────────────────────────────────────────────────────────────────
+const COPM_AREAS=['Autocuidado','Produtividade','Lazer'];
+function renderCOPM(d){
+  const problemas=d.copm_problemas||Array(10).fill({area:'Autocuidado',descricao:'',desempenho:0,satisfacao:0});
+  let h='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+  h+='<tr><th style="background:var(--pd);color:#fff;padding:7px;text-align:left;width:30px">#</th><th style="background:var(--pd);color:#fff;padding:7px;text-align:left;width:100px">Area</th><th style="background:var(--pd);color:#fff;padding:7px;text-align:left">Problema Identificado</th><th style="background:var(--pd);color:#fff;padding:7px;text-align:center;width:100px">Desempenho (1-10)</th><th style="background:var(--pd);color:#fff;padding:7px;text-align:center;width:100px">Satisfacao (1-10)</th></tr>';
+  for(let i=0;i<5;i++){
+    const p=problemas[i]||{area:'Autocuidado',descricao:'',desempenho:0,satisfacao:0};
+    const bg=i%2===0?'#fff':getComputedStyle(document.documentElement).getPropertyValue('--g').trim()||'#f0f9ff';
+    h+=`<tr style="background:${bg}">
+      <td style="padding:6px 8px;border:1px solid var(--lg);font-weight:700;color:var(--pd)">${i+1}</td>
+      <td style="padding:4px 6px;border:1px solid var(--lg)"><select onchange="updateCOPM(${i},'area',this.value)" style="font-size:11px;padding:3px;border:none;background:transparent;width:100%">${COPM_AREAS.map(a=>`<option${p.area===a?' selected':''}>${a}</option>`).join('')}</select></td>
+      <td style="padding:4px 6px;border:1px solid var(--lg)"><input value="${p.descricao||''}" onchange="updateCOPM(${i},'descricao',this.value)" placeholder="Descreva a atividade com dificuldade..." style="font-size:11px;border:none;width:100%;background:transparent"></td>
+      <td style="padding:4px 6px;border:1px solid var(--lg);text-align:center"><input type="number" min="1" max="10" value="${p.desempenho||''}" onchange="updateCOPM(${i},'desempenho',this.value)" style="width:50px;text-align:center;font-size:12px;font-weight:700;border:1px solid var(--lg);border-radius:4px;padding:3px"></td>
+      <td style="padding:4px 6px;border:1px solid var(--lg);text-align:center"><input type="number" min="1" max="10" value="${p.satisfacao||''}" onchange="updateCOPM(${i},'satisfacao',this.value)" style="width:50px;text-align:center;font-size:12px;font-weight:700;border:1px solid var(--lg);border-radius:4px;padding:3px"></td>
+    </tr>`;
+  }
+  h+='</table></div>';
+  document.getElementById('copmTable').innerHTML=h;
+  calcCOPM(d);
+}
+function updateCOPM(idx,campo,val){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  if(!p.dados.copm_problemas)p.dados.copm_problemas=Array(5).fill(null).map(()=>({area:'Autocuidado',descricao:'',desempenho:0,satisfacao:0}));
+  p.dados.copm_problemas[idx][campo]=campo==='desempenho'||campo==='satisfacao'?parseInt(val)||0:val;
+  save();calcCOPM(p.dados);
+}
+function calcCOPM(d){
+  const probs=d.copm_problemas||[];
+  const com_d=probs.filter(p=>p&&p.desempenho>0);
+  const com_s=probs.filter(p=>p&&p.satisfacao>0);
+  const med_d=com_d.length?( com_d.reduce((a,p)=>a+(p.desempenho||0),0)/com_d.length).toFixed(1):'-';
+  const med_s=com_s.length?(com_s.reduce((a,p)=>a+(p.satisfacao||0),0)/com_s.length).toFixed(1):'-';
+  const ed=document.getElementById('copmDesempenho');const es=document.getElementById('copmSatisfacao');
+  if(ed)ed.textContent=med_d;if(es)es.textContent=med_s;
+}
+function saveCOPM(){const id=document.getElementById('avalPaciente').value;if(id){save();alert('COPM salvo!');}}
+
+// ─── DESENVOLVIMENTO INFANTIL ────────────────────────────────────────────────
+const DESENV_AREAS={
+  'Motor Grosso - 0 a 12 meses':['Sustenta cabeca (3m)','Rola de supino para prono (4m)','Senta com apoio (5m)','Senta sem apoio (7m)','Engatinha (8-10m)','Fica em pe com apoio (9m)','Da primeiros passos (12m)'],
+  'Motor Grosso - 1 a 3 anos':['Anda com seguranca','Sobe e desce escadas com apoio','Chuta bola','Corre com equilibrio','Salta com os dois pes','Pedala triciclo'],
+  'Motor Fino - 0 a 12 meses':['Preensao palmar (3m)','Transfere objeto entre maos (6m)','Pinca superior (9m)','Bate palmas (9m)','Solta objeto voluntariamente (10m)'],
+  'Motor Fino - 1 a 3 anos':['Empilha 2-3 cubos','Vira paginas de livro','Rabisca com giz de cera','Encaixa formas simples','Usa colher com algum derramo','Empilha 6+ cubos'],
+  'Linguagem e Comunicacao':['Balbucia (4m)','Lalacao (6-8m)','Primeiras palavras (12m)','Combina 2 palavras (18-24m)','Frases de 3+ palavras (2-3a)','Faz perguntas simples (3a)','Conta historias simples (4a)'],
+  'Cognitivo':['Busca objeto escondido (9m)','Jogo funcional (12-18m)','Jogo simbolico (18-24m)','Nomeia 3+ cores (3a)','Conta ate 10 (4a)','Reconhece letras do nome (5a)'],
+  'Social e Emocional':['Sorriso social (2m)','Distingue conhecidos/estranhos (6m)','Jogo de dar e receber (9m)','Aponta para compartilhar (12m)','Imita adultos (18m)','Jogo paralelo (2a)','Jogo cooperativo (3a)']
+};
+function renderDesenvolvimento(d){
+  let h='';
+  Object.entries(DESENV_AREAS).forEach(([cat,items])=>{
+    h+=`<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;color:var(--pd);padding:6px 0;border-bottom:1px solid var(--pl);margin-bottom:8px">${cat}</div>`;
+    items.forEach(item=>{
+      const key='desenv_'+item.replace(/[\s()+-\/]/g,'_');
+      const val=d[key]||'';
+      h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:12px;color:var(--dk);width:220px">${item}</span><div style="display:flex;gap:4px">`;
+      ['A','EP','NA'].forEach(opt=>{
+        h+=`<button onclick="setDesenv('${key}','${opt}',this)" class="scale-btn${val===opt?' sel':''}" style="width:36px">${opt}</button>`;
+      });
+      h+=`</div></div>`;
+    });
+    h+='</div>';
+  });
+  document.getElementById('desenvolvTable').innerHTML=h;
+}
+function setDesenv(key,val,btn){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  p.dados[key]=val;save();
+  btn.closest('div').querySelectorAll('.scale-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function saveDesenv(){
+  const id=document.getElementById('avalPaciente').value;if(!id)return;
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  const el=document.getElementById('desenvObs');
+  if(el)p.dados.desenvObs=el.value;
+  save();alert('Desenvolvimento salvo!');
+}
+
+// ─── PDF ENGINE ──────────────────────────────────────────────────────────────
+function getClinica(){return DB.clinica||{};}
+function getPatient(selectId){const id=document.getElementById(selectId).value;return DB.patients.find(x=>x.id==id)||null;}
+
+function pdfBase(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF('p','mm','a4');
+  const W=210,H=297;
+  const P=[14,116,144],PD=[12,74,110],PL=[224,242,254];
+  const DK=[15,23,42],GR=[100,116,139],LG=[226,232,240],WH=[255,255,255];
+  const fill=(x,y,w,h,c)=>{doc.setFillColor(...c);doc.rect(x,y,w,h,'F');};
+  const ln=(x1,y1,x2,y2,c,lw=.3)=>{doc.setDrawColor(...c);doc.setLineWidth(lw);doc.line(x1,y1,x2,y2);};
+  const txt=(s,x,y,{sz=10,c=DK,st='normal',al='left'}={})=>{doc.setFontSize(sz);doc.setFont('helvetica',st);doc.setTextColor(...c);doc.text(String(s||''),x,y,{align:al});};
+  const header=(title,sub)=>{
+    fill(0,0,W,28,PD);
+    const cl=getClinica();
+    // logo no canto direito do header
+    if(cl.logoData){try{doc.addImage(cl.logoData,'',W-30,2,24,24);}catch(e){}}
+    txt(title,cl.logoData?W/2-10:W/2,12,{sz:14,c:WH,st:'bold',al:'center'});
+    if(sub)txt(sub,cl.logoData?W/2-10:W/2,21,{sz:8,c:PL,al:'center'});
+    if(cl.nome){
+      fill(0,28,W,10,P);
+      const info=[cl.nome,cl.to,cl.crp].filter(Boolean).join(' | ');
+      txt(info,W/2,35,{sz:7.5,c:WH,al:'center'});
+      if(cl.tel||cl.cidade){
+        const info2=[cl.cidade,cl.tel].filter(Boolean).join(' | ');
+        fill(0,38,W,7,[11,61,89]);
+        txt(info2,W/2,43,{sz:6.5,c:PL,al:'center'});
+        return 48;
+      }
+      return 40;
+    }
+    return 30;
+  };
+  const footer=(p)=>{
+    const n=doc.getNumberOfPages();
+    for(let i=1;i<=n;i++){
+      doc.setPage(i);
+      fill(0,H-10,W,10,PL);
+      txt(`Pag. ${i}/${n}`,W/2,H-3,{sz:6.5,c:PD,al:'center'});
+    }
+  };
+  return{doc,W,H,P,PD,PL,DK,GR,LG,WH,fill,ln,txt,header,footer};
+}
+
+function pdfAnamnese(){
+  const p=getPatient('avalPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,LG,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};
+  let y=header('ANAMNESE - TERAPIA OCUPACIONAL','Ficha de Avaliacao Inicial');
+  const field=(label,val,w=W-28)=>{
+    if(y>H-20){doc.addPage();y=20;}
+    txt(label,14,y,{sz:7.5,c:GR});y+=5;
+    fill(14,y,w,val&&val.length>60?18:10,PL);
+    const lines=doc.splitTextToSize(val||'Nao informado',w-6);
+    lines.slice(0,3).forEach((l,i)=>txt(l,17,y+6+i*5,{sz:8.5,c:DK}));
+    y+=(val&&val.length>60?18:10)+4;
+  };
+  const sec=(t)=>{if(y>H-30){doc.addPage();y=20;}fill(14,y,W-28,8,P);txt(t,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;};
+  sec('IDENTIFICACAO DO PACIENTE');
+  field('Nome',p.nome,W/2-16);
+  field('Data de Nascimento / Idade',p.nasc?(new Date(p.nasc+'T12:00:00').toLocaleDateString('pt-BR')+' - '+calcAge(p.nasc)):'');
+  field('Responsavel',d.av_resp);field('Telefone',d.av_tel);field('Escola / Turma',(d.av_escola||'')+(d.av_turma?' - '+d.av_turma:''));
+  sec('DIAGNOSTICO');field('Diagnostico Principal',d.av_diag);field('CID-10',d.av_cid);
+  sec('QUEIXA PRINCIPAL');field('Motivo do Encaminhamento',d.av_queixa);
+  sec('HISTORICO DO DESENVOLVIMENTO');field('Historico',d.av_hist);
+  sec('INFORMACOES CLINICAS');field('Medicamentos',d.av_meds);field('Outros Especialistas',d.av_espec);field('Observacoes',d.av_obs);
+  footer();
+  doc.save(`Anamnese-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfEscola(){
+  const p=getPatient('laudoPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,LG,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};
+  const cl=getClinica();
+  let y=header('RELATORIO PARA ESCOLA','Terapeuta Ocupacional');
+  const sec=(t)=>{if(y>H-30){doc.addPage();y=20;}fill(14,y,W-28,8,P);txt(t,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;};
+  const bloco=(label,val)=>{
+    if(y>H-24){doc.addPage();y=20;}
+    txt(label,14,y,{sz:7.5,c:GR,st:'bold'});y+=5;
+    const lines=doc.splitTextToSize(val||'',W-28);
+    lines.forEach(l=>{if(y>H-14){doc.addPage();y=20;}txt(l,14,y,{sz:9,c:DK});y+=5.5;});
+    ln(14,y,W-14,y,PL,.3);y+=6;
+  };
+  txt(new Date().toLocaleDateString('pt-BR'),W-14,y,{sz:8,c:GR,al:'right'});y+=8;
+  if(d.esc_escola)txt('Para: '+d.esc_escola,14,y,{sz:9,c:DK,st:'bold'});y+=7;
+  if(d.esc_prof)txt('A/C: '+d.esc_prof,14,y,{sz:9,c:DK});y+=12;
+  sec('IDENTIFICACAO DO ALUNO');
+  txt('Nome: '+p.nome,14,y,{sz:9,c:DK});y+=6;
+  txt('Diagnostico: '+(d.av_diag||p.diag||''),14,y,{sz:9,c:DK});y+=6;
+  if(d.av_escola)txt('Escola: '+d.av_escola+(d.av_turma?' - '+d.av_turma:''),14,y,{sz:9,c:DK});y+=10;
+  sec('RESUMO DO CASO');bloco('',d.esc_resumo);
+  sec('DESEMPENHO FUNCIONAL');bloco('',d.esc_desempenho);
+  sec('HABILIDADES E DIFICULDADES');bloco('',d.esc_hab);
+  sec('RECOMENDACOES E ADAPTACOES');bloco('',d.esc_rec);
+  sec('ORIENTACOES PARA A PROFESSORA');bloco('',d.esc_orient);
+  y+=10;
+  ln(W/2-40,y,W/2+40,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();
+  doc.save(`Relatorio-Escola-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfINSS(){
+  const p=getPatient('laudoPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,LG,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};const cl=getClinica();
+  let y=header('LAUDO PARA INSS / BPC','Relatorio de Terapeuta Ocupacional');
+  const sec=(t)=>{if(y>H-30){doc.addPage();y=20;}fill(14,y,W-28,8,P);txt(t,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;};
+  const bloco=(label,val)=>{
+    if(!val)return;
+    if(y>H-24){doc.addPage();y=20;}
+    if(label){txt(label,14,y,{sz:7.5,c:GR,st:'bold'});y+=5;}
+    const lines=doc.splitTextToSize(val,W-28);
+    lines.forEach(l=>{if(y>H-14){doc.addPage();y=20;}txt(l,14,y,{sz:9,c:DK});y+=5.5;});
+    y+=4;
+  };
+  sec('IDENTIFICACAO');
+  txt('Nome: '+p.nome,14,y,{sz:9,c:DK});y+=6;
+  txt('Diagnostico: '+(d.av_diag||'')+' | CID: '+(d.av_cid||''),14,y,{sz:9,c:DK});y+=6;
+  txt('Tipo de beneficio: '+(d.ins_tipo||'BPC - LOAS'),14,y,{sz:9,c:DK});y+=10;
+  sec('DESCRICAO DA DEFICIENCIA / INCAPACIDADE');bloco('',d.ins_def);
+  sec('IMPACTO NAS ATIVIDADES DE VIDA DIARIA');bloco('',d.ins_avd);
+  sec('PROGNOSTICO E NECESSIDADE DE SUPORTE');bloco('',d.ins_prog);
+  sec('PARECER TECNICO');bloco('',d.ins_parecer);
+  y+=14;
+  txt(cl.cidade&&cl.cidade?cl.cidade+', ':''+ new Date().toLocaleDateString('pt-BR'),14,y,{sz:9,c:DK});y+=14;
+  ln(W/2-50,y,W/2+50,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();
+  doc.save(`Laudo-INSS-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfAlta(){
+  const p=getPatient('laudoPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,LG,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};const cl=getClinica();
+  let y=header('RELATORIO DE ALTA','Terapia Ocupacional');
+  const sec=(t)=>{if(y>H-30){doc.addPage();y=20;}fill(14,y,W-28,8,P);txt(t,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;};
+  const bloco=(val)=>{if(!val)return;const lines=doc.splitTextToSize(val,W-28);lines.forEach(l=>{if(y>H-14){doc.addPage();y=20;}txt(l,14,y,{sz:9,c:DK});y+=5.5;});y+=4;};
+  sec('DADOS DO ATENDIMENTO');
+  txt('Paciente: '+p.nome,14,y,{sz:9,c:DK});y+=6;
+  if(d.alt_inicio&&d.alt_fim){txt('Periodo: '+new Date(d.alt_inicio+'T12:00:00').toLocaleDateString('pt-BR')+' a '+new Date(d.alt_fim+'T12:00:00').toLocaleDateString('pt-BR'),14,y,{sz:9,c:DK});y+=6;}
+  if(d.alt_sessoes){txt('Total de sessoes: '+d.alt_sessoes,14,y,{sz:9,c:DK});y+=6;}
+  txt('Motivo da alta: '+(d.alt_motivo||''),14,y,{sz:9,c:DK});y+=10;
+  sec('RESUMO DO ATENDIMENTO');bloco(d.alt_resumo);
+  sec('OBJETIVOS ALCANCADOS');bloco(d.alt_alc);
+  sec('RECOMENDACOES');bloco(d.alt_rec);
+  y+=14;ln(W/2-50,y,W/2+50,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();doc.save(`Relatorio-Alta-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfEncam(){
+  const p=getPatient('laudoPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};const cl=getClinica();
+  let y=header('ENCAMINHAMENTO','Terapia Ocupacional');
+  txt('Data: '+new Date().toLocaleDateString('pt-BR'),W-14,y,{sz:8,c:GR,al:'right'});y+=10;
+  txt('Paciente: '+p.nome,14,y,{sz:10,c:DK,st:'bold'});y+=6;
+  txt('Encaminhar para: '+(document.getElementById('enc_para').value||''),14,y,{sz:9,c:DK});y+=6;
+  txt('Urgencia: '+(document.getElementById('enc_urg').value||''),14,y,{sz:9,c:DK});y+=12;
+  const bloco=(title,val)=>{
+    if(!val)return;
+    fill(14,y,W-28,8,P);txt(title,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+    const lines=doc.splitTextToSize(val,W-28);
+    lines.forEach(l=>{txt(l,14,y,{sz:9,c:DK});y+=5.5;});y+=6;
+  };
+  bloco('MOTIVO DO ENCAMINHAMENTO',document.getElementById('enc_motivo').value);
+  bloco('INFORMACOES CLINICAS',document.getElementById('enc_info').value);
+  y+=14;ln(W/2-50,y,W/2+50,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();doc.save(`Encaminhamento-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfPlano(){
+  const p=getPatient('protPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};const cl=getClinica();
+  let y=header('PLANO TERAPEUTICO','Terapia Ocupacional');
+  txt('Paciente: '+p.nome,14,y,{sz:10,c:DK,st:'bold'});y+=6;
+  txt('Diagnostico: '+(d.av_diag||p.diag||''),14,y,{sz:9,c:DK});y+=6;
+  txt('Frequencia: '+(d.pt_freq||'')+' | Duracao: '+(d.pt_dur||''),14,y,{sz:9,c:DK});y+=10;
+  const bloco=(title,val)=>{
+    if(!val)return;
+    fill(14,y,W-28,8,P);txt(title,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+    const lines=doc.splitTextToSize(val,W-28);
+    lines.forEach(l=>{if(y>H-14){doc.addPage();y=20;}txt(l,14,y,{sz:9,c:DK});y+=5.5;});y+=6;
+  };
+  bloco('OBJETIVO GERAL',d.pt_geral);
+  bloco('OBJETIVOS DE CURTO PRAZO (1-3 MESES)',d.pt_curto);
+  bloco('OBJETIVOS DE MEDIO PRAZO (3-6 MESES)',d.pt_medio);
+  bloco('OBJETIVOS DE LONGO PRAZO (6-12 MESES)',d.pt_longo);
+  bloco('ESTRATEGIAS E ABORDAGENS',d.pt_estrat);
+  bloco('ORIENTACOES PARA FAMILIA / ESCOLA',d.pt_orient);
+  footer();doc.save(`Plano-Terapeutico-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfSessaoSingle(pid,sid){
+  const p=DB.patients.find(x=>x.id==pid);if(!p)return;
+  const s=p.sessoes.find(x=>x.id==sid);if(!s)return;
+  const {doc,W,H,P,PD,PL,DK,GR,WH,fill,ln,txt,header,footer}=pdfBase();
+  const cl=getClinica();
+  let y=header('REGISTRO DE SESSAO','Terapia Ocupacional');
+  txt('Paciente: '+p.nome,14,y,{sz:10,c:DK,st:'bold'});y+=6;
+  txt('Data: '+(s.data?new Date(s.data+'T12:00:00').toLocaleDateString('pt-BR'):'')+' | Duracao: '+s.dur,14,y,{sz:9,c:DK});y+=6;
+  txt('Estado: '+s.humor+' | Familiar presente: '+s.familiar,14,y,{sz:9,c:DK});y+=12;
+  const bloco=(title,val)=>{
+    if(!val)return;
+    fill(14,y,W-28,8,P);txt(title,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+    const lines=doc.splitTextToSize(val,W-28);
+    lines.forEach(l=>{txt(l,14,y,{sz:9,c:DK});y+=5.5;});y+=6;
+  };
+  bloco('ATIVIDADES REALIZADAS',s.ativ);bloco('RESPOSTA DO PACIENTE',s.resp);
+  bloco('EVOLUCAO OBSERVADA',s.evol);bloco('OBJETIVOS PARA PROXIMA SESSAO',s.prox);
+  y+=14;ln(W/2-50,y,W/2+50,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();doc.save(`Sessao-${p.nome.replace(/\s/g,'-')}-${s.data||'sem-data'}.pdf`);
+}
+
+function pdfAVD(){alert('Use o PDF de Anamnese que inclui resumo das AVDs.');}
+function pdfSensorial(){alert('Recurso em breve.');}
+function pdfTEA(){alert('Recurso em breve.');}
+function pdfMIF(){alert('Recurso em breve.');}
+function pdfCognitivo(){alert('Recurso em breve.');}
+function pdfHab(){alert('Recurso em breve.');}
+function pdfTEAinter(){pdfPlano();}
+
+function pdfCOPM(){
+  const p=getPatient('avalPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,LG,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};const cl=getClinica();
+  let y=header('COPM - MEDIDA CANADENSE DE DESEMPENHO OCUPACIONAL','Canadian Occupational Performance Measure');
+  txt('Paciente: '+p.nome,14,y,{sz:9,c:DK,st:'bold'});y+=6;
+  txt('Data: '+new Date().toLocaleDateString('pt-BR'),14,y,{sz:8,c:GR});y+=10;
+  fill(14,y,W-28,8,P);
+  ['#','Area','Problema / Atividade','Desempenho','Satisfacao'].forEach((h,i)=>{
+    const xs=[14,24,74,162,186];
+    txt(h,xs[i],y+5.5,{sz:7.5,c:WH,st:'bold'});
+  });y+=10;
+  const probs=d.copm_problemas||[];
+  probs.forEach((prob,i)=>{
+    if(!prob||!prob.descricao)return;
+    fill(14,y,W-28,9,i%2===0?WH:PL);
+    txt(String(i+1),16,y+6,{sz:8,c:PD,st:'bold'});
+    txt(prob.area||'',24,y+6,{sz:8,c:DK});
+    const desc=doc.splitTextToSize(prob.descricao||'',80);
+    txt(desc[0]||'',74,y+6,{sz:8,c:DK});
+    txt(prob.desempenho?String(prob.desempenho):'-',170,y+6,{sz:9,c:PD,st:'bold',al:'center'});
+    txt(prob.satisfacao?String(prob.satisfacao):'-',194,y+6,{sz:9,c:PD,st:'bold',al:'center'});
+    y+=9;
+  });
+  y+=6;
+  const com_d=probs.filter(p=>p&&p.desempenho>0);
+  const com_s=probs.filter(p=>p&&p.satisfacao>0);
+  const med_d=com_d.length?(com_d.reduce((a,p)=>a+(p.desempenho||0),0)/com_d.length).toFixed(1):'-';
+  const med_s=com_s.length?(com_s.reduce((a,p)=>a+(p.satisfacao||0),0)/com_s.length).toFixed(1):'-';
+  fill(14,y,W-28,14,PD);
+  txt('Media de Desempenho: '+med_d+' / 10',18,y+5.5,{sz:9,c:WH,st:'bold'});
+  txt('Media de Satisfacao: '+med_s+' / 10',W/2+10,y+5.5,{sz:9,c:WH,st:'bold'});
+  y+=18;
+  txt('Interpretacao: 1-3 = Muito comprometido | 4-6 = Comprometimento moderado | 7-10 = Bom desempenho',14,y,{sz:7,c:GR});
+  y+=14;ln(W/2-50,y,W/2+50,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();doc.save(`COPM-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfDesenv(){
+  const p=getPatient('avalPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};const cl=getClinica();
+  let y=header('AVALIACAO DO DESENVOLVIMENTO INFANTIL','Marcos do Desenvolvimento');
+  txt('Paciente: '+p.nome+' | '+calcAge(p.nasc),14,y,{sz:9,c:DK,st:'bold'});y+=10;
+  const STATUS_COL={'A':[16,185,129],'EP':[245,158,11],'NA':[239,68,68]};
+  Object.entries(DESENV_AREAS).forEach(([cat,items])=>{
+    if(y>H-30){doc.addPage();y=20;}
+    fill(14,y,W-28,8,P);txt(cat,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+    items.forEach(item=>{
+      if(y>H-14){doc.addPage();y=20;}
+      const key='desenv_'+item.replace(/[\s()+-\/]/g,'_');
+      const val=d[key]||'NI';
+      const col=STATUS_COL[val]||[150,150,150];
+      fill(14,y,W-28,8,i%2===0?WH:PL);
+      txt(item,16,y+5.5,{sz:8,c:DK});
+      fill(W-36,y+1,22,6,col);
+      txt(val,W-25,y+5.5,{sz:7,c:WH,st:'bold',al:'center'});
+      y+=8;
+    });
+    y+=4;
+  });
+  if(d.desenvObs){
+    if(y>H-30){doc.addPage();y=20;}
+    fill(14,y,W-28,8,P);txt('OBSERVACOES',16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+    const lines=doc.splitTextToSize(d.desenvObs,W-28);
+    lines.forEach(l=>{if(y>H-14){doc.addPage();y=20;}txt(l,14,y,{sz:9,c:DK});y+=5.5;});
+  }
+  y+=10;
+  fill(14,y,W-28,10,PL);
+  txt('Legenda:  A = Adquirido    EP = Em Processo    NA = Nao Adquirido    NI = Nao Investigado',16,y+7,{sz:7.5,c:PD});y+=14;
+  ln(W/2-50,y,W/2+50,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();doc.save(`Desenvolvimento-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfPlanoSaude(){
+  const p=getPatient('laudoPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};const cl=getClinica();
+  let y=header('RELATORIO PARA PLANO DE SAUDE','Terapia Ocupacional');
+  const val=(id)=>document.getElementById(id)?.value||'';
+  const bloco=(title,v)=>{
+    if(!v)return;
+    if(y>H-30){doc.addPage();y=20;}
+    fill(14,y,W-28,8,P);txt(title,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+    const lines=doc.splitTextToSize(v,W-28);
+    lines.forEach(l=>{if(y>H-14){doc.addPage();y=20;}txt(l,14,y,{sz:9,c:DK});y+=5.5;});y+=4;
+  };
+  txt('Data: '+new Date().toLocaleDateString('pt-BR'),W-14,y,{sz:8,c:GR,al:'right'});y+=8;
+  fill(14,y,W-28,10,PL);
+  txt('Paciente: '+p.nome,16,y+4,{sz:9,c:DK,st:'bold'});y+=7;
+  txt('Diagnostico: '+(d.av_diag||p.diag||''),16,y+4,{sz:9,c:DK});y+=7;
+  if(val('ps_plano'))txt('Plano de Saude: '+val('ps_plano')+(val('ps_carteira')?' | Carteirinha: '+val('ps_carteira'):''),16,y+4,{sz:9,c:DK});y+=7;
+  if(val('ps_codigo'))txt('Codigo do Procedimento: '+val('ps_codigo'),16,y+4,{sz:9,c:DK});y+=7;
+  if(val('ps_periodo'))txt('Periodo: '+val('ps_periodo'),16,y+4,{sz:9,c:DK});y+=7;
+  if(val('ps_sessoes')||val('ps_sol'))txt('Sessoes realizadas: '+val('ps_sessoes')+' | Sessoes solicitadas: '+val('ps_sol'),16,y+4,{sz:9,c:DK});y+=12;
+  bloco('JUSTIFICATIVA CLINICA',val('ps_just'));
+  bloco('EVOLUCAO E RESPOSTA AO TRATAMENTO',val('ps_evol'));
+  bloco('OBJETIVOS PARA PROXIMO PERIODO',val('ps_obj'));
+  y+=14;ln(W/2-50,y,W/2+50,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();doc.save(`Relatorio-PlanoSaude-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+function pdfTermo(){
+  const p=getPatient('laudoPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,WH,fill,ln,txt,header,footer}=pdfBase();
+  const cl=getClinica();const d=p.dados||{};
+  let y=header('TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO','Terapia Ocupacional - TCLE');
+  const par=(texto)=>{
+    const lines=doc.splitTextToSize(texto,W-28);
+    lines.forEach(l=>{if(y>H-16){doc.addPage();y=20;}txt(l,14,y,{sz:9,c:DK});y+=5.5;});
+    y+=4;
+  };
+  txt('Data: '+new Date().toLocaleDateString('pt-BR'),W-14,y,{sz:8,c:GR,al:'right'});y+=8;
+  fill(14,y,W-28,8,P);txt('IDENTIFICACAO',16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+  txt('Paciente: '+p.nome,14,y,{sz:9,c:DK});y+=6;
+  txt('Responsavel: '+(d.av_resp||''),14,y,{sz:9,c:DK});y+=6;
+  txt('Clinica: '+(cl.nome||'')+' | Terapeuta: '+(cl.to||''),14,y,{sz:9,c:DK});y+=10;
+  fill(14,y,W-28,8,P);txt('TERMO',16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+  par('Eu, abaixo assinado(a), na qualidade de responsavel legal pelo(a) paciente acima identificado(a), declaro que fui devidamente informado(a) e esclarecido(a) pela terapeuta ocupacional '+( cl.to||'_______________')+', '+( cl.crp||'_______________')+', sobre os seguintes aspectos:');
+  par('1. OBJETIVO DO TRATAMENTO: O tratamento de Terapia Ocupacional tem como objetivo promover, restaurar ou manter a capacidade do individuo de realizar suas atividades de vida diaria, de trabalho e de lazer, contribuindo para sua independencia e qualidade de vida.');
+  par('2. PROCEDIMENTOS: As sessoes poderao incluir atividades funcionais, exercicios terapeuticos, uso de equipamentos e recursos terapeuticos, orientacoes e treinamento para o paciente e familia.');
+  par('3. RISCOS E BENEFICIOS: Os procedimentos utilizados sao seguros e baseados em evidencias cientificas. Os beneficios esperados incluem melhora funcional, ganho de independencia e qualidade de vida.');
+  par('4. CONFIDENCIALIDADE: Todas as informacoes sobre o paciente serao mantidas em sigilo, conforme o Codigo de Etica Profissional.');
+  par('5. DIREITO DE RECUSA: O responsavel pode, a qualquer momento, retirar seu consentimento sem prejuizo ao atendimento futuro.');
+  if(document.getElementById('termo_obs')?.value){par('OBSERVACOES ESPECIFICAS: '+document.getElementById('termo_obs').value);}
+  y+=10;
+  const signY=Math.min(y+10,H-50);
+  ln(14,signY,80,signY,DK,.5);
+  txt('Responsavel pelo Paciente',14,signY+5,{sz:8,c:GR});
+  txt('CPF: _______________________',14,signY+10,{sz:8,c:GR});
+  ln(W/2+10,signY,W-14,signY,DK,.5);
+  txt(cl.to||'Terapeuta Ocupacional',W/2+10,signY+5,{sz:8,c:GR});
+  txt(cl.crp||'CREFITO',W/2+10,signY+10,{sz:8,c:GR});
+  txt(cl.cidade?cl.cidade+', '+new Date().toLocaleDateString('pt-BR'):new Date().toLocaleDateString('pt-BR'),W/2,signY+18,{sz:8,c:GR,al:'center'});
+  footer();doc.save(`Termo-Consentimento-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+function pdfDieta(){
+  const p=getPatient('protPaciente');if(!p){alert('Selecione um paciente');return;}
+  const {doc,W,H,P,PD,PL,DK,GR,WH,fill,ln,txt,header,footer}=pdfBase();
+  const d=p.dados||{};const cl=getClinica();
+  let y=header('DIETA SENSORIAL','Terapia Ocupacional');
+  txt('Paciente: '+p.nome,14,y,{sz:10,c:DK,st:'bold'});y+=10;
+  const bloco=(title,val)=>{
+    if(!val)return;
+    fill(14,y,W-28,8,P);txt(title,16,y+5.5,{sz:8,c:WH,st:'bold'});y+=12;
+    const lines=doc.splitTextToSize(val,W-28);
+    lines.forEach(l=>{if(y>H-14){doc.addPage();y=20;}txt(l,14,y,{sz:9,c:DK});y+=5.5;});y+=6;
+  };
+  bloco('PERFIL SENSORIAL',d.ds_perfil);
+  bloco('MANHA - ANTES DA ESCOLA',d.ds_manha);
+  bloco('NA ESCOLA / INTERVALO',d.ds_escola);
+  bloco('TARDE / APOS ESCOLA',d.ds_tarde);
+  bloco('NOITE - PREPARO PARA DORMIR',d.ds_noite);
+  bloco('ORIENTACOES PARA A FAMILIA',d.ds_orient);
+  y+=14;ln(W/2-50,y,W/2+50,y,DK,.5);y+=5;
+  txt(cl.to||'Terapeuta Ocupacional',W/2,y,{sz:9,c:DK,al:'center'});y+=5;
+  txt(cl.crp||'CREFITO',W/2,y,{sz:8,c:GR,al:'center'});
+  footer();doc.save(`Dieta-Sensorial-${p.nome.replace(/\s/g,'-')}.pdf`);
+}
+
+// ─── DEMO DATA ───────────────────────────────────────────────────────────────
+function carregarDemoData(){
+  if(localStorage.getItem('toDB_demo_loaded')) return;
+
+  const DEMO = {
+    clinica:{
+      nome:'Clinica TO Vida Plena',
+      to:'Dra. Ana Paula Ferreira',
+      crp:'CREFITO 3/15678-TO',
+      tel:'(11) 98745-3210',
+      email:'anapaula@tovida.com.br',
+      end:'Rua das Flores, 142 - Sala 08 - Jardim Europa',
+      cidade:'Sao Paulo - SP'
+    },
+    patients:[
+      {
+        id:1001,
+        nome:'Lucas Oliveira Silva',
+        nasc:'2019-03-15',
+        resp:'Mariana Oliveira',
+        tel:'(11) 97654-3210',
+        area:'TEA',
+        diag:'TEA - Nivel 2',
+        sessoes:[
+          {id:2001,data:'2026-05-10',dur:'50 min',ativ:'Atividades de integracao sensorial com caixa de areia e texturas. Trabalho de imitacao com objetos. PECS - introducao de novos cartoes de comunicacao (comer, beber, brincar).',resp:'Boa tolerancia a textura da areia. Aceitou caixa de texturas por 8 minutos sem recusa. Utilizou 3 cartoes PECS espontaneamente.',evol:'Aumento do tempo de permanencia em atividades de SI. Reducao do comportamento de fuga em ambiente novo. Primeira utilizacao espontanea do PECS para solicitar agua.',prox:'Expandir repertorio PECS para 5 cartoes. Introduzir jogo de encaixe para motricidade fina. Continuar protocolo de SI com foco vestibular.',humor:'Calmo e cooperativo',familiar:'Sim'},
+          {id:2002,data:'2026-05-06',dur:'50 min',ativ:'Protocolo de desenvolvimento motor fino: encaixe de formas, torre de cubos, rasgar papel. Atividade de contato visual mediada por bolhas de sabao.',resp:'Montou torre de 6 cubos com assistencia minima. Manteve contato visual por 4 segundos durante atividade de bolhas. Rasgou papel em tiras sem dificuldade.',evol:'Melhora significativa na motricidade fina comparado a avaliacao inicial. Contato visual aumentando gradualmente em contexto ludico.',prox:'Introducao de pintura a dedo. Continuar trabalhando contato visual em atividades de interesse.',humor:'Alegre e engajado',familiar:'Sim'},
+          {id:2003,data:'2026-04-29',dur:'50 min',ativ:'Sessao de avaliacao de rotinas de AVD. Treino de higiene oral com sequencia visual. Jogo simbolico com boneco (alimentar, dar banho).',resp:'Necessita de assistencia total para higiene oral. Aceitou escova com creme dental sem resistencia. Demonstrou jogo funcional espontaneo com boneco.',evol:'Inicio de jogo funcional espontaneo e representativo. Tolerancia aumentada a higiene oral.',prox:'Continuar sequencia visual de higiene oral. Ampliar repertorio de jogo simbolico.',humor:'Calmo e cooperativo',familiar:'Nao'}
+        ],
+        dados:{
+          av_resp:'Mariana Oliveira',av_tel:'(11) 97654-3210',av_email:'mariana@email.com',
+          av_escola:'EMEI Jardim Europa',av_turma:'Infantil 4 - Turma B',
+          av_diag:'TEA - Transtorno do Espectro Autista Nivel 2',av_cid:'F84.0',
+          av_queixa:'Encaminhado pela neuropediatra para avaliacao e intervencao em TO. Dificuldades de comunicacao, hipersensibilidade sensorial, comportamentos repetitivos e atraso no desenvolvimento motor. Familia relata dificuldade em atividades de autocuidado e integracao com pares.',
+          av_hist:'Gestacao sem intercorrencias, parto cesarea na 38a semana. Marcos iniciais dentro do esperado ate 18 meses. Regressao de fala aos 20 meses. Diagnostico de TEA confirmado pela neuropediatra aos 4 anos. Realizou fonoterapia por 12 meses.',
+          av_meds:'Risperidona 0,5mg - 1x ao dia (noite)',av_espec:'Fonoaudiologo - Dr. Carlos Mendes (1x/semana) | Psicologo - Dra. Lucia Gomes (1x/semana)',
+          av_obs:'Hipersensibilidade tatil e auditiva. Recusa a calcar sapatos com textura. Dificuldade com sons altos. Preferencia por rotinas rigidas. Interesse intenso em dinossauros.',
+          cog_atencao:'Moderadamente comprometida',cog_memoria:'Levemente comprometida',
+          cog_ling:'Comunicacao alternativa (CAA)',cog_exec:'Moderadamente comprometidas',
+          mot_grossa:'Levemente comprometida',mot_fina:'Moderadamente comprometida',
+          mot_tonus:'Hipotonia leve',mot_marcha:'Independente',
+          cog_obs:'Atencao melhor em atividades de interesse (dinossauros). Memoria procedural preservada. Linguagem verbal emergente - usa cerca de 30 palavras funcionais e CAA.',
+          copm_problemas:[
+            {area:'Autocuidado',descricao:'Higiene oral - recusa escovacao sem sequencia visual',desempenho:3,satisfacao:2},
+            {area:'Autocuidado',descricao:'Vestuario - dificuldade em abotoar e fechar velcro',desempenho:4,satisfacao:3},
+            {area:'Produtividade',descricao:'Participacao em atividades em grupo na escola',desempenho:3,satisfacao:2},
+            {area:'Produtividade',descricao:'Realizacao de atividades de escrita e pintura',desempenho:4,satisfacao:3},
+            {area:'Lazer',descricao:'Brincar de forma compartilhada com outras criancas',desempenho:2,satisfacao:2}
+          ],
+          avd_Alimentacao:'A',avd_Higiene_oral:'D',avd_Banho:'A',avd_Vestuario_superior:'A',avd_Vestuario_inferior:'A',avd_Uso_do_sanitario:'I',
+          sens_Hipersensibilidade_tatil:true,sens_Hiposensibilidade_tatil:false,sens_Hipersensibilidade_auditiva:true,
+          sens_Busca_excessiva_por_movimento:true,sens_Dificuldade_de_equilibrio:false,
+          teaObs:'Crianca apresenta contacto visual diminuido, porem responsiva em contexto ludico. Ecolalia presente. Comportamentos repetitivos: alinhamento de objetos, balanceio em situacoes de estresse.',
+          teaConcl:'Perfil compativel com TEA nivel 2. Necessita de suporte substancial. Recomendado acompanhamento multidisciplinar intensivo.',
+          tea_Dificuldade_em_iniciar_manter_conversa:true,tea_Uso_limitado_ausente_de_gestos:true,
+          tea_Movimentos_esteriotipados__stimming_:true,tea_Insistencia_em_rotinas_rituais:true,
+          tea_Interesses_restritos_e_intensos:true,tea_Ecolalia__repetir_palavras_frases_:true,
+          tea_Dificuldade_de_imitar_o_outro:false,tea_Hiper_ou_hipossensibilidade_sensorial:true,
+          mif_Alimentacao:5,mif_Higiene_pessoal:4,mif_Banho:3,mif_Vestuario___parte_superior:4,mif_Vestuario___parte_inferior:4,mif_Higiene_perineal:5,
+          mif_Bexiga:6,mif_Intestino:6,
+          mif_Transferencia_cama_cadeira_cadeira_de_rodas:7,mif_Transferencia___vaso_sanitario:7,
+          mif_Marcha_Cadeira_de_rodas:7,mif_Escadas:6,
+          mif_Compreensao:4,mif_Expressao:3,mif_Interacao_social:3,mif_Resolucao_de_problemas:3,mif_Memoria:4,
+          pt_geral:'Promover independencia nas atividades de vida diaria, melhorar processamento sensorial, desenvolver habilidades de comunicacao funcional e facilitar participacao social na escola e em casa.',
+          pt_curto:'1. Estabelecer rotina de higiene oral com suporte visual\n2. Ampliar repertorio de comunicacao para 50 cartoes PECS\n3. Melhorar tolerancia a texturas tateis',
+          pt_medio:'1. Independencia no vestuario (fechos e abotoar)\n2. Participacao em atividades em grupo por 15 minutos\n3. Reducao de comportamentos de fuga em ambiente novo',
+          pt_longo:'1. Autonomia nas AVDs basicas com supervisao minima\n2. Comunicacao funcional em diferentes contextos\n3. Participacao ativa em ambiente escolar inclusivo',
+          pt_freq:'2x por semana',pt_dur:'50 minutos',
+          pt_estrat:'Integracao Sensorial (IS), PECS, DIR/Floortime, Suporte Visual, Analise do Comportamento Aplicada (ABA) - elementos adaptados',
+          pt_orient:'Manter rotinas previsíveis e sequencias visuais em casa. Oferecer dieta sensorial nos periodos criticos. Generalizar uso do PECS em diferentes ambientes e pessoas.',
+          ds_perfil:'Hipersensibilidade tatil (especialmente texturas lisas e frias) e auditiva (sons altos e inesperados). Hiposensibilidade proprioceptiva - busca por pressao profunda.',
+          ds_manha:'Escovacao corporal suave antes do banho (2 min). Roupas com etiquetas removidas. Cafe da manha em ambiente calmo sem TV.',
+          ds_escola:'Almofada de assento com textura durante atividades sentadas. Banda elastica nos pes da cadeira. Pausa sensorial de 5 min antes de atividades mais exigentes.',
+          ds_tarde:'Caminhada de 20 min apos escola. Brincadeiras no escorregador e balanço (propriocepcao). Atividade livre de interesse por 30 min.',
+          ds_noite:'Banho morno com chuveiro (evitar banheira). Massagem nos pes e maos com lencol. Historinha no escuro com luz difusa. Mesma musica de ninar.',
+          ds_orient:'Avisar sempre antes de tocar. Oferecer opcoes de roupas. Permitir que use fone de ouvido em ambientes barulhentos. Respeitar a rotina - mudancas com antecedencia e suporte visual.',
+          esc_escola:'EMEI Jardim Europa - Rua das Acacias, 450 - Jardim Europa - Sao Paulo/SP',
+          esc_prof:'Professora Claudia Mendes - Sala 4B',
+          esc_resumo:'Lucas, 7 anos, e aluno com diagnostico de Transtorno do Espectro Autista nivel 2 (CID-10: F84.0), em acompanhamento de Terapia Ocupacional desde Marco de 2026. Realiza 2 sessoes semanais de 50 minutos cada.',
+          esc_desempenho:'Lucas demonstra melhor desempenho em atividades estruturadas e previsíveis. Tem dificuldades em atividades em grupo nao estruturadas. Faz melhor uso das habilidades de escrita quando sentado com apoio adequado. Necessita de mediacao para transicoes entre atividades.',
+          esc_hab:'HABILIDADES: Boa memoria visual, interesse em atividades sistematizadas, habilidade motora grossa preservada. DIFICULDADES: Comunicacao verbal limitada (usa CAA), dificuldade de regulacao emocional em situacoes inesperadas, hipersensibilidade auditiva.',
+          esc_rec:'1. Disponibilizar local de apoio sensorial (canto tranquilo) para momentos de sobrecarga\n2. Utilizar sequencia visual para rotinas (fichas com imagens das atividades do dia)\n3. Permitir uso de fone de ouvido durante atividades barulhentas\n4. Oferecer almofada de assento texturizada\n5. Avisar antecipadamente sobre mudancas de rotina',
+          esc_orient:'Usar linguagem simples e objetiva. Dar instrucoes uma de cada vez. Permitir pausa sensorial quando necessario. Valorizar as tentativas de comunicacao (verbal e CAA). Integrar interesses especificos nas atividades pedagogicas.'
+        }
+      },
+      {
+        id:1002,
+        nome:'Dona Helena Souza',
+        nasc:'1948-07-22',
+        resp:'',
+        tel:'(11) 96543-2100',
+        area:'AVD',
+        diag:'AVC Isquemico - Hemiplegia D',
+        sessoes:[
+          {id:2010,data:'2026-05-09',dur:'60 min',ativ:'Treino de transferencias cama-cadeira. Atividades de alcance com membro superior direito. Treino de alimentacao com adaptacao de utensilio (engrossador de cabo). Orientacao familiar sobre adaptacoes domiciliares.',resp:'Realizou 3 transferencias com supervisao minima. Alcance melhorado em 15 graus. Usou colher adaptada com minimo derrame.',evol:'Melhora progressiva na forca e coordenacao do MS direito. Maior confianca nas transferencias.',prox:'Iniciar treino de escrita adaptada. Avaliar necessidade de barra de apoio no banheiro.',humor:'Calmo e cooperativo',familiar:'Sim'}
+        ],
+        dados:{
+          av_diag:'AVC Isquemico com sequela de Hemiplegia a Direita',av_cid:'I63.9',
+          av_queixa:'Encaminhada para TO apos AVC isquemico ha 4 meses. Dificuldades nas AVDs, principalmente alimentacao, higiene e mobilidade.',
+          avd_Alimentacao:'A',avd_Higiene_oral:'A',avd_Banho:'D',avd_Vestuario_superior:'A',
+          avd_Marcha___Cadeira_de_rodas:'A',
+          mif_Alimentacao:4,mif_Higiene_pessoal:3,mif_Banho:2,mif_Vestuario___parte_superior:3,
+          pt_geral:'Recuperar independencia funcional nas AVDs e promover adaptacoes para vida diaria com sequela de hemiplegia.',
+          pt_freq:'3x por semana',pt_dur:'60 minutos'
+        }
+      },
+      {
+        id:1003,
+        nome:'Iago Pereira',
+        nasc:'2021-11-04',
+        resp:'Patricia Pereira',
+        tel:'(11) 95432-1098',
+        area:'Motor',
+        diag:'Hipotonia Global',
+        sessoes:[
+          {id:2020,data:'2026-05-08',dur:'45 min',ativ:'Atividades de fortalecimento de core e membros inferiores. Estimulacao de postura sentada sem apoio. Brincadeiras no solo para estimulo motor amplo.',resp:'Manteve postura sentada por 3 minutos sem apoio. Boa participacao nas atividades ludicas.',evol:'Melhora do tono muscular observada em comparacao com avaliacao de 2 meses atras.',prox:'Iniciar treino de bipedestacao com apoio. Estimular pincer superior.',humor:'Alegre e engajado',familiar:'Sim'}
+        ],
+        dados:{
+          av_diag:'Hipotonia Global',av_cid:'P94.2',
+          av_queixa:'Encaminhado por pediatra. Atraso no desenvolvimento motor com hipotonia.',
+          mot_grossa:'Moderadamente comprometida',mot_fina:'Levemente comprometida',mot_tonus:'Hipotonia moderada',
+          pt_geral:'Estimular desenvolvimento neuropsicomotor e ganho de tono muscular.',
+          pt_freq:'2x por semana',pt_dur:'45 minutos'
+        }
+      }
+    ]
+  };
+
+  localStorage.setItem('toDB', JSON.stringify(DEMO));
+  localStorage.setItem('toDB_demo_loaded','1');
+  DB = DEMO;
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+carregarDemoData();
+renderDashboard();loadClinica();
+</script>
+</body>
+</html>
