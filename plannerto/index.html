@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planner Terapeuta Ocupacional 2026 — Personalize o Seu</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f9ff;min-height:100vh;color:#0f172a}
+
+    .header{background:linear-gradient(135deg,#075985 0%,#0e7490 50%,#0284c7 100%);padding:48px 20px 40px;text-align:center;position:relative;overflow:hidden}
+    .header::before{content:'+';position:absolute;top:-20px;left:-10px;font-size:180px;opacity:.06;line-height:1;font-weight:900}
+    .header::after{content:'✦';position:absolute;bottom:-40px;right:-10px;font-size:160px;opacity:.06;line-height:1}
+    .header h1{font-size:clamp(24px,6vw,40px);color:#fff;font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+    .header h1 span{color:#bae6fd}
+    .header p{color:#bae6fd;font-size:clamp(13px,3vw,17px);max-width:520px;margin:0 auto;line-height:1.5}
+    .badge{display:inline-block;background:#fff;color:#0e7490;font-weight:700;font-size:12px;padding:4px 14px;border-radius:999px;margin-bottom:16px;letter-spacing:.5px}
+
+    .container{max-width:560px;margin:0 auto;padding:0 16px 60px}
+    .card{background:#fff;border-radius:20px;box-shadow:0 8px 40px rgba(14,116,144,.15);padding:36px 32px;margin-top:-24px;position:relative;z-index:1}
+    .card h2{font-size:20px;color:#075985;font-weight:700;margin-bottom:6px;text-align:center}
+    .card p{font-size:14px;color:#64748b;text-align:center;margin-bottom:24px}
+
+    label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;margin-top:16px}
+    input{width:100%;padding:12px 16px;border:2px solid #e0f2fe;border-radius:10px;font-size:15px;outline:none;transition:.2s;color:#0f172a;background:#fff}
+    input:focus{border-color:#0e7490;box-shadow:0 0 0 3px rgba(14,116,144,.1)}
+    input::placeholder{color:#cbd5e1}
+
+    .logo-upload-box{border:2px dashed #bae6fd;border-radius:10px;padding:18px;text-align:center;cursor:pointer;transition:.2s;background:#f0f9ff;margin-top:8px}
+    .logo-upload-box:hover{border-color:#0e7490;background:#e0f2fe}
+    .logo-preview-box{display:none;margin-top:10px;text-align:center}
+    .logo-preview-box img{max-height:60px;max-width:180px;border-radius:6px;border:1px solid #e0f2fe}
+    .logo-preview-box span{display:block;font-size:11px;color:#0e7490;margin-top:4px;font-weight:600}
+
+    .btn{width:100%;margin-top:24px;padding:16px;background:linear-gradient(135deg,#075985,#0e7490);color:#fff;font-size:17px;font-weight:800;border:none;border-radius:12px;cursor:pointer;transition:.2s;box-shadow:0 4px 20px rgba(14,116,144,.35)}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(14,116,144,.45)}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .loading{display:none;text-align:center;margin-top:20px;color:#0e7490;font-size:14px;font-weight:600}
+
+    .features{margin-top:28px}
+    .features h3{font-size:14px;font-weight:700;color:#64748b;text-align:center;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+    .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .feat{background:#f0f9ff;border:1px solid #e0f2fe;border-radius:12px;padding:14px 12px;display:flex;align-items:flex-start;gap:10px}
+    .feat-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+    .feat-text strong{display:block;font-size:12px;font-weight:700;color:#075985;margin-bottom:2px}
+    .feat-text span{font-size:11px;color:#94a3b8;line-height:1.4}
+
+    .footer{text-align:center;margin-top:24px;font-size:12px;color:#94a3b8}
+    .footer strong{color:#0e7490}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">✦ EXCLUSIVO PARA QUEM COMPROU ✦</div>
+  <h1>Planner TO <span>2026</span></h1>
+  <p>Personalize com seu nome e baixe agora — 100% gratuito para voce</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>Personalize o Seu Planner</h2>
+    <p>Preencha abaixo e clique para gerar o PDF personalizado</p>
+
+    <label for="nome">Seu nome *</label>
+    <input id="nome" type="text" placeholder="Ex: Ana Paula Ferreira" maxlength="40">
+
+    <label for="clinica">Nome da clinica (opcional)</label>
+    <input id="clinica" type="text" placeholder="Ex: Clinica TO Vida Plena" maxlength="45">
+
+    <label for="crefito">CREFITO (opcional)</label>
+    <input id="crefito" type="text" placeholder="Ex: CREFITO 3/12345-TO" maxlength="30">
+
+    <label for="cidade">Cidade (opcional)</label>
+    <input id="cidade" type="text" placeholder="Ex: Sao Paulo - SP" maxlength="40">
+
+    <label for="instagram">Instagram (opcional)</label>
+    <input id="instagram" type="text" placeholder="@seuconsultorio" maxlength="40">
+
+    <label for="whatsapp">WhatsApp (opcional)</label>
+    <input id="whatsapp" type="text" placeholder="(11) 99999-9999" maxlength="20">
+
+    <label for="especialidade">Especialidade (opcional)</label>
+    <input id="especialidade" type="text" placeholder="Ex: TO Infantil - TEA - Integracao Sensorial" maxlength="80">
+
+    <div style="margin-top:16px">
+      <label>Logo da clinica (opcional)</label>
+      <div class="logo-upload-box" onclick="document.getElementById('logoInput').click()">
+        <div style="font-size:28px">🖼</div>
+        <strong style="font-size:13px;color:#374151">Clique para enviar sua logo</strong>
+        <p style="font-size:12px;color:#94a3b8;margin-top:4px">PNG ou JPG — max 2MB</p>
+        <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="previewLogo(event)">
+      </div>
+      <div class="logo-preview-box" id="logoPreview">
+        <img id="logoImg" src="" alt="Logo">
+        <span>Logo carregada — aparecera nos PDFs</span>
+      </div>
+    </div>
+
+    <button class="btn" onclick="gerarPlanner()" id="btnGerar">
+      ✦ Gerar meu Planner TO 2026
+    </button>
+    <div class="loading" id="loading">Gerando seu planner personalizado, aguarde...</div>
+
+    <div class="features">
+      <h3>O que esta incluido</h3>
+      <div class="feature-grid">
+        <div class="feat"><div class="feat-icon">📅</div><div class="feat-text"><strong>12 Meses</strong><span>Calendario completo 2026 com metas clinicas mensais</span></div></div>
+        <div class="feat"><div class="feat-icon">👥</div><div class="feat-text"><strong>Ficha de Paciente</strong><span>4 fichas com diagnostico, sessoes e evolucao</span></div></div>
+        <div class="feat"><div class="feat-icon">📊</div><div class="feat-text"><strong>Controle de Sessoes</strong><span>Registro mensal de atendimentos por paciente</span></div></div>
+        <div class="feat"><div class="feat-icon">💰</div><div class="feat-text"><strong>Controle Financeiro</strong><span>Receitas e despesas mes a mes</span></div></div>
+        <div class="feat"><div class="feat-icon">🎯</div><div class="feat-text"><strong>Metas Profissionais</strong><span>Objetivos clinicos e de desenvolvimento 2026</span></div></div>
+        <div class="feat"><div class="feat-icon">📝</div><div class="feat-text"><strong>Paginas de Notas</strong><span>Espaco livre para supervisao e estudos</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">Planner gerado com <strong>App TO Pro 2026</strong></div>
+</div>
+
+<script>
+const MONTHS=[
+  {name:'JANEIRO',  days:31,firstDay:4},
+  {name:'FEVEREIRO',days:28,firstDay:0},
+  {name:'MARCO',    days:31,firstDay:0},
+  {name:'ABRIL',    days:30,firstDay:3},
+  {name:'MAIO',     days:31,firstDay:5},
+  {name:'JUNHO',    days:30,firstDay:1},
+  {name:'JULHO',    days:31,firstDay:3},
+  {name:'AGOSTO',   days:31,firstDay:6},
+  {name:'SETEMBRO', days:30,firstDay:2},
+  {name:'OUTUBRO',  days:31,firstDay:4},
+  {name:'NOVEMBRO', days:30,firstDay:0},
+  {name:'DEZEMBRO', days:31,firstDay:2},
+];
+
+const P  =[14,116,144];
+const PD =[7,89,133];
+const PL =[224,242,254];
+const PM =[125,211,252];
+const DK =[15,23,42];
+const GR =[100,116,139];
+const LG =[226,232,240];
+const WH =[255,255,255];
+const CREAM=[240,249,255];
+
+let logoDataUrl=null;
+
+function previewLogo(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>2*1024*1024){alert('Logo muito grande. Max 2MB.');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    logoDataUrl=ev.target.result;
+    document.getElementById('logoImg').src=logoDataUrl;
+    document.getElementById('logoPreview').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function gerarPlanner(){
+  const nome=document.getElementById('nome').value.trim();
+  if(!nome){alert('Por favor, insira seu nome!');return;}
+  document.getElementById('btnGerar').disabled=true;
+  document.getElementById('loading').style.display='block';
+  setTimeout(()=>{
+    try{buildPDF(
+      nome,
+      document.getElementById('clinica').value.trim(),
+      document.getElementById('crefito').value.trim(),
+      document.getElementById('cidade').value.trim(),
+      document.getElementById('instagram').value.trim(),
+      document.getElementById('whatsapp').value.trim(),
+      document.getElementById('especialidade').value.trim(),
+      logoDataUrl
+    );}catch(err){
+      alert('Erro: '+err.message);
+      console.error(err);
+    }finally{
+      document.getElementById('btnGerar').disabled=false;
+      document.getElementById('loading').style.display='none';
+    }
+  },100);
+}
+
+function buildPDF(nome,clinica,crefito,cidade,instagram,whatsapp,especialidade,logoUrl){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF('p','mm','a4');
+  const W=210,H=297;
+
+  const fill=(x,y,w,h,c)=>{doc.setFillColor(...c);doc.rect(x,y,w,h,'F')};
+  const stroke=(x,y,w,h,c,lw=.3)=>{doc.setDrawColor(...c);doc.setLineWidth(lw);doc.rect(x,y,w,h,'S')};
+  const line=(x1,y1,x2,y2,c,lw=.3)=>{doc.setDrawColor(...c);doc.setLineWidth(lw);doc.line(x1,y1,x2,y2)};
+  const txt=(s,x,y,{sz=11,c=DK,st='normal',al='left'}={})=>{
+    doc.setFontSize(sz);doc.setFont('helvetica',st);doc.setTextColor(...c);
+    doc.text(String(s||''),x,y,{align:al});
+  };
+  const newPage=()=>doc.addPage();
+
+  // ─── CAPA ──────────────────────────────────────────────────────────────
+  fill(0,0,W,H,PD);
+  fill(0,0,W,55,P);
+  doc.setFillColor(...P);doc.triangle(0,H,W,H-90,W,H,'F');
+  fill(0,H-18,W,18,[5,68,100]);
+  doc.setFillColor(255,255,255);doc.setGState(doc.GState({opacity:.05}));
+  doc.circle(168,48,52,'F');doc.circle(38,235,68,'F');
+  doc.setGState(doc.GState({opacity:1}));
+  fill(0,0,W,4,WH);
+
+  txt('PLANNER',W/2,68,{sz:50,c:WH,st:'bold',al:'center'});
+  txt('TERAPEUTA OCUPACIONAL',W/2,86,{sz:22,c:PM,st:'bold',al:'center'});
+  txt('2026',W/2,112,{sz:62,c:WH,st:'bold',al:'center'});
+
+  doc.setFillColor(...PM);doc.circle(W/2,130,4,'F');
+  doc.setFillColor(...PL);doc.circle(W/2-10,133,2,'F');doc.circle(W/2+10,133,2,'F');
+  fill(W/2-38,138,76,1.5,PM);
+
+  if(logoUrl){
+    try{doc.addImage(logoUrl,'',W/2-15,142,30,30);}catch(e){}
+    txt(nome.toUpperCase(),W/2,180,{sz:14,c:WH,st:'bold',al:'center'});
+    if(clinica)txt(clinica,W/2,190,{sz:10,c:PM,al:'center'});
+    if(crefito)txt(crefito,W/2,198,{sz:9,c:PM,al:'center'});
+    if(cidade)txt(cidade,W/2,206,{sz:9,c:PM,al:'center'});
+    if(especialidade)txt(especialidade,W/2,214,{sz:7.5,c:PL,al:'center'});
+    const sy=222;
+    const sociais=[];
+    if(instagram)sociais.push('IG: '+instagram);
+    if(whatsapp)sociais.push('WA: '+whatsapp);
+    if(sociais.length)txt(sociais.join('   '),W/2,sy,{sz:8.5,c:PL,al:'center'});
+    fill(W/2-40,sy+6,80,22,WH);
+    txt('** TO Pro 2026 **',W/2,sy+20,{sz:9,c:PD,st:'bold',al:'center'});
+  }else{
+    txt(nome.toUpperCase(),W/2,158,{sz:15,c:WH,st:'bold',al:'center'});
+    if(clinica)txt(clinica,W/2,168,{sz:11,c:PM,al:'center'});
+    if(crefito)txt(crefito,W/2,177,{sz:9,c:PM,al:'center'});
+    if(cidade)txt(cidade,W/2,185,{sz:9,c:PM,al:'center'});
+    if(especialidade)txt(especialidade,W/2,193,{sz:8,c:PL,al:'center'});
+    const sy=200;
+    const sociais=[];
+    if(instagram)sociais.push('IG: '+instagram);
+    if(whatsapp)sociais.push('WA: '+whatsapp);
+    if(sociais.length)txt(sociais.join('   '),W/2,sy,{sz:8.5,c:PL,al:'center'});
+    fill(W/2-40,sy+6,80,22,WH);
+    txt('** TO Pro 2026 **',W/2,sy+20,{sz:9,c:PD,st:'bold',al:'center'});
+  }
+  txt('Planejamento clinico e profissional para terapeutas ocupacionais',W/2,H-6,{sz:7.5,c:PL,al:'center'});
+
+  // ─── SOBRE ──────────────────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,36,P);
+  if(logoUrl){try{doc.addImage(logoUrl,'',W-28,2,22,22);}catch(e){}}
+  txt('SOBRE O SEU PLANNER',W/2,16,{sz:15,c:WH,st:'bold',al:'center'});
+  txt('Tudo que voce precisa para organizar sua clinica em 2026',W/2,29,{sz:9,c:PL,al:'center'});
+
+  const items=[
+    ['01','12 Meses Completos','Calendario de Janeiro a Dezembro com metas clinicas, sessoes e anotacoes semanais.'],
+    ['02','Metas Profissionais 2026','Planejamento de objetivos clinicos, cursos, especializacoes e crescimento.'],
+    ['03','Fichas de Paciente','4 fichas com diagnostico, objetivos terapeuticos, sessoes e evolucao.'],
+    ['04','Controle de Sessoes','Registro mensal de atendimentos por paciente e por area.'],
+    ['05','Controle Financeiro','Receitas, despesas e calculo de margem mes a mes.'],
+    ['06','Supervisao e Estudos','Espaco para anotacoes de supervisao clinica, artigos e cursos.'],
+  ];
+  let iy=44;
+  items.forEach(([num,title,desc])=>{
+    fill(14,iy,W-28,26,CREAM);
+    stroke(14,iy,W-28,26,PL,.2);
+    fill(17,iy+5,12,12,P);
+    txt(num,23,iy+14,{sz:7,c:WH,st:'bold',al:'center'});
+    txt(title,36,iy+10,{sz:11,c:PD,st:'bold'});
+    txt(desc,36,iy+19,{sz:8,c:GR});
+    iy+=31;
+  });
+  fill(14,iy+4,W-28,1.5,PL);iy+=12;
+  txt('INDICE DO PLANNER',14,iy+8,{sz:11,c:PD,st:'bold'});iy+=16;
+  const idx=[
+    ['Capa Personalizada','1'],['Sobre o Planner','2'],['Metas Profissionais 2026','3'],
+    ['Calendario — Janeiro a Dezembro','4 - 15'],
+    ['Fichas de Paciente','16 - 19'],['Controle de Sessoes','20'],
+    ['Controle Financeiro','21'],['Supervisao e Estudos','22'],
+    ['Paginas de Notas','23 - 24'],['Contracapa','25'],
+  ];
+  idx.forEach(([label,pg])=>{
+    txt('-  '+label,18,iy,{sz:9,c:DK});
+    txt(pg,W-18,iy,{sz:9,c:PD,st:'bold',al:'right'});
+    iy+=8;
+  });
+  txt('Planner gerado em: '+new Date().toLocaleDateString('pt-BR')+'  -  '+nome,W/2,H-8,{sz:7,c:LG,al:'center'});
+
+  // ─── METAS PROFISSIONAIS ─────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,36,P);
+  txt('METAS PROFISSIONAIS',W/2,16,{sz:19,c:WH,st:'bold',al:'center'});
+  txt('2026',W/2,30,{sz:13,c:PM,al:'center'});
+
+  const mSec=[
+    {label:'PACIENTES ATIVOS META',n:1},
+    {label:'SESSOES MENSAIS META',n:1},
+    {label:'FATURAMENTO MENSAL META',n:1},
+    {label:'CURSOS / ESPECIALIZACOES EM 2026',n:4},
+    {label:'CONGRESSOS / EVENTOS QUE QUERO PARTICIPAR',n:3},
+    {label:'AREA QUE QUERO APROFUNDAR (TEA, SI, AVD...)',n:2},
+    {label:'MINHA PALAVRA DO ANO',n:1},
+    {label:'MINHAS 5 METAS MAIS IMPORTANTES',n:5},
+  ];
+  let my=44;
+  mSec.forEach(({label,n})=>{
+    fill(14,my,W-28,10,PL);
+    txt('>> '+label,18,my+7,{sz:9,c:PD,st:'bold'});
+    my+=12;
+    for(let i=0;i<n;i++){line(18,my+5,W-18,my+5,LG,.4);my+=9;}
+    my+=2;
+  });
+  fill(14,my,W-28,18,P);
+  txt('"Minha frase motivacional para 2026"',W/2,my+7,{sz:9,c:WH,al:'center'});
+  line(24,my+13,W-24,my+13,PL,.4);
+  txt(nome+' - Terapeuta Ocupacional 2026',W/2,H-8,{sz:7,c:PM,al:'center'});
+
+  // ─── 12 MESES ─────────────────────────────────────────────────────────────
+  const DAY=['D','S','T','Q','Q','S','S'];
+  MONTHS.forEach((month)=>{
+    newPage();
+    fill(0,0,W,38,P);
+    if(logoUrl){try{doc.addImage(logoUrl,'',W-26,2,20,20);}catch(e){}}
+    txt(month.name,W/2,20,{sz:24,c:WH,st:'bold',al:'center'});
+    txt('2026  -  '+nome,W/2,33,{sz:9,c:PL,al:'center'});
+
+    const calX=14,calY=44,cW=(W-28)/7,cH=9;
+    DAY.forEach((d,di)=>{
+      const cx=calX+di*cW;
+      const isWk=di===0||di===6;
+      fill(cx,calY,cW,cH,isWk?P:PL);
+      txt(d,cx+cW/2,calY+6.5,{sz:8,c:isWk?WH:PD,st:'bold',al:'center'});
+    });
+    let day=1,row=1,col=month.firstDay;
+    while(day<=month.days){
+      const cx=calX+col*cW,cy=calY+row*cH;
+      const isWk=col===0||col===6;
+      fill(cx,cy,cW,cH,isWk?[235,248,255]:WH);
+      stroke(cx,cy,cW,cH,LG,.15);
+      txt(day,cx+2,cy+6,{sz:6.5,c:isWk?PD:DK});
+      day++;col++;if(col===7){col=0;row++;}
+    }
+    const totalRows=row+(col>0?1:0);
+    stroke(calX,calY,W-28,cH*totalRows,PM,.3);
+    const afterCal=calY+cH*totalRows+5;
+
+    // FOCO DO MES
+    fill(14,afterCal,W-28,10,PD);
+    txt('>> FOCO CLINICO DO MES',18,afterCal+7,{sz:9,c:WH,st:'bold'});
+    fill(14,afterCal+10,W-28,13,CREAM);stroke(14,afterCal+10,W-28,13,PL,.2);
+    line(18,afterCal+18,W-18,afterCal+18,PM,.3);
+
+    const colW=(W-28)/2-3,col1x=14,col2x=14+colW+6;
+    let ry=afterCal+27;
+
+    // col1: METAS
+    fill(col1x,ry,colW,9,PL);
+    txt('>> METAS DO MES',col1x+4,ry+6.5,{sz:8,c:PD,st:'bold'});
+    ry+=11;
+    for(let i=0;i<5;i++){
+      txt('-',col1x+4,ry+4,{sz:7,c:P});
+      line(col1x+10,ry+5,col1x+colW-4,ry+5,LG,.3);
+      ry+=8;
+    }
+
+    // col2: SESSOES / FINANCEIRO
+    let ry2=afterCal+27;
+    fill(col2x,ry2,colW,9,PL);
+    txt('>> CONTROLE DO MES',col2x+4,ry2+6.5,{sz:8,c:PD,st:'bold'});
+    ry2+=11;
+    const labels=['Sessoes realizadas:','Pacientes ativos:','Novos pacientes:','Faturamento:','Despesas:'];
+    labels.forEach(lb=>{
+      txt(lb,col2x+4,ry2+4,{sz:7,c:GR});
+      line(col2x+40,ry2+5,col2x+colW-4,ry2+5,LG,.3);
+      ry2+=8;
+    });
+
+    // ANOTACOES SEMANAIS
+    const notY=Math.max(ry,ry2)+4;
+    fill(14,notY,W-28,9,P);
+    txt('ANOTACOES SEMANAIS',18,notY+6.5,{sz:9,c:WH,st:'bold'});
+    const weeks=['Semana 1','Semana 2','Semana 3','Semana 4'];
+    let wy=notY+11;
+    const wh=(H-notY-18)/4;
+    weeks.forEach((wk,wi)=>{
+      fill(14,wy,W-28,wh,wi%2===0?WH:CREAM);
+      stroke(14,wy,W-28,wh,LG,.2);
+      txt(wk,18,wy+5,{sz:7,c:PD,st:'bold'});
+      line(18,wy+wh-3,W-18,wy+wh-3,LG,.2);
+      wy+=wh;
+    });
+    txt(month.name+' 2026  -  '+nome,W/2,H-4,{sz:6.5,c:LG,al:'center'});
+  });
+
+  // ─── FICHAS DE PACIENTE (4) ──────────────────────────────────────────────
+  for(let f=0;f<4;f++){
+    newPage();
+    fill(0,0,W,18,P);
+    if(logoUrl){try{doc.addImage(logoUrl,'',W-26,1,16,16);}catch(e){}}
+    txt('FICHA DE PACIENTE',18,12,{sz:12,c:WH,st:'bold'});
+    if(clinica)txt(clinica,W/2,12,{sz:8,c:PL,al:'center'});
+
+    let fy=22;
+    fill(14,fy,W-28,10,PL);txt('IDENTIFICACAO',18,fy+7,{sz:9,c:PD,st:'bold'});fy+=12;
+    [['Nome completo:','Data nasc.:'],['Responsavel:','Telefone:'],['Escola / Instituicao:','Turma / Serie:']].forEach(([a,b])=>{
+      txt(a,16,fy+4,{sz:7.5,c:GR});line(44,fy+5,104,fy+5,LG,.3);
+      txt(b,108,fy+4,{sz:7.5,c:GR});line(128,fy+5,W-16,fy+5,LG,.3);fy+=8;
+    });
+
+    fy+=2;fill(14,fy,W-28,10,PL);txt('DIAGNOSTICO',18,fy+7,{sz:9,c:PD,st:'bold'});fy+=12;
+    ['Diagnostico principal:','CID-10:','Outros especialistas:','Medicamentos em uso:'].forEach(lb=>{
+      txt(lb,16,fy+4,{sz:7.5,c:GR});line(60,fy+5,W-16,fy+5,LG,.3);fy+=8;
+    });
+
+    fy+=2;fill(14,fy,W-28,10,P);txt('PLANO TERAPEUTICO',18,fy+7,{sz:9,c:WH,st:'bold'});fy+=12;
+    ['Objetivo geral:','Frequencia das sessoes:','Duracao da sessao:','Abordagem utilizada:'].forEach(lb=>{
+      txt(lb,16,fy+4,{sz:7.5,c:GR});line(56,fy+5,W-16,fy+5,LG,.3);fy+=8;
+    });
+    txt('Objetivos de curto prazo (1-3 meses):',16,fy+4,{sz:7.5,c:GR});fy+=8;
+    for(let i=0;i<3;i++){line(18,fy+5,W-16,fy+5,LG,.3);fy+=8;}
+
+    fy+=2;fill(14,fy,W-28,10,P);txt('REGISTRO DE SESSOES',18,fy+7,{sz:9,c:WH,st:'bold'});fy+=12;
+    const scols=['DATA','SESSAO','ATIVIDADES / EVOLUCAO','OBS'];
+    const sw=[22,14,118,24];let px=14;
+    scols.forEach((h,i)=>{
+      fill(px,fy,sw[i],8,PL);stroke(px,fy,sw[i],8,PM,.2);
+      txt(h,px+sw[i]/2,fy+5.5,{sz:5.5,c:PD,st:'bold',al:'center'});px+=sw[i];
+    });
+    fy+=8;
+    for(let r=0;r<8;r++){
+      px=14;sw.forEach((sw_)=>{
+        fill(px,fy,sw_,9,r%2===0?WH:CREAM);stroke(px,fy,sw_,9,LG,.15);px+=sw_;
+      });fy+=9;
+    }
+
+    fy+=3;fill(14,fy,W-28,10,PL);txt('EVOLUCAO / OBSERVACOES',18,fy+7,{sz:9,c:PD,st:'bold'});fy+=12;
+    const notLines=Math.floor((H-fy-12)/8);
+    for(let i=0;i<notLines;i++){line(16,fy+6,W-16,fy+6,LG,.3);fy+=8;}
+
+    fill(0,H-12,W,12,PL);
+    const rodape=[nome];
+    if(crefito)rodape.push(crefito);
+    if(whatsapp)rodape.push('WA: '+whatsapp);
+    if(instagram)rodape.push('IG: '+instagram);
+    txt(rodape.join('   -   '),W/2,H-4,{sz:6.5,c:PD,al:'center'});
+  }
+
+  // ─── CONTROLE DE SESSOES ─────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,14,P);txt('CONTROLE DE SESSOES 2026',W/2,10,{sz:12,c:WH,st:'bold',al:'center'});
+
+  let sfy=18;
+  const scols2=['MES','PACIENTE','SESSOES REALIZADAS','SESSOES PREVISTAS','OBSERVACOES'];
+  const sw2=[26,44,36,36,36];
+  let sfx=10;
+  scols2.forEach((h,i)=>{
+    fill(sfx,sfy,sw2[i],10,PD);stroke(sfx,sfy,sw2[i],10,P,.3);
+    txt(h,sfx+2,sfy+7,{sz:5.5,c:WH,st:'bold'});sfx+=sw2[i];
+  });
+  sfy+=10;
+  MONTHS.forEach((m,mi)=>{
+    sfx=10;
+    fill(10,sfy,2,10,P);
+    sw2.forEach((sw_,fi)=>{
+      fill(sfx,sfy,sw_,10,mi%2===0?WH:CREAM);stroke(sfx,sfy,sw_,10,LG,.15);
+      if(fi===0)txt(m.name.substring(0,3),sfx+sw_/2,sfy+7,{sz:7,c:PD,st:'bold',al:'center'});
+      sfx+=sw_;
+    });sfy+=10;
+  });
+  sfx=10;sw2.forEach((sw_,fi)=>{
+    fill(sfx,sfy,sw_,10,PL);stroke(sfx,sfy,sw_,10,PM,.3);
+    if(fi===0)txt('TOTAL',sfx+sw_/2,sfy+7,{sz:7.5,c:PD,st:'bold',al:'center'});sfx+=sw_;
+  });
+  txt('Controle de Sessoes 2026  -  '+nome,W/2,H-4,{sz:6.5,c:LG,al:'center'});
+
+  // ─── CONTROLE FINANCEIRO ─────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,14,P);txt('CONTROLE FINANCEIRO 2026',W/2,10,{sz:12,c:WH,st:'bold',al:'center'});
+
+  let ffy=18;
+  const fcols=['MES','SESSOES','RECEITA','DESPESAS','LUCRO','MARGEM'];
+  const fw=[26,22,30,30,30,20];
+  let ffx=10;
+  fcols.forEach((h,i)=>{
+    fill(ffx,ffy,fw[i],10,PD);stroke(ffx,ffy,fw[i],10,P,.3);
+    txt(h,ffx+fw[i]/2,ffy+7,{sz:7,c:WH,st:'bold',al:'center'});ffx+=fw[i];
+  });
+  ffy+=10;
+  MONTHS.forEach((m,mi)=>{
+    ffx=10;fw.forEach((fw_,fi)=>{
+      fill(ffx,ffy,fw_,10,mi%2===0?WH:CREAM);stroke(ffx,ffy,fw_,10,LG,.15);
+      if(fi===0)txt(m.name.substring(0,3),ffx+fw_/2,ffy+7,{sz:7,c:PD,st:'bold',al:'center'});ffx+=fw_;
+    });ffy+=10;
+  });
+  ffx=10;fw.forEach((fw_,fi)=>{
+    fill(ffx,ffy,fw_,10,PL);stroke(ffx,ffy,fw_,10,PM,.3);
+    if(fi===0)txt('TOTAL',ffx+fw_/2,ffy+7,{sz:7.5,c:PD,st:'bold',al:'center'});ffx+=fw_;
+  });
+  ffy+=16;
+  const sumBoxes=[['Melhor mes:',''],['Meta de faturamento anual:',''],['Principal investimento:',''],['Meta atingida: SIM / NAO','']];
+  const bw=(W-20)/2;
+  sumBoxes.forEach(([label],i)=>{
+    const bx=10+(i%2)*bw,by=ffy+Math.floor(i/2)*26;
+    fill(bx,by,bw-4,22,CREAM);stroke(bx,by,bw-4,22,PL,.3);
+    txt('>> '+label,bx+5,by+9,{sz:8,c:PD,st:'bold'});
+    line(bx+5,by+20,bx+bw-9,by+20,LG,.3);
+  });
+  txt('Controle Financeiro 2026  -  '+nome,W/2,H-4,{sz:6.5,c:LG,al:'center'});
+
+  // ─── SUPERVISAO E ESTUDOS ─────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,14,P);txt('SUPERVISAO CLINICA E ESTUDOS',W/2,10,{sz:12,c:WH,st:'bold',al:'center'});
+
+  let supY=20;
+  fill(14,supY,W-28,9,PL);txt('>> SUPERVISOES EM 2026',18,supY+6.5,{sz:9,c:PD,st:'bold'});supY+=11;
+  const supCols=['DATA','SUPERVISOR / CASO DISCUTIDO','APRENDIZADO PRINCIPAL'];
+  const supW=[22,90,66];let supX=14;
+  supCols.forEach((h,i)=>{
+    fill(supX,supY,supW[i],8,PD);stroke(supX,supY,supW[i],8,P,.3);
+    txt(h,supX+2,supY+5.5,{sz:6,c:WH,st:'bold'});supX+=supW[i];
+  });
+  supY+=8;
+  for(let r=0;r<8;r++){
+    supX=14;supW.forEach(sw_=>{
+      fill(supX,supY,sw_,9,r%2===0?WH:CREAM);stroke(supX,supY,sw_,9,LG,.15);supX+=sw_;
+    });supY+=9;
+  }
+
+  supY+=8;fill(14,supY,W-28,9,PL);txt('>> ARTIGOS / LIVROS / CURSOS',18,supY+6.5,{sz:9,c:PD,st:'bold'});supY+=11;
+  const studyCols=['TIPO','TITULO / AUTOR','STATUS','NOTA'];
+  const studyW=[20,108,24,16];let studyX=14;
+  studyCols.forEach((h,i)=>{
+    fill(studyX,supY,studyW[i],8,PD);stroke(studyX,supY,studyW[i],8,P,.3);
+    txt(h,studyX+2,supY+5.5,{sz:6,c:WH,st:'bold'});studyX+=studyW[i];
+  });
+  supY+=8;
+  for(let r=0;r<10;r++){
+    studyX=14;studyW.forEach(sw_=>{
+      fill(studyX,supY,sw_,9,r%2===0?WH:CREAM);stroke(studyX,supY,sw_,9,LG,.15);studyX+=sw_;
+    });supY+=9;
+  }
+
+  supY+=8;fill(14,supY,W-28,9,PL);txt('>> CONGRESSOS / EVENTOS',18,supY+6.5,{sz:9,c:PD,st:'bold'});supY+=11;
+  for(let i=0;i<4;i++){
+    txt('Evento '+( i+1)+':',16,supY+4,{sz:7.5,c:GR});
+    line(36,supY+5,W-16,supY+5,LG,.3);supY+=8;
+  }
+  txt('Supervisao e Estudos 2026  -  '+nome,W/2,H-4,{sz:6.5,c:LG,al:'center'});
+
+  // ─── NOTAS (2 pags) ───────────────────────────────────────────────────────
+  for(let np=0;np<2;np++){
+    newPage();
+    fill(0,0,W,14,P);txt('ANOTACOES LIVRES',W/2,10,{sz:12,c:WH,st:'bold',al:'center'});
+    let ny=22;
+    while(ny<H-14){
+      const isSec=(ny-22)%40===0&&ny>22;
+      if(isSec){fill(14,ny,W-28,1.5,PL);ny+=5;}
+      line(14,ny,W-14,ny,LG,.3);ny+=9;
+    }
+    txt('Anotacoes  -  '+nome,W/2,H-4,{sz:6.5,c:LG,al:'center'});
+  }
+
+  // ─── CONTRACAPA ──────────────────────────────────────────────────────────
+  newPage();
+  fill(0,0,W,H,PD);fill(0,0,W,H/2+20,[5,75,110]);
+  doc.setFillColor(...P);doc.triangle(0,H/2+20,W,H/2-40,W,H/2+20,'F');
+  doc.setFillColor(255,255,255);doc.setGState(doc.GState({opacity:.05}));
+  doc.circle(30,80,60,'F');doc.circle(180,220,55,'F');
+  doc.setGState(doc.GState({opacity:1}));
+
+  if(logoUrl){
+    try{doc.addImage(logoUrl,'',W/2-18,44,36,36);}catch(e){}
+    txt('Parabens,',W/2,92,{sz:18,c:WH,al:'center'});
+  }else{
+    doc.setFillColor(...PM);doc.circle(W/2,68,8,'F');
+    doc.setFillColor(...PL);doc.circle(W/2-14,74,5,'F');doc.circle(W/2+14,74,5,'F');
+    txt('Parabens,',W/2,92,{sz:18,c:WH,al:'center'});
+  }
+  const cY=logoUrl?102:106;
+  txt(nome+'!',W/2,cY,{sz:22,c:PL,st:'bold',al:'center'});
+  fill(W/2-36,cY+6,72,1.5,PM);
+  txt('Que 2026 seja o seu melhor ano',W/2,cY+20,{sz:13,c:WH,al:'center'});
+  txt('como terapeuta ocupacional!',W/2,cY+32,{sz:13,c:WH,al:'center'});
+  if(instagram||whatsapp){
+    const redes=[];
+    if(instagram)redes.push('IG: '+instagram);
+    if(whatsapp)redes.push('WA: '+whatsapp);
+    txt(redes.join('   '),W/2,cY+46,{sz:9,c:PL,al:'center'});
+  }
+
+  const boxY=cY+56;
+  fill(W/2-55,boxY,110,44,WH);
+  doc.setFillColor(...P);doc.circle(W/2,boxY+10,3,'F');
+  txt('Use o App TO Pro',W/2,boxY+20,{sz:10,c:PD,st:'bold',al:'center'});
+  txt('anamnese, laudos e protocolos completos',W/2,boxY+28,{sz:8,c:GR,al:'center'});
+  txt('Por apenas R$ 17,00',W/2,boxY+37,{sz:9,c:P,st:'bold',al:'center'});
+
+  fill(0,H-16,W,16,P);
+  txt('Planner Terapeuta Ocupacional 2026 - Todos os direitos reservados',W/2,H-6,{sz:8,c:WH,al:'center'});
+
+  // ─── SALVAR ───────────────────────────────────────────────────────────────
+  doc.save('Planner-TO-2026-'+nome.replace(/\s+/g,'-')+'.pdf');
+}
+</script>
+</body>
+</html>
