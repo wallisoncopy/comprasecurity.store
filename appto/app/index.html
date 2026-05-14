@@ -685,7 +685,13 @@ function renderPatients(){
   const list=DB.patients.filter(p=>(!q||p.nome.toLowerCase().includes(q))&&(!ar||p.area===ar));
   const el=document.getElementById('patientList');
   if(!list.length){el.innerHTML='<div class="empty"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg><p>Nenhum paciente encontrado</p></div>';return;}
-  el.innerHTML=list.map(p=>`<div class="patient-card" onclick="openPatient(${p.id})"><div class="avatar">${p.nome.charAt(0)}</div><div class="patient-info"><div class="patient-name">${p.nome}</div><div class="patient-meta">${calcAge(p.nasc)}${p.resp?' · Resp: '+p.resp:''} · ${p.sessoes.length} sessoes</div></div><span class="badge ${badgeClass(p.area)}">${p.area}</span></div>`).join('');
+  el.innerHTML=list.map(p=>`<div class="patient-card"><div class="avatar" onclick="openPatient(${p.id})">${p.nome.charAt(0)}</div><div class="patient-info" onclick="openPatient(${p.id})" style="cursor:pointer"><div class="patient-name">${p.nome}</div><div class="patient-meta">${calcAge(p.nasc)}${p.resp?' · Resp: '+p.resp:''} · ${p.sessoes.length} sessoes</div></div><span class="badge ${badgeClass(p.area)}" onclick="openPatient(${p.id})">${p.area}</span><button onclick="removerPaciente(${p.id})" style="margin-left:8px;background:var(--red);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0" title="Remover paciente">Remover</button></div>`).join('');
+}
+function removerPaciente(id){
+  const p=DB.patients.find(x=>x.id===id);if(!p)return;
+  if(!confirm(`Remover "${p.nome}" e todos os seus dados?\n\nEsta acao nao pode ser desfeita.`))return;
+  DB.patients=DB.patients.filter(x=>x.id!==id);
+  save();renderPatients();renderDashboard();populateSelects();
 }
 function openPatient(id){
   const p=DB.patients.find(x=>x.id===id);if(!p)return;
