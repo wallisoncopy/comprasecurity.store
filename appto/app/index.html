@@ -557,14 +557,30 @@ textarea{resize:vertical;min-height:70px}
       <div class="card">
         <div class="card-title" style="margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="background:var(--p);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">2</span>Como Fazer Avaliacoes</div>
         <div style="display:flex;flex-direction:column;gap:10px">
-          ${[
-            ['Anamnese','Va em Avaliacao > selecione o paciente > aba Anamnese. Preencha diagnostico, CID-10, historico, medicamentos e escola. Clique em Salvar Anamnese e depois Gerar PDF para imprimir ou salvar.'],
-            ['COPM (Medida Canadense)','Aba COPM: junto com o paciente ou responsavel, identifique ate 5 atividades com dificuldade. Atribua nota de 1 a 10 para Desempenho e Satisfacao. O app calcula a media automaticamente.'],
-            ['AVD / AIVD','Aba AVD: marque o nivel de independencia de cada atividade usando I (independente), A (assistencia), D (dependente) ou N (nao se aplica). Clique nos botoes para selecionar.'],
-            ['Escala MIF','Aba Escala MIF: atribua pontuacao de 1 a 7 para cada item. O total e calculado automaticamente — maximo 126 pontos.'],
-            ['Avaliacao TEA','Aba TEA: marque os comportamentos observados durante a avaliacao. Preencha as observacoes clinicas e a hipotese diagnostica no campo de texto.'],
-            ['Desenvolvimento Infantil','Aba Desenvolvimento: marque A (adquirido), EP (em processo) ou NA (nao adquirido) para cada marco. Ideal para pacientes de 0 a 6 anos.'],
-          ].map(([t,d])=>`<div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('span').textContent=this.nextElementSibling.style.display==='block'?'−':'+'" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">${t}<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button><div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">${d}</div></div>`).join('')}
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Anamnese<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Va em <strong>Avaliacao</strong> > selecione o paciente > aba Anamnese. Preencha diagnostico, CID-10, historico, medicamentos e escola. Clique em <strong>Salvar Anamnese</strong> e depois <strong>Gerar PDF</strong> para imprimir ou salvar.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">COPM (Medida Canadense)<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>COPM</strong>: junto com o paciente ou responsavel, identifique ate 5 atividades com dificuldade. Atribua nota de 1 a 10 para Desempenho e Satisfacao. O app calcula a media automaticamente.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">AVD / AIVD<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>AVD</strong>: marque o nivel de independencia de cada atividade usando I (independente), A (assistencia parcial), D (dependente) ou N (nao se aplica). Clique nos botoes coloridos para selecionar cada nivel.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Escala MIF<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>Escala MIF</strong>: atribua pontuacao de 1 a 7 para cada item. O total e calculado automaticamente — maximo 126 pontos. Clique em <strong>Salvar</strong> para guardar e <strong>Gerar PDF</strong> para exportar.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Avaliacao TEA<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>TEA</strong>: marque os comportamentos observados durante a avaliacao (baseado no DSM-5). Preencha as observacoes clinicas e a hipotese diagnostica no campo de texto. Clique em Salvar.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Desenvolvimento Infantil<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>Desenvolvimento</strong>: marque A (adquirido), EP (em processo) ou NA (nao adquirido) para cada marco do desenvolvimento. Ideal para pacientes de 0 a 6 anos.</div>
+          </div>
         </div>
       </div>
 
@@ -585,14 +601,30 @@ textarea{resize:vertical;min-height:70px}
       <div class="card">
         <div class="card-title" style="margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="background:var(--p);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">4</span>Gerar Laudos e Relatorios</div>
         <div style="display:flex;flex-direction:column;gap:10px">
-          ${[
-            ['Relatorio para Escola','Laudos > selecione o paciente > aba Relatorio para Escola. Preencha o nome da escola, professora, resumo do caso e recomendacoes. Clique em Gerar PDF. O documento sai com seu nome, CREFITO e logo.'],
-            ['Laudo INSS / BPC','Aba Laudo INSS: preencha o tipo de beneficio, descricao da deficiencia, impacto nas AVDs e parecer tecnico. O PDF gerado contem espaco para sua assinatura.'],
-            ['Relatorio de Alta','Aba Relatorio de Alta: informe o periodo de atendimento, numero de sessoes, objetivos alcancados e recomendacoes para manutencao.'],
-            ['Relatorio Plano de Saude','Aba Plano de Saude: preencha o nome do plano, numero de sessoes realizadas e justificativa clinica para renovacao da autorizacao.'],
-            ['Termo de Consentimento','Aba Termo Consentimento: clique em Gerar PDF. O termo e gerado automaticamente com os dados do paciente e da clinica, pronto para assinar.'],
-            ['Encaminhamento','Aba Encaminhamento: selecione o especialista de destino, urgencia e justificativa. PDF gerado em segundos.'],
-          ].map(([t,d])=>`<div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('span').textContent=this.nextElementSibling.style.display==='block'?'−':'+'" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">${t}<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button><div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">${d}</div></div>`).join('')}
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Relatorio para Escola<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Va em <strong>Laudos</strong> > selecione o paciente > aba <strong>Relatorio para Escola</strong>. Preencha o nome da escola, professora, resumo do caso e recomendacoes. Clique em <strong>Gerar PDF</strong>. O documento sai com seu nome, CREFITO e logo.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Laudo INSS / BPC<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>Laudo INSS</strong>: preencha o tipo de beneficio, descricao da deficiencia, impacto nas AVDs e seu parecer tecnico. O PDF gerado contem espaco para assinatura e data.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Relatorio de Alta<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>Relatorio de Alta</strong>: informe o periodo de atendimento, numero de sessoes realizadas, objetivos alcancados e recomendacoes para manutencao dos resultados.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Relatorio Plano de Saude<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>Plano de Saude</strong>: preencha o nome do plano, numero da carteirinha, sessoes realizadas e justificativa clinica. Usado para renovacao de autorizacao junto ao convenio.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Termo de Consentimento<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>Termo Consentimento</strong>: clique em <strong>Gerar PDF</strong>. O TCLE e gerado automaticamente com os dados do paciente e da clinica, pronto para imprimir e colher assinatura.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Encaminhamento<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Aba <strong>Encaminhamento</strong>: selecione o especialista de destino (neurologista, psicologo, etc.), o grau de urgencia e preencha a justificativa clinica. PDF gerado em segundos.</div>
+          </div>
         </div>
       </div>
 
@@ -600,15 +632,34 @@ textarea{resize:vertical;min-height:70px}
       <div class="card">
         <div class="card-title" style="margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="background:var(--p);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">?</span>Perguntas Frequentes</div>
         <div style="display:flex;flex-direction:column;gap:10px">
-          ${[
-            ['Meus dados sao seguros?','Sim. Todos os dados ficam salvos apenas no seu aparelho, no armazenamento local do navegador. Nenhuma informacao e enviada para servidores externos. Seus pacientes sao 100% privados.'],
-            ['O app funciona sem internet?','Sim. Apos abrir o link pela primeira vez, o app funciona completamente offline. So e necessaria conexao para abrir o link inicial.'],
-            ['Como fazer backup dos meus dados?','Gere os laudos e evolucoes em PDF regularmente e salve em uma pasta no seu celular ou Google Drive. Por enquanto nao ha exportacao de banco de dados — isso e uma limitacao do armazenamento local do navegador.'],
-            ['Posso usar em mais de um aparelho?','Cada aparelho tem seu proprio armazenamento. Os dados cadastrados no celular nao aparecem automaticamente no computador. Recomendamos usar sempre no mesmo dispositivo.'],
-            ['O que acontece se eu limpar o cache do navegador?','Os dados sao apagados junto com o cache. Por isso, sempre gere PDFs das informacoes importantes antes de limpar o historico do navegador.'],
-            ['Posso imprimir os laudos gerados?','Sim. Apos gerar o PDF, voce pode abrir o arquivo e imprimir normalmente. O documento ja vem formatado para impressao A4.'],
-            ['Como remover um paciente?','Va em Pacientes no menu lateral, localize o paciente e clique no botao Remover em vermelho. O sistema pedira confirmacao antes de apagar todos os dados.'],
-          ].map(([t,d])=>`<div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('span').textContent=this.nextElementSibling.style.display==='block'?'−':'+'" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">${t}<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button><div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">${d}</div></div>`).join('')}
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Meus dados sao seguros?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Sim. Todos os dados ficam salvos apenas no seu aparelho, no armazenamento local do navegador. Nenhuma informacao e enviada para servidores externos. Seus pacientes sao 100% privados.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">O app funciona sem internet?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Sim. Apos abrir o link pela primeira vez, o app funciona completamente offline. So e necessaria conexao para abrir o link inicial.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Como fazer backup dos meus dados?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Gere os laudos e evolucoes em PDF regularmente e salve em uma pasta no seu celular ou Google Drive. Por enquanto nao ha exportacao de banco de dados — sempre gere PDFs das informacoes importantes.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Posso usar em mais de um aparelho?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Cada aparelho tem seu proprio armazenamento local. Os dados cadastrados no celular nao aparecem automaticamente no computador. Recomendamos usar sempre no mesmo dispositivo.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">O que acontece se eu limpar o cache?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Os dados sao apagados junto com o cache do navegador. Por isso, sempre gere PDFs das informacoes importantes antes de limpar o historico do navegador.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Posso imprimir os laudos?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Sim. Apos gerar o PDF, voce pode abrir o arquivo e imprimir normalmente. O documento ja vem formatado para impressao em papel A4.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Como remover um paciente?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Va em <strong>Pacientes</strong> no menu lateral, localize o paciente e clique no botao <strong style="color:var(--red)">Remover</strong> em vermelho. O sistema pedira confirmacao antes de apagar todos os dados do paciente.</div>
+          </div>
         </div>
       </div>
 
@@ -1769,6 +1820,16 @@ function carregarDemoData(){
   localStorage.setItem('toDB', JSON.stringify(DEMO));
   localStorage.setItem('toDB_demo_loaded','1');
   DB = DEMO;
+}
+
+// ─── MANUAL TOGGLE ───────────────────────────────────────────────────────────
+function toggleManual(btn){
+  const content=btn.nextElementSibling;
+  const span=btn.querySelector('span');
+  const open=content.style.display==='block';
+  content.style.display=open?'none':'block';
+  span.textContent=open?'+':'−';
+  btn.style.background=open?'none':'var(--pl)';
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
