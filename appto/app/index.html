@@ -180,6 +180,10 @@ textarea{resize:vertical;min-height:70px}
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       <span class="nav-label">Minha Clinica</span>
     </div>
+    <div class="nav-item" onclick="goPage('manual')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      <span class="nav-label">Manual de Uso</span>
+    </div>
   </nav>
 </aside>
 
@@ -522,6 +526,97 @@ textarea{resize:vertical;min-height:70px}
       </div>
     </div>
 
+    <!-- MANUAL DE USO -->
+    <div class="page" id="page-manual">
+      <div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,var(--pd),var(--p));color:#fff;border:none">
+        <div style="font-size:28px;margin-bottom:8px">📖</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px">Manual de Uso</div>
+        <div style="font-size:13px;opacity:.85">App Terapeuta Ocupacional Pro — tudo que voce precisa saber para usar</div>
+      </div>
+
+      <!-- PRIMEIROS PASSOS -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="background:var(--p);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">1</span>Primeiros Passos</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="background:var(--g);border-radius:10px;padding:14px;border-left:3px solid var(--p)">
+            <div style="font-weight:700;font-size:13px;color:var(--pd);margin-bottom:4px">Configure sua clinica primeiro</div>
+            <div style="font-size:12px;color:var(--gr);line-height:1.6">Va em <strong>Minha Clinica</strong> no menu e preencha seu nome, CREFITO, telefone e cidade. Esses dados aparecem automaticamente em todos os PDFs gerados. Adicione sua logo para um resultado ainda mais profissional.</div>
+          </div>
+          <div style="background:var(--g);border-radius:10px;padding:14px;border-left:3px solid var(--p)">
+            <div style="font-weight:700;font-size:13px;color:var(--pd);margin-bottom:4px">Cadastre seus pacientes</div>
+            <div style="font-size:12px;color:var(--gr);line-height:1.6">Clique em <strong>+ Novo Paciente</strong> no topo de qualquer pagina. Informe o nome, data de nascimento, responsavel e area principal. Voce pode editar e completar os dados depois na aba Avaliacao.</div>
+          </div>
+          <div style="background:var(--g);border-radius:10px;padding:14px;border-left:3px solid var(--p)">
+            <div style="font-weight:700;font-size:13px;color:var(--pd);margin-bottom:4px">Seus dados sao privados e ficam no seu aparelho</div>
+            <div style="font-size:12px;color:var(--gr);line-height:1.6">Nenhum dado e enviado para a internet. Tudo fica salvo no armazenamento local do seu navegador. Para fazer backup, exporte os laudos em PDF regularmente.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVALIACAO -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="background:var(--p);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">2</span>Como Fazer Avaliacoes</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${[
+            ['Anamnese','Va em Avaliacao > selecione o paciente > aba Anamnese. Preencha diagnostico, CID-10, historico, medicamentos e escola. Clique em Salvar Anamnese e depois Gerar PDF para imprimir ou salvar.'],
+            ['COPM (Medida Canadense)','Aba COPM: junto com o paciente ou responsavel, identifique ate 5 atividades com dificuldade. Atribua nota de 1 a 10 para Desempenho e Satisfacao. O app calcula a media automaticamente.'],
+            ['AVD / AIVD','Aba AVD: marque o nivel de independencia de cada atividade usando I (independente), A (assistencia), D (dependente) ou N (nao se aplica). Clique nos botoes para selecionar.'],
+            ['Escala MIF','Aba Escala MIF: atribua pontuacao de 1 a 7 para cada item. O total e calculado automaticamente — maximo 126 pontos.'],
+            ['Avaliacao TEA','Aba TEA: marque os comportamentos observados durante a avaliacao. Preencha as observacoes clinicas e a hipotese diagnostica no campo de texto.'],
+            ['Desenvolvimento Infantil','Aba Desenvolvimento: marque A (adquirido), EP (em processo) ou NA (nao adquirido) para cada marco. Ideal para pacientes de 0 a 6 anos.'],
+          ].map(([t,d])=>`<div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('span').textContent=this.nextElementSibling.style.display==='block'?'−':'+'" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">${t}<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button><div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">${d}</div></div>`).join('')}
+        </div>
+      </div>
+
+      <!-- EVOLUCAO -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="background:var(--p);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">3</span>Registrar Sessoes</div>
+        <div style="font-size:12px;color:var(--gr);line-height:1.8;background:var(--g);border-radius:10px;padding:14px">
+          <div style="margin-bottom:8px">1. Va em <strong style="color:var(--pd)">Evolucao</strong> no menu lateral</div>
+          <div style="margin-bottom:8px">2. Selecione o paciente no topo da pagina</div>
+          <div style="margin-bottom:8px">3. Clique em <strong style="color:var(--pd)">+ Nova Sessao</strong></div>
+          <div style="margin-bottom:8px">4. Preencha: data, duracao, atividades realizadas, resposta do paciente, evolucao observada e objetivos para a proxima sessao</div>
+          <div style="margin-bottom:8px">5. Clique em <strong style="color:var(--pd)">Salvar Sessao</strong></div>
+          <div>6. Para gerar PDF de uma sessao especifica, clique no botao <strong style="color:var(--pd)">PDF</strong> ao lado da sessao na lista</div>
+        </div>
+      </div>
+
+      <!-- LAUDOS -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="background:var(--p);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">4</span>Gerar Laudos e Relatorios</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${[
+            ['Relatorio para Escola','Laudos > selecione o paciente > aba Relatorio para Escola. Preencha o nome da escola, professora, resumo do caso e recomendacoes. Clique em Gerar PDF. O documento sai com seu nome, CREFITO e logo.'],
+            ['Laudo INSS / BPC','Aba Laudo INSS: preencha o tipo de beneficio, descricao da deficiencia, impacto nas AVDs e parecer tecnico. O PDF gerado contem espaco para sua assinatura.'],
+            ['Relatorio de Alta','Aba Relatorio de Alta: informe o periodo de atendimento, numero de sessoes, objetivos alcancados e recomendacoes para manutencao.'],
+            ['Relatorio Plano de Saude','Aba Plano de Saude: preencha o nome do plano, numero de sessoes realizadas e justificativa clinica para renovacao da autorizacao.'],
+            ['Termo de Consentimento','Aba Termo Consentimento: clique em Gerar PDF. O termo e gerado automaticamente com os dados do paciente e da clinica, pronto para assinar.'],
+            ['Encaminhamento','Aba Encaminhamento: selecione o especialista de destino, urgencia e justificativa. PDF gerado em segundos.'],
+          ].map(([t,d])=>`<div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('span').textContent=this.nextElementSibling.style.display==='block'?'−':'+'" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">${t}<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button><div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">${d}</div></div>`).join('')}
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="background:var(--p);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">?</span>Perguntas Frequentes</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${[
+            ['Meus dados sao seguros?','Sim. Todos os dados ficam salvos apenas no seu aparelho, no armazenamento local do navegador. Nenhuma informacao e enviada para servidores externos. Seus pacientes sao 100% privados.'],
+            ['O app funciona sem internet?','Sim. Apos abrir o link pela primeira vez, o app funciona completamente offline. So e necessaria conexao para abrir o link inicial.'],
+            ['Como fazer backup dos meus dados?','Gere os laudos e evolucoes em PDF regularmente e salve em uma pasta no seu celular ou Google Drive. Por enquanto nao ha exportacao de banco de dados — isso e uma limitacao do armazenamento local do navegador.'],
+            ['Posso usar em mais de um aparelho?','Cada aparelho tem seu proprio armazenamento. Os dados cadastrados no celular nao aparecem automaticamente no computador. Recomendamos usar sempre no mesmo dispositivo.'],
+            ['O que acontece se eu limpar o cache do navegador?','Os dados sao apagados junto com o cache. Por isso, sempre gere PDFs das informacoes importantes antes de limpar o historico do navegador.'],
+            ['Posso imprimir os laudos gerados?','Sim. Apos gerar o PDF, voce pode abrir o arquivo e imprimir normalmente. O documento ja vem formatado para impressao A4.'],
+            ['Como remover um paciente?','Va em Pacientes no menu lateral, localize o paciente e clique no botao Remover em vermelho. O sistema pedira confirmacao antes de apagar todos os dados.'],
+          ].map(([t,d])=>`<div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden"><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('span').textContent=this.nextElementSibling.style.display==='block'?'−':'+'" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">${t}<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button><div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">${d}</div></div>`).join('')}
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:20px;color:var(--gr);font-size:12px">
+        App Terapeuta Ocupacional Pro — feito para facilitar o seu dia a dia clinico.
+      </div>
+    </div>
+
     <!-- CLINICA -->
     <div class="page" id="page-clinica">
       <div class="card">
@@ -647,12 +742,14 @@ let DB = JSON.parse(localStorage.getItem('toDB') || '{"patients":[],"clinica":{}
 const save = () => localStorage.setItem('toDB', JSON.stringify(DB));
 
 // ─── NAVIGATION ─────────────────────────────────────────────────────────────
-const TITLES = {dashboard:'Dashboard',pacientes:'Pacientes',avaliacao:'Avaliacao',protocolos:'Protocolos',evolucao:'Evolucao de Sessao',laudos:'Laudos e Relatorios',clinica:'Minha Clinica'};
+const TITLES = {dashboard:'Dashboard',pacientes:'Pacientes',avaliacao:'Avaliacao',protocolos:'Protocolos',evolucao:'Evolucao de Sessao',laudos:'Laudos e Relatorios',clinica:'Minha Clinica',manual:'Manual de Uso'};
+const PAGES = ['dashboard','pacientes','avaliacao','protocolos','evolucao','laudos','clinica','manual'];
 function goPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nav-item')[['dashboard','pacientes','avaliacao','protocolos','evolucao','laudos','clinica'].indexOf(id)].classList.add('active');
+  const idx=PAGES.indexOf(id);
+  if(idx>=0)document.querySelectorAll('.nav-item')[idx].classList.add('active');
   document.getElementById('pageTitle').textContent = TITLES[id];
   if(id==='dashboard') renderDashboard();
   if(id==='pacientes') renderPatients();
