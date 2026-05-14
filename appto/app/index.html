@@ -277,9 +277,10 @@ textarea{resize:vertical;min-height:70px}
         <div class="tab-content card" id="aval-avd">
           <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Marque o nivel de independencia: I = Independente | A = Assistencia Parcial | D = Dependente | N = Nao se aplica</p>
           <div id="avdTable"></div>
-          <div style="margin-top:16px;display:flex;gap:8px">
+          <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="saveAVD()">Salvar AVD</button>
             <button class="btn btn-outline" onclick="pdfAVD()">Gerar PDF</button>
+            <button class="btn btn-sm" style="background:#fee2e2;color:var(--red);border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer" onclick="limparAvaliacao('avd')">Limpar tudo</button>
           </div>
         </div>
         <!-- SENSORIAL TAB -->
@@ -287,9 +288,10 @@ textarea{resize:vertical;min-height:70px}
           <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Avaliacao de Integracao Sensorial — marque a resposta observada</p>
           <div id="sensorialTable"></div>
           <div class="form-group" style="margin-top:16px"><label class="lbl">Observacoes Gerais</label><textarea id="sensObs" placeholder="Descricao do perfil sensorial..."></textarea></div>
-          <div style="margin-top:12px;display:flex;gap:8px">
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="saveSensorial()">Salvar</button>
             <button class="btn btn-outline" onclick="pdfSensorial()">Gerar PDF</button>
+            <button class="btn btn-sm" style="background:#fee2e2;color:var(--red);border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer" onclick="limparAvaliacao('sensorial')">Limpar tudo</button>
           </div>
         </div>
         <!-- TEA TAB -->
@@ -298,19 +300,21 @@ textarea{resize:vertical;min-height:70px}
           <div id="teaTable"></div>
           <div class="form-group" style="margin-top:16px"><label class="lbl">Observacoes Clinicas</label><textarea id="teaObs" placeholder="Descricao das observacoes durante avaliacao..."></textarea></div>
           <div class="form-group" style="margin-top:10px"><label class="lbl">Conclusao / Hipotese Diagnostica</label><textarea id="teaConcl" placeholder="Hipotese diagnostica com base nas observacoes..."></textarea></div>
-          <div style="margin-top:12px;display:flex;gap:8px">
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="saveTEA()">Salvar</button>
             <button class="btn btn-outline" onclick="pdfTEA()">Gerar PDF</button>
+            <button class="btn btn-sm" style="background:#fee2e2;color:var(--red);border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer" onclick="limparAvaliacao('tea')">Limpar tudo</button>
           </div>
         </div>
         <!-- MIF TAB -->
         <div class="tab-content card" id="aval-mif">
           <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Medida de Independencia Funcional (MIF) — escala de 1 a 7</p>
           <div id="mifTable"></div>
-          <div style="margin-top:16px;display:flex;gap:8px;align-items:center">
+          <div style="margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             <span style="font-size:14px;font-weight:700;color:var(--pd)">Pontuacao Total MIF: <span id="mifTotal">0</span>/126</span>
             <button class="btn btn-primary btn-sm" onclick="saveMIF()">Salvar</button>
             <button class="btn btn-outline btn-sm" onclick="pdfMIF()">Gerar PDF</button>
+            <button class="btn btn-sm" style="background:#fee2e2;color:var(--red);border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer" onclick="limparAvaliacao('mif')">Limpar tudo</button>
           </div>
         </div>
         <!-- COGNITIVO TAB -->
@@ -340,9 +344,10 @@ textarea{resize:vertical;min-height:70px}
           <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             <span style="font-size:13px;font-weight:700;color:var(--pd)">Media Desempenho: <span id="copmDesempenho">-</span> | Media Satisfacao: <span id="copmSatisfacao">-</span></span>
           </div>
-          <div style="margin-top:12px;display:flex;gap:8px">
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="saveCOPM()">Salvar COPM</button>
             <button class="btn btn-outline" onclick="pdfCOPM()">Gerar PDF</button>
+            <button class="btn btn-sm" style="background:#fee2e2;color:var(--red);border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer" onclick="limparAvaliacao('copm')">Limpar tudo</button>
           </div>
         </div>
         <!-- DESENVOLVIMENTO TAB -->
@@ -350,9 +355,10 @@ textarea{resize:vertical;min-height:70px}
           <p style="font-size:12px;color:var(--gr);margin-bottom:14px"><strong>Avaliacao do Desenvolvimento Infantil</strong> — baseado em marcos do desenvolvimento. Marque: A = Adquirido | EP = Em processo | NA = Nao adquirido</p>
           <div id="desenvolvTable"></div>
           <div class="form-group" style="margin-top:14px"><label class="lbl">Observacoes Clinicas</label><textarea id="desenvObs" placeholder="Observacoes sobre o desenvolvimento..."></textarea></div>
-          <div style="margin-top:12px;display:flex;gap:8px">
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="saveDesenv()">Salvar</button>
             <button class="btn btn-outline" onclick="pdfDesenv()">Gerar PDF</button>
+            <button class="btn btn-sm" style="background:#fee2e2;color:var(--red);border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer" onclick="limparAvaliacao('desenv')">Limpar tudo</button>
           </div>
         </div>
       </div>
@@ -659,6 +665,10 @@ textarea{resize:vertical;min-height:70px}
           <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
             <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Como remover um paciente?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
             <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Va em <strong>Pacientes</strong> no menu lateral, localize o paciente e clique no botao <strong style="color:var(--red)">Remover</strong> em vermelho. O sistema pedira confirmacao antes de apagar todos os dados do paciente.</div>
+          </div>
+          <div style="border:1px solid var(--lg);border-radius:10px;overflow:hidden">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Marquei algo errado na avaliacao, como limpar?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Va em <strong>Avaliacao</strong> > selecione o paciente > escolha a aba que deseja limpar (AVD, TEA, MIF, COPM, etc.). No final de cada aba ha um botao vermelho <strong style="color:var(--red)">Limpar tudo</strong>. Ao clicar, o sistema pedira confirmacao e apagara apenas aquela avaliacao, sem afetar os outros dados do paciente.</div>
           </div>
         </div>
       </div>
@@ -1820,6 +1830,32 @@ function carregarDemoData(){
   localStorage.setItem('toDB', JSON.stringify(DEMO));
   localStorage.setItem('toDB_demo_loaded','1');
   DB = DEMO;
+}
+
+// ─── LIMPAR AVALIACAO ────────────────────────────────────────────────────────
+function limparAvaliacao(tipo){
+  const id=document.getElementById('avalPaciente').value;
+  if(!id){alert('Selecione um paciente primeiro.');return;}
+  const p=DB.patients.find(x=>x.id==id);if(!p)return;
+  const nomes={'avd':'AVD / AIVD','sensorial':'Integracao Sensorial','tea':'Avaliacao TEA','mif':'Escala MIF','copm':'COPM','desenv':'Desenvolvimento Infantil'};
+  if(!confirm(`Limpar toda a avaliacao de ${nomes[tipo] || tipo}?\n\nEsta acao nao pode ser desfeita.`))return;
+
+  const prefixos={'avd':['avd_'],'sensorial':['sens_','sensObs'],'tea':['tea_','teaObs','teaConcl'],'mif':['mif_'],'copm':['copm_'],'desenv':['desenv_','desenvObs']};
+  const prefs=prefixos[tipo]||[];
+  Object.keys(p.dados).forEach(k=>{
+    if(prefs.some(pr=>k.startsWith(pr)||k===pr)) delete p.dados[k];
+  });
+  save();
+
+  // Re-renderiza a aba correspondente
+  if(tipo==='avd')renderAVD(p.dados);
+  else if(tipo==='sensorial'){renderSensorial(p.dados);document.getElementById('sensObs').value='';}
+  else if(tipo==='tea'){renderTEA(p.dados);document.getElementById('teaObs').value='';document.getElementById('teaConcl').value='';}
+  else if(tipo==='mif'){renderMIF(p.dados);}
+  else if(tipo==='copm'){renderCOPM(p.dados);}
+  else if(tipo==='desenv'){renderDesenvolvimento(p.dados);document.getElementById('desenvObs').value='';}
+
+  alert('Avaliacao limpa com sucesso!');
 }
 
 // ─── MANUAL TOGGLE ───────────────────────────────────────────────────────────
