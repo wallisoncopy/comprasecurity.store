@@ -1700,136 +1700,13 @@ function pdfDieta(){
   footer();doc.save(`Dieta-Sensorial-${p.nome.replace(/\s/g,'-')}.pdf`);
 }
 
-// ─── DEMO DATA ───────────────────────────────────────────────────────────────
-function carregarDemoData(){
-  if(localStorage.getItem('toDB_demo_loaded')) return;
-
-  const DEMO = {
-    clinica:{
-      nome:'Clinica TO Vida Plena',
-      to:'Dra. Ana Paula Ferreira',
-      crp:'CREFITO 3/15678-TO',
-      tel:'(11) 98745-3210',
-      email:'anapaula@tovida.com.br',
-      end:'Rua das Flores, 142 - Sala 08 - Jardim Europa',
-      cidade:'Sao Paulo - SP'
-    },
-    patients:[
-      {
-        id:1001,
-        nome:'Lucas Oliveira Silva',
-        nasc:'2019-03-15',
-        resp:'Mariana Oliveira',
-        tel:'(11) 97654-3210',
-        area:'TEA',
-        diag:'TEA - Nivel 2',
-        sessoes:[
-          {id:2001,data:'2026-05-10',dur:'50 min',ativ:'Atividades de integracao sensorial com caixa de areia e texturas. Trabalho de imitacao com objetos. PECS - introducao de novos cartoes de comunicacao (comer, beber, brincar).',resp:'Boa tolerancia a textura da areia. Aceitou caixa de texturas por 8 minutos sem recusa. Utilizou 3 cartoes PECS espontaneamente.',evol:'Aumento do tempo de permanencia em atividades de SI. Reducao do comportamento de fuga em ambiente novo. Primeira utilizacao espontanea do PECS para solicitar agua.',prox:'Expandir repertorio PECS para 5 cartoes. Introduzir jogo de encaixe para motricidade fina. Continuar protocolo de SI com foco vestibular.',humor:'Calmo e cooperativo',familiar:'Sim'},
-          {id:2002,data:'2026-05-06',dur:'50 min',ativ:'Protocolo de desenvolvimento motor fino: encaixe de formas, torre de cubos, rasgar papel. Atividade de contato visual mediada por bolhas de sabao.',resp:'Montou torre de 6 cubos com assistencia minima. Manteve contato visual por 4 segundos durante atividade de bolhas. Rasgou papel em tiras sem dificuldade.',evol:'Melhora significativa na motricidade fina comparado a avaliacao inicial. Contato visual aumentando gradualmente em contexto ludico.',prox:'Introducao de pintura a dedo. Continuar trabalhando contato visual em atividades de interesse.',humor:'Alegre e engajado',familiar:'Sim'},
-          {id:2003,data:'2026-04-29',dur:'50 min',ativ:'Sessao de avaliacao de rotinas de AVD. Treino de higiene oral com sequencia visual. Jogo simbolico com boneco (alimentar, dar banho).',resp:'Necessita de assistencia total para higiene oral. Aceitou escova com creme dental sem resistencia. Demonstrou jogo funcional espontaneo com boneco.',evol:'Inicio de jogo funcional espontaneo e representativo. Tolerancia aumentada a higiene oral.',prox:'Continuar sequencia visual de higiene oral. Ampliar repertorio de jogo simbolico.',humor:'Calmo e cooperativo',familiar:'Nao'}
-        ],
-        dados:{
-          av_resp:'Mariana Oliveira',av_tel:'(11) 97654-3210',av_email:'mariana@email.com',
-          av_escola:'EMEI Jardim Europa',av_turma:'Infantil 4 - Turma B',
-          av_diag:'TEA - Transtorno do Espectro Autista Nivel 2',av_cid:'F84.0',
-          av_queixa:'Encaminhado pela neuropediatra para avaliacao e intervencao em TO. Dificuldades de comunicacao, hipersensibilidade sensorial, comportamentos repetitivos e atraso no desenvolvimento motor. Familia relata dificuldade em atividades de autocuidado e integracao com pares.',
-          av_hist:'Gestacao sem intercorrencias, parto cesarea na 38a semana. Marcos iniciais dentro do esperado ate 18 meses. Regressao de fala aos 20 meses. Diagnostico de TEA confirmado pela neuropediatra aos 4 anos. Realizou fonoterapia por 12 meses.',
-          av_meds:'Risperidona 0,5mg - 1x ao dia (noite)',av_espec:'Fonoaudiologo - Dr. Carlos Mendes (1x/semana) | Psicologo - Dra. Lucia Gomes (1x/semana)',
-          av_obs:'Hipersensibilidade tatil e auditiva. Recusa a calcar sapatos com textura. Dificuldade com sons altos. Preferencia por rotinas rigidas. Interesse intenso em dinossauros.',
-          cog_atencao:'Moderadamente comprometida',cog_memoria:'Levemente comprometida',
-          cog_ling:'Comunicacao alternativa (CAA)',cog_exec:'Moderadamente comprometidas',
-          mot_grossa:'Levemente comprometida',mot_fina:'Moderadamente comprometida',
-          mot_tonus:'Hipotonia leve',mot_marcha:'Independente',
-          cog_obs:'Atencao melhor em atividades de interesse (dinossauros). Memoria procedural preservada. Linguagem verbal emergente - usa cerca de 30 palavras funcionais e CAA.',
-          copm_problemas:[
-            {area:'Autocuidado',descricao:'Higiene oral - recusa escovacao sem sequencia visual',desempenho:3,satisfacao:2},
-            {area:'Autocuidado',descricao:'Vestuario - dificuldade em abotoar e fechar velcro',desempenho:4,satisfacao:3},
-            {area:'Produtividade',descricao:'Participacao em atividades em grupo na escola',desempenho:3,satisfacao:2},
-            {area:'Produtividade',descricao:'Realizacao de atividades de escrita e pintura',desempenho:4,satisfacao:3},
-            {area:'Lazer',descricao:'Brincar de forma compartilhada com outras criancas',desempenho:2,satisfacao:2}
-          ],
-          avd_Alimentacao:'A',avd_Higiene_oral:'D',avd_Banho:'A',avd_Vestuario_superior:'A',avd_Vestuario_inferior:'A',avd_Uso_do_sanitario:'I',
-          sens_Hipersensibilidade_tatil:true,sens_Hiposensibilidade_tatil:false,sens_Hipersensibilidade_auditiva:true,
-          sens_Busca_excessiva_por_movimento:true,sens_Dificuldade_de_equilibrio:false,
-          teaObs:'Crianca apresenta contacto visual diminuido, porem responsiva em contexto ludico. Ecolalia presente. Comportamentos repetitivos: alinhamento de objetos, balanceio em situacoes de estresse.',
-          teaConcl:'Perfil compativel com TEA nivel 2. Necessita de suporte substancial. Recomendado acompanhamento multidisciplinar intensivo.',
-          tea_Dificuldade_em_iniciar_manter_conversa:true,tea_Uso_limitado_ausente_de_gestos:true,
-          tea_Movimentos_esteriotipados__stimming_:true,tea_Insistencia_em_rotinas_rituais:true,
-          tea_Interesses_restritos_e_intensos:true,tea_Ecolalia__repetir_palavras_frases_:true,
-          tea_Dificuldade_de_imitar_o_outro:false,tea_Hiper_ou_hipossensibilidade_sensorial:true,
-          mif_Alimentacao:5,mif_Higiene_pessoal:4,mif_Banho:3,mif_Vestuario___parte_superior:4,mif_Vestuario___parte_inferior:4,mif_Higiene_perineal:5,
-          mif_Bexiga:6,mif_Intestino:6,
-          mif_Transferencia_cama_cadeira_cadeira_de_rodas:7,mif_Transferencia___vaso_sanitario:7,
-          mif_Marcha_Cadeira_de_rodas:7,mif_Escadas:6,
-          mif_Compreensao:4,mif_Expressao:3,mif_Interacao_social:3,mif_Resolucao_de_problemas:3,mif_Memoria:4,
-          pt_geral:'Promover independencia nas atividades de vida diaria, melhorar processamento sensorial, desenvolver habilidades de comunicacao funcional e facilitar participacao social na escola e em casa.',
-          pt_curto:'1. Estabelecer rotina de higiene oral com suporte visual\n2. Ampliar repertorio de comunicacao para 50 cartoes PECS\n3. Melhorar tolerancia a texturas tateis',
-          pt_medio:'1. Independencia no vestuario (fechos e abotoar)\n2. Participacao em atividades em grupo por 15 minutos\n3. Reducao de comportamentos de fuga em ambiente novo',
-          pt_longo:'1. Autonomia nas AVDs basicas com supervisao minima\n2. Comunicacao funcional em diferentes contextos\n3. Participacao ativa em ambiente escolar inclusivo',
-          pt_freq:'2x por semana',pt_dur:'50 minutos',
-          pt_estrat:'Integracao Sensorial (IS), PECS, DIR/Floortime, Suporte Visual, Analise do Comportamento Aplicada (ABA) - elementos adaptados',
-          pt_orient:'Manter rotinas previsíveis e sequencias visuais em casa. Oferecer dieta sensorial nos periodos criticos. Generalizar uso do PECS em diferentes ambientes e pessoas.',
-          ds_perfil:'Hipersensibilidade tatil (especialmente texturas lisas e frias) e auditiva (sons altos e inesperados). Hiposensibilidade proprioceptiva - busca por pressao profunda.',
-          ds_manha:'Escovacao corporal suave antes do banho (2 min). Roupas com etiquetas removidas. Cafe da manha em ambiente calmo sem TV.',
-          ds_escola:'Almofada de assento com textura durante atividades sentadas. Banda elastica nos pes da cadeira. Pausa sensorial de 5 min antes de atividades mais exigentes.',
-          ds_tarde:'Caminhada de 20 min apos escola. Brincadeiras no escorregador e balanço (propriocepcao). Atividade livre de interesse por 30 min.',
-          ds_noite:'Banho morno com chuveiro (evitar banheira). Massagem nos pes e maos com lencol. Historinha no escuro com luz difusa. Mesma musica de ninar.',
-          ds_orient:'Avisar sempre antes de tocar. Oferecer opcoes de roupas. Permitir que use fone de ouvido em ambientes barulhentos. Respeitar a rotina - mudancas com antecedencia e suporte visual.',
-          esc_escola:'EMEI Jardim Europa - Rua das Acacias, 450 - Jardim Europa - Sao Paulo/SP',
-          esc_prof:'Professora Claudia Mendes - Sala 4B',
-          esc_resumo:'Lucas, 7 anos, e aluno com diagnostico de Transtorno do Espectro Autista nivel 2 (CID-10: F84.0), em acompanhamento de Terapia Ocupacional desde Marco de 2026. Realiza 2 sessoes semanais de 50 minutos cada.',
-          esc_desempenho:'Lucas demonstra melhor desempenho em atividades estruturadas e previsíveis. Tem dificuldades em atividades em grupo nao estruturadas. Faz melhor uso das habilidades de escrita quando sentado com apoio adequado. Necessita de mediacao para transicoes entre atividades.',
-          esc_hab:'HABILIDADES: Boa memoria visual, interesse em atividades sistematizadas, habilidade motora grossa preservada. DIFICULDADES: Comunicacao verbal limitada (usa CAA), dificuldade de regulacao emocional em situacoes inesperadas, hipersensibilidade auditiva.',
-          esc_rec:'1. Disponibilizar local de apoio sensorial (canto tranquilo) para momentos de sobrecarga\n2. Utilizar sequencia visual para rotinas (fichas com imagens das atividades do dia)\n3. Permitir uso de fone de ouvido durante atividades barulhentas\n4. Oferecer almofada de assento texturizada\n5. Avisar antecipadamente sobre mudancas de rotina',
-          esc_orient:'Usar linguagem simples e objetiva. Dar instrucoes uma de cada vez. Permitir pausa sensorial quando necessario. Valorizar as tentativas de comunicacao (verbal e CAA). Integrar interesses especificos nas atividades pedagogicas.'
-        }
-      },
-      {
-        id:1002,
-        nome:'Dona Helena Souza',
-        nasc:'1948-07-22',
-        resp:'',
-        tel:'(11) 96543-2100',
-        area:'AVD',
-        diag:'AVC Isquemico - Hemiplegia D',
-        sessoes:[
-          {id:2010,data:'2026-05-09',dur:'60 min',ativ:'Treino de transferencias cama-cadeira. Atividades de alcance com membro superior direito. Treino de alimentacao com adaptacao de utensilio (engrossador de cabo). Orientacao familiar sobre adaptacoes domiciliares.',resp:'Realizou 3 transferencias com supervisao minima. Alcance melhorado em 15 graus. Usou colher adaptada com minimo derrame.',evol:'Melhora progressiva na forca e coordenacao do MS direito. Maior confianca nas transferencias.',prox:'Iniciar treino de escrita adaptada. Avaliar necessidade de barra de apoio no banheiro.',humor:'Calmo e cooperativo',familiar:'Sim'}
-        ],
-        dados:{
-          av_diag:'AVC Isquemico com sequela de Hemiplegia a Direita',av_cid:'I63.9',
-          av_queixa:'Encaminhada para TO apos AVC isquemico ha 4 meses. Dificuldades nas AVDs, principalmente alimentacao, higiene e mobilidade.',
-          avd_Alimentacao:'A',avd_Higiene_oral:'A',avd_Banho:'D',avd_Vestuario_superior:'A',
-          avd_Marcha___Cadeira_de_rodas:'A',
-          mif_Alimentacao:4,mif_Higiene_pessoal:3,mif_Banho:2,mif_Vestuario___parte_superior:3,
-          pt_geral:'Recuperar independencia funcional nas AVDs e promover adaptacoes para vida diaria com sequela de hemiplegia.',
-          pt_freq:'3x por semana',pt_dur:'60 minutos'
-        }
-      },
-      {
-        id:1003,
-        nome:'Iago Pereira',
-        nasc:'2021-11-04',
-        resp:'Patricia Pereira',
-        tel:'(11) 95432-1098',
-        area:'Motor',
-        diag:'Hipotonia Global',
-        sessoes:[
-          {id:2020,data:'2026-05-08',dur:'45 min',ativ:'Atividades de fortalecimento de core e membros inferiores. Estimulacao de postura sentada sem apoio. Brincadeiras no solo para estimulo motor amplo.',resp:'Manteve postura sentada por 3 minutos sem apoio. Boa participacao nas atividades ludicas.',evol:'Melhora do tono muscular observada em comparacao com avaliacao de 2 meses atras.',prox:'Iniciar treino de bipedestacao com apoio. Estimular pincer superior.',humor:'Alegre e engajado',familiar:'Sim'}
-        ],
-        dados:{
-          av_diag:'Hipotonia Global',av_cid:'P94.2',
-          av_queixa:'Encaminhado por pediatra. Atraso no desenvolvimento motor com hipotonia.',
-          mot_grossa:'Moderadamente comprometida',mot_fina:'Levemente comprometida',mot_tonus:'Hipotonia moderada',
-          pt_geral:'Estimular desenvolvimento neuropsicomotor e ganho de tono muscular.',
-          pt_freq:'2x por semana',pt_dur:'45 minutos'
-        }
-      }
-    ]
-  };
-
-  localStorage.setItem('toDB', JSON.stringify(DEMO));
-  localStorage.setItem('toDB_demo_loaded','1');
-  DB = DEMO;
+// ─── LIMPAR DEMO DATA (se existir de versão anterior) ────────────────────────
+function limparDemoSeExistir(){
+  if(localStorage.getItem('toDB_demo_loaded')){
+    localStorage.removeItem('toDB_demo_loaded');
+    localStorage.removeItem('toDB');
+    DB={clinica:{nome:'',to:'',crp:'',tel:'',email:'',end:'',cidade:''},patients:[]};
+  }
 }
 
 // ─── LIMPAR AVALIACAO ────────────────────────────────────────────────────────
@@ -1869,7 +1746,7 @@ function toggleManual(btn){
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
-carregarDemoData();
+limparDemoSeExistir();
 renderDashboard();loadClinica();
 </script>
 </body>
