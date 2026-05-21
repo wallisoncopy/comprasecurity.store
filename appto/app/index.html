@@ -670,6 +670,25 @@ textarea{resize:vertical;min-height:70px}
             <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Marquei algo errado na avaliacao, como limpar?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
             <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.7">Va em <strong>Avaliacao</strong> > selecione o paciente > escolha a aba que deseja limpar (AVD, TEA, MIF, COPM, etc.). No final de cada aba ha um botao vermelho <strong style="color:var(--red)">Limpar tudo</strong>. Ao clicar, o sistema pedira confirmacao e apagara apenas aquela avaliacao, sem afetar os outros dados do paciente.</div>
           </div>
+          <div style="border-top:1px solid var(--lg)">
+            <button onclick="toggleManual(this)" style="width:100%;text-align:left;padding:12px 16px;background:none;border:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--pd);display:flex;justify-content:space-between;align-items:center">Como usar o app em outro celular ou computador?<span style="color:var(--p);font-size:18px;font-weight:700">+</span></button>
+            <div class="manual-item" style="display:none;padding:0 16px 14px;font-size:12px;color:var(--gr);line-height:1.8">
+              Os dados ficam salvos no dispositivo em que voce cadastrou. Para levar tudo para outro celular ou computador, use o <strong>Backup</strong>:<br><br>
+              <strong style="color:var(--pd)">No dispositivo atual:</strong><br>
+              1. Va em <strong>Minha Clinica</strong> no menu<br>
+              2. Role ate o final da pagina<br>
+              3. Clique em <strong>⬇️ Baixar Backup</strong><br>
+              4. Um arquivo <em>.json</em> sera salvo no seu dispositivo<br>
+              5. Envie esse arquivo para voce mesmo pelo WhatsApp ou e-mail<br><br>
+              <strong style="color:var(--pd)">No novo dispositivo:</strong><br>
+              1. Abra o app normalmente<br>
+              2. Va em <strong>Minha Clinica</strong> > role ate o final<br>
+              3. Clique em <strong>⬆️ Restaurar Backup</strong><br>
+              4. Selecione o arquivo <em>.json</em> que voce recebeu<br>
+              5. O app recarrega com todos os seus dados<br><br>
+              <strong style="color:var(--red)">Atenção:</strong> restaurar apaga os dados que ja estiverem no novo dispositivo.
+            </div>
+          </div>
         </div>
       </div>
 
