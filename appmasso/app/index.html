@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>App Massoterapeuta Pro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#7c3aed;--pd:#4c1d95;--pl:#ede9fe;--pm:#a78bfa;
+  --g:#faf5ff;--w:#fff;--dk:#0f172a;--gr:#64748b;--lg:#e2e8f0;
+  --red:#ef4444;--green:#10b981;--yellow:#f59e0b
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#faf5ff;color:var(--dk);min-height:100vh}
+.shell{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--pd);color:#fff;display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;transition:.3s}
+.sidebar-logo{padding:16px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-logo .logo-icon{width:32px;height:32px;background:var(--pm);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--pd);flex-shrink:0}
+.sidebar-logo span{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden}
+.nav{padding:12px 8px;flex:1;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:.15s;margin-bottom:2px;font-size:13px;white-space:nowrap}
+.nav-item:hover{background:rgba(255,255,255,.1)}
+.nav-item.active{background:var(--p);font-weight:600}
+.nav-item svg{width:18px;height:18px;flex-shrink:0}
+.nav-label{overflow:hidden}
+.main{margin-left:220px;flex:1;transition:.3s}
+.topbar{background:var(--w);border-bottom:1px solid var(--lg);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar h1{font-size:17px;font-weight:700;color:var(--pd)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--p);color:#fff}
+.btn-primary:hover{background:var(--pd)}
+.btn-outline{background:transparent;border:1.5px solid var(--p);color:var(--p)}
+.btn-outline:hover{background:var(--pl)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-red{background:var(--red);color:#fff}
+.content{padding:24px}
+.page{display:none}
+.page.active{display:block}
+.card{background:var(--w);border-radius:12px;border:1px solid var(--lg);padding:20px;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:700;color:var(--pd)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--w);border-radius:10px;border:1px solid var(--lg);padding:14px;text-align:center}
+.stat-num{font-size:26px;font-weight:800;color:var(--p)}
+.stat-label{font-size:11px;color:var(--gr);margin-top:2px}
+.client-list{display:grid;gap:10px}
+.client-card{background:var(--w);border:1px solid var(--lg);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s}
+.client-card:hover{border-color:var(--p);box-shadow:0 2px 8px rgba(124,58,237,.1)}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--pl);color:var(--pd);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.client-info{flex:1}
+.client-name{font-weight:600;font-size:14px;color:var(--dk)}
+.client-meta{font-size:12px;color:var(--gr);margin-top:2px}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600}
+.badge-relaxante{background:#fef3c7;color:#92400e}
+.badge-modeladora{background:#dbeafe;color:#1e40af}
+.badge-drenagem{background:#d1fae5;color:#065f46}
+.badge-pedras{background:#fee2e2;color:#7f1d1d}
+.badge-other{background:#ede9fe;color:#4c1d95}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}
+label.lbl{font-size:12px;font-weight:600;color:var(--gr)}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--lg);border-radius:8px;font-size:13px;color:var(--dk);background:var(--w);outline:none;transition:.15s;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(124,58,237,.08)}
+textarea{resize:vertical;min-height:70px}
+.section-title{font-size:13px;font-weight:700;color:var(--pd);padding:10px 0 6px;border-bottom:2px solid var(--pl);margin:16px 0 12px;grid-column:1/-1}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--lg);margin-bottom:20px;overflow-x:auto}
+.tab{padding:9px 16px;font-size:13px;font-weight:600;color:var(--gr);cursor:pointer;border-radius:8px 8px 0 0;white-space:nowrap;transition:.15s;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab.active{color:var(--p);border-bottom-color:var(--p);background:var(--pl)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.sessao-card{background:var(--g);border:1px solid var(--pl);border-radius:10px;padding:14px;margin-bottom:10px}
+.sessao-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sessao-date{font-size:12px;font-weight:700;color:var(--p)}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.check-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.check-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--g);border-radius:8px;border:1px solid var(--pl);cursor:pointer;font-size:12px;transition:.15s;user-select:none}
+.check-item:hover{border-color:var(--p)}
+.check-item input[type=checkbox]{accent-color:var(--p);width:15px;height:15px;flex-shrink:0;pointer-events:none}
+.check-item.checked{background:var(--pl);border-color:var(--p)}
+.pressure-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.pressure-btn{padding:7px 16px;border-radius:8px;border:1.5px solid var(--lg);background:var(--w);cursor:pointer;font-size:12px;font-weight:700;color:var(--gr);transition:.15s}
+.pressure-btn:hover{border-color:var(--p);color:var(--p)}
+.pressure-btn.sel{background:var(--p);border-color:var(--p);color:#fff}
+.contrain-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.contrain-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff5f5;border-radius:8px;border:1px solid #fecaca;cursor:pointer;font-size:12px;transition:.15s;user-select:none}
+.contrain-item input[type=checkbox]{accent-color:var(--red);width:15px;height:15px;flex-shrink:0;pointer-events:none}
+.contrain-item.marked{background:#fee2e2;border-color:var(--red)}
+.empty{text-align:center;padding:48px 24px;color:var(--gr)}
+.empty svg{width:48px;height:48px;margin:0 auto 12px;opacity:.3;display:block}
+.empty p{font-size:14px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--w);border-radius:16px;width:min(560px,95vw);max-height:90vh;overflow-y:auto;padding:24px;position:relative}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:700;color:var(--pd)}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--gr);padding:4px}
+.logo-upload-box{border:2px dashed var(--lg);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:.2s;background:var(--g)}
+.logo-upload-box:hover{border-color:var(--p);background:var(--pl)}
+.logo-upload-box p{font-size:12px;color:var(--gr);margin-top:4px}
+.logo-preview-box{display:none;margin-top:10px;text-align:center}
+.logo-preview-box img{max-height:56px;max-width:160px;border-radius:6px;border:1px solid var(--lg)}
+.logo-preview-box span{display:block;font-size:11px;color:var(--p);margin-top:4px;font-weight:600}
+.pdf-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:768px){
+  .sidebar{width:56px}.sidebar .nav-label,.sidebar .sidebar-logo span{display:none}
+  .main{margin-left:56px}
+  .form-grid,.form-grid-3{grid-template-columns:1fr}
+  .form-full{grid-column:1}
+  .check-grid,.check-grid-3,.contrain-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">MP</div>
+    <span>Masso Pro</span>
+  </div>
+  <nav class="nav">
+    <div class="nav-item active" onclick="goPage('dashboard')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </div>
+    <div class="nav-item" onclick="goPage('clientes')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span class="nav-label">Clientes</span>
+    </div>
+    <div class="nav-item" onclick="goPage('anamnese')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+      <span class="nav-label">Anamnese</span>
+    </div>
+    <div class="nav-item" onclick="goPage('sessao')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      <span class="nav-label">Registro de Sessao</span>
+    </div>
+    <div class="nav-item" onclick="goPage('evolucao')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <span class="nav-label">Evolucao</span>
+    </div>
+    <div class="nav-item" onclick="goPage('fichas')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+      <span class="nav-label">Fichas PDF</span>
+    </div>
+    <div class="nav-item" onclick="goPage('clinica')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span class="nav-label">Minha Clinica</span>
+    </div>
+    <div class="nav-item" onclick="goPage('manual')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      <span class="nav-label">Manual de Uso</span>
+    </div>
+  </nav>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <h1 id="pageTitle">Dashboard</h1>
+    <div class="topbar-right">
+      <button class="btn btn-primary btn-sm" onclick="openNewClientModal()">+ Nova Cliente</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Clientes Recentes</span>
+          <button class="btn btn-outline btn-sm" onclick="goPage('clientes')">Ver todas</button>
+        </div>
+        <div id="recentClients"></div>
+      </div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="page" id="page-clientes">
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <input id="searchCliente" placeholder="Buscar cliente..." style="max-width:280px" oninput="renderClients()">
+        <select id="filterTecnica" onchange="renderClients()" style="max-width:200px">
+          <option value="">Todas as tecnicas</option>
+          <option>Relaxante</option><option>Modeladora</option>
+          <option>Drenagem Linfatica</option><option>Pedras Quentes</option>
+          <option>Bambuterapia</option><option>Reflexologia</option>
+          <option>Shiatsu</option><option>Esportiva</option>
+        </select>
+      </div>
+      <div class="client-list" id="clientList"></div>
+    </div>
+
+    <!-- ANAMNESE -->
+    <div class="page" id="page-anamnese">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Selecionar Cliente</span></div>
+        <select id="anamCliente" onchange="loadAnamneseClient()" style="max-width:320px">
+          <option value="">Selecione uma cliente...</option>
+        </select>
+      </div>
+      <div id="anamContent" style="display:none">
+        <div class="tabs" id="anamTabs">
+          <div class="tab active" onclick="switchTab('anam','dados',0)">Dados Pessoais</div>
+          <div class="tab" onclick="switchTab('anam','saude',1)">Historico de Saude</div>
+          <div class="tab" onclick="switchTab('anam','contrain',2)">Contraindicacoes</div>
+          <div class="tab" onclick="switchTab('anam','pele',3)">Ficha de Pele</div>
+        </div>
+
+        <div class="tab-content active card" id="anam-dados">
+          <div class="form-grid">
+            <div class="section-title">Dados Pessoais</div>
+            <div class="form-group"><label class="lbl">Nome Completo</label><input id="an_nome" placeholder="Nome da cliente"></div>
+            <div class="form-group"><label class="lbl">Data de Nascimento</label><input id="an_nasc" type="date"></div>
+            <div class="form-group"><label class="lbl">Sexo</label>
+              <select id="an_sexo"><option value="">Selecione...</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select>
+            </div>
+            <div class="form-group"><label class="lbl">Estado Civil</label>
+              <select id="an_estado_civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viuvo(a)</option></select>
+            </div>
+            <div class="form-group"><label class="lbl">Telefone / WhatsApp</label><input id="an_tel" placeholder="(00) 00000-0000"></div>
+            <div class="form-group"><label class="lbl">Email</label><input id="an_email" type="email" placeholder="email@email.com"></div>
+            <div class="form-group"><label class="lbl">Profissao</label><input id="an_prof" placeholder="Ex: Professora, Enfermeira..."></div>
+            <div class="form-group"><label class="lbl">Como nos conheceu</label>
+              <select id="an_indicacao"><option value="">Selecione...</option><option>Indicacao de amigo</option><option>Instagram</option><option>Google</option><option>Passante / vizinhanca</option><option>Outro</option></select>
+            </div>
+            <div class="form-group form-full"><label class="lbl">Endereco</label><input id="an_end" placeholder="Rua, numero, bairro, cidade"></div>
+            <div class="section-title">Queixa e Objetivos</div>
+            <div class="form-group form-full"><label class="lbl">Queixa Principal / Motivo da Consulta</label><textarea id="an_queixa" placeholder="Dores, tensoes, estresse, objetivo estetico..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Objetivo da Massagem</label><textarea id="an_objetivo" placeholder="Relaxamento, estetica, dor cronica, drenagem pos-operatoria..."></textarea></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="saveDados()">Salvar Dados</button>
+            <button class="btn btn-outline" onclick="pdfAnamneseFromPage()">Gerar PDF</button>
+          </div>
+        </div>
+
+        <div class="tab-content card" id="anam-saude">
+          <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Marque as condicoes de saude presentes. Informacoes sigilosas.</p>
+          <div id="saudeChecks"></div>
+          <div class="form-grid" style="margin-top:16px">
+            <div class="form-group"><label class="lbl">Medicamentos em Uso</label><textarea id="an_meds" placeholder="Nome dos medicamentos e dosagens..."></textarea></div>
+            <div class="form-group"><label class="lbl">Cirurgias / Procedimentos Recentes</label><textarea id="an_cirurgias" placeholder="Tipo, data aproximada..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Alergias (cremes, oleos, substancias)</label><input id="an_alergias" placeholder="Ex: amendoa, parafina, lanolina, niquel..."></div>
+            <div class="form-group form-full"><label class="lbl">Observacoes de Saude</label><textarea id="an_obs_saude" placeholder="Outras informacoes de saude relevantes..."></textarea></div>
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn btn-primary" onclick="saveSaude()">Salvar Historico</button>
+          </div>
+        </div>
+
+        <div class="tab-content card" id="anam-contrain">
+          <p style="font-size:12px;color:var(--red);margin-bottom:16px;font-weight:600">⚠️ Marque as contraindicacoes presentes. Itens marcados aparecerão no prontuario.</p>
+          <div class="contrain-grid" id="contrainGrid"></div>
+          <div class="form-group" style="margin-top:16px">
+            <label class="lbl">Observacoes sobre Contraindicacoes</label>
+            <textarea id="an_obs_contrain" placeholder="Detalhe as contraindicacoes marcadas acima..."></textarea>
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn btn-primary" onclick="saveContrain()">Salvar Contraindicacoes</button>
+          </div>
+        </div>
+
+        <div class="tab-content card" id="anam-pele">
+          <div class="form-grid">
+            <div class="section-title">Caracteristicas da Pele</div>
+            <div class="form-group"><label class="lbl">Tipo de Pele</label>
+              <select id="an_tipo_pele"><option value="">Selecione...</option><option>Normal</option><option>Seca</option><option>Oleosa</option><option>Mista</option><option>Sensivel</option><option>Atopica</option></select>
+            </div>
+            <div class="form-group"><label class="lbl">Tom de Pele</label>
+              <select id="an_tom_pele"><option value="">Selecione...</option><option>Clara</option><option>Media</option><option>Morena</option><option>Negra</option></select>
+            </div>
+            <div class="form-group form-full"><label class="lbl">Sensibilidades / Hipersensibilidades</label><textarea id="an_sensibilidades" placeholder="Reacoes a produtos, oleos, pressao excessiva..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Reacoes Anteriores a Massagem</label><textarea id="an_reacoes" placeholder="Hematomas faceis, ardencia, vermelhidao excessiva..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Produtos / Oleos Preferidos</label><textarea id="an_produtos_pref" placeholder="Oleos, cremes, aromaterapia favoritos..."></textarea></div>
+            <div class="form-group form-full"><label class="lbl">Observacoes Gerais</label><textarea id="an_obs_geral" placeholder="Outras informacoes relevantes..."></textarea></div>
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn btn-primary" onclick="savePele()">Salvar Ficha de Pele</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTRO DE SESSAO -->
+    <div class="page" id="page-sessao">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Selecionar Cliente</span></div>
+        <select id="sessCliente" onchange="loadSessaoClient()" style="max-width:320px">
+          <option value="">Selecione uma cliente...</option>
+        </select>
+      </div>
+      <div id="sessContent" style="display:none">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Nova Sessao</span></div>
+          <div class="form-grid">
+            <div class="form-group"><label class="lbl">Data da Sessao</label><input id="sess_data" type="date"></div>
+            <div class="form-group"><label class="lbl">Horario</label><input id="sess_hora" type="time"></div>
+            <div class="form-group"><label class="lbl">Duracao</label>
+              <select id="sess_duracao"><option value="">Selecione...</option><option>30 min</option><option>45 min</option><option>60 min</option><option>75 min</option><option>90 min</option><option>120 min</option></select>
+            </div>
+            <div class="form-group">
+              <label class="lbl">Pressao Aplicada</label>
+              <div class="pressure-btns" id="pressureBtns">
+                <button type="button" class="pressure-btn" onclick="selectPressure('Leve',this)">Leve</button>
+                <button type="button" class="pressure-btn" onclick="selectPressure('Media',this)">Media</button>
+                <button type="button" class="pressure-btn" onclick="selectPressure('Forte',this)">Forte</button>
+                <button type="button" class="pressure-btn" onclick="selectPressure('Variada',this)">Variada</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:13px;font-weight:700;color:var(--pd);padding:10px 0 6px;border-bottom:2px solid var(--pl);margin:16px 0 12px">Tecnicas Aplicadas</div>
+          <div class="check-grid" id="tecnicasGrid"></div>
+
+          <div style="font-size:13px;font-weight:700;color:var(--pd);padding:10px 0 6px;border-bottom:2px solid var(--pl);margin:16px 0 12px">Areas Trabalhadas</div>
+          <div class="check-grid-3" id="areasGrid"></div>
+
+          <div class="form-grid" style="margin-top:16px">
+            <div class="form-group"><label class="lbl">Produtos / Oleos Utilizados</label><input id="sess_produtos" placeholder="Ex: oleo de amendoa, creme modelador..."></div>
+            <div class="form-group"><label class="lbl">Retorno Recomendado</label><input id="sess_retorno" type="date"></div>
+            <div class="form-group form-full"><label class="lbl">Evolucao / Observacoes da Sessao</label><textarea id="sess_evolucao" placeholder="Como a cliente chegou, reacoes durante a sessao, resultados observados..."></textarea></div>
+          </div>
+
+          <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="saveSessao()">Salvar Sessao</button>
+            <button class="btn btn-outline" onclick="pdfUltimaSessao()">Gerar PDF da Sessao</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVOLUCAO -->
+    <div class="page" id="page-evolucao">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Selecionar Cliente</span></div>
+        <select id="evolCliente" onchange="loadEvolucaoClient()" style="max-width:320px">
+          <option value="">Selecione uma cliente...</option>
+        </select>
+      </div>
+      <div id="evolContent" style="display:none">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" id="evolTitle">Historico de Sessoes</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-outline btn-sm" onclick="pdfRelatorioFromEvolucao()">Relatorio PDF</button>
+              <button class="btn btn-primary btn-sm" onclick="goPage('sessao')">Nova Sessao</button>
+            </div>
+          </div>
+          <div id="evolList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FICHAS PDF -->
+    <div class="page" id="page-fichas">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Gerar Fichas em PDF</span></div>
+        <p style="font-size:13px;color:var(--gr);margin-bottom:20px">Selecione a cliente e o tipo de ficha para gerar o PDF personalizado com os dados da sua clinica.</p>
+        <div class="form-group" style="max-width:320px;margin-bottom:20px">
+          <label class="lbl">Cliente</label>
+          <select id="fichaCliente"><option value="">Selecione uma cliente...</option></select>
+        </div>
+        <div class="pdf-bar" style="margin-top:0">
+          <button class="btn btn-primary" onclick="pdfAnamneseFicha()">📄 Ficha de Anamnese</button>
+          <button class="btn btn-outline" onclick="pdfSessaoFicha()">📋 Ultima Sessao</button>
+          <button class="btn btn-outline" onclick="pdfRelatorioFicha()">📊 Relatorio de Evolucao</button>
+          <button class="btn btn-outline" onclick="pdfContrainFicha()">⚠️ Contraindicacoes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MINHA CLINICA -->
+    <div class="page" id="page-clinica">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Dados da Clinica / Espaco</span></div>
+        <div class="form-grid">
+          <div class="form-group form-full"><label class="lbl">Nome da Clinica / Nome Profissional</label><input id="cl_nome" placeholder="Ex: Studio Bela Masso, Maria Silva Massoterapeuta"></div>
+          <div class="form-group"><label class="lbl">Telefone / WhatsApp</label><input id="cl_tel" placeholder="(00) 00000-0000"></div>
+          <div class="form-group"><label class="lbl">Email Profissional</label><input id="cl_email" type="email" placeholder="contato@seuestudio.com"></div>
+          <div class="form-group"><label class="lbl">Instagram</label><input id="cl_insta" placeholder="@seuestudio"></div>
+          <div class="form-group"><label class="lbl">Certificacao / Registro</label><input id="cl_reg" placeholder="Certificacoes ou registro profissional"></div>
+          <div class="form-group form-full"><label class="lbl">Endereco Completo</label><input id="cl_end" placeholder="Rua, numero, bairro, cidade, CEP"></div>
+          <div class="form-group form-full">
+            <label class="lbl">Logo (aparece nos PDFs)</label>
+            <div class="logo-upload-box" onclick="document.getElementById('logoInput').click()">
+              <svg width="24" height="24" fill="none" stroke="var(--gr)" viewBox="0 0 24 24" style="margin:0 auto 4px;display:block"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <p>Clique para enviar sua logo (PNG ou JPG)</p>
+              <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="loadLogo(this)">
+            </div>
+            <div class="logo-preview-box" id="logoPreview">
+              <img id="logoPreviewImg" src="" alt="Logo">
+              <span>Logo carregada ✓</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <button class="btn btn-primary" onclick="saveClinica()">Salvar Configuracoes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANUAL -->
+    <div class="page" id="page-manual">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Manual de Uso</span></div>
+        <div style="font-size:13px;line-height:1.8;color:var(--dk)">
+          <h3 style="color:var(--pd);margin-bottom:12px">Bem-vinda ao App Massoterapeuta Pro!</h3>
+          <p style="margin-bottom:16px">Seu aplicativo completo para organizar clientes, registrar sessoes e gerar fichas profissionais em PDF. Tudo salvo no seu dispositivo, sem precisar de internet.</p>
+          <h4 style="color:var(--pd);margin:16px 0 8px">Como comecar:</h4>
+          <ol style="padding-left:20px;margin-bottom:16px">
+            <li style="margin-bottom:6px"><strong>Configure sua clinica:</strong> Va em "Minha Clinica" e preencha seus dados e logo</li>
+            <li style="margin-bottom:6px"><strong>Cadastre suas clientes:</strong> Clique em "+ Nova Cliente" no canto superior</li>
+            <li style="margin-bottom:6px"><strong>Preencha a anamnese:</strong> Va em "Anamnese", selecione a cliente e preencha as 4 abas</li>
+            <li style="margin-bottom:6px"><strong>Registre cada sessao:</strong> Em "Registro de Sessao", marque tecnicas e areas trabalhadas</li>
+            <li style="margin-bottom:6px"><strong>Acompanhe a evolucao:</strong> Em "Evolucao" veja o historico completo de sessoes</li>
+            <li style="margin-bottom:6px"><strong>Gere PDFs:</strong> Em "Fichas PDF" gere fichas de anamnese, relatorios e muito mais</li>
+          </ol>
+          <h4 style="color:var(--pd);margin:16px 0 8px">Tecnicas disponíveis no app:</h4>
+          <p style="margin-bottom:8px">Relaxante • Modeladora • Drenagem Linfatica • Pedras Quentes (Basalto) • Bambuterapia • Reflexologia Podal • Shiatsu • Ayurvedica (Abhyanga) • Esportiva • Descontratruante • Cranio-Sacral • Ventosaterapia • Quick Massage</p>
+          <h4 style="color:var(--pd);margin:16px 0 8px">Sobre seus dados:</h4>
+          <p>Todos os dados ficam <strong>salvos localmente no seu dispositivo</strong>. Nao sao enviados a nenhum servidor. Use a geracao de PDFs para fazer backup das fichas importantes.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- MODAL NOVA CLIENTE -->
+<div class="modal-overlay" id="modalCliente">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Nova Cliente</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group form-full"><label class="lbl">Nome Completo *</label><input id="m_nome" placeholder="Nome completo da cliente"></div>
+      <div class="form-group"><label class="lbl">Telefone / WhatsApp</label><input id="m_tel" placeholder="(00) 00000-0000"></div>
+      <div class="form-group"><label class="lbl">Data de Nascimento</label><input id="m_nasc" type="date"></div>
+      <div class="form-group"><label class="lbl">Sexo</label>
+        <select id="m_sexo"><option value="">Selecione...</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select>
+      </div>
+      <div class="form-group"><label class="lbl">Tecnica Principal</label>
+        <select id="m_tecnica">
+          <option value="">Selecione...</option>
+          <option>Relaxante</option><option>Modeladora</option>
+          <option>Drenagem Linfatica</option><option>Pedras Quentes</option>
+          <option>Bambuterapia</option><option>Reflexologia</option>
+          <option>Shiatsu</option><option>Esportiva</option><option>Outra</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:20px">
+      <button class="btn btn-primary" onclick="saveNewClient()">Cadastrar</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'masso_pro_v1';
+let state = { clinica:{nome:'',tel:'',email:'',insta:'',reg:'',end:'',logo:''}, clientes:[], nextId:1 };
+let currentPressure = '';
+
+const TECNICAS = [
+  'Relaxante','Modeladora','Drenagem Linfatica','Pedras Quentes (Basalto)',
+  'Bambuterapia','Reflexologia Podal','Shiatsu','Ayurvedica (Abhyanga)',
+  'Esportiva','Descontratruante','Cranio-Sacral','Ventosaterapia','Quick Massage'
+];
+
+const AREAS = [
+  'Cabeca / Couro Cabeludo','Face','Cervical / Pescoco','Ombros',
+  'Dorsal Superior','Dorsal Inferior / Lombar','Gluteos','Abdomen',
+  'Braco / Antebraco D','Braco / Antebraco E','Maos',
+  'Coxa Anterior D','Coxa Anterior E','Joelhos',
+  'Pernas / Panturrilha D','Pernas / Panturrilha E',
+  'Coxa Posterior D','Coxa Posterior E','Pes / Plantar'
+];
+
+const SAUDE_ITEMS = [
+  {id:'has',label:'Hipertensao Arterial (HAS)'},
+  {id:'diabetes',label:'Diabetes'},
+  {id:'cardio',label:'Cardiopatia / Problema Cardiaco'},
+  {id:'varizes',label:'Varizes'},
+  {id:'gestacao',label:'Gestacao (Gravidez)'},
+  {id:'osteoporose',label:'Osteoporose'},
+  {id:'cancer',label:'Cancer / Tratamento Oncologico'},
+  {id:'renal',label:'Doenca Renal'},
+  {id:'hepatico',label:'Doenca Hepatica'},
+  {id:'coluna',label:'Problema de Coluna / Hernia'},
+  {id:'epilepsia',label:'Epilepsia'},
+  {id:'trombose',label:'Trombose / Trombofilia'},
+  {id:'marcapasso',label:'Marcapasso'},
+  {id:'depressao',label:'Depressao / Ansiedade'},
+  {id:'tireoide',label:'Problema de Tireoide'},
+  {id:'fibromialgia',label:'Fibromialgia'},
+];
+
+const CONTRAIN_ITEMS = [
+  'Febre ou infeccao aguda','Trombose venosa profunda (TVP)',
+  'Varizes graves / tromboflebite','Feridas abertas / lesoes de pele',
+  'Inflamacao aguda (artrite em crise)','Pos-operatorio recente (< 30 dias)',
+  'Gestacao no 1o trimestre','Cancer ativo / tumor local',
+  'Marcapasso (sem eletroterapia)','Fratura recente / osso exposto',
+  'Osteoporose severa','Hipertensao nao controlada',
+  'Epilepsia nao controlada','Infeccao de pele local (fungo, herpes)',
+  'Edema de causa nao diagnosticada','Queimaduras recentes',
+];
+
+function loadState(){try{const s=localStorage.getItem(STORAGE_KEY);if(s)state=JSON.parse(s);}catch(e){}}
+function saveStateToStorage(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function getClient(id){return state.clientes.find(c=>String(c.id)===String(id));}
+
+// PAGE NAV
+const PAGE_TITLES = {
+  dashboard:'Dashboard',clientes:'Clientes',anamnese:'Anamnese',
+  sessao:'Registro de Sessao',evolucao:'Evolucao',
+  fichas:'Fichas PDF',clinica:'Minha Clinica',manual:'Manual de Uso'
+};
+const PAGE_ORDER = ['dashboard','clientes','anamnese','sessao','evolucao','fichas','clinica','manual'];
+
+function goPage(pg){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el = document.getElementById('page-'+pg);
+  if(el) el.classList.add('active');
+  document.getElementById('pageTitle').textContent = PAGE_TITLES[pg]||pg;
+  const idx = PAGE_ORDER.indexOf(pg);
+  const navItems = document.querySelectorAll('.nav-item');
+  if(idx>=0 && navItems[idx]) navItems[idx].classList.add('active');
+  if(pg==='dashboard') renderDashboard();
+  if(pg==='clientes') renderClients();
+  if(pg==='anamnese') populateSelect('anamCliente');
+  if(pg==='sessao'){populateSelect('sessCliente');initSessaoForms();}
+  if(pg==='evolucao') populateSelect('evolCliente');
+  if(pg==='fichas') populateSelect('fichaCliente');
+  if(pg==='clinica') loadClinicaForm();
+}
+
+function populateSelect(id){
+  const sel = document.getElementById(id);
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Selecione uma cliente...</option>';
+  [...state.clientes].sort((a,b)=>a.nome.localeCompare(b.nome)).forEach(c=>{
+    sel.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+  });
+  if(cur) sel.value = cur;
+}
+
+function switchTab(group, tab, idx){
+  const tabsEl = document.getElementById(group+'Tabs');
+  if(!tabsEl) return;
+  tabsEl.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  tabsEl.querySelectorAll('.tab')[idx].classList.add('active');
+  document.querySelectorAll('[id^="'+group+'-"]').forEach(t=>t.classList.remove('active'));
+  const target = document.getElementById(group+'-'+tab);
+  if(target) target.classList.add('active');
+}
+
+// DASHBOARD
+function renderDashboard(){
+  const now = new Date();
+  const mes = now.getMonth(), ano = now.getFullYear();
+  let sessoesMes = 0;
+  let totalSessoes = 0;
+  state.clientes.forEach(c=>{
+    (c.sessoes||[]).forEach(s=>{
+      totalSessoes++;
+      if(s.data){const d=new Date(s.data);if(d.getMonth()===mes&&d.getFullYear()===ano)sessoesMes++;}
+    });
+  });
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat"><div class="stat-num">${state.clientes.length}</div><div class="stat-label">Total de Clientes</div></div>
+    <div class="stat"><div class="stat-num">${sessoesMes}</div><div class="stat-label">Sessoes este Mes</div></div>
+    <div class="stat"><div class="stat-num">${totalSessoes}</div><div class="stat-label">Total de Sessoes</div></div>
+  `;
+  const recentes = [...state.clientes].slice(-6).reverse();
+  if(!recentes.length){
+    document.getElementById('recentClients').innerHTML = emptyHtml('Nenhuma cliente cadastrada ainda');
+    return;
+  }
+  document.getElementById('recentClients').innerHTML = recentes.map(clientCardHtml).join('');
+}
+
+function clientCardHtml(c){
+  const ini = c.nome.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const sessoes = (c.sessoes||[]).length;
+  const last = sessoes ? c.sessoes[c.sessoes.length-1].data : null;
+  const badgeClass = {
+    'Relaxante':'badge-relaxante','Modeladora':'badge-modeladora',
+    'Drenagem Linfatica':'badge-drenagem','Pedras Quentes':'badge-pedras'
+  }[c.tecnica_principal] || 'badge-other';
+  const badge = c.tecnica_principal ? `<span class="badge ${badgeClass}">${c.tecnica_principal}</span>` : '';
+  return `<div class="client-card" onclick="openClient(${c.id})">
+    <div class="avatar">${ini}</div>
+    <div class="client-info">
+      <div class="client-name">${c.nome} ${badge}</div>
+      <div class="client-meta">${c.tel||'Sem telefone'} &nbsp;•&nbsp; ${sessoes} sessao${sessoes!==1?'es':''} &nbsp;•&nbsp; ${last?'Ultima: '+last:'Sem sessoes'}</div>
+    </div>
+    <svg fill="none" stroke="var(--gr)" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  </div>`;
+}
+
+function emptyHtml(msg){
+  return `<div class="empty"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg><p>${msg}</p></div>`;
+}
+
+// CLIENTS
+function renderClients(){
+  const search = (document.getElementById('searchCliente')||{value:''}).value.toLowerCase();
+  const tec = (document.getElementById('filterTecnica')||{value:''}).value;
+  let list = state.clientes.filter(c=>{
+    const m = !search || c.nome.toLowerCase().includes(search)||(c.tel||'').includes(search);
+    const t = !tec || (c.tecnica_principal||'').includes(tec);
+    return m && t;
+  });
+  const el = document.getElementById('clientList');
+  if(!list.length){el.innerHTML=emptyHtml('Nenhuma cliente encontrada');return;}
+  el.innerHTML = [...list].sort((a,b)=>a.nome.localeCompare(b.nome)).map(clientCardHtml).join('');
+}
+
+function openClient(id){
+  goPage('anamnese');
+  setTimeout(()=>{
+    document.getElementById('anamCliente').value = id;
+    loadAnamneseClient();
+  },50);
+}
+
+// MODAL
+function openNewClientModal(){
+  ['m_nome','m_tel'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('m_nasc').value='';
+  document.getElementById('m_sexo').value='';
+  document.getElementById('m_tecnica').value='';
+  document.getElementById('modalCliente').classList.add('open');
+  setTimeout(()=>document.getElementById('m_nome').focus(),100);
+}
+function closeModal(){document.getElementById('modalCliente').classList.remove('open');}
+
+function saveNewClient(){
+  const nome = document.getElementById('m_nome').value.trim();
+  if(!nome){alert('Informe o nome da cliente.');return;}
+  const c = {
+    id:state.nextId++, nome,
+    tel:document.getElementById('m_tel').value,
+    nasc:document.getElementById('m_nasc').value,
+    sexo:document.getElementById('m_sexo').value,
+    tecnica_principal:document.getElementById('m_tecnica').value,
+    email:'',prof:'',estado_civil:'',indicacao:'',end:'',
+    queixa:'',objetivo:'',
+    saude:{},meds:'',cirurgias:'',alergias:'',obs_saude:'',
+    contrain:[],obs_contrain:'',
+    tipo_pele:'',tom_pele:'',sensibilidades:'',reacoes:'',produtos_pref:'',obs_geral:'',
+    sessoes:[],
+    criado_em:new Date().toISOString()
+  };
+  state.clientes.push(c);
+  saveStateToStorage();
+  closeModal();
+  renderClients();
+  renderDashboard();
+  alert('Cliente "'+nome+'" cadastrada com sucesso!');
+}
+
+// ANAMNESE
+function loadAnamneseClient(){
+  const id = document.getElementById('anamCliente').value;
+  if(!id){document.getElementById('anamContent').style.display='none';return;}
+  const c = getClient(id);
+  if(!c) return;
+  document.getElementById('anamContent').style.display='block';
+  // dados
+  document.getElementById('an_nome').value=c.nome||'';
+  document.getElementById('an_nasc').value=c.nasc||'';
+  document.getElementById('an_sexo').value=c.sexo||'';
+  document.getElementById('an_estado_civil').value=c.estado_civil||'';
+  document.getElementById('an_tel').value=c.tel||'';
+  document.getElementById('an_email').value=c.email||'';
+  document.getElementById('an_prof').value=c.prof||'';
+  document.getElementById('an_indicacao').value=c.indicacao||'';
+  document.getElementById('an_end').value=c.end||'';
+  document.getElementById('an_queixa').value=c.queixa||'';
+  document.getElementById('an_objetivo').value=c.objetivo||'';
+  // saude
+  renderSaudeChecks(c);
+  document.getElementById('an_meds').value=c.meds||'';
+  document.getElementById('an_cirurgias').value=c.cirurgias||'';
+  document.getElementById('an_alergias').value=c.alergias||'';
+  document.getElementById('an_obs_saude').value=c.obs_saude||'';
+  // contrain
+  renderContrainGrid(c);
+  document.getElementById('an_obs_contrain').value=c.obs_contrain||'';
+  // pele
+  document.getElementById('an_tipo_pele').value=c.tipo_pele||'';
+  document.getElementById('an_tom_pele').value=c.tom_pele||'';
+  document.getElementById('an_sensibilidades').value=c.sensibilidades||'';
+  document.getElementById('an_reacoes').value=c.reacoes||'';
+  document.getElementById('an_produtos_pref').value=c.produtos_pref||'';
+  document.getElementById('an_obs_geral').value=c.obs_geral||'';
+}
+
+function renderSaudeChecks(c){
+  document.getElementById('saudeChecks').innerHTML =
+    '<div class="check-grid">'+
+    SAUDE_ITEMS.map(item=>{
+      const checked = (c.saude||{})[item.id];
+      return `<label class="check-item${checked?' checked':''}" id="sl_${item.id}" onclick="toggleSaudeItem('${item.id}',this)">
+        <input type="checkbox"${checked?' checked':''} id="s_${item.id}">
+        ${item.label}
+      </label>`;
+    }).join('')+
+    '</div>';
+}
+
+function toggleSaudeItem(id, el){
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+  el.classList.toggle('checked', cb.checked);
+  const clientId = document.getElementById('anamCliente').value;
+  const c = getClient(clientId);
+  if(!c) return;
+  if(!c.saude) c.saude={};
+  c.saude[id] = cb.checked;
+}
+
+function renderContrainGrid(c){
+  document.getElementById('contrainGrid').innerHTML =
+    CONTRAIN_ITEMS.map((item,i)=>{
+      const checked = (c.contrain||[]).includes(item);
+      return `<label class="contrain-item${checked?' marked':''}" id="ci_${i}" onclick="toggleContrain(${i},'${item.replace(/'/g,"\\'")}',this)">
+        <input type="checkbox"${checked?' checked':''}>
+        ${item}
+      </label>`;
+    }).join('');
+}
+
+function toggleContrain(idx, item, el){
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+  el.classList.toggle('marked', cb.checked);
+  const clientId = document.getElementById('anamCliente').value;
+  const c = getClient(clientId);
+  if(!c) return;
+  if(!c.contrain) c.contrain=[];
+  if(cb.checked && !c.contrain.includes(item)) c.contrain.push(item);
+  else if(!cb.checked) c.contrain = c.contrain.filter(x=>x!==item);
+}
+
+function saveDados(){
+  const id=document.getElementById('anamCliente').value;const c=getClient(id);if(!c)return;
+  c.nome=document.getElementById('an_nome').value;
+  c.nasc=document.getElementById('an_nasc').value;
+  c.sexo=document.getElementById('an_sexo').value;
+  c.estado_civil=document.getElementById('an_estado_civil').value;
+  c.tel=document.getElementById('an_tel').value;
+  c.email=document.getElementById('an_email').value;
+  c.prof=document.getElementById('an_prof').value;
+  c.indicacao=document.getElementById('an_indicacao').value;
+  c.end=document.getElementById('an_end').value;
+  c.queixa=document.getElementById('an_queixa').value;
+  c.objetivo=document.getElementById('an_objetivo').value;
+  saveStateToStorage();alert('Dados salvos com sucesso!');
+}
+function saveSaude(){
+  const id=document.getElementById('anamCliente').value;const c=getClient(id);if(!c)return;
+  c.meds=document.getElementById('an_meds').value;
+  c.cirurgias=document.getElementById('an_cirurgias').value;
+  c.alergias=document.getElementById('an_alergias').value;
+  c.obs_saude=document.getElementById('an_obs_saude').value;
+  saveStateToStorage();alert('Historico de saude salvo!');
+}
+function saveContrain(){
+  const id=document.getElementById('anamCliente').value;const c=getClient(id);if(!c)return;
+  c.obs_contrain=document.getElementById('an_obs_contrain').value;
+  saveStateToStorage();alert('Contraindicacoes salvas!');
+}
+function savePele(){
+  const id=document.getElementById('anamCliente').value;const c=getClient(id);if(!c)return;
+  c.tipo_pele=document.getElementById('an_tipo_pele').value;
+  c.tom_pele=document.getElementById('an_tom_pele').value;
+  c.sensibilidades=document.getElementById('an_sensibilidades').value;
+  c.reacoes=document.getElementById('an_reacoes').value;
+  c.produtos_pref=document.getElementById('an_produtos_pref').value;
+  c.obs_geral=document.getElementById('an_obs_geral').value;
+  saveStateToStorage();alert('Ficha de pele salva!');
+}
+
+// SESSAO
+function initSessaoForms(){
+  document.getElementById('tecnicasGrid').innerHTML = TECNICAS.map(t=>
+    `<label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="${t}"> ${t}</label>`
+  ).join('');
+  document.getElementById('areasGrid').innerHTML = AREAS.map(a=>
+    `<label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="${a}"> ${a}</label>`
+  ).join('');
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('sess_data').value = today;
+  currentPressure = '';
+  document.querySelectorAll('.pressure-btn').forEach(b=>b.classList.remove('sel'));
+}
+
+function toggleCheck(el){
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+  el.classList.toggle('checked', cb.checked);
+}
+
+function loadSessaoClient(){
+  const id=document.getElementById('sessCliente').value;
+  document.getElementById('sessContent').style.display = id ? 'block' : 'none';
+}
+
+function selectPressure(p, btn){
+  currentPressure = p;
+  document.querySelectorAll('.pressure-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function getChecked(gridId){
+  return Array.from(document.querySelectorAll('#'+gridId+' input:checked')).map(i=>i.value);
+}
+
+function saveSessao(){
+  const id=document.getElementById('sessCliente').value;const c=getClient(id);if(!c)return;
+  const tecnicas = getChecked('tecnicasGrid');
+  if(!tecnicas.length){alert('Selecione ao menos uma tecnica.');return;}
+  const sessao = {
+    id:Date.now(),
+    data:document.getElementById('sess_data').value,
+    hora:document.getElementById('sess_hora').value,
+    duracao:document.getElementById('sess_duracao').value,
+    pressao:currentPressure,
+    tecnicas,
+    areas:getChecked('areasGrid'),
+    produtos:document.getElementById('sess_produtos').value,
+    retorno:document.getElementById('sess_retorno').value,
+    evolucao:document.getElementById('sess_evolucao').value,
+  };
+  if(!c.sessoes) c.sessoes=[];
+  c.sessoes.push(sessao);
+  saveStateToStorage();
+  alert('Sessao registrada com sucesso!');
+  initSessaoForms();
+  ['sess_hora','sess_produtos','sess_retorno','sess_evolucao'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sess_duracao').value='';
+}
+
+// EVOLUCAO
+function loadEvolucaoClient(){
+  const id=document.getElementById('evolCliente').value;
+  if(!id){document.getElementById('evolContent').style.display='none';return;}
+  const c=getClient(id);if(!c)return;
+  document.getElementById('evolContent').style.display='block';
+  const sessoes = (c.sessoes||[]).length;
+  document.getElementById('evolTitle').textContent = `Historico de Sessoes — ${c.nome} (${sessoes} sessao${sessoes!==1?'es':''})`;
+  renderEvolucao(c);
+}
+
+function renderEvolucao(c){
+  const sessoes=[...(c.sessoes||[])].reverse();
+  const el=document.getElementById('evolList');
+  if(!sessoes.length){el.innerHTML=emptyHtml('Nenhuma sessao registrada para esta cliente');return;}
+  el.innerHTML=sessoes.map((s,i)=>`
+    <div class="sessao-card">
+      <div class="sessao-header">
+        <span class="sessao-date">📅 ${s.data||'Data nao informada'}${s.hora?' às '+s.hora:''}</span>
+        <span style="font-size:11px;color:var(--gr)">${s.duracao||''} ${s.pressao?'• Pressao: '+s.pressao:''}</span>
+      </div>
+      ${s.tecnicas&&s.tecnicas.length?`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--pd)">Tecnicas:</span> <span style="font-size:12px">${s.tecnicas.join(', ')}</span></div>`:''}
+      ${s.areas&&s.areas.length?`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--pd)">Areas:</span> <span style="font-size:12px">${s.areas.join(', ')}</span></div>`:''}
+      ${s.produtos?`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--pd)">Produtos:</span> <span style="font-size:12px">${s.produtos}</span></div>`:''}
+      ${s.evolucao?`<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--pd)">Observacoes:</span> <span style="font-size:12px">${s.evolucao}</span></div>`:''}
+      ${s.retorno?`<div><span style="font-size:11px;font-weight:700;color:var(--green)">Retorno:</span> <span style="font-size:12px;color:var(--green);font-weight:600">${s.retorno}</span></div>`:''}
+    </div>`).join('');
+}
+
+function pdfRelatorioFromEvolucao(){
+  const id=document.getElementById('evolCliente').value;
+  const c=getClient(id);if(!c){alert('Selecione uma cliente.');return;}
+  pdfRelatorioForClient(c);
+}
+
+// CLINICA
+function loadClinicaForm(){
+  const cl=state.clinica;
+  document.getElementById('cl_nome').value=cl.nome||'';
+  document.getElementById('cl_tel').value=cl.tel||'';
+  document.getElementById('cl_email').value=cl.email||'';
+  document.getElementById('cl_insta').value=cl.insta||'';
+  document.getElementById('cl_reg').value=cl.reg||'';
+  document.getElementById('cl_end').value=cl.end||'';
+  if(cl.logo){
+    document.getElementById('logoPreview').style.display='block';
+    document.getElementById('logoPreviewImg').src=cl.logo;
+  }
+}
+function saveClinica(){
+  state.clinica.nome=document.getElementById('cl_nome').value;
+  state.clinica.tel=document.getElementById('cl_tel').value;
+  state.clinica.email=document.getElementById('cl_email').value;
+  state.clinica.insta=document.getElementById('cl_insta').value;
+  state.clinica.reg=document.getElementById('cl_reg').value;
+  state.clinica.end=document.getElementById('cl_end').value;
+  saveStateToStorage();alert('Configuracoes salvas!');
+}
+function loadLogo(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    state.clinica.logo=e.target.result;saveStateToStorage();
+    document.getElementById('logoPreview').style.display='block';
+    document.getElementById('logoPreviewImg').src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// PDF ENGINE
+function pdfMakeDoc(c){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  return doc;
+}
+
+function pdfHeader(doc,title,clientName){
+  const cl=state.clinica;
+  doc.setFillColor(76,29,149);doc.rect(0,0,210,28,'F');
+  if(cl.logo){try{doc.addImage(cl.logo,'PNG',8,4,20,20);}catch(e){}}
+  const tx=cl.logo?32:8;
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(13);doc.setFont('helvetica','bold');
+  doc.text(cl.nome||'App Massoterapeuta Pro',tx,12);
+  doc.setFontSize(8);doc.setFont('helvetica','normal');
+  const sub=[cl.tel,cl.email,cl.insta].filter(Boolean).join('  •  ');
+  if(sub)doc.text(sub,tx,19);
+  doc.setFillColor(237,233,254);doc.rect(0,28,210,10,'F');
+  doc.setTextColor(76,29,149);doc.setFontSize(11);doc.setFont('helvetica','bold');
+  doc.text(title,8,35);
+  let y=42;
+  if(clientName){
+    doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(100,116,139);
+    doc.text('Cliente: '+clientName,8,41);y=47;
+  }
+  return y;
+}
+
+function pdfField(doc,label,value,x,y,w){
+  if(!value)return y;
+  w=w||94;
+  doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(100,116,139);
+  doc.text(label.toUpperCase(),x,y);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(15,23,42);
+  const lines=doc.splitTextToSize(String(value),w);
+  doc.text(lines,x,y+4);
+  return y+4+lines.length*4.5+2;
+}
+
+function pdfSection(doc,title,y){
+  doc.setFillColor(237,233,254);doc.rect(5,y,200,7,'F');
+  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(76,29,149);
+  doc.text(title,8,y+5);
+  return y+10;
+}
+
+function pdfFooter(doc){
+  doc.setFontSize(7);doc.setTextColor(148,163,184);
+  doc.text('Gerado por App Massoterapeuta Pro  •  '+new Date().toLocaleDateString('pt-BR'),8,287);
+}
+
+// PDF ANAMNESE
+function pdfAnamneseFromPage(){
+  const id=document.getElementById('anamCliente').value;
+  const c=getClient(id);if(!c){alert('Selecione uma cliente.');return;}
+  pdfAnamneseForClient(c);
+}
+function pdfAnamneseFicha(){
+  const id=document.getElementById('fichaCliente').value;
+  const c=getClient(id);if(!c){alert('Selecione uma cliente.');return;}
+  pdfAnamneseForClient(c);
+}
+function pdfAnamneseForClient(c){
+  const {jsPDF}=window.jspdf;const doc=new jsPDF();
+  let y=pdfHeader(doc,'Ficha de Anamnese',c.nome);
+  y=pdfSection(doc,'DADOS PESSOAIS',y);
+  let ya=y,yb=y;
+  ya=pdfField(doc,'Nome Completo',c.nome,8,ya,90);
+  ya=pdfField(doc,'Data de Nascimento',c.nasc,8,ya,90);
+  ya=pdfField(doc,'Sexo',c.sexo,8,ya,90);
+  ya=pdfField(doc,'Estado Civil',c.estado_civil,8,ya,90);
+  ya=pdfField(doc,'Profissao',c.prof,8,ya,90);
+  yb=pdfField(doc,'Telefone / WhatsApp',c.tel,110,yb,85);
+  yb=pdfField(doc,'Email',c.email,110,yb,85);
+  yb=pdfField(doc,'Como nos conheceu',c.indicacao,110,yb,85);
+  yb=pdfField(doc,'Endereco',c.end,110,yb,85);
+  y=Math.max(ya,yb)+2;
+  y=pdfSection(doc,'QUEIXA E OBJETIVOS',y);
+  y=pdfField(doc,'Queixa Principal',c.queixa,8,y,194);
+  y=pdfField(doc,'Objetivo',c.objetivo,8,y,194);
+  y=pdfSection(doc,'HISTORICO DE SAUDE',y);
+  const sAtivos=SAUDE_ITEMS.filter(s=>(c.saude||{})[s.id]).map(s=>s.label);
+  if(sAtivos.length){
+    doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(15,23,42);
+    const l=doc.splitTextToSize(sAtivos.join('  •  '),194);doc.text(l,8,y);y+=l.length*4.5+4;
+  } else {
+    doc.setFontSize(9);doc.setTextColor(100,116,139);doc.text('Nenhuma condicao marcada.',8,y);y+=8;
+  }
+  y=pdfField(doc,'Medicamentos',c.meds,8,y,194);
+  y=pdfField(doc,'Cirurgias Recentes',c.cirurgias,8,y,194);
+  y=pdfField(doc,'Alergias',c.alergias,8,y,194);
+  if((c.contrain||[]).length){
+    y=pdfSection(doc,'CONTRAINDICACOES',y);
+    doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(239,68,68);
+    const l=doc.splitTextToSize(c.contrain.join('  •  '),194);doc.text(l,8,y);y+=l.length*4.5+4;
+  }
+  y=pdfSection(doc,'FICHA DE PELE',y);
+  ya=y;yb=y;
+  ya=pdfField(doc,'Tipo de Pele',c.tipo_pele,8,ya,90);
+  yb=pdfField(doc,'Tom de Pele',c.tom_pele,110,yb,85);
+  y=Math.max(ya,yb);
+  y=pdfField(doc,'Sensibilidades',c.sensibilidades,8,y,194);
+  y=pdfField(doc,'Reacoes Anteriores',c.reacoes,8,y,194);
+  y=pdfField(doc,'Produtos Preferidos',c.produtos_pref,8,y,194);
+  pdfFooter(doc);
+  doc.save('Anamnese_'+c.nome.replace(/ /g,'_')+'.pdf');
+}
+
+// PDF SESSAO
+function pdfUltimaSessao(){
+  const id=document.getElementById('sessCliente').value;
+  const c=getClient(id);if(!c)return;
+  const s=(c.sessoes||[]);if(!s.length){alert('Salve a sessao primeiro.');return;}
+  pdfSessaoForClient(c,s[s.length-1]);
+}
+function pdfSessaoFicha(){
+  const id=document.getElementById('fichaCliente').value;
+  const c=getClient(id);if(!c){alert('Selecione uma cliente.');return;}
+  const s=(c.sessoes||[]);if(!s.length){alert('Nenhuma sessao registrada.');return;}
+  pdfSessaoForClient(c,s[s.length-1]);
+}
+function pdfSessaoForClient(c,s){
+  const {jsPDF}=window.jspdf;const doc=new jsPDF();
+  let y=pdfHeader(doc,'Registro de Sessao',c.nome);
+  y=pdfSection(doc,'DADOS DA SESSAO',y);
+  let ya=y,yb=y;
+  ya=pdfField(doc,'Data',s.data,8,ya,90);
+  ya=pdfField(doc,'Horario',s.hora,8,ya,90);
+  ya=pdfField(doc,'Duracao',s.duracao,8,ya,90);
+  ya=pdfField(doc,'Pressao Aplicada',s.pressao,8,ya,90);
+  yb=pdfField(doc,'Produtos Utilizados',s.produtos,110,yb,85);
+  y=Math.max(ya,yb)+2;
+  y=pdfSection(doc,'TECNICAS APLICADAS',y);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(15,23,42);
+  const tl=doc.splitTextToSize((s.tecnicas||[]).join(', ')||'—',194);
+  doc.text(tl,8,y);y+=tl.length*4.5+4;
+  y=pdfSection(doc,'AREAS TRABALHADAS',y);
+  const al=doc.splitTextToSize((s.areas||[]).join(', ')||'—',194);
+  doc.text(al,8,y);y+=al.length*4.5+4;
+  y=pdfSection(doc,'EVOLUCAO E OBSERVACOES',y);
+  const el2=doc.splitTextToSize(s.evolucao||'—',194);
+  doc.text(el2,8,y);y+=el2.length*4.5+4;
+  if(s.retorno){
+    y=pdfSection(doc,'RETORNO RECOMENDADO',y);
+    doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(16,185,129);
+    doc.text(s.retorno,8,y);
+  }
+  pdfFooter(doc);
+  doc.save('Sessao_'+c.nome.replace(/ /g,'_')+'_'+(s.data||'sem-data')+'.pdf');
+}
+
+// PDF RELATORIO
+function pdfRelatorioFicha(){
+  const id=document.getElementById('fichaCliente').value;
+  const c=getClient(id);if(!c){alert('Selecione uma cliente.');return;}
+  pdfRelatorioForClient(c);
+}
+function pdfRelatorioForClient(c){
+  const {jsPDF}=window.jspdf;const doc=new jsPDF();
+  let y=pdfHeader(doc,'Relatorio de Evolucao',c.nome);
+  y=pdfSection(doc,'RESUMO DA CLIENTE',y);
+  y=pdfField(doc,'Nome',c.nome,8,y,90);
+  y=pdfField(doc,'Queixa',c.queixa,8,y,194);
+  y=pdfField(doc,'Objetivo',c.objetivo,8,y,194);
+  const sessoes=[...(c.sessoes||[])].reverse();
+  y=pdfSection(doc,'HISTORICO DE SESSOES ('+sessoes.length+' total)',y);
+  sessoes.forEach((s,i)=>{
+    if(y>255){doc.addPage();y=20;}
+    doc.setFillColor(250,245,255);doc.rect(5,y-1,200,7,'F');
+    doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(76,29,149);
+    doc.text('Sessao '+(sessoes.length-i)+' — '+(s.data||'—')+(s.hora?' às '+s.hora:''),8,y+4);
+    y+=8;
+    doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(15,23,42);
+    if(s.tecnicas&&s.tecnicas.length){
+      const l=doc.splitTextToSize('Tecnicas: '+s.tecnicas.join(', '),194);
+      doc.text(l,8,y);y+=l.length*4;
+    }
+    if(s.evolucao){
+      const l=doc.splitTextToSize('Obs: '+s.evolucao,194);
+      doc.text(l,8,y);y+=l.length*4;
+    }
+    y+=3;
+  });
+  pdfFooter(doc);
+  doc.save('Relatorio_'+c.nome.replace(/ /g,'_')+'.pdf');
+}
+
+// PDF CONTRAINDICACOES
+function pdfContrainFicha(){
+  const id=document.getElementById('fichaCliente').value;
+  const c=getClient(id);if(!c){alert('Selecione uma cliente.');return;}
+  const {jsPDF}=window.jspdf;const doc=new jsPDF();
+  let y=pdfHeader(doc,'Contraindicacoes',c.nome);
+  const contrain=c.contrain||[];
+  if(!contrain.length){
+    doc.setFontSize(10);doc.setTextColor(100,116,139);
+    doc.text('Nenhuma contraindicacao marcada para esta cliente.',8,y+10);
+  } else {
+    y=pdfSection(doc,'CONTRAINDICACOES IDENTIFICADAS',y);
+    doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(239,68,68);
+    contrain.forEach(ci=>{doc.text('• '+ci,8,y);y+=6;});
+  }
+  if(c.obs_contrain){
+    y+=4;y=pdfSection(doc,'OBSERVACOES',y);
+    doc.setTextColor(15,23,42);
+    const l=doc.splitTextToSize(c.obs_contrain,194);doc.text(l,8,y);
+  }
+  pdfFooter(doc);
+  doc.save('Contraindicacoes_'+c.nome.replace(/ /g,'_')+'.pdf');
+}
+
+// INIT
+loadState();
+renderDashboard();
+</script>
+</body>
+</html>
