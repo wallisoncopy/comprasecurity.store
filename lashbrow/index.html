@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>App Kit Lash & Brow Pro | Fichas e Protocolos Profissionais</title>
+<style>
+  :root{
+    --bg:#faf4f0;
+    --card:#ffffff;
+    --ink:#2b2118;
+    --ink-soft:#6b5d52;
+    --accent:#b8895a;
+    --accent-dark:#8a5f3a;
+    --accent-soft:#f0ddd0;
+    --line:#e9ddd3;
+    --danger:#c0473f;
+    --ok:#5c8a5c;
+    --radius:16px;
+    --shadow:0 4px 20px rgba(43,33,24,0.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.5;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 18px;}
+  img{max-width:100%;display:block;}
+  a{text-decoration:none;}
+
+  /* ===== TOPO DE URGENCIA ===== */
+  .top-bar{
+    background:var(--ink);color:#fff;text-align:center;
+    font-size:12px;font-weight:600;padding:9px 12px;letter-spacing:.2px;
+  }
+
+  /* ===== HERO ===== */
+  .hero{padding:28px 0 10px;text-align:center;}
+  .hero .eyebrow{
+    display:inline-block;background:var(--accent-soft);color:var(--accent-dark);
+    font-size:11.5px;font-weight:700;padding:6px 14px;border-radius:999px;margin-bottom:14px;
+    letter-spacing:.3px;
+  }
+  .hero h1{font-size:26px;font-weight:800;letter-spacing:-.4px;margin-bottom:10px;}
+  .hero h1 span{color:var(--accent-dark);}
+  .hero .sub{font-size:15px;color:var(--ink-soft);margin-bottom:22px;padding:0 4px;}
+
+  /* ===== PHONE MOCK / PRINT PLACEHOLDER ===== */
+  .phone-frame{
+    width:220px;aspect-ratio:9/19.5;margin:0 auto 22px;
+    border:10px solid var(--ink);border-radius:34px;overflow:hidden;
+    box-shadow:var(--shadow);background:#fff;position:relative;
+  }
+  .phone-frame img{width:100%;height:100%;object-fit:contain;background:var(--bg);}
+  .hero-image{width:100%;border-radius:14px;box-shadow:var(--shadow);margin:0 0 22px;}
+  .plan-image{width:100%;border-radius:10px;margin:14px 0;}
+  .print-placeholder{
+    width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:repeating-linear-gradient(45deg,var(--accent-soft),var(--accent-soft) 10px,#fff 10px,#fff 20px);
+    color:var(--accent-dark);text-align:center;padding:14px;
+  }
+  .print-placeholder .icon{font-size:26px;margin-bottom:8px;}
+  .print-placeholder .lb{font-size:11px;font-weight:700;line-height:1.4;}
+
+  .gallery-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;
+  }
+  .gallery-grid .phone-frame{width:100%;margin:0 0 10px;border-width:7px;border-radius:22px;}
+  .gallery-grid .print-placeholder{padding:8px;}
+  .gallery-grid .print-placeholder .icon{font-size:18px;margin-bottom:4px;}
+  .gallery-grid .print-placeholder .lb{font-size:9.5px;}
+  .gallery-cell{display:flex;flex-direction:column;align-items:center;}
+  .gallery-caption{text-align:center;}
+  .gallery-caption strong{display:block;font-size:12.5px;font-weight:800;color:var(--ink);line-height:1.3;}
+  .gallery-caption span{display:block;font-size:11px;color:var(--ink-soft);margin-top:2px;line-height:1.4;}
+
+  /* ===== CTA ===== */
+  .cta-btn{
+    display:block;width:100%;background:var(--accent);color:#1a1310;
+    text-align:center;padding:16px;border-radius:14px;font-size:16px;font-weight:800;
+    box-shadow:0 6px 18px rgba(184,137,90,.35);
+  }
+  .cta-btn small{display:block;font-size:11.5px;font-weight:600;opacity:.75;margin-top:2px;}
+  .cta-sub{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:10px;}
+  .price-tag{text-align:center;margin:16px 0 12px;}
+  .price-tag .old{font-size:14px;color:var(--ink-soft);text-decoration:line-through;}
+  .price-tag .new{font-size:34px;font-weight:800;color:var(--ink);}
+  .price-tag .new small{font-size:15px;font-weight:600;}
+
+  /* ===== PROVA SOCIAL (NOTIFICAÇÃO) ===== */
+  .social-proof{
+    display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:10px 12px;margin:16px 0;font-size:12px;box-shadow:var(--shadow);
+  }
+  .social-proof .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0;}
+  .social-proof b{font-weight:700;}
+
+  /* ===== SECTIONS ===== */
+  section{padding:34px 0;}
+  section.alt{background:#fff;margin:0 -18px;padding:34px 18px;}
+  h2{font-size:21px;font-weight:800;text-align:center;margin-bottom:8px;letter-spacing:-.3px;}
+  .section-sub{text-align:center;color:var(--ink-soft);font-size:13.5px;margin-bottom:24px;}
+
+  /* ===== BENEFÍCIOS ===== */
+  .benefit-list{display:flex;flex-direction:column;gap:12px;}
+  .benefit-item{
+    display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:14px;
+  }
+  .benefit-item .ico{
+    width:38px;height:38px;border-radius:10px;background:var(--accent-soft);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+  }
+  .benefit-item strong{display:block;font-size:14px;margin-bottom:2px;}
+  .benefit-item span{font-size:12.5px;color:var(--ink-soft);}
+
+  /* ===== PARA QUEM É ===== */
+  .icp-grid{display:flex;flex-direction:column;gap:10px;}
+  .icp-item{display:flex;gap:10px;align-items:center;font-size:14px;background:var(--accent-soft);padding:12px 14px;border-radius:12px;}
+  .icp-item .check{color:var(--accent-dark);font-weight:800;}
+
+  /* ===== PLANOS ===== */
+  .plan-card{
+    background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px;position:relative;
+  }
+  .plan-card.featured{border-color:var(--accent);box-shadow:0 6px 22px rgba(184,137,90,.18);}
+  .plan-card .tag{
+    position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:#fff;font-size:10.5px;font-weight:700;padding:4px 12px;border-radius:999px;
+  }
+  .plan-card h3{font-size:16px;margin-bottom:4px;}
+  .plan-card .price{font-size:28px;font-weight:800;margin:8px 0;}
+  .plan-card .price small{font-size:13px;font-weight:600;color:var(--ink-soft);}
+  .plan-card ul{list-style:none;margin:12px 0;}
+  .plan-card li{font-size:12.5px;padding:5px 0;color:var(--ink-soft);}
+  .plan-card li b{color:var(--ink);}
+  .plan-card li:before{content:"✓ ";color:var(--ok);font-weight:800;}
+
+  /* ===== GARANTIA ===== */
+  .garantia-box{
+    display:flex;gap:14px;align-items:center;background:#fff;border:1.5px solid var(--accent);
+    border-radius:16px;padding:18px;
+  }
+  .garantia-box .seal{font-size:38px;flex-shrink:0;}
+  .garantia-box strong{display:block;font-size:14.5px;margin-bottom:3px;}
+  .garantia-box span{font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+
+  /* ===== FAQ ===== */
+  .faq-item{border-bottom:1px solid var(--line);padding:14px 0;}
+  .faq-item summary{font-size:14px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary:after{content:"+";font-size:20px;color:var(--accent-dark);}
+  .faq-item[open] summary:after{content:"–";}
+  .faq-item p{font-size:13px;color:var(--ink-soft);margin-top:10px;line-height:1.6;}
+
+  /* ===== FOOTER ===== */
+  footer{padding:30px 0 40px;text-align:center;}
+  footer p{font-size:11px;color:var(--ink-soft);line-height:1.7;opacity:.8;}
+  footer .final-cta{margin-bottom:24px;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">✨ Oferta de lançamento — acesso vitalício por tempo limitado</div>
+
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <div class="hero">
+    <div class="eyebrow">PARA MICROPIGMENTADORAS & LASH DESIGNERS</div>
+    <h1>App Kit Lash & Brow Pro | <span>Fichas, Mapeamento e Protocolos com a Sua Marca</span></h1>
+    <p class="sub">Abra o app, personalize com o nome do seu estúdio e atenda com mais segurança, profissionalismo e zero retrabalho.</p>
+
+    <!-- HERO MOCKUP -->
+    <img src="prints/hero.jpg" alt="App Kit Micropigmentadoras & Lash Designers Pro" class="hero-image">
+
+    <div class="price-tag">
+      <div class="old">De R$47,00</div>
+      <div class="new">R$17<small>,90 à vista</small></div>
+    </div>
+
+    <a href="#planos" class="cta-btn">Quero personalizar meu app agora
+      <small>Acesso imediato após a compra</small>
+    </a>
+    <div class="cta-sub">🔒 Compra 100% segura · Garantia de 7 dias</div>
+
+    <!-- Widget de prova social — ligar em app de notificação de vendas real antes de publicar -->
+    <div class="social-proof">
+      <div class="dot"></div>
+      <div><b>+300 profissionais</b> já personalizaram o app essa semana</div>
+    </div>
+  </div>
+
+  <!-- ============ DOR / IDENTIFICAÇÃO ============ -->
+  <section>
+    <h2>Você já passou por isso?</h2>
+    <p class="section-sub">Se sim, esse app foi feito pra você.</p>
+    <div class="benefit-list">
+      <div class="benefit-item">
+        <div class="ico">😥</div>
+        <div><strong>Cliente questionando o procedimento</strong><span>e você sem um termo de consentimento assinado pra se proteger</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">🗓️</div>
+        <div><strong>Perdendo cliente de retoque</strong><span>porque ninguém lembrou de avisar na data certa</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">📄</div>
+        <div><strong>Ficha de papel rasurada, perdida ou incompleta</strong><span>sem histórico organizado de cada cliente</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">🎨</div>
+        <div><strong>Dúvida na hora de escolher</strong><span>cor de pigmento, curvatura ou volume ideal pra cada rosto</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ O QUE VOCÊ RECEBE ============ -->
+  <section class="alt">
+    <h2>O que vem dentro do app</h2>
+    <p class="section-sub">Tudo isso rodando no seu celular, com a sua marca</p>
+    <div class="benefit-list">
+      <div class="benefit-item">
+        <div class="ico">🎁</div>
+        <div><strong>Personalização com sua marca</strong><span>seu nome, nome do estúdio e logo em todas as fichas e PDFs</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">📝</div>
+        <div><strong>Ficha de anamnese completa</strong><span>saúde, contraindicações, histórico — em etapas, direto no celular</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">✏️</div>
+        <div><strong>Mapeamento de sobrancelha e cílios</strong><span>técnica, cor, curvatura e volume registrados por cliente</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">✅</div>
+        <div><strong>Termo de consentimento com assinatura</strong><span>proteção jurídica em toda sessão</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">📄</div>
+        <div><strong>Geração ilimitada de PDF</strong><span>ficha profissional pronta pra imprimir ou enviar por WhatsApp</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">👥</div>
+        <div><strong>Prontuário de clientes</strong><span>histórico completo salvo, sempre à mão</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">⏰</div>
+        <div><strong>Alerta automático de retoque</strong><span>nunca mais perca receita de recorrência por esquecimento</span></div>
+      </div>
+      <div class="benefit-item">
+        <div class="ico">📚</div>
+        <div><strong>Guias técnicos prontos</strong><span>cor de pigmento por tom de pele, formato ideal por rosto e por olho, cronograma de cicatrização e checklist de biossegurança</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALERIA DE PRINTS ============ -->
+  <section>
+    <h2>Veja por dentro do app</h2>
+    <p class="section-sub">Prints reais da tela do seu futuro app</p>
+    <div class="gallery-grid">
+      <div class="gallery-cell">
+        <div class="phone-frame">
+          <img src="prints/print1.png" alt="Tela de personalização do estúdio">
+        </div>
+        <div class="gallery-caption">
+          <strong>Sua marca em cada ficha</strong>
+          <span>Personalize com seu nome, logo e estúdio em segundos</span>
+        </div>
+      </div>
+      <div class="gallery-cell">
+        <div class="phone-frame">
+          <img src="prints/print2.png" alt="Ficha de anamnese - dados pessoais">
+        </div>
+        <div class="gallery-caption">
+          <strong>Anamnese completa e organizada</strong>
+          <span>Dados da cliente registrados em segundos, sem papel</span>
+        </div>
+      </div>
+      <div class="gallery-cell">
+        <div class="phone-frame">
+          <img src="prints/print3.png" alt="Ficha de anamnese - saúde geral">
+        </div>
+        <div class="gallery-caption">
+          <strong>Perguntas que te protegem</strong>
+          <span>Contraindicações e riscos verificados antes de cada sessão</span>
+        </div>
+      </div>
+      <div class="gallery-cell">
+        <div class="phone-frame">
+          <img src="prints/print4.png" alt="PDF da ficha gerado">
+        </div>
+        <div class="gallery-caption">
+          <strong>Ficha profissional em PDF</strong>
+          <span>Pronta pra imprimir ou mandar no WhatsApp da cliente</span>
+        </div>
+      </div>
+      <div class="gallery-cell">
+        <div class="phone-frame">
+          <img src="prints/print5.png" alt="Prontuário da cliente">
+        </div>
+        <div class="gallery-caption">
+          <strong>Histórico sempre à mão</strong>
+          <span>Cada cliente salva, com data de retoque nunca esquecida</span>
+        </div>
+      </div>
+      <div class="gallery-cell">
+        <div class="phone-frame">
+          <img src="prints/print6.png" alt="Guia de curvatura por formato de olho">
+        </div>
+        <div class="gallery-caption">
+          <strong>Guias técnicos na palma da mão</strong>
+          <span>Referência rápida pra acertar a escolha em cada atendimento</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PARA QUEM É ============ -->
+  <section class="alt">
+    <h2>Para quem é esse app</h2>
+    <div class="icp-grid">
+      <div class="icp-item"><span class="check">✓</span> Micropigmentadoras iniciantes e experientes</div>
+      <div class="icp-item"><span class="check">✓</span> Lash designers com estúdio próprio ou em casa</div>
+      <div class="icp-item"><span class="check">✓</span> Quem atende sem contrato/anamnese formal hoje</div>
+      <div class="icp-item"><span class="check">✓</span> Quem quer parecer mais profissional pro cliente</div>
+      <div class="icp-item"><span class="check">✓</span> Quem já perdeu cliente de retoque por falta de lembrete</div>
+    </div>
+  </section>
+
+  <!-- ============ PLANOS ============ -->
+  <section id="planos">
+    <h2>Escolha seu plano</h2>
+    <p class="section-sub">Pagamento único. Sem mensalidade.</p>
+
+    <div class="plan-card">
+      <h3>Plano Básico</h3>
+      <div class="price">R$17<small>,90 à vista</small></div>
+      <ul>
+        <li>App personalizado com sua marca</li>
+        <li>Ficha de anamnese completa</li>
+        <li>Geração ilimitada de PDF</li>
+      </ul>
+      <a href="#" class="cta-btn" style="background:var(--ink);color:#fff;">Quero o Básico</a>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="tag">MAIS ESCOLHIDO</div>
+      <img src="prints/hero.jpg" alt="App Kit Micropigmentadoras & Lash Designers Pro" class="plan-image">
+      <h3>Plano Profissional Pro</h3>
+      <div class="price">R$27<small>,90 à vista</small></div>
+      <ul>
+        <li>Tudo do Plano Básico</li>
+        <li><b>Mapeamento de sobrancelha e cílios</b></li>
+        <li><b>Prontuário de clientes</b></li>
+        <li><b>Alerta automático de retoque</b></li>
+        <li><b>Guias técnicos completos</b> (pigmento x pele, formato de rosto, formato de olho)</li>
+        <li><b>Checklist de biossegurança</b> em PDF pra entregar à cliente</li>
+        <li><b>Cronograma de cicatrização</b> pra orientar pós-procedimento</li>
+        <li>Atualizações de conteúdo incluídas</li>
+        <li>Suporte via WhatsApp</li>
+      </ul>
+      <a href="#" class="cta-btn">Quero o Profissional Pro</a>
+    </div>
+  </section>
+
+  <!-- ============ GARANTIA ============ -->
+  <section class="alt">
+    <div class="garantia-box">
+      <div class="seal">🛡️</div>
+      <div>
+        <strong>Garantia incondicional de 7 dias</strong>
+        <span>Se em até 7 dias você achar que o app não é pra você, devolvemos 100% do seu dinheiro. Sem perguntas.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section>
+    <h2>Perguntas frequentes</h2>
+    <details class="faq-item">
+      <summary>O app funciona no celular?</summary>
+      <p>Sim. Funciona direto no navegador do seu celular, sem precisar instalar nada da loja de aplicativos.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Preciso saber design ou tecnologia?</summary>
+      <p>Não. Você personaliza com seu nome e logo em menos de 1 minuto e já começa a usar.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Posso usar com quantas clientes eu quiser?</summary>
+      <p>Sim, o acesso é vitalício e ilimitado — use com quantas clientes precisar, sem custo extra.</p>
+    </details>
+    <details class="faq-item">
+      <summary>É pagamento único ou mensalidade?</summary>
+      <p>Pagamento único. Você paga uma vez e tem acesso vitalício, sem cobranças recorrentes.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Funciona pra sobrancelha e cílios ao mesmo tempo?</summary>
+      <p>Sim. Na personalização você escolhe sua área de atuação — sobrancelha, cílios ou ambos — e o app se ajusta.</p>
+    </details>
+    <details class="faq-item">
+      <summary>E se eu não gostar?</summary>
+      <p>Você tem 7 dias de garantia incondicional. Se não for pra você, devolvemos 100% do valor.</p>
+    </details>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <footer>
+    <div class="final-cta">
+      <h2 style="margin-bottom:16px;">Comece a atender com mais segurança hoje</h2>
+      <a href="#planos" class="cta-btn">Quero personalizar meu app agora</a>
+      <div class="cta-sub">🔒 Compra 100% segura · Garantia de 7 dias · Acesso imediato</div>
+    </div>
+    <p>
+      Este produto é digital, de uso profissional, e não substitui certificação técnica ou responsabilidade legal do profissional executante.<br><br>
+      © App Kit Lash & Brow Pro. Todos os direitos reservados.
+    </p>
+  </footer>
+
+</div>
+
+</body>
+</html>

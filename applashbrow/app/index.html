@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Kit Lash & Brow Pro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#faf4f0;
+    --card:#ffffff;
+    --ink:#2b2118;
+    --ink-soft:#6b5d52;
+    --accent:#b8895a;
+    --accent-dark:#8a5f3a;
+    --accent-soft:#f0ddd0;
+    --line:#e9ddd3;
+    --danger:#c0473f;
+    --ok:#5c8a5c;
+    --radius:16px;
+    --shadow:0 4px 20px rgba(43,33,24,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  .app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);}
+  .screen{display:none;padding:20px 18px 30px;animation:fadeIn .25s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  /* Header */
+  .topbar{
+    display:flex;align-items:center;gap:12px;
+    padding:16px 18px;background:var(--ink);color:#fff;
+    position:sticky;top:0;z-index:10;
+  }
+  .topbar .logo-badge{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--accent);display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:15px;color:#1a1310;overflow:hidden;flex-shrink:0;
+  }
+  .topbar .logo-badge img{width:100%;height:100%;object-fit:cover;}
+  .topbar .brand-name{font-size:15px;font-weight:600;line-height:1.2;}
+  .topbar .brand-sub{font-size:11px;opacity:.7;}
+  .topbar .back-btn{
+    background:none;border:none;color:#fff;font-size:20px;cursor:pointer;
+    padding:4px 8px;margin-right:-6px;
+  }
+
+  /* Typography */
+  h1{font-size:22px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:18px;font-weight:700;margin-bottom:4px;}
+  p.subtitle{color:var(--ink-soft);font-size:14px;margin-bottom:20px;line-height:1.5;}
+  .eyebrow{
+    font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+    color:var(--accent-dark);margin-bottom:6px;
+  }
+
+  /* Cards */
+  .card{
+    background:var(--card);border-radius:var(--radius);padding:20px;
+    box-shadow:var(--shadow);margin-bottom:14px;border:1px solid var(--line);
+  }
+  .action-card{
+    display:flex;align-items:center;gap:14px;cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .action-card:active{transform:scale(.98);}
+  .action-card .icon{
+    width:48px;height:48px;border-radius:12px;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
+  }
+  .action-card .txt strong{display:block;font-size:15px;margin-bottom:2px;}
+  .action-card .txt span{font-size:12.5px;color:var(--ink-soft);}
+  .action-card .arrow{margin-left:auto;color:var(--accent);font-size:18px;}
+
+  /* Forms */
+  label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin:14px 0 6px;}
+  label .req{color:var(--danger);}
+  input[type=text], input[type=tel], input[type=date], input[type=number], select, textarea{
+    width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;
+    font-size:14.5px;background:#fff;color:var(--ink);font-family:inherit;
+  }
+  input:focus, select:focus, textarea:focus{outline:none;border-color:var(--accent);}
+  textarea{resize:vertical;min-height:70px;}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+
+  .radio-group, .check-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .pill{
+    padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;
+    font-size:13px;cursor:pointer;background:#fff;color:var(--ink-soft);
+    transition:all .15s ease;user-select:none;
+  }
+  .pill.selected{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .pill.danger-pill.selected{background:var(--danger);border-color:var(--danger);}
+
+  .yn-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 0;border-bottom:1px solid var(--line);gap:10px;
+  }
+  .yn-row:last-child{border-bottom:none;}
+  .yn-row .q{font-size:13.5px;flex:1;line-height:1.4;}
+  .yn-btns{display:flex;gap:6px;flex-shrink:0;}
+  .yn-btn{
+    width:44px;height:32px;border-radius:8px;border:1.5px solid var(--line);
+    background:#fff;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink-soft);
+  }
+  .yn-btn.selected-yes{background:var(--danger);border-color:var(--danger);color:#fff;}
+  .yn-btn.selected-no{background:var(--ok);border-color:var(--ok);color:#fff;}
+
+  /* Buttons */
+  .btn{
+    display:block;width:100%;text-align:center;padding:14px;border-radius:12px;
+    font-size:15px;font-weight:700;border:none;cursor:pointer;margin-top:18px;
+    transition:transform .12s ease;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--ink);color:#fff;}
+  .btn-accent{background:var(--accent);color:#1a1310;}
+  .btn-outline{background:transparent;border:1.5px solid var(--ink);color:var(--ink);}
+  .btn-row{display:flex;gap:10px;}
+  .btn-row .btn{margin-top:0;}
+  .btn-sm{padding:9px 14px;font-size:13px;margin-top:0;width:auto;border-radius:9px;}
+
+  /* Progress */
+  .progress-wrap{margin-bottom:18px;}
+  .progress-bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-size:11.5px;color:var(--ink-soft);margin-top:6px;display:flex;justify-content:space-between;}
+
+  /* Client list */
+  .client-item{
+    display:flex;align-items:center;gap:12px;padding:14px;background:#fff;
+    border-radius:14px;border:1px solid var(--line);margin-bottom:10px;cursor:pointer;
+  }
+  .client-avatar{
+    width:42px;height:42px;border-radius:50%;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent-dark);
+    flex-shrink:0;font-size:15px;
+  }
+  .client-info{flex:1;min-width:0;}
+  .client-info strong{display:block;font-size:14.5px;}
+  .client-info span{font-size:12px;color:var(--ink-soft);}
+  .badge{
+    font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;
+  }
+  .badge-ok{background:#e5f0e5;color:var(--ok);}
+  .badge-warn{background:#fbeadb;color:#a8642a;}
+  .badge-danger{background:#fbe4e2;color:var(--danger);}
+
+  .empty-state{text-align:center;padding:50px 20px;color:var(--ink-soft);}
+  .empty-state .big-icon{font-size:44px;margin-bottom:12px;}
+
+  /* Toggle area chips onboarding */
+  .area-choice{
+    display:flex;gap:10px;margin-top:10px;
+  }
+  .area-choice .choice-box{
+    flex:1;border:1.5px solid var(--line);border-radius:14px;padding:16px 10px;
+    text-align:center;cursor:pointer;background:#fff;
+  }
+  .area-choice .choice-box.selected{border-color:var(--accent);background:var(--accent-soft);}
+  .area-choice .choice-box .em{font-size:26px;display:block;margin-bottom:6px;}
+  .area-choice .choice-box .lb{font-size:12.5px;font-weight:600;}
+
+  .section-title{
+    display:flex;align-items:center;gap:8px;margin:24px 0 10px;
+    font-size:13px;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.6px;
+  }
+  .section-title .line{flex:1;height:1px;background:var(--line);}
+
+  .logo-upload{
+    width:76px;height:76px;border-radius:50%;border:2px dashed var(--line);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    background:#fff;margin:0 auto 6px;overflow:hidden;font-size:24px;color:var(--ink-soft);
+  }
+  .logo-upload img{width:100%;height:100%;object-fit:cover;}
+
+  .checklist-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);}
+  .checklist-item:last-child{border-bottom:none;}
+  .checklist-item input[type=checkbox]{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--accent-dark);}
+  .checklist-item .txt{font-size:13px;line-height:1.5;color:var(--ink);}
+
+  .summary-box{
+    background:var(--accent-soft);border-radius:14px;padding:16px;margin:16px 0;
+    font-size:13.5px;line-height:1.7;
+  }
+  .summary-box b{color:var(--accent-dark);}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:99px;
+    font-size:13.5px;box-shadow:var(--shadow);z-index:100;opacity:0;pointer-events:none;
+    transition:opacity .25s ease, bottom .25s ease;
+  }
+  .toast.show{opacity:1;bottom:34px;}
+
+  .footer-note{text-align:center;font-size:11px;color:var(--ink-soft);margin-top:26px;opacity:.7;}
+
+  /* Guides */
+  .guide-item{
+    display:flex;align-items:center;gap:14px;padding:16px;background:#fff;
+    border-radius:14px;border:1px solid var(--line);margin-bottom:10px;cursor:pointer;
+  }
+  .guide-item .icon{
+    width:44px;height:44px;border-radius:12px;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+  }
+  .guide-item .txt strong{display:block;font-size:14.5px;margin-bottom:2px;}
+  .guide-item .txt span{font-size:12px;color:var(--ink-soft);}
+
+  .gtable{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:12.5px;}
+  .gtable th{
+    background:var(--ink);color:#fff;text-align:left;padding:9px 10px;font-size:11px;
+    text-transform:uppercase;letter-spacing:.4px;
+  }
+  .gtable th:first-child{border-radius:8px 0 0 0;}
+  .gtable th:last-child{border-radius:0 8px 0 0;}
+  .gtable td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45;}
+  .gtable tr:last-child td{border-bottom:none;}
+  .gtable tr:nth-child(even) td{background:#fbf7f4;}
+
+  .timeline-row{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);}
+  .timeline-row:last-child{border-bottom:none;}
+  .timeline-day{
+    width:52px;flex-shrink:0;background:var(--ink);color:#fff;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+    text-align:center;line-height:1.2;padding:4px;
+  }
+  .timeline-txt{font-size:13px;line-height:1.5;padding-top:2px;}
+
+  .check-print-item{
+    display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);
+    font-size:13px;line-height:1.5;
+  }
+  .check-print-item:last-child{border-bottom:none;}
+  .check-print-item .box{
+    width:16px;height:16px;border:1.5px solid var(--ink);border-radius:4px;flex-shrink:0;margin-top:2px;
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ============ TOPBAR ============ -->
+  <div class="topbar" id="topbar" style="display:none;">
+    <button class="back-btn" id="backBtn" onclick="goBack()" style="visibility:hidden;">‹</button>
+    <div class="logo-badge" id="topbarLogo">L</div>
+    <div>
+      <div class="brand-name" id="topbarName">Kit Lash & Brow Pro</div>
+      <div class="brand-sub" id="topbarSub">App de fichas &amp; mapeamento</div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 0: ONBOARDING ============ -->
+  <div class="screen active" id="screen-onboarding">
+    <div style="text-align:center;margin:30px 0 10px;">
+      <div style="font-size:38px;">💄</div>
+    </div>
+    <h1 style="text-align:center;">Bem-vinda ao seu App</h1>
+    <p class="subtitle" style="text-align:center;">Personalize em 30 segundos e comece a usar fichas profissionais de anamnese, mapeamento e prontuário com a sua marca.</p>
+
+    <div class="card">
+      <div style="text-align:center;">
+        <div class="logo-upload" id="logoUpload" onclick="document.getElementById('logoInput').click()">📷</div>
+        <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)">
+        <div class="hint">Toque para adicionar sua logo (opcional)</div>
+      </div>
+
+      <label>Seu nome <span class="req">*</span></label>
+      <input type="text" id="obNomeProfissional" placeholder="Ex: Ana Souza">
+
+      <label>Nome do seu estúdio / marca <span class="req">*</span></label>
+      <input type="text" id="obNomeEstudio" placeholder="Ex: Studio Ana Lash & Brow">
+
+      <label>Sua área de atuação <span class="req">*</span></label>
+      <div class="area-choice">
+        <div class="choice-box" data-area="sobrancelha" onclick="toggleArea('sobrancelha')">
+          <span class="em">✏️</span><span class="lb">Sobrancelha</span>
+        </div>
+        <div class="choice-box" data-area="cilios" onclick="toggleArea('cilios')">
+          <span class="em">👁️</span><span class="lb">Cílios</span>
+        </div>
+        <div class="choice-box" data-area="ambos" onclick="toggleArea('ambos')">
+          <span class="em">✨</span><span class="lb">Ambos</span>
+        </div>
+      </div>
+
+      <label>Dias médios até o retoque</label>
+      <input type="number" id="obDiasRetoque" placeholder="Ex: 21" value="21">
+      <div class="hint">Usamos isso pra calcular a data de retoque automaticamente em cada ficha (dá pra editar depois, cliente por cliente).</div>
+
+      <button class="btn btn-accent" onclick="finishOnboarding()">Começar a usar →</button>
+    </div>
+    <div class="footer-note">Seus dados ficam salvos só neste aparelho.</div>
+  </div>
+
+  <!-- ============ SCREEN 1: DASHBOARD ============ -->
+  <div class="screen" id="screen-dashboard">
+    <div class="eyebrow" id="dashGreeting">Olá</div>
+    <h1 id="dashEstudioName">Studio</h1>
+    <p class="subtitle">O que vamos fazer hoje?</p>
+
+    <div id="retoqueAlertBox"></div>
+
+    <div class="card action-card" onclick="startNewFicha()">
+      <div class="icon">📝</div>
+      <div class="txt"><strong>Nova ficha de cliente</strong><span>Anamnese + mapeamento + termo</span></div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="card action-card" onclick="showScreen('screen-clientes')">
+      <div class="icon">📂</div>
+      <div class="txt"><strong>Minhas clientes</strong><span id="clientCountLabel">Prontuário salvo</span></div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="card action-card" onclick="showScreen('screen-guias')">
+      <div class="icon">📚</div>
+      <div class="txt"><strong>Guias & Protocolos</strong><span>Referência técnica pra usar em atendimento</span></div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="card action-card" onclick="showScreen('screen-config')">
+      <div class="icon">⚙️</div>
+      <div class="txt"><strong>Configurações</strong><span>Editar nome, logo e área de atuação</span></div>
+      <div class="arrow">›</div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2: CONFIG ============ -->
+  <div class="screen" id="screen-config">
+    <h1>Configurações</h1>
+    <p class="subtitle">Ajuste os dados do seu estúdio quando quiser.</p>
+    <div class="card">
+      <div style="text-align:center;">
+        <div class="logo-upload" id="logoUpload2" onclick="document.getElementById('logoInput2').click()">📷</div>
+        <input type="file" id="logoInput2" accept="image/*" style="display:none;" onchange="handleLogoUpload(event, true)">
+      </div>
+      <label>Seu nome</label>
+      <input type="text" id="cfgNomeProfissional">
+      <label>Nome do estúdio / marca</label>
+      <input type="text" id="cfgNomeEstudio">
+      <label>Área de atuação</label>
+      <div class="area-choice">
+        <div class="choice-box" data-area-cfg="sobrancelha" onclick="toggleAreaCfg('sobrancelha')">
+          <span class="em">✏️</span><span class="lb">Sobrancelha</span>
+        </div>
+        <div class="choice-box" data-area-cfg="cilios" onclick="toggleAreaCfg('cilios')">
+          <span class="em">👁️</span><span class="lb">Cílios</span>
+        </div>
+        <div class="choice-box" data-area-cfg="ambos" onclick="toggleAreaCfg('ambos')">
+          <span class="em">✨</span><span class="lb">Ambos</span>
+        </div>
+      </div>
+      <label>Dias médios até o retoque</label>
+      <input type="number" id="cfgDiasRetoque">
+      <button class="btn btn-primary" onclick="saveConfig()">Salvar alterações</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2b: GUIAS LIST ============ -->
+  <div class="screen" id="screen-guias">
+    <h1>Guias & Protocolos</h1>
+    <p class="subtitle">Consulta rápida pra usar durante o atendimento.</p>
+    <div id="guiasList"></div>
+  </div>
+
+  <!-- ============ SCREEN 2c: GUIA DETALHE ============ -->
+  <div class="screen" id="screen-guia-detalhe">
+    <div id="guiaDetalheBox"></div>
+  </div>
+
+  <!-- ============ SCREEN 3: NOVA FICHA (WIZARD) ============ -->
+  <div class="screen" id="screen-ficha">
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:12%;"></div></div>
+      <div class="progress-label"><span id="progressStepLabel">Etapa 1 de 8</span><span id="progressPercLabel">12%</span></div>
+    </div>
+
+    <div id="wizardSteps"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" id="wizPrevBtn" onclick="wizardPrev()" style="display:none;">Voltar</button>
+      <button class="btn btn-accent" id="wizNextBtn" onclick="wizardNext()">Próximo</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 4: FICHA GERADA ============ -->
+  <div class="screen" id="screen-resumo">
+    <div style="text-align:center;margin:20px 0;">
+      <div style="font-size:40px;">✅</div>
+    </div>
+    <h1 style="text-align:center;">Ficha concluída</h1>
+    <p class="subtitle" style="text-align:center;">Confira o resumo abaixo, gere o PDF e salve no prontuário da cliente.</p>
+    <div class="summary-box" id="resumoBox"></div>
+    <button class="btn btn-accent" onclick="gerarPDF()">📄 Gerar PDF da ficha</button>
+    <button class="btn btn-primary" onclick="salvarNoProntuario()">💾 Salvar no prontuário</button>
+    <button class="btn btn-outline" onclick="showScreen('screen-dashboard')">Voltar ao início</button>
+  </div>
+
+  <!-- ============ SCREEN 5: CLIENTES ============ -->
+  <div class="screen" id="screen-clientes">
+    <h1>Minhas clientes</h1>
+    <p class="subtitle">Prontuário completo, sempre à mão.</p>
+    <div id="clientesList"></div>
+  </div>
+
+  <!-- ============ SCREEN 6: DETALHE CLIENTE ============ -->
+  <div class="screen" id="screen-cliente-detalhe">
+    <div id="clienteDetalheBox"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= STATE ================= */
+const STORAGE_CONFIG = 'lashbrow_studio_config';
+const STORAGE_CLIENTS = 'lashbrow_clients';
+let config = JSON.parse(localStorage.getItem(STORAGE_CONFIG) || 'null');
+let clients = JSON.parse(localStorage.getItem(STORAGE_CLIENTS) || '[]');
+let navHistory = [];
+let currentFicha = {};
+let currentStep = 0;
+let selectedAreaOnboard = null;
+let selectedAreaCfg = null;
+let pendingLogo = null;
+
+/* ================= NAV ================= */
+function showScreen(id, addHistory=true){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(addHistory) navHistory.push(id);
+  document.getElementById('backBtn').style.visibility = navHistory.length>1 ? 'visible' : 'hidden';
+  window.scrollTo(0,0);
+}
+function goBack(){
+  if(navHistory.length>1){
+    navHistory.pop();
+    const prev = navHistory[navHistory.length-1];
+    showScreen(prev, false);
+  }
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ================= ONBOARDING ================= */
+function toggleArea(area){
+  selectedAreaOnboard = area;
+  document.querySelectorAll('#screen-onboarding .choice-box').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.area === area);
+  });
+}
+function handleLogoUpload(event, isConfig){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    pendingLogo = e.target.result;
+    const target = isConfig ? document.getElementById('logoUpload2') : document.getElementById('logoUpload');
+    target.innerHTML = '<img src="'+pendingLogo+'">';
+  };
+  reader.readAsDataURL(file);
+}
+function finishOnboarding(){
+  const nome = document.getElementById('obNomeProfissional').value.trim();
+  const estudio = document.getElementById('obNomeEstudio').value.trim();
+  const dias = document.getElementById('obDiasRetoque').value || 21;
+  if(!nome || !estudio || !selectedAreaOnboard){
+    toast('Preencha nome, estúdio e área de atuação');
+    return;
+  }
+  config = {
+    nomeProfissional: nome,
+    nomeEstudio: estudio,
+    area: selectedAreaOnboard,
+    diasRetoque: parseInt(dias),
+    logo: pendingLogo
+  };
+  localStorage.setItem(STORAGE_CONFIG, JSON.stringify(config));
+  applyBranding();
+  showScreen('screen-dashboard');
+  renderDashboard();
+}
+
+/* ================= CONFIG SCREEN ================= */
+function toggleAreaCfg(area){
+  selectedAreaCfg = area;
+  document.querySelectorAll('#screen-config .choice-box').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.areaCfg === area);
+  });
+}
+function openConfigScreen(){
+  document.getElementById('cfgNomeProfissional').value = config.nomeProfissional;
+  document.getElementById('cfgNomeEstudio').value = config.nomeEstudio;
+  document.getElementById('cfgDiasRetoque').value = config.diasRetoque;
+  selectedAreaCfg = config.area;
+  document.querySelectorAll('#screen-config .choice-box').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.areaCfg === selectedAreaCfg);
+  });
+  if(config.logo){
+    document.getElementById('logoUpload2').innerHTML = '<img src="'+config.logo+'">';
+  }
+}
+function saveConfig(){
+  config.nomeProfissional = document.getElementById('cfgNomeProfissional').value.trim();
+  config.nomeEstudio = document.getElementById('cfgNomeEstudio').value.trim();
+  config.diasRetoque = parseInt(document.getElementById('cfgDiasRetoque').value) || 21;
+  config.area = selectedAreaCfg;
+  if(pendingLogo) config.logo = pendingLogo;
+  localStorage.setItem(STORAGE_CONFIG, JSON.stringify(config));
+  applyBranding();
+  toast('Configurações salvas');
+  showScreen('screen-dashboard');
+}
+
+/* ================= BRANDING ================= */
+function applyBranding(){
+  document.getElementById('topbar').style.display = 'flex';
+  document.getElementById('topbarName').textContent = config.nomeEstudio;
+  document.getElementById('topbarSub').textContent = areaLabel(config.area);
+  const initials = config.nomeEstudio.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+  const logoEl = document.getElementById('topbarLogo');
+  if(config.logo){ logoEl.innerHTML = '<img src="'+config.logo+'">'; }
+  else{ logoEl.textContent = initials || 'L'; }
+}
+function areaLabel(area){
+  if(area==='sobrancelha') return 'Micropigmentação de Sobrancelhas';
+  if(area==='cilios') return 'Lash Designer';
+  return 'Sobrancelhas & Cílios';
+}
+
+/* ================= DASHBOARD ================= */
+function renderDashboard(){
+  document.getElementById('dashGreeting').textContent = 'Olá, ' + (config.nomeProfissional||'').split(' ')[0];
+  document.getElementById('dashEstudioName').textContent = config.nomeEstudio;
+  document.getElementById('clientCountLabel').textContent = clients.length + (clients.length===1?' cliente salva':' clientes salvas');
+
+  const alertBox = document.getElementById('retoqueAlertBox');
+  const today = new Date();
+  const proximos = clients.filter(c=>{
+    if(!c.dataRetoque) return false;
+    const d = new Date(c.dataRetoque);
+    const diff = (d - today) / (1000*60*60*24);
+    return diff <= 3;
+  });
+  if(proximos.length>0){
+    alertBox.innerHTML = '<div class="card" style="border-color:#e8b4a0;background:#fff6f1;">' +
+      '<div style="font-size:13px;font-weight:700;color:var(--accent-dark);margin-bottom:6px;">⏰ Retoques próximos ou atrasados</div>' +
+      '<div style="font-size:12.5px;color:var(--ink-soft);">' + proximos.length + ' cliente(s) precisam ser lembradas do retoque. Veja em "Minhas clientes".</div>' +
+      '</div>';
+  } else {
+    alertBox.innerHTML = '';
+  }
+}
+
+/* ================= WIZARD FICHA ================= */
+function buildSteps(){
+  const area = config.area;
+  const steps = [];
+
+  // Step 1: Dados pessoais
+  steps.push({
+    title: 'Dados pessoais',
+    render: ()=> `
+      <h2>Dados da cliente</h2>
+      <p class="subtitle">Vamos começar pelo básico.</p>
+      <label>Nome completo <span class="req">*</span></label>
+      <input type="text" id="f_nome" value="${currentFicha.nome||''}">
+      <label>Idade</label>
+      <input type="number" id="f_idade" value="${currentFicha.idade||''}">
+      <label>Telefone / WhatsApp</label>
+      <input type="tel" id="f_telefone" value="${currentFicha.telefone||''}">
+      <label>Data do atendimento</label>
+      <input type="date" id="f_data" value="${currentFicha.data || new Date().toISOString().slice(0,10)}">
+    `,
+    save: ()=>{
+      currentFicha.nome = val('f_nome');
+      currentFicha.idade = val('f_idade');
+      currentFicha.telefone = val('f_telefone');
+      currentFicha.data = val('f_data');
+    },
+    validate: ()=> currentFicha_hasValue('f_nome')
+  });
+
+  // Step 2: Saúde geral
+  steps.push({
+    title: 'Saúde geral',
+    render: ()=> `
+      <h2>Saúde geral</h2>
+      <p class="subtitle">Perguntas de segurança antes do procedimento.</p>
+      <div class="card" style="padding:6px 16px;">
+        ${ynRow('gravida','Está grávida ou amamentando?')}
+        ${ynRow('diabetes','Possui diabetes descompensada?')}
+        ${ynRow('isotretinoina','Usou isotretinoína (Roacutan) nos últimos 6 meses?')}
+        ${ynRow('doencaPele','Tem alguma doença de pele ativa na região (psoríase, vitiligo, herpes)?')}
+        ${ynRow('queloide','Tem histórico de queloide / cicatrização hipertrófica?')}
+        ${ynRow('alergia','Já teve alergia a cosméticos, pigmento, henna ou anestésico?')}
+        ${ynRow('anticoagulante','Usa anticoagulante ou tem problema de coagulação?')}
+      </div>
+      <label>Observações de saúde (opcional)</label>
+      <textarea id="f_obsSaude">${currentFicha.obsSaude||''}</textarea>
+    `,
+    save: ()=>{
+      ['gravida','diabetes','isotretinoina','doencaPele','queloide','alergia','anticoagulante'].forEach(k=>{
+        currentFicha[k] = currentFicha['_yn_'+k] ?? currentFicha[k] ?? null;
+      });
+      currentFicha.obsSaude = val('f_obsSaude');
+    },
+    validate: ()=> true
+  });
+
+  // Step 3: Histórico do procedimento
+  steps.push({
+    title: 'Histórico',
+    render: ()=> `
+      <h2>Histórico de procedimentos</h2>
+      <p class="subtitle">Isso ajuda a prever resultado e tempo de sessão.</p>
+      ${ area!=='cilios' ? `
+      <label>Já fez micropigmentação de sobrancelha antes?</label>
+      <div class="radio-group" id="grp_jaFezSobrancelha">
+        ${pill('jaFezSobrancelha','sim','Sim')}${pill('jaFezSobrancelha','nao','Não')}
+      </div>` : ''}
+      ${ area!=='sobrancelha' ? `
+      <label>Já fez extensão de cílios antes?</label>
+      <div class="radio-group" id="grp_jaFezCilios">
+        ${pill('jaFezCilios','sim','Sim')}${pill('jaFezCilios','nao','Não')}
+      </div>` : ''}
+      <label>Usa lentes de contato?</label>
+      <div class="radio-group" id="grp_lentes">
+        ${pill('lentes','sim','Sim')}${pill('lentes','nao','Não')}
+      </div>
+      <label>Teve reação alérgica a adesivo/cianoacrilato antes?</label>
+      <div class="radio-group" id="grp_alergAdesivo">
+        ${pill('alergAdesivo','sim','Sim')}${pill('alergAdesivo','nao','Não')}
+      </div>
+    `,
+    save: ()=>{
+      // nada extra, pills já salvam via selectPill
+    },
+    validate: ()=> true
+  });
+
+  // Step 4: Mapeamento sobrancelha (condicional)
+  if(area==='sobrancelha' || area==='ambos'){
+    steps.push({
+      title: 'Mapeamento de sobrancelha',
+      render: ()=> `
+        <h2>Mapeamento de sobrancelha</h2>
+        <p class="subtitle">Registro técnico do design.</p>
+        <label>Formato do rosto</label>
+        <select id="f_formatoRosto">
+          ${selOpt(['Oval','Redondo','Quadrado','Triangular','Coração','Alongado'], currentFicha.formatoRosto)}
+        </select>
+        <label>Técnica escolhida</label>
+        <div class="radio-group" id="grp_tecnicaSobrancelha">
+          ${pill('tecnicaSobrancelha','fio_a_fio','Fio a fio')}
+          ${pill('tecnicaSobrancelha','powder','Powder brow')}
+          ${pill('tecnicaSobrancelha','hibrida','Híbrida')}
+        </div>
+        <label>Cor do pigmento</label>
+        <input type="text" id="f_corPigmento" placeholder="Ex: Castanho médio" value="${currentFicha.corPigmento||''}">
+        <label>Observações do mapeamento</label>
+        <textarea id="f_obsMapeamentoSobrancelha" placeholder="Assimetrias, altura de arco, medidas...">${currentFicha.obsMapeamentoSobrancelha||''}</textarea>
+      `,
+      save: ()=>{
+        currentFicha.formatoRosto = val('f_formatoRosto');
+        currentFicha.corPigmento = val('f_corPigmento');
+        currentFicha.obsMapeamentoSobrancelha = val('f_obsMapeamentoSobrancelha');
+      },
+      validate: ()=> true
+    });
+  }
+
+  // Step 5: Mapeamento cílios (condicional)
+  if(area==='cilios' || area==='ambos'){
+    steps.push({
+      title: 'Mapeamento de cílios',
+      render: ()=> `
+        <h2>Mapeamento de cílios</h2>
+        <p class="subtitle">Registro técnico da aplicação.</p>
+        <label>Volume</label>
+        <div class="radio-group" id="grp_volumeCilios">
+          ${pill('volumeCilios','classico','Clássico')}
+          ${pill('volumeCilios','russo','Volume russo')}
+          ${pill('volumeCilios','hibrido','Híbrido')}
+          ${pill('volumeCilios','mega','Mega volume')}
+        </div>
+        <label>Curvatura</label>
+        <div class="radio-group" id="grp_curvatura">
+          ${pill('curvatura','C','C')}${pill('curvatura','CC','CC')}${pill('curvatura','D','D')}${pill('curvatura','L','L')}
+        </div>
+        <label>Espessura (mm)</label>
+        <input type="text" id="f_espessura" placeholder="Ex: 0.07mm" value="${currentFicha.espessura||''}">
+        <label>Comprimento predominante</label>
+        <input type="text" id="f_comprimento" placeholder="Ex: 9-12mm" value="${currentFicha.comprimento||''}">
+        <label>Observações do mapeamento</label>
+        <textarea id="f_obsMapeamentoCilios" placeholder="Formato de olho, densidade natural...">${currentFicha.obsMapeamentoCilios||''}</textarea>
+      `,
+      save: ()=>{
+        currentFicha.espessura = val('f_espessura');
+        currentFicha.comprimento = val('f_comprimento');
+        currentFicha.obsMapeamentoCilios = val('f_obsMapeamentoCilios');
+      },
+      validate: ()=> true
+    });
+  }
+
+  // Step 6: Protocolo executado
+  steps.push({
+    title: 'Protocolo executado',
+    render: ()=> `
+      <h2>Protocolo executado</h2>
+      <p class="subtitle">O que foi feito nesta sessão.</p>
+      <label>Lote do pigmento / adesivo utilizado</label>
+      <input type="text" id="f_lote" value="${currentFicha.lote||''}">
+      <label>Tempo de sessão (minutos)</label>
+      <input type="number" id="f_tempoSessao" value="${currentFicha.tempoSessao||''}">
+      <label>Observações da profissional</label>
+      <textarea id="f_obsProfissional">${currentFicha.obsProfissional||''}</textarea>
+    `,
+    save: ()=>{
+      currentFicha.lote = val('f_lote');
+      currentFicha.tempoSessao = val('f_tempoSessao');
+      currentFicha.obsProfissional = val('f_obsProfissional');
+    },
+    validate: ()=> true
+  });
+
+  // Step 7: Termo de consentimento
+  steps.push({
+    title: 'Termo de consentimento',
+    render: ()=> `
+      <h2>Termo de consentimento</h2>
+      <p class="subtitle">Leia com a cliente antes de assinar.</p>
+      <div class="card" style="padding:6px 16px;">
+        <div class="checklist-item">
+          <input type="checkbox" id="f_termoRiscos" ${currentFicha.termoRiscos?'checked':''}>
+          <div class="txt">Declaro estar ciente dos riscos, cuidados pré e pós-procedimento e que as informações prestadas nesta ficha são verdadeiras.</div>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" id="f_termoImagem" ${currentFicha.termoImagem?'checked':''}>
+          <div class="txt">Autorizo o uso de imagens (antes/depois) para fins de portfólio profissional.</div>
+        </div>
+      </div>
+      <label>Nome completo como assinatura</label>
+      <input type="text" id="f_assinatura" value="${currentFicha.assinatura||''}">
+    `,
+    save: ()=>{
+      currentFicha.termoRiscos = document.getElementById('f_termoRiscos').checked;
+      currentFicha.termoImagem = document.getElementById('f_termoImagem').checked;
+      currentFicha.assinatura = val('f_assinatura');
+    },
+    validate: ()=> document.getElementById('f_termoRiscos') ? document.getElementById('f_termoRiscos').checked : true
+  });
+
+  // Step 8: Retorno/Retoque
+  steps.push({
+    title: 'Retorno',
+    render: ()=>{
+      const dataAtendimento = currentFicha.data || new Date().toISOString().slice(0,10);
+      const dRetoque = currentFicha.dataRetoque || addDays(dataAtendimento, config.diasRetoque || 21);
+      return `
+      <h2>Retorno e retoque</h2>
+      <p class="subtitle">Calculamos a data sugerida — ajuste se precisar.</p>
+      <label>Data prevista de retoque</label>
+      <input type="date" id="f_dataRetoque" value="${dRetoque}">
+      <label>Orientações de cicatrização / pós-procedimento</label>
+      <textarea id="f_obsRetoque" placeholder="Ex: evitar sol, não molhar por 7 dias...">${currentFicha.obsRetoque||''}</textarea>
+    `;},
+    save: ()=>{
+      currentFicha.dataRetoque = val('f_dataRetoque');
+      currentFicha.obsRetoque = val('f_obsRetoque');
+    },
+    validate: ()=> true
+  });
+
+  return steps;
+}
+
+let wizardStepsCache = [];
+
+function startNewFicha(){
+  currentFicha = {};
+  currentStep = 0;
+  wizardStepsCache = buildSteps();
+  showScreen('screen-ficha');
+  renderStep();
+}
+
+function renderStep(){
+  const steps = wizardStepsCache;
+  const step = steps[currentStep];
+  document.getElementById('wizardSteps').innerHTML = step.render();
+  document.getElementById('progressStepLabel').textContent = 'Etapa ' + (currentStep+1) + ' de ' + steps.length + ' · ' + step.title;
+  const perc = Math.round(((currentStep+1)/steps.length)*100);
+  document.getElementById('progressFill').style.width = perc + '%';
+  document.getElementById('progressPercLabel').textContent = perc + '%';
+  document.getElementById('wizPrevBtn').style.display = currentStep===0 ? 'none':'block';
+  document.getElementById('wizNextBtn').textContent = currentStep === steps.length-1 ? 'Concluir ficha' : 'Próximo';
+
+  // reattach pill/yn states from currentFicha
+  restorePillStates();
+}
+
+function restorePillStates(){
+  document.querySelectorAll('[id^="grp_"]').forEach(grp=>{
+    const key = grp.id.replace('grp_','');
+    const savedVal = currentFicha[key];
+    if(savedVal){
+      grp.querySelectorAll('.pill').forEach(p=>{
+        p.classList.toggle('selected', p.dataset.val === savedVal);
+      });
+    }
+  });
+  ['gravida','diabetes','isotretinoina','doencaPele','queloide','alergia','anticoagulante'].forEach(k=>{
+    const row = document.getElementById('yn_'+k);
+    if(row && currentFicha[k]!==undefined && currentFicha[k]!==null){
+      row.querySelectorAll('.yn-btn').forEach(b=>{
+        const isYes = b.dataset.v === 'sim';
+        b.classList.toggle('selected-yes', isYes && currentFicha[k]==='sim');
+        b.classList.toggle('selected-no', !isYes && currentFicha[k]==='nao');
+      });
+    }
+  });
+}
+
+function pill(group, value, label){
+  return `<div class="pill" data-val="${value}" onclick="selectPill('${group}','${value}', this)">${label}</div>`;
+}
+function selectPill(group, value, el){
+  currentFicha[group] = value;
+  el.parentElement.querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function ynRow(key, question){
+  return `<div class="yn-row" id="yn_${key}">
+    <div class="q">${question}</div>
+    <div class="yn-btns">
+      <button type="button" class="yn-btn" data-v="sim" onclick="selectYN('${key}','sim',this)">Sim</button>
+      <button type="button" class="yn-btn" data-v="nao" onclick="selectYN('${key}','nao',this)">Não</button>
+    </div>
+  </div>`;
+}
+function selectYN(key, value, el){
+  currentFicha[key] = value;
+  const row = document.getElementById('yn_'+key);
+  row.querySelectorAll('.yn-btn').forEach(b=>{
+    b.classList.remove('selected-yes','selected-no');
+  });
+  el.classList.add(value==='sim' ? 'selected-yes' : 'selected-no');
+}
+function selOpt(list, current){
+  return list.map(o=>`<option value="${o}" ${o===current?'selected':''}>${o}</option>`).join('');
+}
+function val(id){
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+function currentFicha_hasValue(id){
+  const el = document.getElementById(id);
+  return el && el.value.trim().length>0;
+}
+function addDays(dateStr, days){
+  const d = new Date(dateStr);
+  d.setDate(d.getDate()+parseInt(days||21));
+  return d.toISOString().slice(0,10);
+}
+
+function wizardNext(){
+  const steps = wizardStepsCache;
+  const step = steps[currentStep];
+  step.save();
+  if(!step.validate()){
+    toast('Preencha os campos obrigatórios');
+    return;
+  }
+  if(currentStep < steps.length-1){
+    currentStep++;
+    renderStep();
+  } else {
+    finalizeFicha();
+  }
+}
+function wizardPrev(){
+  wizardStepsCache[currentStep].save();
+  currentStep--;
+  renderStep();
+}
+
+function finalizeFicha(){
+  currentFicha.id = 'c_' + Date.now();
+  currentFicha.criadoEm = new Date().toISOString();
+  showScreen('screen-resumo');
+  renderResumo();
+}
+
+function renderResumo(){
+  const f = currentFicha;
+  let html = `<b>Cliente:</b> ${f.nome||'-'}<br>`;
+  html += `<b>Data do atendimento:</b> ${formatDate(f.data)}<br>`;
+  if(f.tecnicaSobrancelha) html += `<b>Técnica sobrancelha:</b> ${labelTecnica(f.tecnicaSobrancelha)}<br>`;
+  if(f.volumeCilios) html += `<b>Volume cílios:</b> ${labelVolume(f.volumeCilios)}<br>`;
+  html += `<b>Retoque previsto:</b> ${formatDate(f.dataRetoque)}<br>`;
+  html += `<b>Termo assinado:</b> ${f.termoRiscos ? 'Sim' : 'Não'}`;
+  document.getElementById('resumoBox').innerHTML = html;
+}
+function labelTecnica(v){
+  return {fio_a_fio:'Fio a fio', powder:'Powder brow', hibrida:'Híbrida'}[v] || v;
+}
+function labelVolume(v){
+  return {classico:'Clássico', russo:'Volume russo', hibrido:'Híbrido', mega:'Mega volume'}[v] || v;
+}
+function formatDate(d){
+  if(!d) return '-';
+  const [y,m,day] = d.split('-');
+  return day+'/'+m+'/'+y;
+}
+
+/* ================= PDF ================= */
+function gerarPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const f = currentFicha;
+  let y = 20;
+  const pageH = doc.internal.pageSize.height;
+  const marginL = 15;
+  const lineH = 7;
+
+  function checkPage(){ if(y > pageH-20){ doc.addPage(); y=20; } }
+  function title(t){
+    checkPage();
+    doc.setFontSize(15); doc.setFont(undefined,'bold');
+    doc.text(t, marginL, y); y+=lineH+2;
+  }
+  function sectionHeader(t){
+    checkPage();
+    y+=3;
+    doc.setFillColor(184,137,90);
+    doc.rect(marginL, y-5, 180, 8, 'F');
+    doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
+    doc.text(t, marginL+3, y);
+    doc.setTextColor(30,30,30);
+    y+=lineH+2;
+  }
+  function field(label, value){
+    checkPage();
+    doc.setFontSize(10); doc.setFont(undefined,'bold');
+    doc.text(label+':', marginL, y);
+    doc.setFont(undefined,'normal');
+    const text = String(value || '-');
+    const split = doc.splitTextToSize(text, 120);
+    doc.text(split, marginL+55, y);
+    y += lineH * Math.max(1, split.length);
+  }
+
+  doc.setFontSize(18); doc.setFont(undefined,'bold'); doc.setTextColor(30,30,30);
+  doc.text(config.nomeEstudio || 'Studio', marginL, y); y+=8;
+  doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.setTextColor(100,100,100);
+  doc.text(areaLabel(config.area) + ' · ' + (config.nomeProfissional||''), marginL, y); y+=10;
+  doc.setDrawColor(220,210,200); doc.line(marginL, y, 195, y); y+=8;
+  doc.setTextColor(30,30,30);
+
+  title('Ficha de Anamnese e Procedimento');
+
+  sectionHeader('Dados pessoais');
+  field('Nome', f.nome);
+  field('Idade', f.idade);
+  field('Telefone', f.telefone);
+  field('Data do atendimento', formatDate(f.data));
+
+  sectionHeader('Saúde geral');
+  field('Grávida/amamentando', ynLabel(f.gravida));
+  field('Diabetes descompensada', ynLabel(f.diabetes));
+  field('Isotretinoína (6 meses)', ynLabel(f.isotretinoina));
+  field('Doença de pele ativa', ynLabel(f.doencaPele));
+  field('Histórico de queloide', ynLabel(f.queloide));
+  field('Alergias', ynLabel(f.alergia));
+  field('Anticoagulante', ynLabel(f.anticoagulante));
+  if(f.obsSaude) field('Observações', f.obsSaude);
+
+  sectionHeader('Histórico de procedimentos');
+  if(f.jaFezSobrancelha) field('Já fez micropigmentação', f.jaFezSobrancelha==='sim'?'Sim':'Não');
+  if(f.jaFezCilios) field('Já fez extensão de cílios', f.jaFezCilios==='sim'?'Sim':'Não');
+  field('Usa lentes de contato', ynLabel(f.lentes));
+  field('Alergia a adesivo/cianoacrilato', ynLabel(f.alergAdesivo));
+
+  if(f.tecnicaSobrancelha || f.formatoRosto){
+    sectionHeader('Mapeamento de sobrancelha');
+    field('Formato do rosto', f.formatoRosto);
+    field('Técnica', labelTecnica(f.tecnicaSobrancelha));
+    field('Cor do pigmento', f.corPigmento);
+    if(f.obsMapeamentoSobrancelha) field('Observações', f.obsMapeamentoSobrancelha);
+  }
+
+  if(f.volumeCilios || f.curvatura){
+    sectionHeader('Mapeamento de cílios');
+    field('Volume', labelVolume(f.volumeCilios));
+    field('Curvatura', f.curvatura);
+    field('Espessura', f.espessura);
+    field('Comprimento', f.comprimento);
+    if(f.obsMapeamentoCilios) field('Observações', f.obsMapeamentoCilios);
+  }
+
+  sectionHeader('Protocolo executado');
+  field('Lote utilizado', f.lote);
+  field('Tempo de sessão', f.tempoSessao ? f.tempoSessao+' min' : '-');
+  if(f.obsProfissional) field('Observações da profissional', f.obsProfissional);
+
+  sectionHeader('Termo de consentimento');
+  field('Ciente dos riscos', f.termoRiscos ? 'Sim' : 'Não');
+  field('Autoriza uso de imagem', f.termoImagem ? 'Sim' : 'Não');
+  field('Assinatura', f.assinatura);
+
+  sectionHeader('Retorno e retoque');
+  field('Data prevista de retoque', formatDate(f.dataRetoque));
+  if(f.obsRetoque) field('Orientações', f.obsRetoque);
+
+  y+=10; checkPage();
+  doc.setFontSize(8); doc.setTextColor(150,150,150);
+  doc.text('Documento gerado por ' + (config.nomeEstudio||'') + ' — uso profissional.', marginL, y);
+
+  const filename = 'ficha_' + (f.nome||'cliente').toLowerCase().replace(/\s+/g,'_') + '.pdf';
+  doc.save(filename);
+  toast('PDF gerado');
+}
+function ynLabel(v){
+  if(v==='sim') return 'Sim';
+  if(v==='nao') return 'Não';
+  return '-';
+}
+
+/* ================= PRONTUÁRIO ================= */
+function salvarNoProntuario(){
+  const idx = clients.findIndex(c=>c.id===currentFicha.id);
+  if(idx>=0) clients[idx] = currentFicha; else clients.push(currentFicha);
+  localStorage.setItem(STORAGE_CLIENTS, JSON.stringify(clients));
+  toast('Salvo no prontuário');
+  renderDashboard();
+  showScreen('screen-dashboard');
+}
+
+function renderClientesList(){
+  const list = document.getElementById('clientesList');
+  if(clients.length===0){
+    list.innerHTML = `<div class="empty-state"><div class="big-icon">📭</div>Nenhuma cliente salva ainda.<br>Crie sua primeira ficha!</div>`;
+    return;
+  }
+  const today = new Date();
+  const sorted = [...clients].sort((a,b)=> new Date(b.criadoEm) - new Date(a.criadoEm));
+  list.innerHTML = sorted.map(c=>{
+    const initials = (c.nome||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+    let badge = '';
+    if(c.dataRetoque){
+      const diff = Math.round((new Date(c.dataRetoque)-today)/(1000*60*60*24));
+      if(diff < 0) badge = '<span class="badge badge-danger">Retoque atrasado</span>';
+      else if(diff <= 3) badge = '<span class="badge badge-warn">Retoque em '+diff+'d</span>';
+      else badge = '<span class="badge badge-ok">Retoque '+formatDate(c.dataRetoque)+'</span>';
+    }
+    return `<div class="client-item" onclick="openClientDetail('${c.id}')">
+      <div class="client-avatar">${initials}</div>
+      <div class="client-info"><strong>${c.nome||'Sem nome'}</strong><span>Atendimento ${formatDate(c.data)}</span></div>
+      ${badge}
+    </div>`;
+  }).join('');
+}
+
+function openClientDetail(id){
+  const c = clients.find(x=>x.id===id);
+  if(!c) return;
+  currentFicha = c;
+  let html = `<h1>${c.nome}</h1><p class="subtitle">Ficha salva em ${formatDate(c.data)}</p>`;
+  html += `<div class="summary-box">`;
+  html += `<b>Telefone:</b> ${c.telefone||'-'}<br>`;
+  if(c.tecnicaSobrancelha) html += `<b>Técnica sobrancelha:</b> ${labelTecnica(c.tecnicaSobrancelha)}<br>`;
+  if(c.volumeCilios) html += `<b>Volume cílios:</b> ${labelVolume(c.volumeCilios)}<br>`;
+  html += `<b>Retoque previsto:</b> ${formatDate(c.dataRetoque)}<br>`;
+  html += `</div>`;
+  html += `<button class="btn btn-accent" onclick="gerarPDF()">📄 Gerar PDF novamente</button>`;
+  html += `<button class="btn btn-outline" onclick="deleteClient('${c.id}')" style="color:var(--danger);border-color:var(--danger);">🗑 Excluir ficha</button>`;
+  document.getElementById('clienteDetalheBox').innerHTML = html;
+  showScreen('screen-cliente-detalhe');
+}
+function deleteClient(id){
+  clients = clients.filter(c=>c.id!==id);
+  localStorage.setItem(STORAGE_CLIENTS, JSON.stringify(clients));
+  toast('Ficha excluída');
+  renderDashboard();
+  showScreen('screen-clientes');
+  renderClientesList();
+}
+
+/* ================= GUIAS & PROTOCOLOS: DADOS ================= */
+const PIGMENT_TABLE = [
+  {a:'Pele clara — subtom rosado (frio)', b:'Cinza acastanhado / taupe frio', c:'Evitar tons alaranjados — puxam pro avermelhado com o tempo'},
+  {a:'Pele clara — subtom amarelado (quente)', b:'Castanho claro quente', c:'Boa aderência, cicatriza com tom natural'},
+  {a:'Pele média — subtom neutro', b:'Castanho médio neutro', c:'Tom mais versátil, funciona na maioria dos casos'},
+  {a:'Pele média — subtom dourado', b:'Castanho dourado / avelã', c:'Harmoniza com fios com reflexo dourado'},
+  {a:'Pele morena — subtom quente', b:'Castanho médio-escuro quente', c:'Evitar pigmentos muito acinzentados — podem ficar acizentados'},
+  {a:'Pele morena — subtom oliva', b:'Castanho acinzentado', c:'Neutraliza o subtom esverdeado da pele'},
+  {a:'Pele negra — subtom frio', b:'Preto acastanhado / grafite', c:'Pigmentos muito claros tendem a sumir na cicatrização'},
+  {a:'Pele negra — subtom quente', b:'Castanho escuro quente / marrom café', c:'Reforçar hidratação da região pra melhor fixação'}
+];
+const FACE_SHAPE_TABLE = [
+  {a:'Oval', b:'Arco suave, seguindo a curva natural', c:'Rosto já equilibrado — quase todo formato funciona bem'},
+  {a:'Redondo', b:'Arco alto e levemente angular', c:'Alonga visualmente o rosto, quebra o efeito circular'},
+  {a:'Quadrado', b:'Curva suave e arredondada', c:'Suaviza os ângulos da mandíbula'},
+  {a:'Triangular (testa larga, queixo fino)', b:'Reta com leve arco no terço final', c:'Equilibra a proporção entre testa e queixo'},
+  {a:'Coração (testa larga, queixo afilado)', b:'Curva suave, início mais fino', c:'Evita competir visualmente com a testa'},
+  {a:'Alongado', b:'Mais reta e horizontal', c:'"Encurta" visualmente o rosto'}
+];
+const EYE_SHAPE_TABLE = [
+  {a:'Amendoado', b:'Curvatura C ou CC — volume clássico', c:'Formato equilibrado, quase toda curvatura funciona'},
+  {a:'Redondo', b:'Curvatura C (mais suave)', c:'Evitar D muito forte — pode arredondar ainda mais o olhar'},
+  {a:'Caído (cantos externos p/ baixo)', b:'Curvatura D ou L no terço externo', c:'"Levanta" visualmente o canto externo do olho'},
+  {a:'Fundo (pouca pálpebra visível)', b:'Curvatura C/CC, fios mais longos no centro', c:'Volume russo ajuda a abrir o olhar'},
+  {a:'Protruso (saltado)', b:'Curvatura C suave', c:'Evitar D — pode acentuar a protrusão'},
+  {a:'Cantos internos próximos', b:'Fios mais longos nos cantos externos', c:'Ajuda a alongar e afastar visualmente o olhar'}
+];
+const HEALING_SOBRANCELHA = [
+  {d:'Dia 1', t:'Cor bem mais escura/saturada que o esperado — é normal. Pode haver leve vermelhidão e sensibilidade.'},
+  {d:'Dia 3', t:'Início da formação de películas finas (casquinhas). Coceira leve é normal — orientar a NÃO arrancar.'},
+  {d:'Dia 7', t:'Descamação das películas. A cor pode parecer "sumir" por baixo — fase normal, não é motivo de preocupação.'},
+  {d:'Dia 15', t:'Pele cicatrizada por fora. A cor começa a "voltar à tona" conforme o efeito fantasma passa.'},
+  {d:'Dia 30', t:'Cor estabilizada e cicatrização completa. Momento ideal pra avaliar necessidade de retoque.'}
+];
+const HEALING_CILIOS = [
+  {d:'Dia 1', t:'Fixação completa da cola acontece entre 24-48h. Evitar água, vapor e calor nesse período.'},
+  {d:'Dia 3', t:'Adaptação total aos fios. Reforçar pra não coçar nem esfregar os olhos.'},
+  {d:'Dia 7', t:'Início da queda natural dos primeiros fios — faz parte do ciclo capilar normal, não é defeito.'},
+  {d:'Dia 15', t:'Momento ideal pra manutenção (preenchimento), antes da queda ficar muito visível.'},
+  {d:'Dia 30', t:'Já caiu boa parte do volume original — retoque completo recomendado nessa marca.'}
+];
+const BIOSEG_SOBRANCELHA = [
+  'Não molhar a região por 7 dias',
+  'Não usar maquiagem na área por 7 dias',
+  'Evitar sol direto na área por 15 dias — usar protetor solar após cicatrização',
+  'Não usar ácidos, esfoliantes ou cremes na região por 30 dias',
+  'Não arrancar as películas/casquinhas que se formarem',
+  'Não frequentar piscina, sauna ou praia por 15 dias',
+  'Aplicar a pomada cicatrizante indicada pela profissional, conforme orientado',
+  'Evitar exercício físico intenso (suor em excesso) nas primeiras 48h',
+  'Retornar na data agendada para avaliação de retoque'
+];
+const BIOSEG_CILIOS = [
+  'Não molhar os cílios nas primeiras 24-48h (fixação da cola)',
+  'Evitar vapor de rosto, sauna ou piscina nas primeiras 48h',
+  'Não usar máscara de cílios ou produtos oleosos na região',
+  'Evitar dormir de bruços nos primeiros dias (amassa os fios)',
+  'Escovar os cílios diariamente com a escovinha própria',
+  'Não usar removedor de maquiagem à base de óleo',
+  'Não tentar remover os fios sozinha em casa',
+  'Evitar coçar ou esfregar os olhos',
+  'Retornar para manutenção a cada 15-20 dias'
+];
+const BIOSEG_GERAL = [
+  'Materiais descartáveis (agulhas, encapador, luvas) trocados a cada cliente',
+  'Ambiente e instrumentos reutilizáveis esterilizados/higienizados entre atendimentos',
+  'Produtos com procedência e registro verificados',
+  'Ficha de anamnese preenchida e assinada antes de qualquer procedimento'
+];
+
+const GUIDES = [
+  {id:'pigmento', icon:'🎨', title:'Cor de pigmento x tom de pele', desc:'Tabela de referência rápida', areas:['sobrancelha','ambos']},
+  {id:'formato-rosto', icon:'📐', title:'Sobrancelha ideal por formato de rosto', desc:'Oval, redondo, quadrado, coração...', areas:['sobrancelha','ambos']},
+  {id:'formato-olho', icon:'👁️', title:'Curvatura/volume por formato de olho', desc:'Amendoado, caído, fundo, protruso...', areas:['cilios','ambos']},
+  {id:'cicatrizacao', icon:'📅', title:'Cronograma pós-procedimento', desc:'O que esperar no dia 1, 3, 7, 15 e 30', areas:['sobrancelha','cilios','ambos']},
+  {id:'bioseguranca', icon:'✅', title:'Checklist de biossegurança', desc:'Pra entregar impressa ou por PDF pra cliente', areas:['sobrancelha','cilios','ambos']}
+];
+
+/* ================= GUIAS & PROTOCOLOS: RENDER TELA ================= */
+function renderGuiasList(){
+  const area = config.area;
+  const visible = GUIDES.filter(g=>g.areas.includes(area));
+  const box = document.getElementById('guiasList');
+  box.innerHTML = visible.map(g=>`
+    <div class="guide-item" onclick="openGuia('${g.id}')">
+      <div class="icon">${g.icon}</div>
+      <div class="txt"><strong>${g.title}</strong><span>${g.desc}</span></div>
+      <div class="arrow" style="margin-left:auto;color:var(--accent);">›</div>
+    </div>
+  `).join('');
+}
+
+function gtableHTML(headers, rows){
+  return `<table class="gtable"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(r=>`<tr><td><b>${r.a}</b></td><td>${r.b}</td><td style="color:var(--ink-soft);">${r.c}</td></tr>`).join('') +
+    `</tbody></table>`;
+}
+function timelineHTML(items){
+  return items.map(i=>`<div class="timeline-row"><div class="timeline-day">${i.d}</div><div class="timeline-txt">${i.t}</div></div>`).join('');
+}
+function checklistHTML(items){
+  return items.map(i=>`<div class="check-print-item"><div class="box"></div><div>${i}</div></div>`).join('');
+}
+
+function openGuia(id){
+  const area = config.area;
+  const meta = GUIDES.find(g=>g.id===id);
+  let body = '';
+
+  if(id==='pigmento'){
+    body = `<p class="subtitle">Use como ponto de partida — sempre confirme visualmente com o pigmento em mãos antes de aplicar.</p>` +
+      gtableHTML(['Tom de pele','Cor recomendada','Observação'], PIGMENT_TABLE) +
+      `<div class="summary-box"><b>Regra prática:</b> escolha 1 tom mais claro que o cabelo natural para loiras e ruivas; use o mesmo tom ou 1 tom mais escuro para morenas e cabelos pretos.</div>`;
+  }
+  if(id==='formato-rosto'){
+    body = `<p class="subtitle">Direção de design pra equilibrar as proporções do rosto.</p>` +
+      gtableHTML(['Formato do rosto','Sobrancelha ideal','Por quê'], FACE_SHAPE_TABLE);
+  }
+  if(id==='formato-olho'){
+    body = `<p class="subtitle">Escolha de curvatura e volume pra valorizar o olhar de cada formato.</p>` +
+      gtableHTML(['Formato do olho','Curvatura/Volume','Por quê'], EYE_SHAPE_TABLE);
+  }
+  if(id==='cicatrizacao'){
+    body = `<p class="subtitle">O que orientar a cliente a esperar em cada fase.</p>`;
+    if(area==='sobrancelha' || area==='ambos'){
+      body += `<div class="section-title">Sobrancelha (micropigmentação)<div class="line"></div></div>` + timelineHTML(HEALING_SOBRANCELHA);
+    }
+    if(area==='cilios' || area==='ambos'){
+      body += `<div class="section-title">Cílios (extensão)<div class="line"></div></div>` + timelineHTML(HEALING_CILIOS);
+    }
+  }
+  if(id==='bioseguranca'){
+    body = `<p class="subtitle">Marque, imprima ou gere o PDF pra entregar junto com a cliente.</p>`;
+    if(area==='sobrancelha' || area==='ambos'){
+      body += `<div class="section-title">Pós-procedimento — Sobrancelha<div class="line"></div></div>` + checklistHTML(BIOSEG_SOBRANCELHA);
+    }
+    if(area==='cilios' || area==='ambos'){
+      body += `<div class="section-title">Pós-procedimento — Cílios<div class="line"></div></div>` + checklistHTML(BIOSEG_CILIOS);
+    }
+    body += `<div class="section-title">Biossegurança do estúdio<div class="line"></div></div>` + checklistHTML(BIOSEG_GERAL);
+  }
+
+  document.getElementById('guiaDetalheBox').innerHTML = `
+    <h1>${meta.title}</h1>
+    ${body}
+    <button class="btn btn-accent" onclick="gerarPDFGuia('${id}')">📄 Gerar PDF</button>
+    <button class="btn btn-outline" onclick="showScreen('screen-guias')">Voltar aos guias</button>
+  `;
+  showScreen('screen-guia-detalhe');
+}
+
+/* ================= GUIAS & PROTOCOLOS: PDF ================= */
+function gerarPDFGuia(id){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const marginL = 15;
+  const lineH = 7;
+  let y = 20;
+  const pageH = doc.internal.pageSize.height;
+  const area = config.area;
+  const meta = GUIDES.find(g=>g.id===id);
+
+  function checkPage(){ if(y > pageH-20){ doc.addPage(); y=20; } }
+  function header(){
+    doc.setFontSize(16); doc.setFont(undefined,'bold'); doc.setTextColor(30,30,30);
+    doc.text(config.nomeEstudio || 'Studio', marginL, y); y+=7;
+    doc.setFontSize(9); doc.setFont(undefined,'normal'); doc.setTextColor(120,120,120);
+    doc.text(meta.title, marginL, y); y+=8;
+    doc.setDrawColor(220,210,200); doc.line(marginL, y, 195, y); y+=8;
+    doc.setTextColor(30,30,30);
+  }
+  function sectionHeader(t){
+    checkPage(); y+=2;
+    doc.setFillColor(184,137,90);
+    doc.rect(marginL, y-5, 180, 8, 'F');
+    doc.setFontSize(10.5); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
+    doc.text(t, marginL+3, y);
+    doc.setTextColor(30,30,30); y+=lineH+2;
+  }
+  function row3(a,b,c){
+    checkPage();
+    doc.setFontSize(9.5); doc.setFont(undefined,'bold');
+    const splitA = doc.splitTextToSize(a, 55);
+    doc.text(splitA, marginL, y);
+    doc.setFont(undefined,'normal');
+    const splitB = doc.splitTextToSize(b, 55);
+    doc.text(splitB, marginL+62, y);
+    doc.setTextColor(120,120,120);
+    const splitC = doc.splitTextToSize(c, 55);
+    doc.text(splitC, marginL+124, y);
+    doc.setTextColor(30,30,30);
+    const maxLines = Math.max(splitA.length, splitB.length, splitC.length);
+    y += lineH * maxLines + 2;
+    checkPage();
+    doc.setDrawColor(235,228,220); doc.line(marginL, y-4, 195, y-4);
+  }
+  function timelineItem(d,t){
+    checkPage();
+    doc.setFontSize(9.5); doc.setFont(undefined,'bold');
+    doc.text(d, marginL, y);
+    doc.setFont(undefined,'normal');
+    const split = doc.splitTextToSize(t, 145);
+    doc.text(split, marginL+28, y);
+    y += lineH * Math.max(1, split.length) + 1;
+  }
+  function checkItem(t){
+    checkPage();
+    doc.setFontSize(9.5); doc.setFont(undefined,'normal');
+    doc.rect(marginL, y-4, 4, 4);
+    const split = doc.splitTextToSize(t, 168);
+    doc.text(split, marginL+8, y);
+    y += lineH * Math.max(1, split.length);
+  }
+
+  header();
+
+  if(id==='pigmento'){
+    sectionHeader('Tom de pele → Cor recomendada');
+    PIGMENT_TABLE.forEach(r=>row3(r.a,r.b,r.c));
+    y+=6; checkPage();
+    doc.setFontSize(9); doc.setFont(undefined,'italic');
+    doc.text(doc.splitTextToSize('Regra prática: 1 tom mais claro que o cabelo para loiras/ruivas; mesmo tom ou 1 mais escuro para morenas e cabelos pretos.', 180), marginL, y);
+  }
+  if(id==='formato-rosto'){
+    sectionHeader('Formato do rosto → Sobrancelha ideal');
+    FACE_SHAPE_TABLE.forEach(r=>row3(r.a,r.b,r.c));
+  }
+  if(id==='formato-olho'){
+    sectionHeader('Formato do olho → Curvatura/Volume');
+    EYE_SHAPE_TABLE.forEach(r=>row3(r.a,r.b,r.c));
+  }
+  if(id==='cicatrizacao'){
+    if(area==='sobrancelha' || area==='ambos'){
+      sectionHeader('Sobrancelha (micropigmentação)');
+      HEALING_SOBRANCELHA.forEach(i=>timelineItem(i.d,i.t));
+    }
+    if(area==='cilios' || area==='ambos'){
+      sectionHeader('Cílios (extensão)');
+      HEALING_CILIOS.forEach(i=>timelineItem(i.d,i.t));
+    }
+  }
+  if(id==='bioseguranca'){
+    if(area==='sobrancelha' || area==='ambos'){
+      sectionHeader('Pós-procedimento — Sobrancelha');
+      BIOSEG_SOBRANCELHA.forEach(t=>checkItem(t));
+    }
+    if(area==='cilios' || area==='ambos'){
+      sectionHeader('Pós-procedimento — Cílios');
+      BIOSEG_CILIOS.forEach(t=>checkItem(t));
+    }
+    sectionHeader('Biossegurança do estúdio');
+    BIOSEG_GERAL.forEach(t=>checkItem(t));
+  }
+
+  y+=10; checkPage();
+  doc.setFontSize(8); doc.setFont(undefined,'normal'); doc.setTextColor(150,150,150);
+  doc.text('Documento gerado por ' + (config.nomeEstudio||'') + '.', marginL, y);
+
+  const filename = id + '_' + (config.nomeEstudio||'studio').toLowerCase().replace(/\s+/g,'_') + '.pdf';
+  doc.save(filename);
+  toast('PDF gerado');
+}
+
+/* ================= HOOK: config screen nav override ================= */
+const _origShowScreen = showScreen;
+showScreen = function(id, addHistory=true){
+  _origShowScreen(id, addHistory);
+  if(id==='screen-config') openConfigScreen();
+  if(id==='screen-clientes') renderClientesList();
+  if(id==='screen-dashboard') renderDashboard();
+  if(id==='screen-guias') renderGuiasList();
+};
+
+/* ================= INIT ================= */
+(function init(){
+  if(config){
+    applyBranding();
+    showScreen('screen-dashboard', false);
+    navHistory = ['screen-dashboard'];
+    renderDashboard();
+  } else {
+    navHistory = ['screen-onboarding'];
+  }
+})();
+</script>
+</body>
+</html>
