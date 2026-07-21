@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>App Kit Consultora do Sono Pro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#faf9fd;
+    --card:#ffffff;
+    --ink:#2e2a4d;
+    --ink-soft:#6b6489;
+    --accent:#8b7fd6;
+    --accent-dark:#6355b8;
+    --accent-soft:#ece8fb;
+    --line:#e3ddf5;
+    --danger:#c0473f;
+    --ok:#5c8a5c;
+    --warn:#a8642a;
+    --radius:16px;
+    --shadow:0 4px 20px rgba(46,42,77,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  .app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);}
+  .screen{display:none;padding:20px 18px 30px;animation:fadeIn .25s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .topbar{
+    display:flex;align-items:center;gap:12px;
+    padding:16px 18px;background:var(--ink);color:#fff;
+    position:sticky;top:0;z-index:10;
+  }
+  .topbar .logo-badge{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--accent);display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:15px;color:#fff;overflow:hidden;flex-shrink:0;
+  }
+  .topbar .logo-badge img{width:100%;height:100%;object-fit:cover;}
+  .topbar .brand-name{font-size:15px;font-weight:600;line-height:1.2;}
+  .topbar .brand-sub{font-size:11px;opacity:.7;}
+  .topbar .back-btn{
+    background:none;border:none;color:#fff;font-size:20px;cursor:pointer;
+    padding:4px 8px;margin-right:-6px;
+  }
+
+  h1{font-size:22px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:18px;font-weight:700;margin-bottom:4px;}
+  p.subtitle{color:var(--ink-soft);font-size:14px;margin-bottom:20px;line-height:1.5;}
+  .eyebrow{
+    font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+    color:var(--accent-dark);margin-bottom:6px;
+  }
+
+  .card{
+    background:var(--card);border-radius:var(--radius);padding:20px;
+    box-shadow:var(--shadow);margin-bottom:14px;border:1px solid var(--line);
+  }
+  .action-card{
+    display:flex;align-items:center;gap:14px;cursor:pointer;
+    transition:transform .15s ease;
+  }
+  .action-card:active{transform:scale(.98);}
+  .action-card .icon{
+    width:48px;height:48px;border-radius:12px;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
+  }
+  .action-card .txt strong{display:block;font-size:15px;margin-bottom:2px;}
+  .action-card .txt span{font-size:12.5px;color:var(--ink-soft);}
+  .action-card .arrow{margin-left:auto;color:var(--accent);font-size:18px;}
+
+  label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin:14px 0 6px;}
+  label .req{color:var(--danger);}
+  input[type=text], input[type=tel], input[type=date], input[type=number], input[type=time], select, textarea{
+    width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;
+    font-size:14.5px;background:#fff;color:var(--ink);font-family:inherit;
+  }
+  input:focus, select:focus, textarea:focus{outline:none;border-color:var(--accent);}
+  textarea{resize:vertical;min-height:70px;}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+
+  .radio-group, .check-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .pill{
+    padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;
+    font-size:13px;cursor:pointer;background:#fff;color:var(--ink-soft);
+    transition:all .15s ease;user-select:none;
+  }
+  .pill.selected{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+  .yn-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 0;border-bottom:1px solid var(--line);gap:10px;
+  }
+  .yn-row:last-child{border-bottom:none;}
+  .yn-row .q{font-size:13.5px;flex:1;line-height:1.4;}
+  .yn-btns{display:flex;gap:6px;flex-shrink:0;}
+  .yn-btn{
+    width:44px;height:32px;border-radius:8px;border:1.5px solid var(--line);
+    background:#fff;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink-soft);
+  }
+  .yn-btn.selected-yes{background:var(--danger);border-color:var(--danger);color:#fff;}
+  .yn-btn.selected-no{background:var(--ok);border-color:var(--ok);color:#fff;}
+
+  .btn{
+    display:block;width:100%;text-align:center;padding:14px;border-radius:12px;
+    font-size:15px;font-weight:700;border:none;cursor:pointer;margin-top:18px;
+    transition:transform .12s ease;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--ink);color:#fff;}
+  .btn-accent{background:var(--accent);color:#fff;}
+  .btn-outline{background:transparent;border:1.5px solid var(--ink);color:var(--ink);}
+  .btn-row{display:flex;gap:10px;}
+  .btn-row .btn{margin-top:0;}
+
+  .progress-wrap{margin-bottom:18px;}
+  .progress-bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-size:11.5px;color:var(--ink-soft);margin-top:6px;display:flex;justify-content:space-between;}
+
+  .client-item{
+    display:flex;align-items:center;gap:12px;padding:14px;background:#fff;
+    border-radius:14px;border:1px solid var(--line);margin-bottom:10px;cursor:pointer;
+  }
+  .client-avatar{
+    width:42px;height:42px;border-radius:50%;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent-dark);
+    flex-shrink:0;font-size:15px;
+  }
+  .client-info{flex:1;min-width:0;}
+  .client-info strong{display:block;font-size:14.5px;}
+  .client-info span{font-size:12px;color:var(--ink-soft);}
+  .badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;}
+  .badge-ok{background:#e5f0e5;color:var(--ok);}
+  .badge-warn{background:#fbeadb;color:var(--warn);}
+  .badge-danger{background:#fbe4e2;color:var(--danger);}
+  .badge-neutral{background:var(--accent-soft);color:var(--accent-dark);}
+
+  .empty-state{text-align:center;padding:50px 20px;color:var(--ink-soft);}
+  .empty-state .big-icon{font-size:44px;margin-bottom:12px;}
+
+  .logo-upload{
+    width:76px;height:76px;border-radius:50%;border:2px dashed var(--line);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    background:#fff;margin:0 auto 6px;overflow:hidden;font-size:24px;color:var(--ink-soft);
+  }
+  .logo-upload img{width:100%;height:100%;object-fit:cover;}
+
+  .checklist-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);}
+  .checklist-item:last-child{border-bottom:none;}
+  .checklist-item input[type=checkbox]{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--accent-dark);}
+  .checklist-item .txt{font-size:13px;line-height:1.5;color:var(--ink);}
+
+  .summary-box{
+    background:var(--accent-soft);border-radius:14px;padding:16px;margin:16px 0;
+    font-size:13.5px;line-height:1.7;
+  }
+  .summary-box b{color:var(--accent-dark);}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:99px;
+    font-size:13.5px;box-shadow:var(--shadow);z-index:100;opacity:0;pointer-events:none;
+    transition:opacity .25s ease, bottom .25s ease;
+  }
+  .toast.show{opacity:1;bottom:34px;}
+
+  .footer-note{text-align:center;font-size:11px;color:var(--ink-soft);margin-top:26px;opacity:.7;}
+
+  .section-title{
+    display:flex;align-items:center;gap:8px;margin:24px 0 10px;
+    font-size:13px;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.6px;
+  }
+  .section-title .line{flex:1;height:1px;background:var(--line);}
+
+  .guide-item{
+    display:flex;align-items:center;gap:14px;padding:16px;background:#fff;
+    border-radius:14px;border:1px solid var(--line);margin-bottom:10px;cursor:pointer;
+  }
+  .guide-item .icon{
+    width:44px;height:44px;border-radius:12px;background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+  }
+  .guide-item .txt strong{display:block;font-size:14.5px;margin-bottom:2px;}
+  .guide-item .txt span{font-size:12px;color:var(--ink-soft);}
+
+  .gtable{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:12.5px;}
+  .gtable th{
+    background:var(--ink);color:#fff;text-align:left;padding:9px 10px;font-size:10.5px;
+    text-transform:uppercase;letter-spacing:.4px;
+  }
+  .gtable th:first-child{border-radius:8px 0 0 0;}
+  .gtable th:last-child{border-radius:0 8px 0 0;}
+  .gtable td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45;}
+  .gtable tr:last-child td{border-bottom:none;}
+  .gtable tr:nth-child(even) td{background:#faf8fe;}
+
+  .timeline-row{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);}
+  .timeline-row:last-child{border-bottom:none;}
+  .timeline-day{
+    width:64px;flex-shrink:0;background:var(--ink);color:#fff;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+    text-align:center;line-height:1.2;padding:4px;
+  }
+  .timeline-txt{font-size:13px;line-height:1.5;padding-top:2px;}
+  .timeline-txt b{display:block;font-size:13.5px;margin-bottom:2px;color:var(--ink);}
+
+  .diary-entry{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;
+  }
+  .diary-entry .d-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .diary-entry .d-date{font-size:13.5px;font-weight:700;}
+  .diary-entry .d-mood{font-size:20px;}
+  .diary-entry .d-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:12px;color:var(--ink-soft);}
+  .diary-entry .d-grid b{color:var(--ink);font-weight:600;}
+  .diary-entry .d-obs{margin-top:8px;font-size:12px;color:var(--ink-soft);font-style:italic;}
+
+  .mood-picker{display:flex;gap:8px;margin-top:6px;}
+  .mood-btn{
+    flex:1;padding:12px 4px;border:1.5px solid var(--line);border-radius:12px;background:#fff;
+    font-size:22px;text-align:center;cursor:pointer;
+  }
+  .mood-btn.selected{border-color:var(--accent);background:var(--accent-soft);}
+
+  .disclaimer-box{
+    background:#fff8e8;border:1px solid #f0dca0;border-radius:10px;padding:10px 12px;
+    font-size:11.5px;color:#8a6d1a;line-height:1.5;margin-top:16px;
+  }
+
+  .manual-step{display:flex;gap:12px;margin-bottom:16px;}
+  .manual-step .num{
+    width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;
+  }
+  .manual-step .txt strong{display:block;font-size:14px;margin-bottom:2px;}
+  .manual-step .txt span{font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+
+  .faq-item{border-bottom:1px solid var(--line);padding:14px 0;}
+  .faq-item summary{font-size:13.5px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary:after{content:"+";font-size:18px;color:var(--accent-dark);flex-shrink:0;}
+  .faq-item[open] summary:after{content:"–";}
+  .faq-item p{font-size:12.5px;color:var(--ink-soft);margin-top:10px;line-height:1.6;}
+
+  .support-box{
+    display:flex;gap:12px;align-items:center;background:var(--accent-soft);border-radius:14px;
+    padding:14px 16px;margin-top:20px;
+  }
+  .support-box .ico{font-size:24px;}
+  .support-box strong{display:block;font-size:13.5px;}
+  .support-box span{font-size:12px;color:var(--ink-soft);}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <div class="topbar" id="topbar" style="display:none;">
+    <button class="back-btn" id="backBtn" onclick="goBack()" style="visibility:hidden;">‹</button>
+    <div class="logo-badge" id="topbarLogo">C</div>
+    <div>
+      <div class="brand-name" id="topbarName">App Kit Consultora do Sono Pro</div>
+      <div class="brand-sub" id="topbarSub">Anamnese, plano e acompanhamento</div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 0: ONBOARDING ============ -->
+  <div class="screen active" id="screen-onboarding">
+    <div style="text-align:center;margin:30px 0 10px;">
+      <div style="font-size:38px;">🌙</div>
+    </div>
+    <h1 style="text-align:center;">Bem-vinda ao seu App</h1>
+    <p class="subtitle" style="text-align:center;">Personalize em 30 segundos e comece a usar anamnese do sono, plano personalizado e diário de acompanhamento com a sua marca.</p>
+
+    <div class="card">
+      <div style="text-align:center;">
+        <div class="logo-upload" id="logoUpload" onclick="document.getElementById('logoInput').click()">📷</div>
+        <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(event)">
+        <div class="hint">Toque para adicionar sua logo (opcional)</div>
+      </div>
+
+      <label>Seu nome <span class="req">*</span></label>
+      <input type="text" id="obNomeConsultora" placeholder="Ex: Camila Duarte">
+
+      <label>Nome do seu negócio / marca <span class="req">*</span></label>
+      <input type="text" id="obNomeNegocio" placeholder="Ex: Camila Sono Tranquilo">
+
+      <button class="btn btn-accent" onclick="finishOnboarding()">Começar a usar →</button>
+    </div>
+    <div class="footer-note">Seus dados ficam salvos só neste aparelho.</div>
+  </div>
+
+  <!-- ============ SCREEN 1: DASHBOARD ============ -->
+  <div class="screen" id="screen-dashboard">
+    <div class="eyebrow" id="dashGreeting">Olá</div>
+    <h1 id="dashNegocioName">Negócio</h1>
+    <p class="subtitle">O que vamos fazer hoje?</p>
+
+    <div id="acompanhamentoAlertBox"></div>
+
+    <div class="card action-card" onclick="startNewFicha()">
+      <div class="icon">📝</div>
+      <div class="txt"><strong>Nova anamnese do sono</strong><span>Diagnóstico completo + plano em PDF</span></div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="card action-card" onclick="showScreen('screen-familias')">
+      <div class="icon">👨‍👩‍👧</div>
+      <div class="txt"><strong>Famílias atendidas</strong><span id="familyCountLabel">Prontuário salvo</span></div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="card action-card" onclick="showScreen('screen-guias')">
+      <div class="icon">📚</div>
+      <div class="txt"><strong>Guias & Protocolos</strong><span>Referência técnica pra usar em atendimento</span></div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="card action-card" onclick="showScreen('screen-config')">
+      <div class="icon">⚙️</div>
+      <div class="txt"><strong>Configurações</strong><span>Editar nome, logo e negócio</span></div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="card action-card" onclick="showScreen('screen-manual')">
+      <div class="icon">❓</div>
+      <div class="txt"><strong>Como usar o app</strong><span>Manual rápido e perguntas frequentes</span></div>
+      <div class="arrow">›</div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1b: MANUAL DE USO ============ -->
+  <div class="screen" id="screen-manual">
+    <h1>Como usar o app</h1>
+    <p class="subtitle">Leva 2 minutos e você não precisa de mais nada.</p>
+
+    <div class="section-title">Passo a passo<div class="line"></div></div>
+    <div class="card">
+      <div class="manual-step">
+        <div class="num">1</div>
+        <div class="txt"><strong>Personalize</strong><span>Seu nome, logo e negócio já ficam salvos em todo PDF gerado. Pra editar depois, use "Configurações".</span></div>
+      </div>
+      <div class="manual-step">
+        <div class="num">2</div>
+        <div class="txt"><strong>Faça a anamnese</strong><span>Toque em "Nova anamnese do sono" e responda as 8 etapas com a família. Dá pra voltar e corrigir qualquer resposta antes de concluir.</span></div>
+      </div>
+      <div class="manual-step">
+        <div class="num">3</div>
+        <div class="txt"><strong>Gere o PDF do plano</strong><span>Ao concluir, toque em "Gerar PDF do plano de sono" — ele baixa direto no celular ou computador, pronto pra enviar por WhatsApp.</span></div>
+      </div>
+      <div class="manual-step">
+        <div class="num">4</div>
+        <div class="txt"><strong>Salve no prontuário</strong><span>Toque em "Salvar no prontuário" pra guardar a família. Ela aparece em "Famílias atendidas" pra sempre.</span></div>
+      </div>
+      <div class="manual-step">
+        <div class="num">5</div>
+        <div class="txt"><strong>Registre o diário todo dia</strong><span>Abra a família salva, toque em "Ver diário de acompanhamento" e registre a noite. É esse acompanhamento que mostra o progresso real do plano.</span></div>
+      </div>
+      <div class="manual-step">
+        <div class="num">6</div>
+        <div class="txt"><strong>Consulte os guias quando precisar</strong><span>Janela de sono por idade, regressões, métodos e checklist de ambiente ficam sempre disponíveis em "Guias & Protocolos", com opção de gerar PDF de cada um.</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">Perguntas frequentes<div class="line"></div></div>
+    <div class="card" style="padding:6px 20px;">
+      <details class="faq-item">
+        <summary>Meus dados ficam salvos onde?</summary>
+        <p>Tudo fica salvo só neste aparelho (localStorage do navegador). Não vai pra nenhum servidor. Por isso, se trocar de celular ou limpar os dados do navegador, as famílias salvas somem — vale gerar o PDF de cada uma como backup.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Preciso de internet pra usar?</summary>
+        <p>Só na primeira vez que abre o app e sempre que for gerar um PDF (o app carrega a ferramenta de PDF pela internet). Preencher anamnese e diário funciona mesmo com internet fraca.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Posso usar no computador e no celular?</summary>
+        <p>Sim, mas os dados não se sincronizam entre aparelhos — cada aparelho guarda sua própria lista de famílias. Recomendamos escolher um aparelho principal pra usar sempre.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Como envio o PDF pra família?</summary>
+        <p>Depois de gerar, o PDF baixa na pasta de downloads do seu celular ou computador. É só abrir o WhatsApp, anexar o arquivo e enviar normalmente.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Perdi uma família salva, o que faço?</summary>
+        <p>Se não limpou os dados do navegador, ela deve estar em "Famílias atendidas". Se sumiu, infelizmente não tem como recuperar — por isso vale gerar o PDF de cada anamnese como backup.</p>
+      </details>
+      <details class="faq-item">
+        <summary>O conteúdo dos guias substitui avaliação médica?</summary>
+        <p>Não. São referências gerais de apoio à consultoria. Sempre que houver suspeita de causa clínica (apneia, refluxo, etc.), oriente a família a buscar avaliação pediátrica.</p>
+      </details>
+    </div>
+
+    <div class="support-box">
+      <div class="ico">💬</div>
+      <div>
+        <strong>Precisa de ajuda?</strong>
+        <span>WhatsApp Suporte: (31) 99954-6020 · Seg a Sáb, 08h às 18h</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2: CONFIG ============ -->
+  <div class="screen" id="screen-config">
+    <h1>Configurações</h1>
+    <p class="subtitle">Ajuste os dados do seu negócio quando quiser.</p>
+    <div class="card">
+      <div style="text-align:center;">
+        <div class="logo-upload" id="logoUpload2" onclick="document.getElementById('logoInput2').click()">📷</div>
+        <input type="file" id="logoInput2" accept="image/*" style="display:none;" onchange="handleLogoUpload(event, true)">
+      </div>
+      <label>Seu nome</label>
+      <input type="text" id="cfgNomeConsultora">
+      <label>Nome do negócio / marca</label>
+      <input type="text" id="cfgNomeNegocio">
+      <button class="btn btn-primary" onclick="saveConfig()">Salvar alterações</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2b: GUIAS LIST ============ -->
+  <div class="screen" id="screen-guias">
+    <h1>Guias & Protocolos</h1>
+    <p class="subtitle">Consulta rápida pra usar durante o atendimento.</p>
+    <div id="guiasList"></div>
+  </div>
+
+  <!-- ============ SCREEN 2c: GUIA DETALHE ============ -->
+  <div class="screen" id="screen-guia-detalhe">
+    <div id="guiaDetalheBox"></div>
+  </div>
+
+  <!-- ============ SCREEN 3: NOVA FICHA (WIZARD) ============ -->
+  <div class="screen" id="screen-ficha">
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:12%;"></div></div>
+      <div class="progress-label"><span id="progressStepLabel">Etapa 1 de 8</span><span id="progressPercLabel">12%</span></div>
+    </div>
+
+    <div id="wizardSteps"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" id="wizPrevBtn" onclick="wizardPrev()" style="display:none;">Voltar</button>
+      <button class="btn btn-accent" id="wizNextBtn" onclick="wizardNext()">Próximo</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 4: FICHA GERADA ============ -->
+  <div class="screen" id="screen-resumo">
+    <div style="text-align:center;margin:20px 0;">
+      <div style="font-size:40px;">✅</div>
+    </div>
+    <h1 style="text-align:center;">Anamnese concluída</h1>
+    <p class="subtitle" style="text-align:center;">Confira o resumo, gere o PDF do plano e salve no prontuário da família.</p>
+    <div class="summary-box" id="resumoBox"></div>
+    <button class="btn btn-accent" onclick="gerarPDFFicha()">📄 Gerar PDF do plano de sono</button>
+    <button class="btn btn-primary" onclick="salvarNoProntuario()">💾 Salvar no prontuário</button>
+    <button class="btn btn-outline" onclick="showScreen('screen-dashboard')">Voltar ao início</button>
+  </div>
+
+  <!-- ============ SCREEN 5: FAMÍLIAS ============ -->
+  <div class="screen" id="screen-familias">
+    <h1>Famílias atendidas</h1>
+    <p class="subtitle">Prontuário e diário de cada criança.</p>
+    <div id="familiasList"></div>
+  </div>
+
+  <!-- ============ SCREEN 6: DETALHE FAMÍLIA ============ -->
+  <div class="screen" id="screen-familia-detalhe">
+    <div id="familiaDetalheBox"></div>
+  </div>
+
+  <!-- ============ SCREEN 7: DIÁRIO DE ACOMPANHAMENTO ============ -->
+  <div class="screen" id="screen-diario">
+    <div id="diarioHeaderBox"></div>
+    <div id="diarioList"></div>
+    <button class="btn btn-accent" onclick="showScreen('screen-diario-novo')">+ Registrar noite de hoje</button>
+    <button class="btn btn-outline" onclick="gerarPDFDiario()">📄 Gerar PDF do diário</button>
+  </div>
+
+  <!-- ============ SCREEN 8: NOVA ENTRADA DE DIÁRIO ============ -->
+  <div class="screen" id="screen-diario-novo">
+    <h1>Registrar noite</h1>
+    <p class="subtitle">Preenchimento rápido do dia a dia.</p>
+    <div class="card">
+      <label>Data</label>
+      <input type="date" id="dNovaData">
+
+      <label>Horário que dormiu à noite</label>
+      <input type="time" id="dNovaHorarioDormiu">
+
+      <label>Horário que acordou de manhã</label>
+      <input type="time" id="dNovaHorarioAcordou">
+
+      <label>Número de despertares na madrugada</label>
+      <input type="number" id="dNovaDespertares" placeholder="Ex: 2">
+
+      <label>Duração total das sonecas do dia</label>
+      <input type="text" id="dNovaSonecas" placeholder="Ex: 1h40 (2 sonecas)">
+
+      <label>Humor da criança no dia</label>
+      <div class="mood-picker" id="moodPicker">
+        <div class="mood-btn" data-mood="😴">😴</div>
+        <div class="mood-btn" data-mood="😊">😊</div>
+        <div class="mood-btn" data-mood="😐">😐</div>
+        <div class="mood-btn" data-mood="😫">😫</div>
+      </div>
+
+      <label>Observações</label>
+      <textarea id="dNovaObs" placeholder="O que aconteceu de diferente hoje..."></textarea>
+
+      <button class="btn btn-accent" onclick="salvarEntradaDiario()">Salvar registro</button>
+      <button class="btn btn-outline" onclick="goBack()">Cancelar</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= STATE ================= */
+const STORAGE_CONFIG = 'sono_negocio_config';
+const STORAGE_FAMILIES = 'sono_familias';
+let config = JSON.parse(localStorage.getItem(STORAGE_CONFIG) || 'null');
+let families = JSON.parse(localStorage.getItem(STORAGE_FAMILIES) || '[]');
+let navHistory = [];
+let currentFicha = {};
+let currentStep = 0;
+let pendingLogo = null;
+let currentFamilyId = null;
+let selectedMood = null;
+
+/* ================= NAV ================= */
+function showScreen(id, addHistory=true){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(addHistory) navHistory.push(id);
+  document.getElementById('backBtn').style.visibility = navHistory.length>1 ? 'visible' : 'hidden';
+  window.scrollTo(0,0);
+}
+function goBack(){
+  if(navHistory.length>1){
+    navHistory.pop();
+    const prev = navHistory[navHistory.length-1];
+    showScreen(prev, false);
+  }
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ================= ONBOARDING ================= */
+function handleLogoUpload(event, isConfig){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    pendingLogo = e.target.result;
+    const target = isConfig ? document.getElementById('logoUpload2') : document.getElementById('logoUpload');
+    target.innerHTML = '<img src="'+pendingLogo+'">';
+  };
+  reader.readAsDataURL(file);
+}
+function finishOnboarding(){
+  const nome = document.getElementById('obNomeConsultora').value.trim();
+  const negocio = document.getElementById('obNomeNegocio').value.trim();
+  if(!nome || !negocio){
+    toast('Preencha seu nome e o nome do negócio');
+    return;
+  }
+  config = { nomeConsultora: nome, nomeNegocio: negocio, logo: pendingLogo };
+  localStorage.setItem(STORAGE_CONFIG, JSON.stringify(config));
+  applyBranding();
+  showScreen('screen-dashboard');
+  renderDashboard();
+}
+
+/* ================= CONFIG SCREEN ================= */
+function openConfigScreen(){
+  document.getElementById('cfgNomeConsultora').value = config.nomeConsultora;
+  document.getElementById('cfgNomeNegocio').value = config.nomeNegocio;
+  if(config.logo){
+    document.getElementById('logoUpload2').innerHTML = '<img src="'+config.logo+'">';
+  }
+}
+function saveConfig(){
+  config.nomeConsultora = document.getElementById('cfgNomeConsultora').value.trim();
+  config.nomeNegocio = document.getElementById('cfgNomeNegocio').value.trim();
+  if(pendingLogo) config.logo = pendingLogo;
+  localStorage.setItem(STORAGE_CONFIG, JSON.stringify(config));
+  applyBranding();
+  toast('Configurações salvas');
+  showScreen('screen-dashboard');
+}
+
+/* ================= BRANDING ================= */
+function applyBranding(){
+  document.getElementById('topbar').style.display = 'flex';
+  document.getElementById('topbarName').textContent = config.nomeNegocio;
+  const initials = config.nomeNegocio.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+  const logoEl = document.getElementById('topbarLogo');
+  if(config.logo){ logoEl.innerHTML = '<img src="'+config.logo+'">'; }
+  else{ logoEl.textContent = initials || 'C'; }
+}
+
+/* ================= DASHBOARD ================= */
+function renderDashboard(){
+  document.getElementById('dashGreeting').textContent = 'Olá, ' + (config.nomeConsultora||'').split(' ')[0];
+  document.getElementById('dashNegocioName').textContent = config.nomeNegocio;
+  document.getElementById('familyCountLabel').textContent = families.length + (families.length===1?' família salva':' famílias salvas');
+
+  const alertBox = document.getElementById('acompanhamentoAlertBox');
+  const today = new Date();
+  const semRegistro = families.filter(f=>{
+    if(!f.diario || f.diario.length===0) return true;
+    const last = f.diario[f.diario.length-1];
+    const diff = (today - new Date(last.data)) / (1000*60*60*24);
+    return diff >= 3;
+  });
+  if(semRegistro.length>0 && families.length>0){
+    alertBox.innerHTML = '<div class="card" style="border-color:#d8cef0;background:#faf7ff;">' +
+      '<div style="font-size:13px;font-weight:700;color:var(--accent-dark);margin-bottom:6px;">🌙 Acompanhamentos parados</div>' +
+      '<div style="font-size:12.5px;color:var(--ink-soft);">' + semRegistro.length + ' família(s) sem registro de diário há 3+ dias. Veja em "Famílias atendidas".</div>' +
+      '</div>';
+  } else {
+    alertBox.innerHTML = '';
+  }
+}
+
+/* ================= WIZARD FICHA ================= */
+function buildSteps(){
+  const steps = [];
+
+  steps.push({
+    title: 'Dados da criança',
+    render: ()=> `
+      <h2>Dados da criança</h2>
+      <p class="subtitle">Vamos começar pelo básico.</p>
+      <label>Nome da criança <span class="req">*</span></label>
+      <input type="text" id="f_nome" value="${currentFicha.nome||''}">
+      <label>Idade (em meses)</label>
+      <input type="number" id="f_idadeMeses" value="${currentFicha.idadeMeses||''}" placeholder="Ex: 14">
+      <label>Nome do responsável / contato</label>
+      <input type="text" id="f_responsavel" value="${currentFicha.responsavel||''}">
+      <label>Telefone / WhatsApp</label>
+      <input type="tel" id="f_telefone" value="${currentFicha.telefone||''}">
+      <label>Data da consulta</label>
+      <input type="date" id="f_data" value="${currentFicha.data || new Date().toISOString().slice(0,10)}">
+    `,
+    save: ()=>{
+      currentFicha.nome = val('f_nome');
+      currentFicha.idadeMeses = val('f_idadeMeses');
+      currentFicha.responsavel = val('f_responsavel');
+      currentFicha.telefone = val('f_telefone');
+      currentFicha.data = val('f_data');
+    },
+    validate: ()=> currentFicha_hasValue('f_nome')
+  });
+
+  steps.push({
+    title: 'Histórico do problema',
+    render: ()=> `
+      <h2>Histórico do problema</h2>
+      <p class="subtitle">Desde quando e o que motivou buscar ajuda.</p>
+      <label>Desde quando o sono é um desafio?</label>
+      <textarea id="f_desdeQuando" placeholder="Ex: desde o nascimento, desde a volta ao trabalho, desde os 6 meses...">${currentFicha.desdeQuando||''}</textarea>
+      <label>O que motivou a família a buscar ajuda agora?</label>
+      <textarea id="f_motivacao" placeholder="Ex: exaustão dos pais, criança não dorme na creche, várias trocas de cama...">${currentFicha.motivacao||''}</textarea>
+    `,
+    save: ()=>{
+      currentFicha.desdeQuando = val('f_desdeQuando');
+      currentFicha.motivacao = val('f_motivacao');
+    },
+    validate: ()=> true
+  });
+
+  steps.push({
+    title: 'Rotina atual',
+    render: ()=> `
+      <h2>Rotina atual de sono</h2>
+      <p class="subtitle">Como está hoje, sem julgamento.</p>
+      <label>Horário que costuma dormir à noite</label>
+      <input type="time" id="f_horarioDormir" value="${currentFicha.horarioDormir||''}">
+      <label>Horário que costuma acordar de manhã</label>
+      <input type="time" id="f_horarioAcordar" value="${currentFicha.horarioAcordar||''}">
+      <label>Número de sonecas por dia</label>
+      <input type="number" id="f_numSonecas" value="${currentFicha.numSonecas||''}" placeholder="Ex: 2">
+      <label>Duração média das sonecas</label>
+      <input type="text" id="f_duracaoSonecas" value="${currentFicha.duracaoSonecas||''}" placeholder="Ex: 30-40 min cada">
+    `,
+    save: ()=>{
+      currentFicha.horarioDormir = val('f_horarioDormir');
+      currentFicha.horarioAcordar = val('f_horarioAcordar');
+      currentFicha.numSonecas = val('f_numSonecas');
+      currentFicha.duracaoSonecas = val('f_duracaoSonecas');
+    },
+    validate: ()=> true
+  });
+
+  steps.push({
+    title: 'Ambiente do quarto',
+    render: ()=> `
+      <h2>Ambiente do quarto</h2>
+      <p class="subtitle">Detalhes que afetam diretamente o sono.</p>
+      <label>Nível de luz no quarto</label>
+      <div class="radio-group" id="grp_luzQuarto">
+        ${pill('luzQuarto','escuro_total','Escuro total')}
+        ${pill('luzQuarto','penumbra','Penumbra')}
+        ${pill('luzQuarto','claro','Claro')}
+      </div>
+      <label>Usa ruído branco?</label>
+      <div class="radio-group" id="grp_ruidoBranco">
+        ${pill('ruidoBranco','sim','Sim')}${pill('ruidoBranco','nao','Não')}
+      </div>
+      <label>Com quem a criança divide o quarto?</label>
+      <div class="radio-group" id="grp_companhiaQuarto">
+        ${pill('companhiaQuarto','sozinha','Sozinha')}
+        ${pill('companhiaQuarto','irmao','Com irmão(s)')}
+        ${pill('companhiaQuarto','pais','Com os pais')}
+      </div>
+      <label>Temperatura aproximada do quarto</label>
+      <input type="text" id="f_temperatura" value="${currentFicha.temperatura||''}" placeholder="Ex: quente, usa ventilador">
+    `,
+    save: ()=>{
+      currentFicha.temperatura = val('f_temperatura');
+    },
+    validate: ()=> true
+  });
+
+  steps.push({
+    title: 'Método de adormecer',
+    render: ()=> `
+      <h2>Como a criança adormece</h2>
+      <p class="subtitle">E o que acontece durante a madrugada.</p>
+      <label>Método usado para adormecer</label>
+      <div class="radio-group" id="grp_metodoAdormecer">
+        ${pill('metodoAdormecer','colo','No colo')}
+        ${pill('metodoAdormecer','mamada','Mamando/mamadeira')}
+        ${pill('metodoAdormecer','chupeta','Com chupeta')}
+        ${pill('metodoAdormecer','embalo','Embalando')}
+        ${pill('metodoAdormecer','sozinha','Sozinha no berço/cama')}
+      </div>
+      <label>Número de despertares por noite</label>
+      <input type="number" id="f_despertaresNoite" value="${currentFicha.despertaresNoite||''}" placeholder="Ex: 3">
+      <label>O que os pais fazem quando ela acorda?</label>
+      <textarea id="f_reacaoDespertar" placeholder="Ex: pega no colo, dá mamadeira, leva pra cama dos pais...">${currentFicha.reacaoDespertar||''}</textarea>
+    `,
+    save: ()=>{
+      currentFicha.despertaresNoite = val('f_despertaresNoite');
+      currentFicha.reacaoDespertar = val('f_reacaoDespertar');
+    },
+    validate: ()=> true
+  });
+
+  steps.push({
+    title: 'Saúde',
+    render: ()=> `
+      <h2>Saúde</h2>
+      <p class="subtitle">Fatores que podem afetar o sono.</p>
+      <div class="card" style="padding:6px 16px;">
+        ${ynRow('refluxo','Tem refluxo diagnosticado?')}
+        ${ynRow('apneiaRonco','Ronca ou já foi investigada apneia?')}
+        ${ynRow('alergia','Tem alergia alimentar ou respiratória?')}
+        ${ynRow('medicacao','Usa alguma medicação regularmente?')}
+        ${ynRow('amamentacao','Ainda mama (peito ou mamadeira) à noite?')}
+      </div>
+      <label>Observações de saúde (opcional)</label>
+      <textarea id="f_obsSaude">${currentFicha.obsSaude||''}</textarea>
+    `,
+    save: ()=>{
+      currentFicha.obsSaude = val('f_obsSaude');
+    },
+    validate: ()=> true
+  });
+
+  steps.push({
+    title: 'Dinâmica familiar',
+    render: ()=> `
+      <h2>Dinâmica familiar</h2>
+      <p class="subtitle">O contexto em volta do sono.</p>
+      <label>Divide cama com os pais (colecho)?</label>
+      <div class="radio-group" id="grp_colecho">
+        ${pill('colecho','sim_todanoite','Sim, a noite toda')}
+        ${pill('colecho','sim_parcial','Sim, parte da noite')}
+        ${pill('colecho','nao','Não')}
+      </div>
+      <label>Quem cuida da criança durante a madrugada?</label>
+      <input type="text" id="f_quemCuida" value="${currentFicha.quemCuida||''}" placeholder="Ex: mãe, revezam, só o pai">
+      <label>Rotina da família antes de dormir</label>
+      <textarea id="f_rotinaFamilia" placeholder="Ex: banho, jantar, tela até tarde, chega em casa às 20h...">${currentFicha.rotinaFamilia||''}</textarea>
+    `,
+    save: ()=>{
+      currentFicha.quemCuida = val('f_quemCuida');
+      currentFicha.rotinaFamilia = val('f_rotinaFamilia');
+    },
+    validate: ()=> true
+  });
+
+  steps.push({
+    title: 'Tentativas anteriores',
+    render: ()=> `
+      <h2>Tentativas anteriores</h2>
+      <p class="subtitle">O que já foi tentado antes dessa consultoria.</p>
+      <label>O que a família já tentou?</label>
+      <textarea id="f_tentativasAnteriores" placeholder="Ex: método da cadeira por 2 dias, mudar horário de soneca...">${currentFicha.tentativasAnteriores||''}</textarea>
+      <label>Funcionou?</label>
+      <div class="radio-group" id="grp_tentativaFuncionou">
+        ${pill('tentativaFuncionou','sim_parcial','Funcionou parcialmente')}
+        ${pill('tentativaFuncionou','nao','Não funcionou')}
+        ${pill('tentativaFuncionou','nao_tentou','Nunca tentaram nada')}
+      </div>
+      <label>Observações finais</label>
+      <textarea id="f_obsFinais" placeholder="Qualquer informação adicional relevante...">${currentFicha.obsFinais||''}</textarea>
+    `,
+    save: ()=>{
+      currentFicha.tentativasAnteriores = val('f_tentativasAnteriores');
+      currentFicha.obsFinais = val('f_obsFinais');
+    },
+    validate: ()=> true
+  });
+
+  return steps;
+}
+
+let wizardStepsCache = [];
+
+function startNewFicha(){
+  currentFicha = {};
+  currentStep = 0;
+  wizardStepsCache = buildSteps();
+  showScreen('screen-ficha');
+  renderStep();
+}
+
+function renderStep(){
+  const steps = wizardStepsCache;
+  const step = steps[currentStep];
+  document.getElementById('wizardSteps').innerHTML = step.render();
+  document.getElementById('progressStepLabel').textContent = 'Etapa ' + (currentStep+1) + ' de ' + steps.length + ' · ' + step.title;
+  const perc = Math.round(((currentStep+1)/steps.length)*100);
+  document.getElementById('progressFill').style.width = perc + '%';
+  document.getElementById('progressPercLabel').textContent = perc + '%';
+  document.getElementById('wizPrevBtn').style.display = currentStep===0 ? 'none':'block';
+  document.getElementById('wizNextBtn').textContent = currentStep === steps.length-1 ? 'Concluir anamnese' : 'Próximo';
+  restorePillStates();
+}
+
+function restorePillStates(){
+  document.querySelectorAll('[id^="grp_"]').forEach(grp=>{
+    const key = grp.id.replace('grp_','');
+    const savedVal = currentFicha[key];
+    if(savedVal){
+      grp.querySelectorAll('.pill').forEach(p=>{
+        p.classList.toggle('selected', p.dataset.val === savedVal);
+      });
+    }
+  });
+  ['refluxo','apneiaRonco','alergia','medicacao','amamentacao'].forEach(k=>{
+    const row = document.getElementById('yn_'+k);
+    if(row && currentFicha[k]!==undefined && currentFicha[k]!==null){
+      row.querySelectorAll('.yn-btn').forEach(b=>{
+        const isYes = b.dataset.v === 'sim';
+        b.classList.toggle('selected-yes', isYes && currentFicha[k]==='sim');
+        b.classList.toggle('selected-no', !isYes && currentFicha[k]==='nao');
+      });
+    }
+  });
+}
+
+function pill(group, value, label){
+  return `<div class="pill" data-val="${value}" onclick="selectPill('${group}','${value}', this)">${label}</div>`;
+}
+function selectPill(group, value, el){
+  currentFicha[group] = value;
+  el.parentElement.querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function ynRow(key, question){
+  return `<div class="yn-row" id="yn_${key}">
+    <div class="q">${question}</div>
+    <div class="yn-btns">
+      <button type="button" class="yn-btn" data-v="sim" onclick="selectYN('${key}','sim',this)">Sim</button>
+      <button type="button" class="yn-btn" data-v="nao" onclick="selectYN('${key}','nao',this)">Não</button>
+    </div>
+  </div>`;
+}
+function selectYN(key, value, el){
+  currentFicha[key] = value;
+  const row = document.getElementById('yn_'+key);
+  row.querySelectorAll('.yn-btn').forEach(b=>{
+    b.classList.remove('selected-yes','selected-no');
+  });
+  el.classList.add(value==='sim' ? 'selected-yes' : 'selected-no');
+}
+function val(id){
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+function currentFicha_hasValue(id){
+  const el = document.getElementById(id);
+  return el && el.value.trim().length>0;
+}
+
+function wizardNext(){
+  const steps = wizardStepsCache;
+  const step = steps[currentStep];
+  step.save();
+  if(!step.validate()){
+    toast('Preencha os campos obrigatórios');
+    return;
+  }
+  if(currentStep < steps.length-1){
+    currentStep++;
+    renderStep();
+  } else {
+    finalizeFicha();
+  }
+}
+function wizardPrev(){
+  wizardStepsCache[currentStep].save();
+  currentStep--;
+  renderStep();
+}
+
+function finalizeFicha(){
+  currentFicha.id = 'f_' + Date.now();
+  currentFicha.criadoEm = new Date().toISOString();
+  currentFicha.diario = [];
+  showScreen('screen-resumo');
+  renderResumo();
+}
+
+function renderResumo(){
+  const f = currentFicha;
+  let html = `<b>Criança:</b> ${f.nome||'-'}<br>`;
+  html += `<b>Idade:</b> ${f.idadeMeses ? f.idadeMeses+' meses' : '-'}<br>`;
+  html += `<b>Data da consulta:</b> ${formatDate(f.data)}<br>`;
+  html += `<b>Sonecas/dia:</b> ${f.numSonecas||'-'}<br>`;
+  html += `<b>Despertares/noite:</b> ${f.despertaresNoite||'-'}<br>`;
+  html += `<b>Colecho:</b> ${labelColecho(f.colecho)}`;
+  document.getElementById('resumoBox').innerHTML = html;
+}
+function labelColecho(v){
+  return {sim_todanoite:'Sim, a noite toda', sim_parcial:'Sim, parte da noite', nao:'Não'}[v] || '-';
+}
+function labelMetodo(v){
+  return {colo:'No colo', mamada:'Mamando/mamadeira', chupeta:'Com chupeta', embalo:'Embalando', sozinha:'Sozinha no berço/cama'}[v] || '-';
+}
+function labelLuz(v){
+  return {escuro_total:'Escuro total', penumbra:'Penumbra', claro:'Claro'}[v] || '-';
+}
+function labelCompanhia(v){
+  return {sozinha:'Sozinha', irmao:'Com irmão(s)', pais:'Com os pais'}[v] || '-';
+}
+function formatDate(d){
+  if(!d) return '-';
+  const [y,m,day] = d.split('-');
+  return day+'/'+m+'/'+y;
+}
+function ynLabel(v){
+  if(v==='sim') return 'Sim';
+  if(v==='nao') return 'Não';
+  return '-';
+}
+
+/* ================= PDF: PLANO DE SONO ================= */
+function gerarPDFFicha(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const f = currentFicha;
+  let y = 20;
+  const pageH = doc.internal.pageSize.height;
+  const marginL = 15;
+  const lineH = 7;
+
+  function checkPage(){ if(y > pageH-20){ doc.addPage(); y=20; } }
+  function title(t){
+    checkPage();
+    doc.setFontSize(15); doc.setFont(undefined,'bold');
+    doc.text(t, marginL, y); y+=lineH+2;
+  }
+  function sectionHeader(t){
+    checkPage(); y+=3;
+    doc.setFillColor(139,127,214);
+    doc.rect(marginL, y-5, 180, 8, 'F');
+    doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
+    doc.text(t, marginL+3, y);
+    doc.setTextColor(30,30,30);
+    y+=lineH+2;
+  }
+  function field(label, value){
+    checkPage();
+    doc.setFontSize(10); doc.setFont(undefined,'bold');
+    doc.text(label+':', marginL, y);
+    doc.setFont(undefined,'normal');
+    const text = String(value || '-');
+    const split = doc.splitTextToSize(text, 120);
+    doc.text(split, marginL+58, y);
+    y += lineH * Math.max(1, split.length);
+  }
+
+  doc.setFontSize(18); doc.setFont(undefined,'bold'); doc.setTextColor(30,30,30);
+  doc.text(config.nomeNegocio || 'Consultoria do Sono', marginL, y); y+=8;
+  doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.setTextColor(100,100,100);
+  doc.text('Consultoria do Sono Infantil · ' + (config.nomeConsultora||''), marginL, y); y+=10;
+  doc.setDrawColor(220,215,240); doc.line(marginL, y, 195, y); y+=8;
+  doc.setTextColor(30,30,30);
+
+  title('Anamnese e Plano de Sono');
+
+  sectionHeader('Dados da criança');
+  field('Nome', f.nome);
+  field('Idade', f.idadeMeses ? f.idadeMeses+' meses' : '-');
+  field('Responsável', f.responsavel);
+  field('Telefone', f.telefone);
+  field('Data da consulta', formatDate(f.data));
+
+  sectionHeader('Histórico do problema');
+  field('Desde quando', f.desdeQuando);
+  field('Motivação', f.motivacao);
+
+  sectionHeader('Rotina atual');
+  field('Horário de dormir', f.horarioDormir);
+  field('Horário de acordar', f.horarioAcordar);
+  field('Sonecas/dia', f.numSonecas);
+  field('Duração das sonecas', f.duracaoSonecas);
+
+  sectionHeader('Ambiente do quarto');
+  field('Luz no quarto', labelLuz(f.luzQuarto));
+  field('Ruído branco', ynLabel(f.ruidoBranco));
+  field('Divide quarto com', labelCompanhia(f.companhiaQuarto));
+  field('Temperatura', f.temperatura);
+
+  sectionHeader('Método de adormecer');
+  field('Método usado', labelMetodo(f.metodoAdormecer));
+  field('Despertares/noite', f.despertaresNoite);
+  field('Reação ao despertar', f.reacaoDespertar);
+
+  sectionHeader('Saúde');
+  field('Refluxo', ynLabel(f.refluxo));
+  field('Ronco/apneia', ynLabel(f.apneiaRonco));
+  field('Alergia', ynLabel(f.alergia));
+  field('Medicação', ynLabel(f.medicacao));
+  field('Amamentação noturna', ynLabel(f.amamentacao));
+  if(f.obsSaude) field('Observações', f.obsSaude);
+
+  sectionHeader('Dinâmica familiar');
+  field('Colecho', labelColecho(f.colecho));
+  field('Quem cuida à noite', f.quemCuida);
+  field('Rotina antes de dormir', f.rotinaFamilia);
+
+  sectionHeader('Tentativas anteriores');
+  field('O que já tentaram', f.tentativasAnteriores);
+  field('Funcionou?', {sim_parcial:'Parcialmente', nao:'Não', nao_tentou:'Nunca tentaram'}[f.tentativaFuncionou] || '-');
+  if(f.obsFinais) field('Observações finais', f.obsFinais);
+
+  y+=6; checkPage();
+  doc.setFontSize(8); doc.setFont(undefined,'italic'); doc.setTextColor(150,150,150);
+  doc.text(doc.splitTextToSize('Este plano é uma orientação baseada nas informações fornecidas pela família e não substitui avaliação médica/pediátrica quando houver suspeita de causa clínica para o distúrbio de sono.', 180), marginL, y);
+  y += 12;
+
+  doc.setFontSize(8); doc.setTextColor(150,150,150);
+  doc.text('Documento gerado por ' + (config.nomeNegocio||'') + ' — uso profissional.', marginL, y);
+
+  const filename = 'plano_sono_' + (f.nome||'crianca').toLowerCase().replace(/\s+/g,'_') + '.pdf';
+  doc.save(filename);
+  toast('PDF gerado');
+}
+
+/* ================= PRONTUÁRIO DE FAMÍLIAS ================= */
+function salvarNoProntuario(){
+  const idx = families.findIndex(x=>x.id===currentFicha.id);
+  if(idx>=0) families[idx] = currentFicha; else families.push(currentFicha);
+  localStorage.setItem(STORAGE_FAMILIES, JSON.stringify(families));
+  toast('Salvo no prontuário');
+  renderDashboard();
+  showScreen('screen-dashboard');
+}
+
+function renderFamiliasList(){
+  const list = document.getElementById('familiasList');
+  if(families.length===0){
+    list.innerHTML = `<div class="empty-state"><div class="big-icon">🌙</div>Nenhuma família salva ainda.<br>Crie sua primeira anamnese!</div>`;
+    return;
+  }
+  const sorted = [...families].sort((a,b)=> new Date(b.criadoEm) - new Date(a.criadoEm));
+  list.innerHTML = sorted.map(f=>{
+    const initials = (f.nome||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+    const numRegistros = (f.diario||[]).length;
+    let badge = '<span class="badge badge-neutral">'+numRegistros+' registro(s)</span>';
+    if(numRegistros>0){
+      const last = f.diario[f.diario.length-1];
+      const diff = Math.round((new Date() - new Date(last.data))/(1000*60*60*24));
+      if(diff>=3) badge = '<span class="badge badge-danger">Sem registro há '+diff+'d</span>';
+      else badge = '<span class="badge badge-ok">Ativo</span>';
+    }
+    return `<div class="client-item" onclick="openFamilyDetail('${f.id}')">
+      <div class="client-avatar">${initials}</div>
+      <div class="client-info"><strong>${f.nome||'Sem nome'}</strong><span>Consulta em ${formatDate(f.data)} · ${f.idadeMeses||'?'} meses</span></div>
+      ${badge}
+    </div>`;
+  }).join('');
+}
+
+function openFamilyDetail(id){
+  const f = families.find(x=>x.id===id);
+  if(!f) return;
+  currentFicha = f;
+  currentFamilyId = id;
+  let html = `<h1>${f.nome}</h1><p class="subtitle">Consulta em ${formatDate(f.data)} · ${f.idadeMeses||'?'} meses</p>`;
+  html += `<div class="summary-box">`;
+  html += `<b>Responsável:</b> ${f.responsavel||'-'}<br>`;
+  html += `<b>Telefone:</b> ${f.telefone||'-'}<br>`;
+  html += `<b>Registros no diário:</b> ${(f.diario||[]).length}<br>`;
+  html += `</div>`;
+  html += `<button class="btn btn-accent" onclick="openDiario('${f.id}')">🌙 Ver diário de acompanhamento</button>`;
+  html += `<button class="btn btn-primary" onclick="gerarPDFFicha()">📄 Gerar PDF do plano novamente</button>`;
+  html += `<button class="btn btn-outline" onclick="deleteFamily('${f.id}')" style="color:var(--danger);border-color:var(--danger);">🗑 Excluir família</button>`;
+  document.getElementById('familiaDetalheBox').innerHTML = html;
+  showScreen('screen-familia-detalhe');
+}
+function deleteFamily(id){
+  families = families.filter(x=>x.id!==id);
+  localStorage.setItem(STORAGE_FAMILIES, JSON.stringify(families));
+  toast('Família excluída');
+  renderDashboard();
+  showScreen('screen-familias');
+  renderFamiliasList();
+}
+
+/* ================= DIÁRIO DE ACOMPANHAMENTO ================= */
+function openDiario(familyId){
+  currentFamilyId = familyId;
+  const f = families.find(x=>x.id===familyId);
+  currentFicha = f;
+  document.getElementById('diarioHeaderBox').innerHTML = `
+    <h1>Diário — ${f.nome}</h1>
+    <p class="subtitle">Registro noite a noite do progresso.</p>
+  `;
+  renderDiarioList();
+  showScreen('screen-diario');
+}
+
+function renderDiarioList(){
+  const f = families.find(x=>x.id===currentFamilyId);
+  const list = document.getElementById('diarioList');
+  const entries = (f && f.diario) ? [...f.diario].sort((a,b)=> new Date(b.data)-new Date(a.data)) : [];
+  if(entries.length===0){
+    list.innerHTML = `<div class="empty-state"><div class="big-icon">📓</div>Nenhum registro ainda.<br>Comece registrando a noite de hoje.</div>`;
+    return;
+  }
+  list.innerHTML = entries.map(e=>`
+    <div class="diary-entry">
+      <div class="d-head">
+        <div class="d-date">${formatDate(e.data)}</div>
+        <div class="d-mood">${e.humor||''}</div>
+      </div>
+      <div class="d-grid">
+        <div><b>Dormiu:</b> ${e.horarioDormiu||'-'}</div>
+        <div><b>Acordou:</b> ${e.horarioAcordou||'-'}</div>
+        <div><b>Despertares:</b> ${e.despertares||'0'}</div>
+        <div><b>Sonecas:</b> ${e.sonecas||'-'}</div>
+      </div>
+      ${e.obs ? '<div class="d-obs">'+e.obs+'</div>' : ''}
+    </div>
+  `).join('');
+}
+
+function salvarEntradaDiario(){
+  const data = val('dNovaData') || new Date().toISOString().slice(0,10);
+  const entry = {
+    data: data,
+    horarioDormiu: val('dNovaHorarioDormiu'),
+    horarioAcordou: val('dNovaHorarioAcordou'),
+    despertares: val('dNovaDespertares'),
+    sonecas: val('dNovaSonecas'),
+    humor: selectedMood || '',
+    obs: val('dNovaObs')
+  };
+  const idx = families.findIndex(x=>x.id===currentFamilyId);
+  if(idx<0){ toast('Família não encontrada'); return; }
+  if(!families[idx].diario) families[idx].diario = [];
+  families[idx].diario.push(entry);
+  localStorage.setItem(STORAGE_FAMILIES, JSON.stringify(families));
+  toast('Registro salvo');
+  selectedMood = null;
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+  ['dNovaHorarioDormiu','dNovaHorarioAcordou','dNovaDespertares','dNovaSonecas','dNovaObs'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  goBack();
+  renderDiarioList();
+}
+
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('mood-btn')){
+    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+    e.target.classList.add('selected');
+    selectedMood = e.target.dataset.mood;
+  }
+});
+
+function gerarPDFDiario(){
+  const { jsPDF } = window.jspdf;
+  const f = families.find(x=>x.id===currentFamilyId);
+  if(!f || !f.diario || f.diario.length===0){ toast('Nenhum registro pra gerar PDF'); return; }
+  const doc = new jsPDF();
+  const marginL = 15;
+  const lineH = 7;
+  let y = 20;
+  const pageH = doc.internal.pageSize.height;
+
+  function checkPage(){ if(y > pageH-20){ doc.addPage(); y=20; } }
+
+  doc.setFontSize(18); doc.setFont(undefined,'bold'); doc.setTextColor(30,30,30);
+  doc.text(config.nomeNegocio || 'Consultoria do Sono', marginL, y); y+=8;
+  doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.setTextColor(100,100,100);
+  doc.text('Diário de acompanhamento — ' + f.nome, marginL, y); y+=10;
+  doc.setDrawColor(220,215,240); doc.line(marginL, y, 195, y); y+=10;
+  doc.setTextColor(30,30,30);
+
+  const entries = [...f.diario].sort((a,b)=> new Date(a.data)-new Date(b.data));
+  entries.forEach(e=>{
+    checkPage();
+    doc.setFillColor(139,127,214);
+    doc.rect(marginL, y-5, 180, 8, 'F');
+    doc.setFontSize(10.5); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
+    doc.text(formatDate(e.data) + '   ' + (e.humor||''), marginL+3, y);
+    doc.setTextColor(30,30,30);
+    y += lineH+3;
+
+    doc.setFontSize(9.5); doc.setFont(undefined,'normal');
+    const line1 = `Dormiu: ${e.horarioDormiu||'-'}   Acordou: ${e.horarioAcordou||'-'}   Despertares: ${e.despertares||'0'}   Sonecas: ${e.sonecas||'-'}`;
+    doc.text(doc.splitTextToSize(line1, 180), marginL, y);
+    y += lineH;
+    if(e.obs){
+      doc.setFont(undefined,'italic');
+      doc.text(doc.splitTextToSize('Obs: '+e.obs, 180), marginL, y);
+      y += lineH;
+    }
+    y += 4;
+    checkPage();
+  });
+
+  y+=6; checkPage();
+  doc.setFontSize(8); doc.setTextColor(150,150,150);
+  doc.text('Documento gerado por ' + (config.nomeNegocio||'') + ' — uso profissional.', marginL, y);
+
+  doc.save('diario_sono_' + (f.nome||'crianca').toLowerCase().replace(/\s+/g,'_') + '.pdf');
+  toast('PDF do diário gerado');
+}
+
+/* ================= GUIAS & PROTOCOLOS: DADOS ================= */
+const JANELA_SONO_TABLE = [
+  {a:'0-3 meses', b:'14-17h totais/dia · sonecas frequentes e curtas', c:'Janela de sono acordado: 45-60 min. Sem rotina fixa ainda — normal.'},
+  {a:'4-6 meses', b:'12-15h totais/dia · 3-4 sonecas', c:'Janela de sono acordado: 1h30-2h15. Início da transição pra rotina mais previsível.'},
+  {a:'7-12 meses', b:'11-14h totais/dia · 2-3 sonecas', c:'Janela de sono acordado: 2h-3h30. Horário de dormir à noite entre 18h-20h.'},
+  {a:'1-2 anos', b:'11-14h totais/dia · 1-2 sonecas', c:'Janela de sono acordado: 4-6h. Transição de 2 pra 1 soneca costuma ocorrer entre 15-18 meses.'},
+  {a:'2-3 anos', b:'10-13h totais/dia · 1 soneca', c:'Janela de sono acordado: 5-6h. Pode iniciar resistência à soneca.'},
+  {a:'3-5 anos', b:'10-13h totais/dia · soneca opcional', c:'Soneca em extinção natural. Horário de dormir à noite entre 19h-20h30.'}
+];
+const REGRESSOES_TABLE = [
+  {d:'~4 meses', t:'Não é regressão temporária — é uma mudança permanente na estrutura dos ciclos de sono, que ficam mais parecidos com os do adulto. Os despertares entre ciclos aumentam.'},
+  {d:'~8-10 meses', t:'Ligada a marcos motores (engatinhar, ficar em pé) e ao início da ansiedade de separação. O cérebro "treina" a habilidade nova até durante o sono.'},
+  {d:'~12 meses', t:'Marco de andar e possível transição de sonecas. Pode haver resistência à segunda soneca do dia.'},
+  {d:'~18 meses', t:'Pico de ansiedade de separação, teste de limites e, em alguns casos, transição de berço para cama — o que costuma bagunçar a rotina temporariamente.'},
+  {d:'~2 anos', t:'Desenvolvimento da imaginação traz medos noturnos novos. Também é fase comum de transição/resistência à soneca e afirmação de autonomia ("não quero dormir").'}
+];
+const METODOS_TABLE = [
+  {a:'Extinção total (Cry it out)', b:'Deixar a criança se acalmar sozinha, sem intervenção após a rotina de dormir.', c:'Resultado mais rápido, mas mais intenso emocionalmente — exige alinhamento total dos pais antes de indicar.'},
+  {a:'Extinção gradual (Ferber)', b:'Intervalos crescentes de checagem breve, sem pegar no colo.', c:'Meio-termo entre suporte e autonomia — o mais usado por consultoras no Brasil.'},
+  {a:'Método da cadeira', b:'Pais ficam no quarto, afastando a cadeira progressivamente a cada noite.', c:'Mais gradual, menos choro desacompanhado — bom pra pais mais ansiosos com extinção.'},
+  {a:'Pick up / Put down', b:'Pega no colo quando chora, recoloca no berço quando acalma, repete.', c:'Mais intervencionista — costuma funcionar melhor em bebês menores de 6 meses.'},
+  {a:'Fading (esvanecimento)', b:'Redução gradual do suporte usado pra dormir (menos embalo a cada dia, por exemplo).', c:'O mais lento de todos, mas o de transição mais suave — bom quando família resiste a qualquer choro.'}
+];
+const AMBIENTE_CHECKLIST = [
+  'Quarto escuro total (blackout) ou o mais próximo disso',
+  'Temperatura agradável, geralmente entre 20-24°C',
+  'Ruído branco como opção pra mascarar sons externos (não obrigatório)',
+  'Sem telas pelo menos 1h antes do horário de dormir',
+  'Berço/cama seguros — sem travesseiro, edredom solto ou brinquedos pra bebês menores de 1 ano',
+  'Ambiente associado só ao sono — evitar transformar o berço em espaço de brincadeira'
+];
+
+const GUIDES = [
+  {id:'janela-sono', icon:'⏰', title:'Janela de sono ideal por idade', desc:'Referência rápida por faixa etária'},
+  {id:'regressoes', icon:'📈', title:'Regressões de sono por idade', desc:'O que é e o que orientar em cada fase'},
+  {id:'metodos', icon:'🪑', title:'Métodos de treinamento de sono', desc:'Comparativo pra escolher o certo pra cada família'},
+  {id:'ambiente', icon:'🛏️', title:'Checklist de ambiente ideal', desc:'Pra entregar ou revisar com a família'}
+];
+
+function renderGuiasList(){
+  const box = document.getElementById('guiasList');
+  box.innerHTML = GUIDES.map(g=>`
+    <div class="guide-item" onclick="openGuia('${g.id}')">
+      <div class="icon">${g.icon}</div>
+      <div class="txt"><strong>${g.title}</strong><span>${g.desc}</span></div>
+      <div class="arrow" style="margin-left:auto;color:var(--accent);">›</div>
+    </div>
+  `).join('');
+}
+
+function gtableHTML(headers, rows){
+  return `<table class="gtable"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(r=>`<tr><td><b>${r.a}</b></td><td>${r.b}</td><td style="color:var(--ink-soft);">${r.c}</td></tr>`).join('') +
+    `</tbody></table>`;
+}
+function timelineHTML(items){
+  return items.map(i=>`<div class="timeline-row"><div class="timeline-day">${i.d}</div><div class="timeline-txt">${i.t}</div></div>`).join('');
+}
+function checklistHTML(items){
+  return items.map(i=>`<div class="checklist-item" style="border-bottom:1px solid var(--line);"><div style="width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:6px;flex-shrink:0;"></div><div class="txt">${i}</div></div>`).join('');
+}
+
+function openGuia(id){
+  const meta = GUIDES.find(g=>g.id===id);
+  let body = '';
+
+  if(id==='janela-sono'){
+    body = `<p class="subtitle">Use como ponto de partida — cada criança tem variação individual.</p>` +
+      gtableHTML(['Idade','Sono total','Observação'], JANELA_SONO_TABLE);
+  }
+  if(id==='regressoes'){
+    body = `<p class="subtitle">Ajuda a tranquilizar a família — regressão não é retrocesso, é desenvolvimento.</p>` +
+      timelineHTML(REGRESSOES_TABLE);
+  }
+  if(id==='metodos'){
+    body = `<p class="subtitle">Escolha o método considerando o perfil emocional dos pais, não só a idade da criança.</p>` +
+      gtableHTML(['Método','Como funciona','Quando indicar'], METODOS_TABLE);
+  }
+  if(id==='ambiente'){
+    body = `<p class="subtitle">Checklist rápido pra revisar com a família na anamnese.</p>` +
+      checklistHTML(AMBIENTE_CHECKLIST);
+  }
+
+  document.getElementById('guiaDetalheBox').innerHTML = `
+    <h1>${meta.title}</h1>
+    ${body}
+    <div class="disclaimer-box">Este conteúdo é uma referência geral de apoio à consultoria e não substitui avaliação médica/pediátrica quando houver suspeita de causa clínica (ex: apneia, refluxo não tratado).</div>
+    <button class="btn btn-accent" onclick="gerarPDFGuia('${id}')">📄 Gerar PDF</button>
+    <button class="btn btn-outline" onclick="showScreen('screen-guias')">Voltar aos guias</button>
+  `;
+  showScreen('screen-guia-detalhe');
+}
+
+/* ================= GUIAS: PDF ================= */
+function gerarPDFGuia(id){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const marginL = 15;
+  const lineH = 7;
+  let y = 20;
+  const pageH = doc.internal.pageSize.height;
+  const meta = GUIDES.find(g=>g.id===id);
+
+  function checkPage(){ if(y > pageH-20){ doc.addPage(); y=20; } }
+  function header(){
+    doc.setFontSize(16); doc.setFont(undefined,'bold'); doc.setTextColor(30,30,30);
+    doc.text(config.nomeNegocio || 'Consultoria do Sono', marginL, y); y+=7;
+    doc.setFontSize(9); doc.setFont(undefined,'normal'); doc.setTextColor(120,120,120);
+    doc.text(meta.title, marginL, y); y+=8;
+    doc.setDrawColor(220,215,240); doc.line(marginL, y, 195, y); y+=8;
+    doc.setTextColor(30,30,30);
+  }
+  function sectionHeader(t){
+    checkPage(); y+=2;
+    doc.setFillColor(139,127,214);
+    doc.rect(marginL, y-5, 180, 8, 'F');
+    doc.setFontSize(10.5); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
+    doc.text(t, marginL+3, y);
+    doc.setTextColor(30,30,30); y+=lineH+2;
+  }
+  function row3(a,b,c){
+    checkPage();
+    doc.setFontSize(9.5); doc.setFont(undefined,'bold');
+    const splitA = doc.splitTextToSize(a, 55);
+    doc.text(splitA, marginL, y);
+    doc.setFont(undefined,'normal');
+    const splitB = doc.splitTextToSize(b, 55);
+    doc.text(splitB, marginL+62, y);
+    doc.setTextColor(120,120,120);
+    const splitC = doc.splitTextToSize(c, 55);
+    doc.text(splitC, marginL+124, y);
+    doc.setTextColor(30,30,30);
+    const maxLines = Math.max(splitA.length, splitB.length, splitC.length);
+    y += lineH * maxLines + 2;
+    checkPage();
+    doc.setDrawColor(235,232,248); doc.line(marginL, y-4, 195, y-4);
+  }
+  function timelineItem(d,t){
+    checkPage();
+    doc.setFontSize(9.5); doc.setFont(undefined,'bold');
+    doc.text(d, marginL, y);
+    doc.setFont(undefined,'normal');
+    const split = doc.splitTextToSize(t, 145);
+    doc.text(split, marginL+32, y);
+    y += lineH * Math.max(1, split.length) + 1;
+  }
+  function checkItem(t){
+    checkPage();
+    doc.setFontSize(9.5); doc.setFont(undefined,'normal');
+    doc.rect(marginL, y-4, 4, 4);
+    const split = doc.splitTextToSize(t, 168);
+    doc.text(split, marginL+8, y);
+    y += lineH * Math.max(1, split.length);
+  }
+
+  header();
+
+  if(id==='janela-sono'){
+    sectionHeader('Idade → Sono total e observações');
+    JANELA_SONO_TABLE.forEach(r=>row3(r.a,r.b,r.c));
+  }
+  if(id==='regressoes'){
+    sectionHeader('Regressões de sono por idade');
+    REGRESSOES_TABLE.forEach(i=>timelineItem(i.d,i.t));
+  }
+  if(id==='metodos'){
+    sectionHeader('Métodos de treinamento de sono');
+    METODOS_TABLE.forEach(r=>row3(r.a,r.b,r.c));
+  }
+  if(id==='ambiente'){
+    sectionHeader('Checklist de ambiente ideal');
+    AMBIENTE_CHECKLIST.forEach(t=>checkItem(t));
+  }
+
+  y+=8; checkPage();
+  doc.setFontSize(8); doc.setFont(undefined,'italic'); doc.setTextColor(150,150,150);
+  doc.text(doc.splitTextToSize('Conteúdo de referência geral, não substitui avaliação médica/pediátrica quando houver suspeita de causa clínica.', 180), marginL, y);
+  y += 10;
+
+  doc.setFontSize(8); doc.setTextColor(150,150,150);
+  doc.text('Documento gerado por ' + (config.nomeNegocio||'') + '.', marginL, y);
+
+  const filename = id + '_' + (config.nomeNegocio||'sono').toLowerCase().replace(/\s+/g,'_') + '.pdf';
+  doc.save(filename);
+  toast('PDF gerado');
+}
+
+/* ================= HOOK: nav override ================= */
+const _origShowScreen = showScreen;
+showScreen = function(id, addHistory=true){
+  _origShowScreen(id, addHistory);
+  if(id==='screen-config') openConfigScreen();
+  if(id==='screen-familias') renderFamiliasList();
+  if(id==='screen-dashboard') renderDashboard();
+  if(id==='screen-guias') renderGuiasList();
+  if(id==='screen-diario-novo'){
+    selectedMood = null;
+    document.getElementById('dNovaData').value = new Date().toISOString().slice(0,10);
+  }
+};
+
+/* ================= INIT ================= */
+(function init(){
+  if(config){
+    applyBranding();
+    showScreen('screen-dashboard', false);
+    navHistory = ['screen-dashboard'];
+    renderDashboard();
+  } else {
+    navHistory = ['screen-onboarding'];
+  }
+})();
+</script>
+</body>
+</html>
