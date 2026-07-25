@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Corretor Pro | 111 Scripts Prontos Direto no WhatsApp</title>
+  <meta name="description" content="O app completo para corretores de imóveis que querem responder rápido, negociar melhor e fechar mais — sem ficar procurando o que escrever pra cada cliente." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cr: {
+              50:  '#faf6ee',
+              100: '#f1e4cd',
+              200: '#e3cda0',
+              300: '#d9ab6b',
+              400: '#c8934f',
+              500: '#b17d3f',
+              600: '#9a6a2f',
+              700: '#7d5527',
+              800: '#5c3f1f',
+              900: '#3d2a15',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #5c3f1f 50%, #0f172a 100%); }
+    .card-hover { transition: transform .2s, box-shadow .2s; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(154,106,47,.2); }
+    .pulse-btn { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(154,106,47,.4)} 50%{box-shadow:0 0 0 12px rgba(154,106,47,0)} }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+    .faq-answer.open { max-height: 300px; }
+    .popup-toast { animation: slideIn .4s ease; }
+    @keyframes slideIn { from{transform:translateX(-120%)} to{transform:translateX(0)} }
+    /* Placeholder de screenshot - troque pela imagem real quando os prints chegarem */
+    .screen-placeholder {
+      width: 100%;
+      aspect-ratio: 9/16;
+      background: linear-gradient(135deg, #f1e4cd, #faf6ee);
+      border-radius: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #d9ab6b;
+      color: #5c3f1f;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      padding: 12px;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900 overflow-x-hidden">
+
+<!-- TOP BAR -->
+<div class="bg-cr-700 text-white text-center py-2 px-4 text-sm font-medium">
+  Acesso imediato após compra &nbsp;|&nbsp; <strong>Garantia de 7 dias</strong> sem perguntas
+</div>
+
+<!-- HERO -->
+<section class="hero-gradient text-white py-16 px-4">
+  <div class="max-w-3xl mx-auto text-center">
+    <span class="inline-block bg-cr-600/30 border border-cr-400/40 text-cr-300 text-xs font-semibold px-3 py-1 rounded-full mb-6 uppercase tracking-wider">
+      Para Corretores de Imóveis
+    </span>
+    <h1 class="text-3xl md:text-5xl font-black leading-tight mb-5">
+      Pare de Reescrever Mensagem do Zero.<br/>
+      <span class="text-cr-400">111 Scripts Prontos, Editáveis,</span><br/>
+      Direto no WhatsApp.
+    </h1>
+    <p class="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto">
+      O app completo para corretores que querem responder rápido, negociar melhor e fechar mais — sem ficar procurando o que escrever pra cada cliente.
+    </p>
+    <div class="flex justify-center mb-6">
+      <img src="https://i.ibb.co/cKq8Dnvm/Chat-GPT-Image-25-de-jul-de-2026-17-51-15.png"
+           alt="App Corretor Pro - 111 Scripts Prontos"
+           class="w-full max-w-xl rounded-2xl shadow-2xl" />
+    </div>
+    <a href="#preco" class="inline-block bg-cr-500 hover:bg-cr-400 text-white font-bold text-lg px-10 py-4 rounded-2xl pulse-btn transition-all mb-4">
+      Quero Acesso Agora →
+    </a>
+    <p class="text-gray-400 text-sm">Acesso vitalício &nbsp;•&nbsp; Sem mensalidade &nbsp;•&nbsp; Funciona no celular</p>
+  </div>
+</section>
+
+<!-- NÚMEROS -->
+<section class="bg-gray-50 border-b border-gray-100 py-10 px-4">
+  <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div>
+      <div class="text-3xl md:text-4xl font-black text-cr-600">111</div>
+      <div class="text-sm text-gray-500 mt-1">scripts prontos</div>
+    </div>
+    <div>
+      <div class="text-3xl md:text-4xl font-black text-cr-600">10</div>
+      <div class="text-sm text-gray-500 mt-1">categorias do funil</div>
+    </div>
+    <div>
+      <div class="text-3xl md:text-4xl font-black text-cr-600">7 dias</div>
+      <div class="text-sm text-gray-500 mt-1">garantia total</div>
+    </div>
+    <div>
+      <div class="text-3xl md:text-4xl font-black text-cr-600">1x</div>
+      <div class="text-sm text-gray-500 mt-1">acesso vitalício</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOR -->
+<section class="py-16 px-4 bg-white">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-black text-center mb-2">Você reconhece alguma dessas situações?</h2>
+    <p class="text-gray-500 text-center mb-10">Se sim, o App Corretor Pro foi feito para você.</p>
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="bg-red-50 border border-red-100 rounded-2xl p-5 flex gap-4">
+        <span class="text-3xl mt-1">😩</span>
+        <div>
+          <p class="font-semibold text-gray-800">Perde tempo pensando no que responder</p>
+          <p class="text-sm text-gray-500 mt-1">Lead manda mensagem e você trava pensando na melhor forma de responder — o timing passa e o interesse esfria.</p>
+        </div>
+      </div>
+      <div class="bg-red-50 border border-red-100 rounded-2xl p-5 flex gap-4">
+        <span class="text-3xl mt-1">📂</span>
+        <div>
+          <p class="font-semibold text-gray-800">Mesma objeção, resposta diferente toda vez</p>
+          <p class="text-sm text-gray-500 mt-1">"Achei caro", "vou pensar" — sem um script pronto, você improvisa sem consistência e perde negociação por isso.</p>
+        </div>
+      </div>
+      <div class="bg-red-50 border border-red-100 rounded-2xl p-5 flex gap-4">
+        <span class="text-3xl mt-1">😰</span>
+        <div>
+          <p class="font-semibold text-gray-800">Lead esfria por demora na resposta</p>
+          <p class="text-sm text-gray-500 mt-1">Nas primeiras horas a taxa de resposta cai pela metade — e é justamente aí que você mais trava.</p>
+        </div>
+      </div>
+      <div class="bg-red-50 border border-red-100 rounded-2xl p-5 flex gap-4">
+        <span class="text-3xl mt-1">🔄</span>
+        <div>
+          <p class="font-semibold text-gray-800">Parece amador comparado a corretor mais preparado</p>
+          <p class="text-sm text-gray-500 mt-1">Cliente percebe quando você responde rápido e com segurança — isso fecha mais negócio que qualquer outra coisa.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUÇÃO -->
+<section class="py-16 px-4 bg-gray-50">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-black mb-2">Tudo que você precisa. Em um único lugar. Pronto para usar.</h2>
+    <p class="text-gray-500 mb-10">Abra o app, escolha o script e em segundos a mensagem já está pronta pro cliente certo.</p>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">💬</div>
+        <h3 class="font-bold text-gray-800">111 Scripts Prontos</h3>
+        <p class="text-sm text-gray-500 mt-2">Primeiro contato, negociação, fechamento, captação e muito mais — cobrindo todo o funil de vendas.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">🗂️</div>
+        <h3 class="font-bold text-gray-800">10 Categorias Organizadas</h3>
+        <p class="text-sm text-gray-500 mt-2">Ache o script certo por etapa da negociação em segundos, sem rolar lista sem fim.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">👤</div>
+        <h3 class="font-bold text-gray-800">Ficha de Lead Reaproveitável</h3>
+        <p class="text-sm text-gray-500 mt-2">Preenche nome, imóvel e valor uma vez — todo script daquele lead já vem preenchido sozinho.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">📲</div>
+        <h3 class="font-bold text-gray-800">Envio Direto pro WhatsApp</h3>
+        <p class="text-sm text-gray-500 mt-2">Um toque abre o WhatsApp já na conversa do cliente certo, com a mensagem pronta.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">➡️</div>
+        <h3 class="font-bold text-gray-800">Próximo Passo Sugerido</h3>
+        <p class="text-sm text-gray-500 mt-2">Depois de cada script, você sabe exatamente o que fazer se não tiver resposta.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover border border-gray-100 shadow-sm">
+        <div class="text-4xl mb-3">📝</div>
+        <h3 class="font-bold text-gray-800">100% Editável</h3>
+        <p class="text-sm text-gray-500 mt-2">Ajusta o texto na hora, direto na tela, antes de mandar. Nunca é engessado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO / FEATURES -->
+<section class="py-16 px-4 hero-gradient text-white">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-black mb-2">Veja o app por dentro</h2>
+    <p class="text-gray-300 mb-10">Tudo na tela do seu celular. Sem instalar, sem complicar.</p>
+    <div class="grid md:grid-cols-3 gap-4 mb-10">
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">📱</div>
+        <h4 class="font-bold mb-1">Interface Simples</h4>
+        <p class="text-sm text-gray-300">Design intuitivo. Qualquer corretor usa sem tutorial.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">⚡</div>
+        <h4 class="font-bold mb-1">Script Pronto em Segundos</h4>
+        <p class="text-sm text-gray-300">Escolhe, preenche, revisa. Já está pronto pra mandar.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">📲</div>
+        <h4 class="font-bold mb-1">Direto no WhatsApp do Cliente</h4>
+        <p class="text-sm text-gray-300">Sem copiar, colar ou caçar contato. Um toque e já está na conversa certa.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">📁</div>
+        <h4 class="font-bold mb-1">Histórico por Lead</h4>
+        <p class="text-sm text-gray-300">Veja tudo que já foi enviado pra cada cliente, sem perder o fio da negociação.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">🌐</div>
+        <h4 class="font-bold mb-1">Funciona Offline</h4>
+        <p class="text-sm text-gray-300">Sem internet numa visita? Sem problema. O app funciona offline.</p>
+      </div>
+      <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-left">
+        <div class="text-2xl mb-2">🔒</div>
+        <h4 class="font-bold mb-1">Dados no Seu Aparelho</h4>
+        <p class="text-sm text-gray-300">Zero envio de dados. Sua carteira de clientes fica só com você.</p>
+      </div>
+    </div>
+    <a href="#preco" class="inline-block bg-cr-500 hover:bg-cr-400 text-white font-bold text-lg px-10 py-4 rounded-2xl transition-all">
+      Quero Acesso Agora →
+    </a>
+  </div>
+</section>
+
+<!-- SCREENSHOTS - COMO FUNCIONA NA PRÁTICA -->
+<section class="py-20 px-4 bg-white">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-14">
+      <span class="inline-block bg-cr-50 text-cr-700 text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">Como Funciona na Prática</span>
+      <h2 class="text-2xl md:text-4xl font-black mb-3">Veja o App em Ação.<br/><span class="text-cr-600">Cada Etapa da Negociação.</span></h2>
+      <p class="text-gray-500 max-w-xl mx-auto">Da ficha do lead ao envio no WhatsApp — tudo integrado, tudo rápido, tudo profissional.</p>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div class="flex-1 order-2 md:order-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-cr-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">1</span>
+          <span class="text-cr-600 font-semibold text-sm uppercase tracking-wide">Dashboard</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          111 Scripts Organizados —<br/><span class="text-cr-600">Tudo a 1 Toque.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          Abra o app e veja todas as categorias do funil, quantos leads você tem cadastrados e quantos scripts já enviou. Sem planilha, sem anotação solta, sem perder nada.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-cr-700 font-semibold">
+          <span class="text-cr-500">✓</span> Acesso instantâneo a todos os scripts e leads
+        </div>
+      </div>
+      <div class="flex-shrink-0 order-1 md:order-2">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <!-- SCREENSHOT 1: Dashboard do app -->
+              <img src="https://i.ibb.co/ccwVbC4k/Screenshot-2026-07-25-at-17-41-05.png" alt="App Corretor Pro - Dashboard" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-cr-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div class="flex-shrink-0">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <!-- SCREENSHOT 2: Busca e filtro por categoria -->
+              <img src="https://i.ibb.co/nsyzT5r2/Screenshot-2026-07-25-at-17-42-05.png" alt="App Corretor Pro - Busca por categoria" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-cr-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-cr-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">2</span>
+          <span class="text-cr-600 font-semibold text-sm uppercase tracking-wide">Busca por Categoria</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          Ache o Script Certo.<br/><span class="text-cr-600">Em Segundos.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          Filtre por categoria — primeiro contato, negociação, fechamento, captação — ou busque direto pela palavra-chave da objeção que o cliente acabou de mandar.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-cr-700 font-semibold">
+          <span class="text-cr-500">✓</span> 10 categorias com busca instantânea
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div class="flex-1 order-2 md:order-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-cr-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">3</span>
+          <span class="text-cr-600 font-semibold text-sm uppercase tracking-wide">Ficha do Lead</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          Escolhe o Lead.<br/><span class="text-cr-600">Os Campos se Preenchem Sozinhos.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          Cadastra o nome, endereço, valor e diferencial do imóvel uma única vez. Dentro de qualquer script, é só escolher esse lead no seletor — os campos já vêm prontos, sem digitar de novo.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-cr-700 font-semibold">
+          <span class="text-cr-500">✓</span> Nunca mais digite o mesmo dado duas vezes
+        </div>
+      </div>
+      <div class="flex-shrink-0 order-1 md:order-2">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <!-- SCREENSHOT 3: Seletor de lead + campos do script -->
+              <img src="https://i.ibb.co/ksCm4RrT/Screenshot-2026-07-25-at-17-41-33.png" alt="App Corretor Pro - Preencher com lead" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-cr-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div class="flex-shrink-0">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <!-- SCREENSHOT 4: Bolha de WhatsApp editável + envio -->
+              <img src="https://i.ibb.co/2393LrJC/Screenshot-2026-07-25-at-17-42-36.png" alt="App Corretor Pro - Revisar e enviar" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-cr-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-cr-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">4</span>
+          <span class="text-cr-600 font-semibold text-sm uppercase tracking-wide">Revisão e Envio</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          Vê a Mensagem Pronta.<br/><span class="text-cr-600">Edita se Quiser. Manda com 1 Toque.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          A mensagem aparece como uma conversa de WhatsApp de verdade. Se quiser mudar uma palavra, é só tocar e editar. Depois, um botão já abre o WhatsApp direto na conversa do cliente certo.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-cr-700 font-semibold">
+          <span class="text-cr-500">✓</span> Sem copiar, colar ou caçar o contato certo
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="flex flex-col md:flex-row items-center gap-10">
+      <div class="flex-1 order-2 md:order-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-full bg-cr-600 text-white font-black text-lg flex items-center justify-center flex-shrink-0">5</span>
+          <span class="text-cr-600 font-semibold text-sm uppercase tracking-wide">Objeções do Mercado</span>
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4">
+          Da Objeção Mais Simples<br/><span class="text-cr-600">à Mais Difícil de Contornar.</span>
+        </h3>
+        <p class="text-gray-600 leading-relaxed mb-5">
+          "Não confio em corretor", "prefiro comprar direto", "corretor só quer comissão" — as objeções que mais travam negociação já têm resposta pronta, testada e editável.
+        </p>
+        <div class="flex items-center gap-2 text-sm text-cr-700 font-semibold">
+          <span class="text-cr-500">✓</span> Histórico de cada script fica salvo na ficha do lead
+        </div>
+      </div>
+      <div class="flex-shrink-0 order-1 md:order-2">
+        <div class="relative mx-auto" style="width:220px">
+          <div class="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-[2rem] p-1">
+              <!-- SCREENSHOT 5: Objeções do Mercado -->
+              <img src="https://i.ibb.co/k6QcxGP8/Screenshot-2026-07-25-at-17-44-25.png" alt="App Corretor Pro - Objeções do Mercado" class="rounded-[1.8rem] w-full object-cover" />
+            </div>
+          </div>
+          <div class="absolute inset-0 -z-10 rounded-[2.5rem] bg-cr-400/30 blur-2xl transform scale-110"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA da seção -->
+    <div class="text-center mt-16 p-10 bg-cr-50 rounded-3xl border border-cr-100">
+      <p class="text-cr-700 font-semibold text-sm uppercase tracking-wide mb-2">Pronto para começar?</p>
+      <h3 class="text-2xl font-black text-gray-900 mb-4">É assim que cada negociação sua vai ser daqui pra frente.</h3>
+      <a href="#preco" class="inline-block bg-cr-600 hover:bg-cr-500 text-white font-bold text-lg px-10 py-4 rounded-2xl pulse-btn transition-all">
+        Quero Usar Isso Agora →
+      </a>
+      <p class="text-gray-400 text-sm mt-3">Acesso imediato · Sem instalação · Funciona no celular</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<!-- ATENÇÃO: depoimentos abaixo são EXEMPLOS ilustrativos para lançamento. Substitua por depoimentos reais assim que os primeiros compradores derem feedback. -->
+<section class="py-16 px-4 bg-white">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-black text-center mb-10">O que corretores estão dizendo</h2>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6">
+        <div class="flex text-cr-500 mb-3">★★★★★</div>
+        <p class="text-gray-700 text-sm italic mb-4">"Não perco mais tempo pensando no que responder. Abro o app, escolho o script certo pra objeção e já mando direto no WhatsApp do cliente."</p>
+        <div class="text-sm">
+          <p class="font-semibold text-gray-800">Rodrigo M.</p>
+          <p class="text-gray-400">Corretor de Imóveis — SP</p>
+        </div>
+      </div>
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6">
+        <div class="flex text-cr-500 mb-3">★★★★★</div>
+        <p class="text-gray-700 text-sm italic mb-4">"A ficha do lead que preenche os scripts sozinha é o que mais uso. Economiza um tempo absurdo quando estou negociando vários imóveis ao mesmo tempo."</p>
+        <div class="text-sm">
+          <p class="font-semibold text-gray-800">Patrícia A.</p>
+          <p class="text-gray-400">Corretora de Imóveis — RJ</p>
+        </div>
+      </div>
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6">
+        <div class="flex text-cr-500 mb-3">★★★★★</div>
+        <p class="text-gray-700 text-sm italic mb-4">"Os scripts de objeção mudaram minha taxa de fechamento. Antes eu travava na hora de responder 'achei caro' — agora tenho resposta pronta e editável na hora."</p>
+        <div class="text-sm">
+          <p class="font-semibold text-gray-800">Diego S.</p>
+          <p class="text-gray-400">Corretor de Imóveis — MG</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREÇO -->
+<section id="preco" class="py-16 px-4 bg-gray-50">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-black mb-2">Escolha o seu plano</h2>
+    <p class="text-gray-500 mb-10">Acesso imediato após a compra. Sem mensalidade, sem pegadinha.</p>
+    <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+
+      <!-- BÁSICO -->
+      <div class="bg-white border-2 border-gray-200 rounded-3xl p-8 text-left flex flex-col">
+        <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Básico</p>
+        <div class="flex items-end gap-1 mb-1">
+          <span class="text-4xl font-black text-gray-900">R$ 17,90</span>
+        </div>
+        <p class="text-xs text-gray-400 mb-6">pagamento único</p>
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex gap-2 text-sm"><span class="text-cr-500 font-bold">✓</span> 111 scripts prontos</li>
+          <li class="flex gap-2 text-sm"><span class="text-cr-500 font-bold">✓</span> 10 categorias organizadas</li>
+          <li class="flex gap-2 text-sm"><span class="text-cr-500 font-bold">✓</span> Busca por categoria e palavra-chave</li>
+          <li class="flex gap-2 text-sm"><span class="text-cr-500 font-bold">✓</span> Acesso vitalício</li>
+        </ul>
+        <a href="https://pay.hotmart.com/U106771999O?checkoutMode=10" class="block text-center border-2 border-cr-600 text-cr-600 hover:bg-cr-50 font-bold py-3 rounded-xl transition-all">
+          Escolher Básico
+        </a>
+      </div>
+
+      <!-- PRO -->
+      <div class="bg-cr-600 border-2 border-cr-600 rounded-3xl p-8 text-left flex flex-col text-white relative">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-xs font-black px-4 py-1 rounded-full uppercase tracking-wide">
+          ⭐ Mais Escolhido
+        </div>
+        <p class="text-sm font-semibold text-cr-200 uppercase tracking-wider mb-1">Corretor Pro</p>
+        <div class="flex items-end gap-1 mb-1">
+          <span class="text-4xl font-black">R$ 27,90</span>
+        </div>
+        <p class="text-xs text-cr-200 mb-4">pagamento único · acesso vitalício</p>
+        <div class="rounded-2xl overflow-hidden mb-5 ring-2 ring-white/20 shadow-xl">
+          <img src="https://i.ibb.co/cKq8Dnvm/Chat-GPT-Image-25-de-jul-de-2026-17-51-15.png"
+               alt="App Corretor Pro" class="w-full object-cover" />
+        </div>
+        <ul class="space-y-3 mb-8 flex-1">
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Tudo do plano Básico</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Ficha de lead reaproveitável</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Envio direto pro WhatsApp do cliente</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Histórico de scripts por lead</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Próximo passo sugerido em cada script</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Favoritos e busca instantânea</li>
+          <li class="flex gap-2 text-sm"><span class="text-yellow-300 font-bold">✓</span> Configuração personalizada do corretor</li>
+        </ul>
+        <a href="https://pay.hotmart.com/U106771999O?off=bqav9yvw&checkoutMode=10" class="block text-center bg-white text-cr-700 hover:bg-cr-50 font-bold py-3 rounded-xl transition-all pulse-btn">
+          Assinar Pro Agora
+        </a>
+      </div>
+
+    </div>
+    <div class="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-500">
+      <span>🔒 Pagamento 100% seguro</span>
+      <span>⚡ Acesso em minutos</span>
+      <span>↩️ 7 dias de garantia</span>
+    </div>
+  </div>
+</section>
+
+<!-- GARANTIA -->
+<section class="py-16 px-4 bg-white">
+  <div class="max-w-2xl mx-auto text-center">
+    <div class="bg-cr-50 border-2 border-cr-200 rounded-3xl p-10">
+      <div class="text-5xl mb-4">🛡️</div>
+      <h2 class="text-2xl font-black mb-3">Garantia Incondicional de 7 Dias</h2>
+      <p class="text-gray-600 mb-6">
+        Se em até 7 dias você não se sentir mais rápido e seguro nas suas negociações, ou simplesmente achar que o app não é para você, <strong>devolvemos 100% do seu dinheiro. Sem perguntas.</strong>
+      </p>
+      <ul class="text-sm text-left inline-block space-y-2 text-gray-700">
+        <li class="flex gap-2"><span class="text-cr-500">✓</span> Acesso vitalício ao app</li>
+        <li class="flex gap-2"><span class="text-cr-500">✓</span> 111 scripts prontos para usar</li>
+        <li class="flex gap-2"><span class="text-cr-500">✓</span> Funciona offline em qualquer dispositivo</li>
+        <li class="flex gap-2"><span class="text-cr-500">✓</span> Envio direto pro WhatsApp do cliente certo</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="py-16 px-4 bg-gray-50">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="text-2xl font-black text-center mb-10">Perguntas Frequentes</h2>
+    <div class="space-y-3">
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          Como vou receber o acesso?
+          <span class="faq-icon text-cr-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Após a confirmação do pagamento, você recebe o link de acesso direto no e-mail. É instantâneo — em menos de 5 minutos você já está usando o app.
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          Funciona no celular?
+          <span class="faq-icon text-cr-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Sim! O app foi desenvolvido mobile-first e funciona perfeitamente em qualquer smartphone, tablet ou computador. Não precisa instalar nada — abre direto no navegador.
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          O envio pro WhatsApp funciona em qualquer celular?
+          <span class="faq-icon text-cr-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Sim, funciona com o WhatsApp normal, sem precisar de WhatsApp Business nem nenhuma configuração extra. Se o lead tiver telefone cadastrado, abre direto na conversa dele.
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          É realmente vitalício?
+          <span class="faq-icon text-cr-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Sim. Paga uma vez, usa para sempre. Não tem mensalidade, não tem renovação anual. Acesso vitalício.
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100">
+        <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-gray-50">
+          E se eu não gostar?
+          <span class="faq-icon text-cr-600 font-bold text-xl">+</span>
+        </button>
+        <div class="faq-answer px-6 pb-4 text-gray-600 text-sm">
+          Garantia de 7 dias sem perguntas. Se não ficar satisfeito por qualquer motivo, é só pedir o reembolso e devolvemos 100% do valor pago.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="hero-gradient text-white py-16 px-4 text-center">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-black mb-3">Pronto para negociar sem travar?</h2>
+    <p class="text-gray-300 mb-8">Corretores de todo o Brasil já transformaram sua rotina de atendimento com o app.</p>
+    <a href="https://pay.hotmart.com/U106771999O?off=bqav9yvw&checkoutMode=10" class="inline-block bg-cr-500 hover:bg-cr-400 text-white font-bold text-xl px-12 py-5 rounded-2xl pulse-btn transition-all mb-4">
+      Quero Acesso Agora →
+    </a>
+    <p class="text-gray-400 text-sm">🔒 Pagamento seguro &nbsp;•&nbsp; Acesso imediato &nbsp;•&nbsp; Garantia 7 dias</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-gray-400 text-center py-6 text-sm">
+  <p>App Corretor Pro &nbsp;•&nbsp; Todos os direitos reservados</p>
+  <p class="mt-1">✅ Acesso imediato · Sem anúncios · Sem envio de dados</p>
+</footer>
+
+<!-- POPUP DE COMPRAS RECENTES -->
+<div id="toast" class="fixed bottom-4 left-4 bg-white border border-gray-200 shadow-xl rounded-2xl p-4 flex gap-3 items-center z-50 max-w-xs popup-toast hidden">
+  <div class="text-3xl">🎉</div>
+  <div>
+    <p class="font-semibold text-gray-800 text-sm" id="toast-name">Alguém de SP</p>
+    <p class="text-gray-500 text-xs">acaba de adquirir o App Corretor Pro</p>
+  </div>
+</div>
+
+<script>
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const icon = btn.querySelector('.faq-icon');
+    answer.classList.toggle('open');
+    icon.textContent = answer.classList.contains('open') ? '−' : '+';
+  }
+
+  const names = ['Rodrigo de SP','Patrícia do RJ','Diego de MG','Fernanda do PR','Bruno de SC','Camila da BA','Marcelo de GO','Juliana do RS'];
+  let toastIndex = 0;
+  function showToast() {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-name').textContent = names[toastIndex % names.length];
+    toastIndex++;
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 4000);
+  }
+  setTimeout(() => { showToast(); setInterval(showToast, 18000); }, 6000);
+</script>
+
+<!-- UTMIFY PIXEL -->
+<script>
+  window.pixelId = "6a5a5be0c73ab0762cabc7a3";
+  var a = document.createElement("script");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  document.head.appendChild(a);
+</script>
+
+<!-- UTMIFY: captura automática de UTMs da URL e repassa pros links de checkout -->
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-subids async defer></script>
+</body>
+</html>
