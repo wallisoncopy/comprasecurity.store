@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>App Corretor Pro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#9a6a2f;--pd:#5c3f1f;--pl:#f1e4cd;--pm:#d9ab6b;
+  --g:#faf6ee;--w:#fff;--dk:#241f16;--gr:#6f6350;--lg:#e6dcc7;
+  --red:#b5432f;--green:#2f7a5c;--yellow:#b8874a;
+  --send:#2f7a5c;--send-d:#276a4f;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--g);color:var(--dk);min-height:100vh}
+.shell{display:flex;min-height:100vh}
+.sidebar{width:225px;background:var(--pd);color:#fff;display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;transition:.3s;overflow-y:auto}
+.sidebar-logo{padding:16px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.12)}
+.sidebar-logo .logo-icon{width:32px;height:32px;background:var(--pm);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--pd);flex-shrink:0}
+.sidebar-logo span{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden}
+.active-lead-box{margin:10px 12px;padding:9px 10px;background:rgba(255,255,255,.08);border:1px dashed rgba(255,255,255,.25);border-radius:8px;font-size:11.5px;cursor:pointer}
+.active-lead-box .k{opacity:.65;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+.active-lead-box .v{font-weight:700;font-size:13px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav{padding:8px 8px;flex:1;overflow-y:auto}
+.nav-section-title{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5);padding:10px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:.15s;margin-bottom:2px;font-size:13px;white-space:nowrap}
+.nav-item:hover{background:rgba(255,255,255,.1)}
+.nav-item.active{background:var(--p);font-weight:600}
+.nav-item .ico{width:18px;text-align:center;flex-shrink:0}
+.nav-label{overflow:hidden;text-overflow:ellipsis}
+.nav-count{margin-left:auto;font-size:10px;background:rgba(255,255,255,.18);padding:1px 7px;border-radius:999px}
+.main{margin-left:225px;flex:1;transition:.3s}
+.topbar{background:var(--w);border-bottom:1px solid var(--lg);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap}
+.topbar h1{font-size:17px;font-weight:700;color:var(--pd)}
+.search-box{flex:1;max-width:340px;position:relative}
+.search-box input{width:100%;padding:9px 12px 9px 34px;border:1.5px solid var(--lg);border-radius:8px;font-size:13px;outline:none}
+.search-box input:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(154,106,47,.1)}
+.search-box .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--gr);font-size:13px}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px;font-family:inherit}
+.btn-primary{background:var(--p);color:#fff}
+.btn-primary:hover{background:var(--pd)}
+.btn-outline{background:transparent;border:1.5px solid var(--p);color:var(--p)}
+.btn-outline:hover{background:var(--pl)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-send{background:var(--send);color:#fff}
+.btn-send:hover{background:var(--send-d)}
+.content{padding:24px}
+.page{display:none}
+.page.active{display:block}
+.card{background:var(--w);border-radius:12px;border:1px solid var(--lg);padding:20px;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.card-title{font-size:15px;font-weight:700;color:var(--pd)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--w);border-radius:10px;border:1px solid var(--lg);padding:14px;text-align:center}
+.stat-num{font-size:26px;font-weight:800;color:var(--p);font-variant-numeric:tabular-nums}
+.stat-label{font-size:11px;color:var(--gr);margin-top:2px}
+.cat-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.cat-tile{background:var(--w);border:1px solid var(--lg);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:.15s}
+.cat-tile:hover{border-color:var(--p);box-shadow:0 2px 8px rgba(154,106,47,.12);transform:translateY(-2px)}
+.cat-tile .ico{font-size:26px;margin-bottom:6px}
+.cat-tile .nm{font-size:12px;font-weight:700;color:var(--dk)}
+.cat-tile .ct{font-size:11px;color:var(--gr);margin-top:2px}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip-filter{padding:6px 14px;border-radius:999px;border:1.5px solid var(--lg);background:var(--w);font-size:12px;font-weight:600;color:var(--gr);cursor:pointer;transition:.15s;white-space:nowrap}
+.chip-filter:hover{border-color:var(--p)}
+.chip-filter.active{background:var(--p);border-color:var(--p);color:#fff}
+.grid-scripts{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.s-card{background:var(--w);border:1px solid var(--lg);border-radius:12px;padding:16px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:8px}
+.s-card:hover{border-color:var(--p);box-shadow:0 4px 12px rgba(154,106,47,.12)}
+.s-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.s-badge{font-size:10px;font-weight:700;color:var(--pd);background:var(--pl);padding:3px 8px;border-radius:999px;white-space:nowrap}
+.s-star{background:none;border:none;cursor:pointer;font-size:16px;color:var(--lg);flex-shrink:0}
+.s-star.on{color:var(--yellow)}
+.s-title{font-size:13.5px;font-weight:700;color:var(--dk);line-height:1.3}
+.s-when{font-size:11.5px;color:var(--gr);line-height:1.4}
+.empty{text-align:center;padding:48px 24px;color:var(--gr)}
+.empty .ico{font-size:40px;margin-bottom:10px}
+.empty p{font-size:14px}
+
+/* LEADS */
+.lead-list{display:grid;gap:10px}
+.lead-card{background:var(--w);border:1px solid var(--lg);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s}
+.lead-card:hover{border-color:var(--p);box-shadow:0 2px 8px rgba(154,106,47,.1)}
+.lead-card.is-active{border-color:var(--send);background:#f2f9f6}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--pl);color:var(--pd);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lead-info{flex:1;min-width:0}
+.lead-name{font-weight:600;font-size:14px;color:var(--dk);display:flex;align-items:center;gap:8px}
+.lead-meta{font-size:12px;color:var(--gr);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill-active{font-size:10px;font-weight:700;background:var(--send);color:#fff;padding:2px 8px;border-radius:999px}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}
+label.lbl{font-size:12px;font-weight:600;color:var(--gr)}
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--lg);border-radius:8px;font-size:13px;color:var(--dk);background:var(--w);outline:none;transition:.15s;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(154,106,47,.08)}
+
+.hist-item{background:var(--g);border:1px solid var(--pl);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.hist-item .h-top{display:flex;justify-content:space-between;font-size:11.5px;color:var(--gr);margin-bottom:4px}
+.hist-item .h-title{font-size:13px;font-weight:700;color:var(--pd)}
+.hist-item .h-text{font-size:12.5px;color:var(--dk);margin-top:4px;white-space:pre-wrap}
+
+.logo-upload-box{border:2px dashed var(--lg);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:.2s;background:var(--g)}
+.logo-upload-box:hover{border-color:var(--p);background:var(--pl)}
+.logo-upload-box p{font-size:12px;color:var(--gr);margin-top:4px}
+.logo-preview-box{display:none;margin-top:10px;text-align:center}
+.logo-preview-box img{max-height:56px;max-width:160px;border-radius:6px;border:1px solid var(--lg)}
+.logo-preview-box span{display:block;font-size:11px;color:var(--p);margin-top:4px;font-weight:600}
+
+/* MODAL / SCRIPT DETAIL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--w);border-radius:16px;width:min(640px,96vw);max-height:92vh;overflow-y:auto;padding:0;position:relative}
+.modal-small{width:min(480px,95vw)}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--lg);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:sticky;top:0;background:var(--w);border-radius:16px 16px 0 0}
+.modal-head .badge2{font-size:11px;font-weight:700;color:var(--pd);background:var(--pl);padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:6px}
+.modal-title{font-size:16.5px;font-weight:800;color:var(--dk)}
+.modal-when{font-size:12px;color:var(--gr);margin-top:4px}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--gr);padding:4px;flex-shrink:0}
+.modal-body{padding:18px 22px}
+.lead-picker{display:flex;align-items:center;gap:8px;background:var(--g);border:1px solid var(--pl);border-radius:10px;padding:8px 12px;margin-bottom:16px;font-size:12.5px}
+.lead-picker select{border:none;background:transparent;font-weight:700;color:var(--pd);flex:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.mb-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--pd);margin-bottom:8px}
+
+.phone{border-radius:18px;padding:12px;background:linear-gradient(180deg,#2a2419,#1a1610)}
+.phone-bar{display:flex;justify-content:space-between;align-items:center;padding:2px 6px 10px;color:#cfc6b2;font-size:10.5px;letter-spacing:.03em}
+.bubble-wrap{background:#0b141a;border-radius:12px;padding:14px 12px;min-height:120px;display:flex;flex-direction:column;justify-content:flex-end}
+.bubble{background:#2f3b32;color:#eef2ee;border-radius:10px 10px 10px 2px;padding:11px 13px;font-size:13.5px;line-height:1.5;outline:none;cursor:text}
+.bubble .ph{color:#e0be8c;font-weight:700}
+.edit-hint{font-size:10px;color:#7c8b7f;text-align:right;margin-top:6px}
+.proximo-box{margin-top:12px;background:#fff8ea;border:1px solid #f0dfb0;border-radius:8px;padding:9px 11px;font-size:11.5px;color:#6b5620;display:none}
+.proximo-box.show{display:block}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap;padding:16px 22px;border-top:1px solid var(--lg);position:sticky;bottom:0;background:var(--w);border-radius:0 0 16px 16px}
+
+@media(max-width:768px){
+  .sidebar{width:56px}.sidebar .nav-label,.sidebar .sidebar-logo span,.sidebar .nav-count,.nav-section-title,.active-lead-box{display:none}
+  .main{margin-left:56px}
+  .form-grid{grid-template-columns:1fr}
+  .form-full{grid-column:1}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🔑</div>
+    <span>Corretor Pro</span>
+  </div>
+  <div class="active-lead-box" onclick="goPage('leads')">
+    <div class="k">Lead ativo</div>
+    <div class="v" id="activeLeadLabel">Nenhum selecionado</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-item active" onclick="goPage('dashboard')">
+      <span class="ico">🏠</span><span class="nav-label">Dashboard</span>
+    </div>
+    <div class="nav-item" onclick="goPage('scripts')">
+      <span class="ico">💬</span><span class="nav-label">Todos os Scripts</span><span class="nav-count">111</span>
+    </div>
+    <div class="nav-item" onclick="goPage('favoritos')">
+      <span class="ico">⭐</span><span class="nav-label">Favoritos</span>
+    </div>
+    <div class="nav-item" onclick="goPage('leads')">
+      <span class="ico">👤</span><span class="nav-label">Meus Leads</span>
+    </div>
+    <div class="nav-section-title">Categorias</div>
+    <div id="navCategorias"></div>
+    <div class="nav-section-title">Configurações</div>
+    <div class="nav-item" onclick="goPage('dados')">
+      <span class="ico">🏢</span><span class="nav-label">Meus Dados</span>
+    </div>
+    <div class="nav-item" onclick="goPage('manual')">
+      <span class="ico">📘</span><span class="nav-label">Manual de Uso</span>
+    </div>
+  </nav>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <h1 id="pageTitle">Dashboard</h1>
+    <div class="search-box" id="searchWrap" style="display:none">
+      <span class="si">🔎</span>
+      <input id="searchInput" placeholder="Buscar script..." oninput="renderScripts()">
+    </div>
+    <div id="topbarActions"></div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Categorias</span></div>
+        <div class="cat-tiles" id="catTiles"></div>
+      </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <div class="page" id="page-scripts">
+      <div class="filter-bar" id="filterBar"></div>
+      <div class="grid-scripts" id="gridScripts"></div>
+    </div>
+
+    <!-- FAVORITOS -->
+    <div class="page" id="page-favoritos">
+      <div class="grid-scripts" id="gridFavoritos"></div>
+    </div>
+
+    <!-- LEADS -->
+    <div class="page" id="page-leads">
+      <div class="lead-list" id="leadList"></div>
+    </div>
+
+    <!-- LEAD DETALHE (mesma page, troca conteudo) -->
+    <div class="page" id="page-lead-detalhe">
+      <button class="btn btn-outline btn-sm" style="margin-bottom:14px" onclick="goPage('leads')">← Voltar pra Leads</button>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Ficha do Lead / Imóvel</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-sm" id="btnSetActive" onclick="setActiveFromDetail()">Definir como ativo</button>
+            <button class="btn btn-red btn-sm" style="background:var(--red);color:#fff" onclick="deleteLeadFromDetail()">Excluir</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label class="lbl">Nome</label><input id="ld_nome"></div>
+          <div class="form-group"><label class="lbl">Telefone/WhatsApp</label><input id="ld_tel" placeholder="(00) 00000-0000"></div>
+          <div class="form-group form-full"><label class="lbl">Endereço do Imóvel</label><input id="ld_endereco"></div>
+          <div class="form-group"><label class="lbl">Valor</label><input id="ld_valor" placeholder="Ex: R$480 mil"></div>
+          <div class="form-group"><label class="lbl">Metragem</label><input id="ld_metragem" placeholder="Ex: 95"></div>
+          <div class="form-group"><label class="lbl">Bairro</label><input id="ld_bairro"></div>
+          <div class="form-group form-full"><label class="lbl">Diferencial do Imóvel</label><input id="ld_diferencial" placeholder="Ex: vaga dupla e varanda gourmet"></div>
+        </div>
+        <div style="margin-top:14px"><button class="btn btn-primary" onclick="saveLeadDetail()">Salvar Ficha</button></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Histórico de Scripts Enviados</span></div>
+        <div id="leadHistorico"></div>
+      </div>
+    </div>
+
+    <!-- MEUS DADOS -->
+    <div class="page" id="page-dados">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Dados Profissionais</span></div>
+        <p style="font-size:12px;color:var(--gr);margin-bottom:16px">Seu nome preenche automaticamente o campo "corretor" em qualquer script.</p>
+        <div class="form-grid">
+          <div class="form-group form-full"><label class="lbl">Seu Nome</label><input id="cf_nome" placeholder="Ex: Rafael Souza"></div>
+          <div class="form-group"><label class="lbl">CRECI</label><input id="cf_creci" placeholder="Ex: 12345-F"></div>
+          <div class="form-group"><label class="lbl">WhatsApp</label><input id="cf_tel" placeholder="(00) 00000-0000"></div>
+          <div class="form-group"><label class="lbl">Email</label><input id="cf_email" type="email"></div>
+          <div class="form-group"><label class="lbl">Instagram</label><input id="cf_insta" placeholder="@seuinsta"></div>
+          <div class="form-group form-full">
+            <label class="lbl">Logo (aparece no PDF de resumo do lead)</label>
+            <div class="logo-upload-box" onclick="document.getElementById('logoInput').click()">
+              <p>Clique para enviar sua logo (PNG ou JPG)</p>
+              <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="loadLogo(this)">
+            </div>
+            <div class="logo-preview-box" id="logoPreview">
+              <img id="logoPreviewImg" src="" alt="Logo">
+              <span>Logo carregada ✓</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px"><button class="btn btn-primary" onclick="saveCorretor()">Salvar</button></div>
+      </div>
+    </div>
+
+    <!-- MANUAL -->
+    <div class="page" id="page-manual">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Manual de Uso</span></div>
+        <div style="font-size:13px;line-height:1.8;color:var(--dk)">
+          <h3 style="color:var(--pd);margin-bottom:12px">Bem-vindo(a) ao App Corretor Pro!</h3>
+          <p style="margin-bottom:16px">111 scripts prontos, editáveis, com envio direto pro WhatsApp — organizados em 10 categorias do funil de vendas.</p>
+          <h4 style="color:var(--pd);margin:16px 0 8px">Como usar:</h4>
+          <ol style="padding-left:20px;margin-bottom:16px">
+            <li style="margin-bottom:6px"><strong>Preencha seus dados:</strong> vá em "Meus Dados" — seu nome preenche sozinho todo script que precisar</li>
+            <li style="margin-bottom:6px"><strong>Cadastre um lead:</strong> em "Meus Leads", crie a ficha do cliente/imóvel (nome, endereço, valor...)</li>
+            <li style="margin-bottom:6px"><strong>Defina como ativo:</strong> assim, todo script que você abrir já vem com os dados desse lead preenchidos</li>
+            <li style="margin-bottom:6px"><strong>Escolha um script:</strong> em "Todos os Scripts", busque por categoria ou palavra-chave</li>
+            <li style="margin-bottom:6px"><strong>Revise a mensagem:</strong> o texto aparece como uma bolha de WhatsApp — você pode editar direto nela antes de mandar</li>
+            <li style="margin-bottom:6px"><strong>Envie:</strong> o botão abre o WhatsApp com a mensagem pronta, só escolher o contato</li>
+            <li style="margin-bottom:6px"><strong>Próximo passo:</strong> depois de enviar, alguns scripts sugerem o que fazer se não tiver resposta</li>
+          </ol>
+          <h4 style="color:var(--pd);margin:16px 0 8px">Categorias disponíveis:</h4>
+          <p id="manualCategorias" style="margin-bottom:8px"></p>
+          <h4 style="color:var(--pd);margin:16px 0 8px">Sobre seus dados:</h4>
+          <p>Seus leads, favoritos e dados ficam <strong>salvos localmente no seu dispositivo</strong>. Nada é enviado a servidores externos.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- MODAL SCRIPT -->
+<div class="modal-overlay" id="modalScript">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <span class="badge2" id="md_badge"></span>
+        <div class="modal-title" id="md_titulo"></div>
+        <div class="modal-when" id="md_when"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="lead-picker">
+        <span>👤 Preencher com:</span>
+        <select id="md_leadSelect" onchange="onLeadPickerChange()"><option value="">Nenhum lead (preencher manual)</option></select>
+      </div>
+      <div class="grid2">
+        <div>
+          <div class="mb-label">Dados do Script</div>
+          <div id="md_fields"></div>
+        </div>
+        <div>
+          <div class="mb-label">Pré-visualização</div>
+          <div class="phone">
+            <div class="phone-bar"><span>WhatsApp</span><span id="md_contact">novo contato</span></div>
+            <div class="bubble-wrap">
+              <div class="bubble" id="md_bubble" contenteditable="true"></div>
+            </div>
+            <div class="edit-hint">toque no texto pra editar antes de enviar</div>
+          </div>
+          <div class="proximo-box" id="md_proximo"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" id="md_favBtn" onclick="toggleFavorita()">⭐ Favoritar</button>
+      <button class="btn btn-send" id="btn-send-wa" onclick="enviarWhatsapp()">Enviar no WhatsApp →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVO LEAD -->
+<div class="modal-overlay" id="modalLead">
+  <div class="modal modal-small">
+    <div class="modal-head">
+      <span class="modal-title">Novo Lead / Imóvel</span>
+      <button class="modal-close" onclick="closeLeadModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group form-full"><label class="lbl">Nome *</label><input id="nl_nome" placeholder="Nome do lead"></div>
+        <div class="form-group"><label class="lbl">Telefone</label><input id="nl_tel" placeholder="(00) 00000-0000"></div>
+        <div class="form-group"><label class="lbl">Valor</label><input id="nl_valor" placeholder="Ex: R$480 mil"></div>
+        <div class="form-group form-full"><label class="lbl">Endereço do Imóvel</label><input id="nl_endereco"></div>
+        <div class="form-group"><label class="lbl">Metragem</label><input id="nl_metragem" placeholder="Ex: 95"></div>
+        <div class="form-group"><label class="lbl">Bairro</label><input id="nl_bairro"></div>
+        <div class="form-group form-full"><label class="lbl">Diferencial</label><input id="nl_diferencial" placeholder="Ex: vaga dupla e varanda gourmet"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveNewLead()">Cadastrar</button>
+      <button class="btn btn-outline" onclick="closeLeadModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DB = {"categorias":[{"id":"contato","nome":"Primeiro Contato","icone":"👋"},{"id":"qualificacao","nome":"Qualificação de Lead","icone":"🎯"},{"id":"apresentacao","nome":"Apresentação do Imóvel","icone":"🏠"},{"id":"agendamento","nome":"Agendamento de Visita","icone":"📅"},{"id":"negociacao","nome":"Negociação e Objeção","icone":"🤝"},{"id":"fechamento","nome":"Fechamento","icone":"✍️"},{"id":"captacao","nome":"Captação de Imóvel","icone":"🔑"},{"id":"reativacao","nome":"Reativação de Lead","icone":"🔄"},{"id":"posvenda","nome":"Pós-venda e Indicação","icone":"💬"},{"id":"objecoes","nome":"Objeções do Mercado","icone":"🛡️"}],"scripts":[{"id":1,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Lead do portal imobiliário","quando":"Usar assim que o lead chega — nas primeiras horas a taxa de resposta cai pela metade.","template":"Oi {{nome}}! Aqui é o {{corretor}}, vi que você se interessou pelo imóvel em {{endereco}} ({{valor}}). Ele ainda está disponível! Posso te mandar mais fotos e agendar uma visita essa semana?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"corretor","label":"Seu nome","placeholder":"Ex: Rafael"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"valor","label":"Valor","placeholder":"Ex: R$ 480 mil"}],"proximo":"Sem resposta em 24h? Use um script de Reativação."},{"id":2,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Lead via Instagram/DM","quando":"Quando o contato veio de um comentário ou DM no post do imóvel.","template":"Oi {{nome}}, tudo bem? Vi seu comentário sobre o imóvel em {{endereco}}. Posso te mandar mais detalhes e o valor por aqui mesmo?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":"Se responder interessado, use um script de Qualificação de Lead."},{"id":3,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Lead via indicação","quando":"Quando alguém te passou o contato de um conhecido interessado.","template":"Oi {{nome}}, tudo bem? Sou o {{corretor}}, corretor de imóveis, e o(a) {{indicador}} me passou seu contato — falou que você está procurando imóvel na região de {{bairro}}. Posso te ajudar a encontrar algo?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"corretor","label":"Seu nome","placeholder":"Ex: Rafael"},{"key":"indicador","label":"Quem indicou","placeholder":"Ex: Marcelo"},{"key":"bairro","label":"Bairro","placeholder":"Ex: Jardim das Acácias"}],"proximo":null},{"id":4,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Resposta a anúncio no Meta Ads","quando":"Lead veio direto de um anúncio pago perguntando sobre o imóvel.","template":"Oi {{nome}}! Vi que você clicou no anúncio do imóvel em {{endereco}}. Ele está por {{valor}} e ainda está disponível. Quer que eu te mande a ficha completa com fotos?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"valor","label":"Valor","placeholder":"Ex: R$ 480 mil"}],"proximo":null},{"id":5,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Após ligação não atendida","quando":"Você ligou, não atendeu, manda essa em seguida pra não perder o lead.","template":"Oi {{nome}}, tentei te ligar agora sobre o imóvel em {{endereco}}. Quando for melhor pra você, me chama aqui que te passo todos os detalhes.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":6,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Pós-cadastro em plantão de vendas","quando":"Cliente deixou o contato no plantão/estande e você faz o primeiro follow-up.","template":"Oi {{nome}}, foi um prazer te atender no plantão! Fico à disposição pra qualquer dúvida sobre o {{endereco}}. Posso te mandar a proposta de pagamento por aqui?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":7,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Lead que visitou o decorado","quando":"Cliente visitou o apartamento decorado/stand e você retoma contato depois.","template":"Oi {{nome}}, tudo bem? Espero que tenha gostado do decorado! Fiquei pensando aqui e separei duas opções de unidade que combinam com o que você me contou. Posso te mandar?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":8,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Resposta a \"ainda tá disponível?\"","quando":"Resposta rápida e direta pra pergunta mais comum de anúncio.","template":"Oi {{nome}}! Sim, ainda está disponível. É o imóvel em {{endereco}} por {{valor}}. Quer que eu te mande mais fotos e agende uma visita?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"valor","label":"Valor","placeholder":"Ex: R$ 480 mil"}],"proximo":null},{"id":9,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Transferência de outro corretor","quando":"Quando você assume um lead que estava com outro corretor da equipe.","template":"Oi {{nome}}, tudo bem? Sou o {{corretor}}, vou continuar seu atendimento sobre o imóvel em {{endereco}} a partir de agora. Já estou por dentro do seu caso, qualquer coisa é só me chamar aqui.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"corretor","label":"Seu nome","placeholder":"Ex: Rafael"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":10,"categoria_id":"contato","categoria_nome":"Primeiro Contato","icone":"👋","titulo":"Lead qualificado por financeira/banco","quando":"Contato veio de uma parceria com financeira, já com crédito pré-aprovado.","template":"Oi {{nome}}, tudo bem? Recebi seu contato através da {{financeira}} — vi que você já tem uma simulação de crédito aprovada. Posso te mostrar algumas opções de imóvel dentro desse valor?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"financeira","label":"Financeira/banco","placeholder":"Ex: Caixa"}],"proximo":null},{"id":11,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Entender o orçamento","quando":"Pergunta o valor sem soar invasivo, logo no início da conversa.","template":"{{nome}}, pra eu já te trazer opções certeiras: você está pensando em investir até quanto no imóvel?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":12,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Entender o prazo de decisão","quando":"Descobre a urgência real do cliente.","template":"{{nome}}, você está buscando pra se mudar logo ou ainda é uma pesquisa mais tranquila, sem pressa?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":13,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Verificar financiamento aprovado","quando":"Confirma se o cliente já tem crédito pré-aprovado, economiza tempo dos dois.","template":"{{nome}}, você já tem alguma simulação de financiamento feita em banco, ou prefere que eu te ajude com isso?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":14,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Entender o motivo da mudança","quando":"O motivo real muda completamente qual imóvel oferecer.","template":"{{nome}}, só pra eu entender melhor: o que está motivando a mudança? Crescimento de família, trabalho, ou é mais um investimento?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":15,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Confirmar quem decide","quando":"Descobre se precisa envolver cônjuge/sócio na conversa desde já.","template":"{{nome}}, essa decisão vai ser só sua ou tem mais alguém envolvido que eu deveria incluir na conversa também?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":16,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Região de preferência","quando":"Filtra bairro antes de mandar opções erradas.","template":"{{nome}}, tem alguma região específica que você prefere, ou está aberto a conhecer bairros diferentes se o imóvel valer a pena?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":17,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Já visitou outros imóveis?","quando":"Entende com quem/o quê você está competindo.","template":"{{nome}}, você já chegou a visitar algum outro imóvel? Só pra eu entender o que você já viu e não te mostrar repetido.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":18,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Tem imóvel pra dar de entrada?","quando":"Descobre possibilidade de permuta logo cedo.","template":"{{nome}}, você tem algum imóvel próprio que pensa em usar como parte do pagamento, ou vai ser tudo financiado/à vista?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":19,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Morar ou investir?","quando":"Muda completamente o discurso de venda.","template":"{{nome}}, esse imóvel é pra você morar ou é uma compra pensando em investimento/aluguel?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":20,"categoria_id":"qualificacao","categoria_nome":"Qualificação de Lead","icone":"🎯","titulo":"Quartos e vagas necessários","quando":"Qualifica o perfil físico do imóvel ideal.","template":"{{nome}}, quantos quartos e vagas de garagem você precisa? Assim já filtro só o que faz sentido pra você.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":21,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"Enviar ficha completa","quando":"Mensagem padrão pra mandar todos os detalhes do imóvel de uma vez.","template":"{{nome}}, segue o resumo do imóvel em {{endereco}}: {{metragem}}m², {{diferencial}}, por {{valor}}. Quer que eu te mande as fotos e agende uma visita?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"metragem","label":"Metragem","placeholder":"Ex: 95"},{"key":"diferencial","label":"Diferencial do imóvel","placeholder":"Ex: vaga dupla e varanda gourmet"},{"key":"valor","label":"Valor","placeholder":"Ex: R$ 480 mil"}],"proximo":null},{"id":22,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"\"Tem desconto?\"","quando":"Resposta honesta sem já dar desconto de cara.","template":"{{nome}}, o valor anunciado já é o valor de tabela do proprietário. Se você fechar interesse real, eu levo uma proposta pra negociação — mas prefiro fazer isso com uma condição concreta na mão. Quer que eu já veja o que dá pra fazer?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":23,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"\"Aceita financiamento?\"","quando":"Pergunta muito comum, responde e já qualifica.","template":"{{nome}}, sim, esse imóvel aceita financiamento bancário normalmente. Você já tem simulação feita ou quer que eu te ajude a calcular quanto ficaria a parcela?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":24,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"\"Tem vaga de garagem?\"","quando":"Confirma detalhe estrutural específico.","template":"{{nome}}, sim! O imóvel em {{endereco}} tem {{vagas}} vaga(s) de garagem cobertas.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"vagas","label":"Quantidade de vagas","placeholder":"Ex: 2"}],"proximo":null},{"id":25,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"\"Qual o valor do condomínio?\"","quando":"Informação que decide rápido se o cliente segue interessado.","template":"{{nome}}, o condomínio do imóvel em {{endereco}} está em {{condominio}} por mês, já incluindo {{inclusos}}.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"condominio","label":"Valor do condomínio","placeholder":"Ex: R$650"},{"key":"inclusos","label":"O que está incluso","placeholder":"Ex: água e portaria 24h"}],"proximo":null},{"id":26,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"\"É perto de escola/mercado?\"","quando":"Responde sobre a localização e comodidades próximas.","template":"{{nome}}, sim! O {{endereco}} fica a poucos minutos de {{proximidades}}. É uma região bem servida.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"proximidades","label":"O que tem perto","placeholder":"Ex: escola municipal e supermercado"}],"proximo":null},{"id":27,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"\"Posso levar meu pet?\"","quando":"Confirma se o condomínio aceita animais.","template":"{{nome}}, o condomínio do {{endereco}} aceita pets sim, sem restrição de porte. Fica tranquilo!","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":28,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"Enviar tour em vídeo","quando":"Quando o cliente pediu pra ver o imóvel antes de agendar visita presencial.","template":"{{nome}}, segue o vídeo com o tour completo do imóvel em {{endereco}}. Dá pra ter uma boa noção do espaço — mas nada substitui ver ao vivo. Bora agendar sua visita?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":29,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"\"É novo ou usado?\"","quando":"Esclarece o estado de conservação/idade do imóvel.","template":"{{nome}}, esse imóvel {{estado}}. {{observacao}}","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"estado","label":"Estado do imóvel","placeholder":"Ex: tem 5 anos, bem conservado"},{"key":"observacao","label":"Observação extra","placeholder":"Ex: Reforma na cozinha feita ano passado."}],"proximo":null},{"id":30,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"Sobre a documentação","quando":"Cliente perguntou se está tudo regularizado.","template":"{{nome}}, o imóvel está com toda a documentação regularizada — {{documentos}}. Posso te mandar cópia se quiser conferir com seu advogado.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"documentos","label":"Documentos em dia","placeholder":"Ex: matrícula atualizada e sem pendências"}],"proximo":null},{"id":31,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"Sobre o IPTU","quando":"Informa valor do IPTU quando perguntado.","template":"{{nome}}, o IPTU do {{endereco}} fica em torno de {{iptu}} por ano.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"iptu","label":"Valor do IPTU","placeholder":"Ex: R$1.800"}],"proximo":null},{"id":32,"categoria_id":"apresentacao","categoria_nome":"Apresentação do Imóvel","icone":"🏠","titulo":"Comparar duas opções","quando":"Cliente está em dúvida entre dois imóveis que você mesmo está oferecendo.","template":"{{nome}}, comparando os dois: o {{endereco}} tem {{diferencial}} por {{valor}}, já o outro tem {{diferencial2}} por {{valor2}}. Pelo que você me contou que procura, eu me inclinaria pro primeiro — mas quero saber o que pesa mais pra você: espaço ou localização?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"diferencial","label":"Diferencial do imóvel","placeholder":"Ex: vaga dupla e varanda gourmet"},{"key":"valor","label":"Valor","placeholder":"Ex: R$ 480 mil"},{"key":"diferencial2","label":"Diferencial do 2º imóvel","placeholder":"Ex: mais próximo do trabalho"},{"key":"valor2","label":"Valor do 2º imóvel","placeholder":"Ex: R$510 mil"}],"proximo":null},{"id":33,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Confirmar visita","quando":"Mande na véspera — reduz falta em mais de 30% comparado a confirmar só no dia.","template":"{{nome}}, tudo certo pra {{data}}! Vou te esperar às {{horario}} no {{endereco}}. Qualquer imprevisto me avisa que remarco sem problema. Até lá!","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"data","label":"Data","placeholder":"Ex: sábado"},{"key":"horario","label":"Horário","placeholder":"Ex: 15h30"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":34,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Propor horários disponíveis","quando":"Oferece opções pra facilitar o agendamento.","template":"{{nome}}, tenho disponibilidade {{opcao1}} ou {{opcao2}} pra te mostrar o imóvel em {{endereco}}. Qual fica melhor pra você?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"opcao1","label":"1ª opção de horário","placeholder":"Ex: quinta às 10h"},{"key":"opcao2","label":"2ª opção de horário","placeholder":"Ex: sábado às 15h"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":35,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Remarcar a pedido do cliente","quando":"Resposta ágil quando o cliente pede pra remarcar.","template":"Sem problema, {{nome}}! Vamos remarcar então. Que dia e horário funcionam melhor pra você essa semana?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":36,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Lembrete 2h antes","quando":"Mensagem curta de lembrete no mesmo dia.","template":"{{nome}}, passando pra lembrar da nossa visita hoje às {{horario}} no {{endereco}}. Te espero lá!","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"horario","label":"Horário","placeholder":"Ex: 15h30"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":37,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Pedir confirmação de presença","quando":"Quando o cliente marcou mas não confirmou de volta.","template":"{{nome}}, confirma pra mim se segue de pé nossa visita {{data}} às {{horario}}? Só pra eu me organizar aqui.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"data","label":"Data","placeholder":"Ex: sábado"},{"key":"horario","label":"Horário","placeholder":"Ex: 15h30"}],"proximo":null},{"id":38,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Agendar segunda visita","quando":"Cliente quer ver o imóvel de novo antes de decidir.","template":"Claro, {{nome}}! Segunda visita ajuda muito a decidir com calma. Quando você teria disponibilidade pra voltarmos lá?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":39,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Visita em grupo/família","quando":"Cliente quer levar mais pessoas pra opinar.","template":"{{nome}}, sem problema nenhum trazer a família pra visita! Só me confirma quantas pessoas pra eu me organizar, combinado?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":40,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Visita fora do horário comercial","quando":"Cliente só pode fora do horário padrão.","template":"{{nome}}, consigo sim te atender {{horario}}, sem problema. Só preciso confirmar com o proprietário/portaria e já te aviso.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"horario","label":"Horário","placeholder":"Ex: 15h30"}],"proximo":null},{"id":41,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Visita por videochamada","quando":"Cliente está em outra cidade e quer ver remotamente antes.","template":"{{nome}}, dá sim pra fazer uma visita por videochamada! Combina um horário que eu vou até o imóvel com o celular e te mostro tudo ao vivo.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":42,"categoria_id":"agendamento","categoria_nome":"Agendamento de Visita","icone":"📅","titulo":"Follow-up pós-visita","quando":"Enviar na mesma noite depois da visita.","template":"{{nome}}, foi ótimo te mostrar o imóvel hoje! O que achou? Ficou alguma dúvida que eu possa esclarecer?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":43,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Achei caro\"","quando":"Use quando o cliente compara com outro imóvel mais barato, sem detalhar o motivo.","template":"Entendo, {{nome}}. Faz sentido comparar mesmo. Só um detalhe: esse imóvel em {{endereco}} tem {{metragem}}m² e {{diferencial}}, o que geralmente puxa o valor por m² pra cima. Se eu conseguir uma condição melhor de entrada com o proprietário, isso muda sua decisão?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"metragem","label":"Metragem","placeholder":"Ex: 95"},{"key":"diferencial","label":"Diferencial do imóvel","placeholder":"Ex: vaga dupla e varanda gourmet"}],"proximo":"Se ele topar negociar → use um script de Fechamento."},{"id":44,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Vou pensar\"","quando":"Resposta que não pressiona, mas mantém a porta aberta com prazo.","template":"Sem problema, {{nome}}, decisão de imóvel merece calma mesmo. Só te aviso que {{urgencia}}. Posso te chamar em alguns dias pra saber como você está?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"urgencia","label":"Motivo de atenção (opcional)","placeholder":"Ex: tem mais um interessado agendando visita"}],"proximo":"Sem resposta em alguns dias → use um script de Reativação."},{"id":45,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Preciso ver com meu cônjuge\"","quando":"Aceita o processo e já se oferece pra ajudar na decisão conjunta.","template":"Perfeito, {{nome}}, decisão de dois é sempre melhor tomada junto mesmo. Se quiser, posso mandar o material completo pra vocês dois olharem, ou até agendar uma visita com ele(a) também.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":46,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Vi um parecido mais barato\"","quando":"Contorna comparação direta com outro imóvel do mercado.","template":"{{nome}}, pode ser mesmo uma boa opção! Só vale conferir se o {{concorrente}} tem {{diferencial}} igual esse aqui, porque isso pesa bastante no valor. Quer que eu te ajude a comparar os dois lado a lado?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"concorrente","label":"Imóvel/valor comparado","placeholder":"Ex: apartamento na Rua X por R$450 mil"},{"key":"diferencial","label":"Diferencial do imóvel","placeholder":"Ex: vaga dupla e varanda gourmet"}],"proximo":null},{"id":47,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Não tenho pressa\"","quando":"Não empurra venda, mas planta uma razão real pra não esperar demais.","template":"Tranquilo, {{nome}}, sem pressa nenhuma. Só um ponto: imóveis com esse perfil em {{bairro}} costumam sair rápido do mercado. Não custa nada eu te avisar se aparecer outro parecido, combinado?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"bairro","label":"Bairro","placeholder":"Ex: Jardim das Acácias"}],"proximo":null},{"id":48,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"Financiamento não aprovado no valor","quando":"Cliente esbarrou em limite de crédito.","template":"{{nome}}, isso acontece bastante e tem solução. Podemos rever o valor de entrada, incluir uma segunda pessoa na análise, ou eu te mostro opções um pouco abaixo desse valor. O que prefere tentar primeiro?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":49,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"O condomínio é muito alto\"","quando":"Reposiciona o valor do condomínio mostrando o que está incluso.","template":"Entendo, {{nome}}. Vale lembrar que esse valor já inclui {{inclusos}}, o que costuma sair mais caro se fosse pago separado. Ainda assim, quer que eu veja se dá pra negociar diretamente com o síndico/proprietário?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"inclusos","label":"O que está incluso no condomínio","placeholder":"Ex: água, portaria 24h e academia"}],"proximo":null},{"id":50,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Não gostei da localização\"","quando":"Explora o que exatamente incomodou pra ver se é contornável.","template":"{{nome}}, entendi. Me conta o que pesou mais — distância do trabalho, movimento da rua, ou outra coisa? Assim eu já vejo se tenho algo mais alinhado com o que você busca.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":51,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Vou esperar o juro baixar\"","quando":"Contorna a expectativa de esperar o cenário econômico mudar.","template":"{{nome}}, é uma aposta válida, mas vale considerar que quando o juro cai, o preço dos imóveis costuma subir junto — porque mais gente consegue financiar. Às vezes comprar agora com juro maior e depois portar o financiamento sai melhor que esperar. Quer que eu te mostre essa conta?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":52,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"Cliente quer propor abaixo do anunciado","quando":"Recebe a proposta e já direciona o próximo passo.","template":"Show, {{nome}}! Vou levar sua proposta de {{proposta}} pro proprietário e te retorno assim que tiver resposta. Pode ser hoje ainda?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"proposta","label":"Valor da proposta","placeholder":"Ex: R$460 mil"}],"proximo":"Aguardando resposta do proprietário → volte com um script de Fechamento ou nova Negociação."},{"id":53,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"Responder contraproposta do cliente","quando":"Depois que o proprietário topou negociar, você repassa a condição.","template":"{{nome}}, boa notícia: o proprietário topa negociar! A contraproposta dele ficou em {{contraproposta}}. Fecha esse valor pra gente seguir com o processo?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"contraproposta","label":"Valor da contraproposta","placeholder":"Ex: R$470 mil"}],"proximo":"Se aceitar → use um script de Fechamento."},{"id":54,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"Cliente sumiu no meio da negociação","quando":"Retomada respeitosa, sem parecer desesperado.","template":"Oi {{nome}}, tudo bem? Ficamos na conversa sobre o {{endereco}} e não tive mais retorno seu. Ainda tem interesse ou surgiu algum impeditivo que eu possa ajudar a resolver?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":55,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Vou fechar direto com o proprietário\"","quando":"Contorna com profissionalismo, sem soar defensivo.","template":"{{nome}}, entendo a ideia de economizar a comissão, mas é bom saber que eu cuido de toda a parte de documentação, negociação e segurança jurídica da transação — isso evita dor de cabeça bem maior que o valor da comissão. Posso te mostrar como isso funciona na prática?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":56,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"\"Achei outro corretor mais barato\"","quando":"Reposiciona valor no atendimento, não briga de preço entre corretores.","template":"{{nome}}, a comissão geralmente é paga pelo vendedor, não muda o que você paga como comprador. O que muda é o nível de atendimento e segurança que você tem no processo. Posso te mostrar como cuido de cada etapa até a entrega das chaves?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":57,"categoria_id":"negociacao","categoria_nome":"Negociação e Objeção","icone":"🤝","titulo":"Fechar com urgência genuína","quando":"Use só quando é verdade — outro interessado real avançando.","template":"{{nome}}, preciso te avisar com transparência: outro interessado está avançando na negociação do {{endereco}}. Não quero te apressar, só não queria que você perdesse a chance sem saber. Quer conversar agora sobre os próximos passos?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":58,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Confirmar decisão de compra","quando":"Mensagem que fecha verbalmente antes da parte formal.","template":"Que ótima notícia, {{nome}}! Fico muito feliz em fechar isso com você. Vou já iniciar os próximos passos da documentação, tudo bem?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":59,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Explicar próximos passos","quando":"Reduz ansiedade do cliente explicando o processo.","template":"{{nome}}, a partir de agora os próximos passos são: {{passos}}. Vou te acompanhando em cada etapa, sem sustos.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"passos","label":"Próximos passos","placeholder":"Ex: assinatura do contrato, análise de crédito e registro"}],"proximo":null},{"id":60,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Solicitar documentos","quando":"Lista o que precisa pra seguir com o contrato.","template":"{{nome}}, pra seguirmos com o contrato preciso que você me envie: {{documentos}}. Pode ser foto mesmo, sem pressa.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"documentos","label":"Documentos necessários","placeholder":"Ex: RG, CPF, comprovante de renda e residência"}],"proximo":null},{"id":61,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Agendar assinatura","quando":"Marca data/local pra formalizar.","template":"{{nome}}, está tudo certo pra assinatura! Podemos marcar pra {{data}} às {{horario}}, no {{local}}. Funciona pra você?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"data","label":"Data","placeholder":"Ex: sábado"},{"key":"horario","label":"Horário","placeholder":"Ex: 15h30"},{"key":"local","label":"Local da assinatura","placeholder":"Ex: cartório ou escritório da imobiliária"}],"proximo":null},{"id":62,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Confirmar sinal/arras","quando":"Trata do valor de sinal pra reservar o imóvel.","template":"{{nome}}, pra reservarmos oficialmente o imóvel, o sinal combinado é de {{sinal}}. Assim que confirmado, tiramos ele do mercado em seu nome.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"sinal","label":"Valor do sinal","placeholder":"Ex: R$10 mil"}],"proximo":null},{"id":63,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Comunicar aprovação do financiamento","quando":"Boa notícia pra dar seguimento ao processo.","template":"{{nome}}, seu financiamento foi aprovado! 🎉 Agora vamos seguir pra {{proxima_etapa}}.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"proxima_etapa","label":"Próxima etapa","placeholder":"Ex: assinatura do contrato com o banco"}],"proximo":null},{"id":64,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Parabenizar pela compra","quando":"Mensagem emocional de fechamento, gera indicação futura.","template":"{{nome}}, parabéns pela conquista! Foi um prazer te acompanhar nessa jornada até o seu {{endereco}}. Qualquer coisa que precisar daqui pra frente, estou à disposição.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":65,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Explicar prazo de escritura","quando":"Alinha expectativa de tempo do processo cartorial.","template":"{{nome}}, a escritura costuma levar em torno de {{prazo}} pra ficar pronta, dependendo do cartório. Vou te atualizando em cada etapa.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"prazo","label":"Prazo estimado","placeholder":"Ex: 30 a 45 dias"}],"proximo":null},{"id":66,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Alinhar entrega das chaves","quando":"Confirma data final da negociação.","template":"{{nome}}, tudo certo! A entrega das chaves está prevista pra {{data}}. Vou confirmar tudo com antecedência com você.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"data","label":"Data","placeholder":"Ex: sábado"}],"proximo":null},{"id":67,"categoria_id":"fechamento","categoria_nome":"Fechamento","icone":"✍️","titulo":"Resolver pendência de última hora","quando":"Mensagem calma pra imprevisto antes da assinatura.","template":"{{nome}}, surgiu um pequeno ajuste antes da assinatura: {{pendencia}}. Nada grave, só preciso resolver isso com você pra seguirmos tranquilos.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"pendencia","label":"Pendência","placeholder":"Ex: falta uma certidão atualizada"}],"proximo":null},{"id":68,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Abordagem a proprietário","quando":"Prospecção ativa — quando você já sabe que o imóvel não está anunciado com ninguém.","template":"Oi {{nome}}, tudo bem? Sou o {{corretor}}, corretor aqui da região de {{bairro}}. Tenho compradores procurando exatamente o perfil do seu imóvel em {{endereco}}. Posso passar aí pra fazer uma avaliação sem compromisso?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"},{"key":"corretor","label":"Seu nome","placeholder":"Ex: Rafael"},{"key":"bairro","label":"Bairro","placeholder":"Ex: Jardim das Acácias"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":"Sem resposta → use o script de Follow-up com proprietário."},{"id":69,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Proprietário anunciando por conta própria","quando":"Cliente está vendendo sozinho, sem corretor.","template":"Oi {{nome}}, vi seu anúncio do imóvel em {{endereco}}. Trabalho com vendas na região e tenho compradores qualificados buscando esse perfil. Posso te apresentar como funcionaria uma parceria, sem compromisso?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":70,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Contrato vencendo com outra imobiliária","quando":"Proprietário pode estar insatisfeito com o corretor atual.","template":"Oi {{nome}}, tudo bem? Soube que seu imóvel em {{endereco}} ainda está no mercado. Trabalho de um jeito bem ativo na divulgação e tenho interessados reais pra esse perfil. Topa uma conversa rápida?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":71,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Oferecer exclusividade","quando":"Explica o benefício de fechar com um corretor só.","template":"{{nome}}, trabalhando com exclusividade eu consigo investir mais em fotos profissionais, anúncio pago e divulgação ativa — o que costuma vender mais rápido do que anunciar espalhado em vários lugares. Faz sentido pra você?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"}],"proximo":null},{"id":72,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Por que anunciar com corretor vende mais rápido","quando":"Argumento consultivo pra convencer proprietário relutante.","template":"{{nome}}, entendo a vontade de economizar a comissão vendendo direto. Mas corretor cuida da triagem de interessados, negociação e toda parte de documentação — isso normalmente reduz o tempo até a venda e evita dor de cabeça. Posso te mostrar como funciona?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"}],"proximo":null},{"id":73,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Pedir autorização pra fotos profissionais","quando":"Passo prático depois que o proprietário topou.","template":"{{nome}}, perfeito! Pra já começar bem, posso agendar as fotos profissionais do imóvel? Isso faz muita diferença no interesse dos compradores.","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"}],"proximo":null},{"id":74,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Sugerir ajuste de preço","quando":"Imóvel parado no mercado há tempo, precisa de reposicionamento.","template":"{{nome}}, o imóvel está há um tempo no mercado sem propostas fortes. Baseado no que estou vendo de imóveis parecidos vendendo em {{bairro}}, acho que ajustar o valor pra {{valor}} traria mais interessados rápido. O que acha?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"},{"key":"bairro","label":"Bairro","placeholder":"Ex: Jardim das Acácias"},{"key":"valor","label":"Valor","placeholder":"Ex: R$ 480 mil"}],"proximo":null},{"id":75,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Follow-up com proprietário","quando":"Retomar contato depois de mensagem sem resposta.","template":"Oi {{nome}}, só retomando o contato sobre o imóvel em {{endereco}}. Ainda está disponível pra venda? Tenho interessados buscando esse perfil.","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":76,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Renovação de contrato","quando":"Contrato de intermediação está vencendo, hora de renovar.","template":"{{nome}}, nosso contrato de intermediação do {{endereco}} está chegando no fim. Gostaria de continuar comigo nessa fase final da negociação?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":77,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Indicar outro corretor","quando":"Imóvel fora da sua área de atuação, indica parceiro de confiança.","template":"{{nome}}, esse imóvel fica fora da minha região de atuação, mas tenho um parceiro de confiança que trabalha muito bem aí em {{bairro}}. Posso te apresentar ele?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"},{"key":"bairro","label":"Bairro","placeholder":"Ex: Jardim das Acácias"}],"proximo":null},{"id":78,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Convite pra avaliação gratuita","quando":"Prospecção fria oferecendo valor sem compromisso.","template":"Oi {{nome}}, tudo bem? Faço avaliação de mercado gratuita pra proprietários da região de {{bairro}}, sem compromisso nenhum. Gostaria de saber quanto seu imóvel vale hoje?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"},{"key":"bairro","label":"Bairro","placeholder":"Ex: Jardim das Acácias"}],"proximo":null},{"id":79,"categoria_id":"captacao","categoria_nome":"Captação de Imóvel","icone":"🔑","titulo":"Proprietário quer vender rápido","quando":"Urgência do proprietário — direciona pra estratégia de preço competitivo.","template":"{{nome}}, entendi a urgência. Pra vender rápido de verdade, o segredo é precificar corretamente desde o início — imóvel com preço competitivo vende nas primeiras semanas. Posso te mostrar o valor ideal baseado no mercado atual?","fields":[{"key":"nome","label":"Nome do proprietário","placeholder":"Ex: Sr. Antônio"}],"proximo":null},{"id":80,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Lead frio há semanas","quando":"Um gatilho novo (preço, condição, imóvel similar) reabre a conversa sem soar insistente.","template":"Oi {{nome}}, tudo bem? Faz um tempo que conversamos sobre o imóvel em {{endereco}}. Surgiu uma condição nova ({{novidade}}) que pode te interessar. Ainda está procurando?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"novidade","label":"O que mudou","placeholder":"Ex: proprietário topa financiar direto"}],"proximo":null},{"id":81,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Lead que sumiu após visita","quando":"Retomada específica pra quem visitou mas não deu retorno.","template":"Oi {{nome}}, tudo bem? Ficamos por aqui depois da sua visita ao {{endereco}}. Queria saber se ficou alguma dúvida ou se ainda está considerando o imóvel.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":82,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"\"Não é bom momento\"","quando":"Reengaja um lead que pausou por circunstância pessoal.","template":"Oi {{nome}}, tudo bem? Sei que não era o momento quando conversamos. Só passando pra saber se isso mudou e se ainda faz sentido eu te enviar novidades de vez em quando.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":83,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Novo imóvel similar","quando":"Reativa oferecendo algo parecido com o que ele buscava.","template":"Oi {{nome}}, lembrei de você! Apareceu um imóvel em {{endereco}} bem parecido com o perfil que você buscava, por {{valor}}. Quer que eu te mande os detalhes?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"valor","label":"Valor","placeholder":"Ex: R$ 480 mil"}],"proximo":null},{"id":84,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Queda de juros/financiamento","quando":"Gatilho de mercado real pra reabrir conversa.","template":"Oi {{nome}}, os juros de financiamento caíram recentemente, o que pode melhorar bastante sua parcela. Vale a pena revisitarmos aquele imóvel em {{endereco}}?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":85,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Reativar em data comemorativa","quando":"Contato leve em época de fim de ano ou datas especiais.","template":"Oi {{nome}}, passando pra desejar um {{data_especial}} incrível! Se ano que vem a busca pelo imóvel voltar a fazer sentido, seguirei à disposição.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"data_especial","label":"Data especial","placeholder":"Ex: fim de ano"}],"proximo":null},{"id":86,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Redução de preço do imóvel","quando":"O imóvel que ele viu antes teve o preço reduzido.","template":"Oi {{nome}}, notícia boa: o imóvel em {{endereco}} que você viu teve o valor reduzido pra {{valor}}. Ainda tem interesse?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"},{"key":"valor","label":"Valor","placeholder":"Ex: R$ 480 mil"}],"proximo":null},{"id":87,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Pergunta simples de reengajamento","quando":"Mensagem curta e direta, sem forçar.","template":"Oi {{nome}}, tudo bem? Ainda está procurando imóvel ou já resolveu por outro caminho?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":88,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Oferecer outro bairro","quando":"Amplia a busca pra reengajar lead que travou por região.","template":"Oi {{nome}}, sei que você buscava em {{bairro}}, mas apareceu uma opção interessante em {{bairro2}} que pode valer a pena conhecer. Quer que eu te mande?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"bairro","label":"Bairro","placeholder":"Ex: Jardim das Acácias"},{"key":"bairro2","label":"Bairro alternativo","placeholder":"Ex: Vila Nova"}],"proximo":null},{"id":89,"categoria_id":"reativacao","categoria_nome":"Reativação de Lead","icone":"🔄","titulo":"Última tentativa antes de arquivar","quando":"Mensagem final, respeitosa, antes de parar de insistir.","template":"Oi {{nome}}, essa é minha última mensagem por aqui — não quero ser inconveniente. Se um dia a busca pelo imóvel voltar, é só me chamar, vou lembrar exatamente do que você procurava.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":90,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Agradecimento pós-fechamento","quando":"Mensagem de encerramento calorosa logo após a venda.","template":"{{nome}}, muito obrigado pela confiança! Foi um prazer te ajudar a conquistar o {{endereco}}. Qualquer coisa que precisar, sabe que pode contar comigo.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":91,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Check-in 1 mês depois","quando":"Contato de cuidado, sem pedir nada em troca.","template":"Oi {{nome}}, tudo bem? Já faz um mês que você se mudou pro {{endereco}}. Como está sendo a adaptação? Ficou tudo certo com a região?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":92,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Pedido de indicação","quando":"Momento certo pra pedir indicação, depois de check-in positivo.","template":"Que bom saber que está tudo certo, {{nome}}! Se você conhecer alguém que também está buscando imóvel, ficaria muito feliz com a indicação — trato cada indicação com o mesmo cuidado que tratei você.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":93,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Pedido de avaliação/depoimento","quando":"Solicita review depois de uma boa experiência.","template":"{{nome}}, você poderia me ajudar deixando uma avaliação rápida da nossa negociação? Isso me ajuda muito a mostrar meu trabalho pra outras pessoas.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":94,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Aniversário de 1 ano da compra","quando":"Contato afetivo em data simbólica.","template":"{{nome}}, hoje faz 1 ano que você fechou o {{endereco}}! Passando só pra desejar tudo de bom nessa nova fase. Como está tudo por aí?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"endereco","label":"Endereço do imóvel","placeholder":"Ex: Rua das Palmeiras, 120"}],"proximo":null},{"id":95,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Oferecer ajuda pós-mudança","quando":"Gera valor extra além da venda, fortalece relacionamento.","template":"{{nome}}, se precisar de indicação de alguém de confiança pra reforma, mudança ou montagem de móveis, me avisa que tenho uns contatos bons pra te passar.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":96,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Convite pra evento/networking","quando":"Mantém relacionamento vivo com ex-clientes.","template":"{{nome}}, vou fazer um evento de {{evento}} no dia {{data}}. Adoraria te ver por lá, foi um prazer trabalhar com você!","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"evento","label":"Tipo de evento","placeholder":"Ex: happy hour de clientes"},{"key":"data","label":"Data","placeholder":"Ex: sábado"}],"proximo":null},{"id":97,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Reengajar pra segunda compra","quando":"Cliente satisfeito pode ser comprador de investimento no futuro.","template":"{{nome}}, como você ficou satisfeito com a primeira compra, quis te avisar: tenho algumas oportunidades boas de investimento no momento. Faz sentido eu te mandar?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":98,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Felicitações em datas especiais","quando":"Mensagem simples de lembrança em datas importantes.","template":"{{nome}}, passando só pra desejar um {{data_especial}} muito feliz pra você e sua família!","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"},{"key":"data_especial","label":"Data especial","placeholder":"Ex: Natal"}],"proximo":null},{"id":99,"categoria_id":"posvenda","categoria_nome":"Pós-venda e Indicação","icone":"💬","titulo":"Pedido de review no Google","quando":"Pede avaliação pública, fortalece prova social do corretor.","template":"{{nome}}, se puder dedicar 2 minutinhos pra deixar uma avaliação no Google sobre nosso atendimento, me ajudaria muito a alcançar mais gente. Te mando o link?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":100,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Não confio em corretor\"","quando":"Reconhece a desconfiança sem se defender demais.","template":"Entendo, {{nome}}, o mercado tem exemplo ruim mesmo. O que eu posso te garantir é transparência total em cada etapa — te mostro tudo por escrito, sem letra miúda. Topa me dar a chance de te mostrar como trabalho?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":101,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Prefiro comprar direto\"","quando":"Já foi tratado em Captação, aqui é a versão pro lado comprador.","template":"{{nome}}, entendo a lógica de tentar economizar. Só um detalhe: quando você compra direto, ninguém está cuidando da parte jurídica pra proteger você especificamente. Meu papel é justamente evitar que você caia em problema de documentação. Faz sentido?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":102,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Já fui mal atendido antes\"","quando":"Valida a frustração e diferencia seu atendimento.","template":"Poxa, {{nome}}, sinto muito que isso tenha acontecido. Trabalho de um jeito bem diferente — te mantenho informado em cada etapa, sem sumir. Bora te mostrar isso na prática?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":103,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Corretor só quer comissão\"","quando":"Reposiciona o interesse como alinhado ao do cliente.","template":"{{nome}}, entendo a desconfiança. Mas pensa comigo: eu só ganho se você realmente fechar um bom negócio — não tenho interesse nenhum em te empurrar algo que não serve pra você, isso só prejudicaria minha reputação a longo prazo.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":104,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Vou esperar o mercado cair\"","quando":"Contorna expectativa de queda de preço no mercado imobiliário.","template":"{{nome}}, é uma aposta possível, mas historicamente imóvel bem localizado raramente perde valor de forma significativa — o que costuma acontecer é o custo de oportunidade de esperar (aluguel, inflação) pesar mais que a economia esperada. Quer que eu te mostre esses números?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":105,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Não tenho FGTS suficiente\"","quando":"Explica alternativas quando o FGTS não cobre a entrada.","template":"{{nome}}, dá pra combinar o FGTS com outras formas de entrada, ou buscar um imóvel com valor de entrada menor. Quer que eu veja com você as opções que se encaixam no seu caso?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":106,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Meu nome está sujo\"","quando":"Trata objeção de restrição de crédito com cuidado.","template":"{{nome}}, entendo, isso é mais comum do que parece. Algumas financeiras têm linhas específicas pra esse caso, ou dá pra regularizar antes de aplicar. Quer que eu te indique alguém especializado em limpar nome pra financiamento?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":107,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Posso usar o FGTS?\"","quando":"Esclarece regra de uso do FGTS na compra.","template":"{{nome}}, sim, na maioria dos casos dá pra usar o FGTS na entrada ou amortização, desde que você se encaixe nas regras da Caixa. Posso te ajudar a verificar isso.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":108,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Tenho medo de ser enganado na documentação\"","quando":"Tranquiliza sobre segurança jurídica do processo.","template":"{{nome}}, esse medo é super válido, e é justamente pra isso que existe corretor e cartório envolvidos — toda documentação passa por conferência formal antes da assinatura. Posso te explicar passo a passo como funciona a parte de segurança jurídica.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":109,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Prefiro alugar a comprar agora\"","quando":"Compara custo de longo prazo sem pressionar.","template":"{{nome}}, faz sentido dependendo do momento de vida. Só vale considerar que aluguel não constrói patrimônio — se fizer sentido pra sua realidade financeira, comprar pode sair mais barato no longo prazo. Quer que eu te mostre essa comparação?","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":110,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Não confio em comprar na planta\"","quando":"Trata objeção específica de imóvel em construção.","template":"{{nome}}, entendo a cautela. O importante é verificar o histórico da construtora e se o registro de incorporação está regularizado — isso já elimina boa parte do risco. Posso te mostrar o histórico dessa construtora especificamente.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null},{"id":111,"categoria_id":"objecoes","categoria_nome":"Objeções do Mercado","icone":"🛡️","titulo":"\"Quero um advogado pra revisar tudo\"","quando":"Recebe bem a cautela, não trata como desconfiança pessoal.","template":"{{nome}}, ótima decisão, aliás recomendo mesmo! Posso te passar toda a documentação com antecedência pra seu advogado revisar com calma antes da assinatura.","fields":[{"key":"nome","label":"Nome do cliente","placeholder":"Ex: Fernanda"}],"proximo":null}]};
+const STORAGE_KEY = 'corretor_pro_v1';
+let state = { corretor:{nome:'',creci:'',tel:'',email:'',insta:'',logo:''}, leads:[], nextLeadId:1, favoritos:[], activeLeadId:null };
+let currentScriptId = null;
+let currentCategoria = 'todas';
+let currentLeadDetailId = null;
+
+function loadState(){try{const s=localStorage.getItem(STORAGE_KEY);if(s)state=Object.assign(state,JSON.parse(s));}catch(e){}}
+function saveStateToStorage(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function getScript(id){return DB.scripts.find(s=>s.id===Number(id));}
+function getLead(id){return state.leads.find(l=>String(l.id)===String(id));}
+function getActiveLead(){return state.activeLeadId?getLead(state.activeLeadId):null;}
+
+const PAGE_TITLES = {
+  dashboard:'Dashboard', scripts:'Todos os Scripts', favoritos:'Favoritos',
+  leads:'Meus Leads', 'lead-detalhe':'Ficha do Lead', dados:'Meus Dados', manual:'Manual de Uso'
+};
+
+function goPage(pg){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el = document.getElementById('page-'+pg);
+  if(el) el.classList.add('active');
+  document.getElementById('pageTitle').textContent = PAGE_TITLES[pg]||pg;
+  document.getElementById('searchWrap').style.display = (pg==='scripts') ? 'block' : 'none';
+
+  document.getElementById('topbarActions').innerHTML = (pg==='leads') ? '<button class="btn btn-primary btn-sm" onclick="openNewLeadModal()">+ Novo Lead</button>' : '';
+
+  const navMap = {dashboard:0, scripts:1, favoritos:2, leads:3};
+  const navItems = document.querySelectorAll('.nav-item');
+  if(pg in navMap) navItems[navMap[pg]].classList.add('active');
+  else if(pg==='dados') navItems[navItems.length-2].classList.add('active');
+  else if(pg==='manual') navItems[navItems.length-1].classList.add('active');
+  else if(pg==='lead-detalhe') navItems[3].classList.add('active');
+
+  if(pg==='dashboard') renderDashboard();
+  if(pg==='scripts'){ renderFilterBar(); renderScripts(); }
+  if(pg==='favoritos') renderFavoritos();
+  if(pg==='leads') renderLeadList();
+  if(pg==='dados') loadCorretorForm();
+  if(pg==='manual') renderManual();
+  updateActiveLeadBox();
+}
+
+function renderNavCategorias(){
+  document.getElementById('navCategorias').innerHTML = DB.categorias.map(c=>{
+    const count = DB.scripts.filter(s=>s.categoria_id===c.id).length;
+    return `<div class="nav-item" onclick="goPageCat('${c.id}')">
+      <span class="ico">${c.icone}</span><span class="nav-label">${c.nome}</span><span class="nav-count">${count}</span>
+    </div>`;
+  }).join('');
+}
+function goPageCat(catId){ currentCategoria = catId; goPage('scripts'); }
+
+function updateActiveLeadBox(){
+  const lead = getActiveLead();
+  document.getElementById('activeLeadLabel').textContent = lead ? lead.nome : 'Nenhum selecionado';
+}
+
+function renderDashboard(){
+  let totalEnviados = 0;
+  const now = new Date(); const weekAgo = new Date(now.getTime()-7*24*3600*1000);
+  state.leads.forEach(l=>(l.historico||[]).forEach(h=>{ totalEnviados++; }));
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat"><div class="stat-num">111</div><div class="stat-label">Scripts Prontos</div></div>
+    <div class="stat"><div class="stat-num">10</div><div class="stat-label">Categorias</div></div>
+    <div class="stat"><div class="stat-num">${state.leads.length}</div><div class="stat-label">Leads Cadastrados</div></div>
+    <div class="stat"><div class="stat-num">${totalEnviados}</div><div class="stat-label">Scripts Enviados</div></div>
+  `;
+  document.getElementById('catTiles').innerHTML = DB.categorias.map(c=>{
+    const count = DB.scripts.filter(s=>s.categoria_id===c.id).length;
+    return `<div class="cat-tile" onclick="goPageCat('${c.id}')">
+      <div class="ico">${c.icone}</div><div class="nm">${c.nome}</div><div class="ct">${count} scripts</div>
+    </div>`;
+  }).join('');
+}
+
+function renderFilterBar(){
+  const cats = [{id:'todas', nome:'Todas', icone:'💬'}, ...DB.categorias];
+  document.getElementById('filterBar').innerHTML = cats.map(c=>
+    `<button class="chip-filter${currentCategoria===c.id?' active':''}" onclick="setCategoria('${c.id}')">${c.icone} ${c.nome}</button>`
+  ).join('');
+}
+function setCategoria(id){ currentCategoria = id; renderFilterBar(); renderScripts(); }
+
+function scriptCardHtml(s){
+  const isFav = state.favoritos.includes(s.id);
+  return `<div class="s-card" onclick="openScript(${s.id})">
+    <div class="s-top">
+      <span class="s-badge">${s.icone} ${s.categoria_nome}</span>
+      <button class="s-star${isFav?' on':''}" onclick="event.stopPropagation();quickFav(${s.id})">★</button>
+    </div>
+    <div class="s-title">${s.titulo}</div>
+    <div class="s-when">${s.quando}</div>
+  </div>`;
+}
+
+function renderScripts(){
+  const search = (document.getElementById('searchInput')||{value:''}).value.toLowerCase().trim();
+  let list = DB.scripts.filter(s=>{
+    const matchCat = currentCategoria==='todas' || s.categoria_id===currentCategoria;
+    const matchSearch = !search || s.titulo.toLowerCase().includes(search) || s.template.toLowerCase().includes(search) || s.categoria_nome.toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+  const el = document.getElementById('gridScripts');
+  if(!list.length){el.innerHTML=emptyHtml('Nenhum script encontrado');return;}
+  el.innerHTML = list.map(scriptCardHtml).join('');
+}
+
+function renderFavoritos(){
+  const list = DB.scripts.filter(s=>state.favoritos.includes(s.id));
+  const el = document.getElementById('gridFavoritos');
+  if(!list.length){el.innerHTML=emptyHtml('Você ainda não favoritou nenhum script. Clique na estrela ⭐ de um script pra salvá-lo aqui.');return;}
+  el.innerHTML = list.map(scriptCardHtml).join('');
+}
+
+function emptyHtml(msg){ return `<div class="empty"><div class="ico">💬</div><p>${msg}</p></div>`; }
+
+function quickFav(id){
+  const idx = state.favoritos.indexOf(id);
+  if(idx>=0) state.favoritos.splice(idx,1); else state.favoritos.push(id);
+  saveStateToStorage(); renderScripts(); renderFavoritos();
+}
+
+// LEADS
+function renderLeadList(){
+  const el = document.getElementById('leadList');
+  if(!state.leads.length){el.innerHTML=emptyHtml('Nenhum lead cadastrado ainda. Clique em "+ Novo Lead" pra começar.');return;}
+  el.innerHTML = state.leads.map(l=>{
+    const ini = l.nome.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    const isActive = String(state.activeLeadId)===String(l.id);
+    return `<div class="lead-card${isActive?' is-active':''}" onclick="openLeadDetail(${l.id})">
+      <div class="avatar">${ini}</div>
+      <div class="lead-info">
+        <div class="lead-name">${l.nome} ${isActive?'<span class=\"pill-active\">ATIVO</span>':''}</div>
+        <div class="lead-meta">${l.endereco||'Sem endereço'} ${l.valor?'• '+l.valor:''} • ${(l.historico||[]).length} script(s) enviado(s)</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNewLeadModal(){
+  ['nl_nome','nl_tel','nl_valor','nl_endereco','nl_metragem','nl_bairro','nl_diferencial'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modalLead').classList.add('open');
+  setTimeout(()=>document.getElementById('nl_nome').focus(),100);
+}
+function closeLeadModal(){ document.getElementById('modalLead').classList.remove('open'); }
+function saveNewLead(){
+  const nome = document.getElementById('nl_nome').value.trim();
+  if(!nome){alert('Informe o nome do lead.');return;}
+  const l = {
+    id: state.nextLeadId++, nome,
+    tel: document.getElementById('nl_tel').value,
+    valor: document.getElementById('nl_valor').value,
+    endereco: document.getElementById('nl_endereco').value,
+    metragem: document.getElementById('nl_metragem').value,
+    bairro: document.getElementById('nl_bairro').value,
+    diferencial: document.getElementById('nl_diferencial').value,
+    historico: [], criado_em: new Date().toISOString()
+  };
+  state.leads.push(l);
+  if(!state.activeLeadId) state.activeLeadId = l.id;
+  saveStateToStorage(); closeLeadModal(); renderLeadList(); updateActiveLeadBox();
+}
+
+function openLeadDetail(id){
+  currentLeadDetailId = id;
+  const l = getLead(id); if(!l) return;
+  document.getElementById('ld_nome').value = l.nome||'';
+  document.getElementById('ld_tel').value = l.tel||'';
+  document.getElementById('ld_endereco').value = l.endereco||'';
+  document.getElementById('ld_valor').value = l.valor||'';
+  document.getElementById('ld_metragem').value = l.metragem||'';
+  document.getElementById('ld_bairro').value = l.bairro||'';
+  document.getElementById('ld_diferencial').value = l.diferencial||'';
+  document.getElementById('btnSetActive').textContent = (String(state.activeLeadId)===String(id)) ? '✓ É o ativo' : 'Definir como ativo';
+  renderLeadHistorico(l);
+  goPage('lead-detalhe');
+}
+function renderLeadHistorico(l){
+  const hist = [...(l.historico||[])].reverse();
+  const el = document.getElementById('leadHistorico');
+  if(!hist.length){el.innerHTML = emptyHtml('Nenhum script enviado pra esse lead ainda.'); return;}
+  el.innerHTML = hist.map(h=>`
+    <div class="hist-item">
+      <div class="h-top"><span>${h.categoria||''}</span><span>${new Date(h.data).toLocaleString('pt-BR')}</span></div>
+      <div class="h-title">${h.titulo}</div>
+      <div class="h-text">${h.texto}</div>
+    </div>`).join('');
+}
+function saveLeadDetail(){
+  const l = getLead(currentLeadDetailId); if(!l) return;
+  l.nome = document.getElementById('ld_nome').value;
+  l.tel = document.getElementById('ld_tel').value;
+  l.endereco = document.getElementById('ld_endereco').value;
+  l.valor = document.getElementById('ld_valor').value;
+  l.metragem = document.getElementById('ld_metragem').value;
+  l.bairro = document.getElementById('ld_bairro').value;
+  l.diferencial = document.getElementById('ld_diferencial').value;
+  saveStateToStorage(); alert('Ficha salva!'); renderLeadList();
+}
+function setActiveFromDetail(){
+  state.activeLeadId = currentLeadDetailId;
+  saveStateToStorage(); updateActiveLeadBox();
+  document.getElementById('btnSetActive').textContent = '✓ É o ativo';
+  alert('Lead definido como ativo — os scripts vão preencher com os dados dele.');
+}
+function deleteLeadFromDetail(){
+  if(!confirm('Excluir esse lead e todo o histórico dele?')) return;
+  state.leads = state.leads.filter(l=>String(l.id)!==String(currentLeadDetailId));
+  if(String(state.activeLeadId)===String(currentLeadDetailId)) state.activeLeadId = null;
+  saveStateToStorage(); goPage('leads');
+}
+
+// SCRIPT MODAL
+const LEAD_FIELD_KEYS = ['nome','tel','endereco','valor','metragem','bairro','diferencial'];
+
+function openScript(id){
+  currentScriptId = id;
+  const s = getScript(id); if(!s) return;
+  document.getElementById('md_badge').textContent = s.icone+' '+s.categoria_nome;
+  document.getElementById('md_titulo').textContent = s.titulo;
+  document.getElementById('md_when').textContent = s.quando;
+
+  const sel = document.getElementById('md_leadSelect');
+  sel.innerHTML = '<option value="">Nenhum lead (preencher manual)</option>' +
+    state.leads.map(l=>`<option value="${l.id}">${l.nome}</option>`).join('');
+  sel.value = state.activeLeadId || '';
+
+  renderScriptFields(s);
+  updateBubble();
+  updateFavBtn();
+  document.getElementById('modalScript').classList.add('open');
+}
+function closeModal(){ document.getElementById('modalScript').classList.remove('open'); }
+
+function renderScriptFields(s){
+  const lead = getActiveLead();
+  const wrap = document.getElementById('md_fields');
+  wrap.innerHTML = '';
+  s.fields.forEach(f=>{
+    let val = '';
+    if(f.key==='corretor') val = state.corretor.nome||'';
+    else if(lead && LEAD_FIELD_KEYS.includes(f.key) && lead[f.key]) val = lead[f.key];
+    const g = document.createElement('div');
+    g.className='form-group'; g.style.marginBottom='12px';
+    g.innerHTML = `<label class="lbl">${f.label}</label><input id="mf-${f.key}" data-key="${f.key}" placeholder="${f.placeholder||''}" value="${val.replace(/"/g,'&quot;')}">`;
+    wrap.appendChild(g);
+  });
+  wrap.querySelectorAll('input').forEach(inp=>inp.addEventListener('input', updateBubble));
+}
+
+function onLeadPickerChange(){
+  const val = document.getElementById('md_leadSelect').value;
+  state.activeLeadId = val || null;
+  saveStateToStorage(); updateActiveLeadBox();
+  const s = getScript(currentScriptId);
+  renderScriptFields(s);
+  updateBubble();
+}
+
+function updateBubble(){
+  const s = getScript(currentScriptId); if(!s) return;
+  const values = {};
+  let filledAny = false;
+  s.fields.forEach(f=>{
+    const el = document.getElementById('mf-'+f.key);
+    const v = el ? el.value.trim() : '';
+    if(v) filledAny = true;
+    values[f.key] = v || null;
+  });
+  let html = s.template.replace(/\{\{(\w+)\}\}/g, (m,key)=>{
+    const v = values[key];
+    if(v) return v.replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    const field = s.fields.find(f=>f.key===key);
+    return `<span class="ph">[${field?field.label.toLowerCase():key}]</span>`;
+  });
+  const bubble = document.getElementById('md_bubble');
+  bubble.innerHTML = html;
+  const lead = getActiveLead();
+  document.getElementById('md_contact').textContent = (values.nome || (lead?lead.nome:'')) || 'novo contato';
+
+  const pxBox = document.getElementById('md_proximo');
+  if(s.proximo){ pxBox.textContent = '➡️ Próximo passo: ' + s.proximo; pxBox.classList.add('show'); }
+  else { pxBox.classList.remove('show'); }
+
+  updateSendButtonLabel();
+}
+
+function updateFavBtn(){
+  const isFav = state.favoritos.includes(currentScriptId);
+  const btn = document.getElementById('md_favBtn');
+  btn.textContent = isFav ? '★ Favoritado' : '⭐ Favoritar';
+  btn.className = 'btn btn-sm ' + (isFav ? '' : 'btn-outline');
+  btn.style.background = isFav ? 'var(--yellow)' : '';
+  btn.style.color = isFav ? '#fff' : '';
+}
+function toggleFavorita(){
+  const idx = state.favoritos.indexOf(currentScriptId);
+  if(idx>=0) state.favoritos.splice(idx,1); else state.favoritos.push(currentScriptId);
+  saveStateToStorage(); updateFavBtn(); renderScripts(); renderFavoritos();
+}
+
+function phoneToWaNumber(tel){
+  if(!tel) return '';
+  let digits = tel.replace(/\D/g, '').replace(/^0+/, '');
+  if(!digits) return '';
+  if(!digits.startsWith('55') && (digits.length===10 || digits.length===11)) digits = '55'+digits;
+  return digits;
+}
+
+function updateSendButtonLabel(){
+  const lead = getActiveLead();
+  const num = lead ? phoneToWaNumber(lead.tel) : '';
+  const btn = document.getElementById('btn-send-wa');
+  if(!btn) return;
+  btn.textContent = num ? ('Enviar pra '+lead.nome+' →') : 'Enviar no WhatsApp (escolher contato) →';
+}
+
+function enviarWhatsapp(){
+  const s = getScript(currentScriptId); if(!s) return;
+  const bubble = document.getElementById('md_bubble');
+  const text = bubble.innerText.trim();
+  if(!text){ bubble.focus(); return; }
+
+  const lead = getActiveLead();
+  if(lead){
+    if(!lead.historico) lead.historico = [];
+    lead.historico.push({ script_id:s.id, titulo:s.titulo, categoria:s.categoria_nome, texto:text, data:new Date().toISOString() });
+    saveStateToStorage();
+  }
+  const num = lead ? phoneToWaNumber(lead.tel) : '';
+  const url = num
+    ? 'https://wa.me/'+num+'?text='+encodeURIComponent(text)
+    : 'https://wa.me/?text='+encodeURIComponent(text);
+  window.open(url, '_blank');
+}
+
+// MEUS DADOS
+function loadCorretorForm(){
+  const c = state.corretor;
+  document.getElementById('cf_nome').value = c.nome||'';
+  document.getElementById('cf_creci').value = c.creci||'';
+  document.getElementById('cf_tel').value = c.tel||'';
+  document.getElementById('cf_email').value = c.email||'';
+  document.getElementById('cf_insta').value = c.insta||'';
+  if(c.logo){ document.getElementById('logoPreview').style.display='block'; document.getElementById('logoPreviewImg').src=c.logo; }
+}
+function saveCorretor(){
+  state.corretor.nome = document.getElementById('cf_nome').value;
+  state.corretor.creci = document.getElementById('cf_creci').value;
+  state.corretor.tel = document.getElementById('cf_tel').value;
+  state.corretor.email = document.getElementById('cf_email').value;
+  state.corretor.insta = document.getElementById('cf_insta').value;
+  saveStateToStorage(); alert('Dados salvos com sucesso!');
+}
+function loadLogo(input){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    state.corretor.logo = e.target.result; saveStateToStorage();
+    document.getElementById('logoPreviewImg').src = e.target.result;
+    document.getElementById('logoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderManual(){
+  document.getElementById('manualCategorias').textContent = DB.categorias.map(c=>c.nome).join(' • ');
+}
+
+// INIT
+loadState();
+renderNavCategorias();
+renderDashboard();
+document.getElementById('modalScript').addEventListener('click', e=>{ if(e.target.id==='modalScript') closeModal(); });
+document.getElementById('modalLead').addEventListener('click', e=>{ if(e.target.id==='modalLead') closeLeadModal(); });
+</script>
+</body>
+</html>
