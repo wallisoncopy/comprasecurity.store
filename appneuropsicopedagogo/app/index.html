@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>App Neuropsicopedagogo Pro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#4F46E5;--pd:#120C33;--pl:#EEF2FF;--pm:#818CF8;
+  --accent:#06B6D4;--accent-l:#ECFEFF;
+  --g:#FAFBFF;--w:#fff;--dk:#0F172A;--gr:#64748B;--lg:#E5E7F0;
+  --red:#EF4444;--green:#10B981;--yellow:#F59E0B;
+  --shadow:0 4px 24px rgba(79,70,229,.08);
+}
+html,body{overflow-x:hidden;max-width:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--g);color:var(--dk);min-height:100vh}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:230px;background:var(--pd);color:#fff;display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;transition:.25s;overflow-y:auto}
+.sidebar.collapsed{width:60px}
+.sidebar-logo{padding:18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--p),var(--accent));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 16px rgba(6,182,212,.5)}
+.logo-icon svg{width:19px;height:19px}
+.sidebar-logo span{font-weight:800;font-size:13.5px;white-space:nowrap;overflow:hidden;letter-spacing:.2px}
+.nav{padding:14px 8px;flex:1}
+.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);padding:14px 12px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:.15s;margin-bottom:2px;font-size:13.5px;white-space:nowrap;color:rgba(255,255,255,.75)}
+.nav-item svg{width:17px;height:17px;flex-shrink:0}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:linear-gradient(90deg,rgba(79,70,229,.5),rgba(6,182,212,.15));color:#fff;box-shadow:inset 2px 0 0 var(--accent)}
+.sidebar-toggle{padding:12px;text-align:center;cursor:pointer;color:rgba(255,255,255,.4);border-top:1px solid rgba(255,255,255,.08);font-size:12px}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,10,40,.5);z-index:99}
+.sidebar-overlay.show{display:block}
+.hamburger{display:none;background:transparent;border:none;padding:8px;margin-right:4px;cursor:pointer;color:var(--dk);flex-shrink:0}
+.hamburger svg{width:22px;height:22px}
+.topbar-left{display:flex;align-items:center;gap:2px;min-width:0}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.collapsed .sidebar-logo span,.collapsed .nav-item span,.collapsed .nav-label{display:none}
+
+.main{margin-left:230px;flex:1;min-width:0;transition:.25s;min-height:100vh}
+.main.expanded{margin-left:60px}
+.topbar{background:var(--w);border-bottom:1px solid var(--lg);padding:16px 28px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.topbar h1{font-size:19px;font-weight:800}
+.topbar .sub{font-size:12.5px;color:var(--gr);margin-top:2px}
+.btn{background:var(--p);color:#fff;border:none;padding:10px 16px;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:#4338CA}
+.btn-outline{background:var(--w);color:var(--p);border:1.5px solid var(--p)}
+.btn-accent{background:var(--accent);}
+.btn-sm{padding:7px 12px;font-size:12px}
+.btn-ghost{background:transparent;color:var(--gr);border:1px solid var(--lg)}
+
+.content{padding:26px 28px}
+.page{display:none}
+.page.active{display:block}
+
+.grid{display:grid;gap:16px}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+
+@media(max-width:768px){
+  .hamburger{display:inline-flex;align-items:center;justify-content:center}
+  .sidebar{transform:translateX(-100%);width:250px;box-shadow:0 0 40px rgba(0,0,0,.3)}
+  .sidebar.mobile-open{transform:translateX(0)}
+  .sidebar.collapsed{width:250px}
+  .collapsed .sidebar-logo span,.collapsed .nav-item span,.collapsed .nav-label{display:block}
+  .sidebar-toggle{display:none}
+  .main,.main.expanded{margin-left:0}
+  .topbar{padding:12px 14px}
+  .topbar h1{font-size:16px}
+  .topbar .sub{display:none}
+  .topbar .btn{padding:9px 12px;font-size:12.5px;white-space:nowrap}
+  .content{padding:16px 14px}
+  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr 1fr;gap:10px}
+  .card{padding:15px;border-radius:12px}
+  .stat-card .num{font-size:21px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .tab{white-space:nowrap;padding:9px 12px;font-size:12.5px}
+  table{min-width:520px}
+  .scale-item{flex-direction:column;align-items:stretch;gap:8px}
+  .scale-opts{justify-content:flex-start}
+  .scale-opts button{flex:1;max-width:44px}
+  .modal{padding:18px;width:100%;max-height:92vh}
+  .form-row input,.form-row select,.form-row textarea{font-size:16px}
+}
+@media(max-width:420px){
+  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr}
+  .topbar .btn{padding:8px 10px;font-size:12px}
+  .topbar .btn .btn-label{display:none}
+}
+
+.card{background:var(--w);border-radius:14px;padding:20px;box-shadow:var(--shadow);border:1px solid #F1F0FE}
+.stat-card{padding:18px}
+.stat-card .ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.stat-card .num{font-size:26px;font-weight:800}
+.stat-card .lbl{font-size:12px;color:var(--gr);margin-top:2px}
+
+.section-title{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;color:var(--gr);text-transform:uppercase;letter-spacing:.04em;padding:10px 12px;border-bottom:1px solid var(--lg)}
+td{padding:12px;border-bottom:1px solid #F4F4FA;font-size:13.5px}
+tr:hover td{background:var(--pl)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-tea{background:#EEF2FF;color:var(--p)}
+.badge-tdah{background:#FEF3C7;color:#B45309}
+.badge-dislexia{background:#FCE7F3;color:#BE185D}
+.badge-discalculia{background:#E0F2FE;color:#0369A1}
+.badge-disgrafia{background:#F3E8FF;color:#7E22CE}
+.badge-exec{background:var(--accent-l);color:#0E7490}
+
+.form-row{margin-bottom:14px}
+.form-row label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:var(--dk)}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:10px 12px;border:1.5px solid var(--lg);border-radius:9px;font-size:13.5px;font-family:inherit}
+.form-row textarea{resize:vertical;min-height:70px}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--p)}
+
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--lg);margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;color:var(--gr);border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab.active{color:var(--p);border-color:var(--p)}
+
+.scale-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #F4F4FA;gap:12px}
+.scale-item .txt{font-size:13.5px;flex:1}
+.scale-opts{display:flex;gap:4px}
+.scale-opts button{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--lg);background:var(--w);cursor:pointer;font-size:12px;font-weight:700;color:var(--gr)}
+.scale-opts button.sel{background:var(--p);border-color:var(--p);color:#fff}
+
+.protocol-card{border:1px solid var(--lg);border-radius:12px;padding:16px;margin-bottom:12px}
+.protocol-card h4{font-size:14px;margin-bottom:6px}
+.protocol-card p{font-size:12.5px;color:var(--gr);margin-bottom:8px;line-height:1.5}
+.protocol-card ul{padding-left:18px;font-size:12.5px;color:var(--dk);line-height:1.7}
+.chip{display:inline-block;background:var(--pl);color:var(--p);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-right:6px;margin-bottom:6px;cursor:pointer;border:1px solid transparent}
+.chip.active{background:var(--p);color:#fff}
+
+.activity-card{border:1px solid var(--lg);border-radius:12px;padding:14px;background:var(--w)}
+.activity-card .cat{font-size:10.5px;font-weight:800;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.activity-card h5{font-size:13.5px;margin-bottom:5px}
+.activity-card p{font-size:12px;color:var(--gr);line-height:1.5}
+.activity-card .meta{font-size:11px;color:var(--pm);margin-top:8px;font-weight:700}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,10,40,.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--w);border-radius:16px;padding:26px;width:440px;max-width:92vw;max-height:88vh;overflow-y:auto}
+.modal h3{font-size:16px;margin-bottom:16px}
+.modal-close{float:right;cursor:pointer;color:var(--gr);font-size:18px}
+
+.empty{text-align:center;padding:40px 20px;color:var(--gr)}
+.empty svg{width:44px;height:44px;margin-bottom:10px;opacity:.4}
+
+.manual-step{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--lg)}
+.manual-step .n{width:30px;height:30px;border-radius:9px;background:var(--pl);color:var(--p);font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.manual-step h4{font-size:14px;margin-bottom:4px}
+.manual-step p{font-size:12.5px;color:var(--gr);line-height:1.5}
+
+.session-item{border-left:3px solid var(--accent);padding:10px 14px;margin-bottom:10px;background:var(--accent-l);border-radius:0 10px 10px 0}
+.session-item .date{font-size:11px;font-weight:800;color:#0E7490}
+.session-item .obj{font-size:13px;font-weight:700;margin:3px 0}
+.session-item .obs{font-size:12.5px;color:var(--gr)}
+
+.logo-upload-box{border:2px dashed var(--lg);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:.2s;background:var(--g)}
+.logo-upload-box:hover{border-color:var(--p);background:var(--pl)}
+.logo-upload-box p{font-size:11.5px;color:var(--gr);margin-top:4px}
+.logo-preview-box{display:none;margin-top:10px;text-align:center;padding:12px;background:var(--pl);border-radius:10px}
+.logo-preview-box img{max-height:60px;max-width:180px;border-radius:6px;background:#fff;padding:4px}
+.logo-preview-box span{display:block;font-size:11px;color:var(--p);margin-top:6px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M6 8.2L11 16M18 8.2L13 16M8.2 6H15.8"/></svg></div>
+      <span>Neuropsico Pro</span>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Principal</div>
+      <div class="nav-item active" onclick="goPage('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span>Dashboard</span></div>
+      <div class="nav-item" onclick="goPage('pacientes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Pacientes</span></div>
+      <div class="nav-label">Clínico</div>
+      <div class="nav-item" onclick="goPage('avaliacao')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Avaliação</span></div>
+      <div class="nav-item" onclick="goPage('protocolos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Protocolos</span></div>
+      <div class="nav-item" onclick="goPage('estimulacao')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/><path d="M9 21h6M10 17h4"/></svg><span>Estimulação</span></div>
+      <div class="nav-item" onclick="goPage('evolucao')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 8l-5 5-3-3-4 4"/></svg><span>Evolução</span></div>
+      <div class="nav-item" onclick="goPage('laudos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg><span>Laudos</span></div>
+      <div class="nav-label">Sistema</div>
+      <div class="nav-item" onclick="goPage('clinica')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Clínica</span></div>
+      <div class="nav-item" onclick="goPage('manual')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4M12 17h.01"/></svg><span>Manual de Uso</span></div>
+    </div>
+    <div class="sidebar-toggle" onclick="toggleSidebar()">≡</div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
+
+  <!-- MAIN -->
+  <div class="main" id="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburger" onclick="toggleMobileSidebar()" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div>
+          <h1 id="pageTitle">Dashboard</h1>
+          <div class="sub" id="pageSub">Visão geral da sua clínica</div>
+        </div>
+      </div>
+      <button class="btn" onclick="openNewPatient()">+ <span class="btn-label">Novo Paciente</span></button>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="grid grid-4" style="margin-bottom:20px">
+          <div class="card stat-card"><div class="ico" style="background:var(--pl)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="num" id="statPacientes">0</div><div class="lbl">Pacientes ativos</div></div>
+          <div class="card stat-card"><div class="ico" style="background:var(--accent-l)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg></div><div class="num" id="statAvaliacoes">0</div><div class="lbl">Avaliações no mês</div></div>
+          <div class="card stat-card"><div class="ico" style="background:#FEF3C7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 8l-5 5-3-3-4 4"/></svg></div><div class="num" id="statSessoes">0</div><div class="lbl">Sessões na semana</div></div>
+          <div class="card stat-card"><div class="ico" style="background:#F3E8FF"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7E22CE" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><div class="num" id="statLaudos">0</div><div class="lbl">Laudos emitidos</div></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Pacientes recentes</div>
+          <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Idade</th><th>Área principal</th><th>Última avaliação</th></tr></thead><tbody id="dashRecent"></tbody></table></div>
+          <div id="dashEmpty" class="empty" style="display:none">Nenhum paciente cadastrado ainda. Clique em "+ Novo Paciente" para começar.</div>
+        </div>
+      </div>
+
+      <!-- PACIENTES -->
+      <div class="page" id="page-pacientes">
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Todos os pacientes</div>
+          <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Idade</th><th>Responsável</th><th>Escola</th><th>Área</th><th></th></tr></thead><tbody id="tblPacientes"></tbody></table></div>
+          <div id="pacientesEmpty" class="empty" style="display:none">Nenhum paciente cadastrado.</div>
+        </div>
+      </div>
+
+      <!-- AVALIACAO -->
+      <div class="page" id="page-avaliacao">
+        <div class="card">
+          <div class="form-row" style="max-width:340px">
+            <label>Selecione o paciente</label>
+            <select id="avalPaciente" onchange="loadAvaliacaoPatient()"></select>
+          </div>
+          <div class="tabs">
+            <div class="tab active" onclick="switchTab('aval','anamnese')">Anamnese</div>
+            <div class="tab" onclick="switchTab('aval','tea')">Escala TEA</div>
+            <div class="tab" onclick="switchTab('aval','tdah')">Escala TDAH</div>
+            <div class="tab" onclick="switchTab('aval','exec')">Funções Executivas</div>
+            <div class="tab" onclick="switchTab('aval','academico')">Habilidades Acadêmicas</div>
+            <div class="tab" onclick="switchTab('aval','percepcao')">Percepção &amp; Memória</div>
+          </div>
+          <div id="aval-anamnese" class="tab-content"></div>
+          <div id="aval-tea" class="tab-content" style="display:none"></div>
+          <div id="aval-tdah" class="tab-content" style="display:none"></div>
+          <div id="aval-exec" class="tab-content" style="display:none"></div>
+          <div id="aval-academico" class="tab-content" style="display:none"></div>
+          <div id="aval-percepcao" class="tab-content" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- PROTOCOLOS -->
+      <div class="page" id="page-protocolos">
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Biblioteca de protocolos de intervenção</div>
+          <div id="protocolFilters" style="margin-bottom:16px"></div>
+          <div id="protocolosList"></div>
+        </div>
+      </div>
+
+      <!-- ESTIMULACAO -->
+      <div class="page" id="page-estimulacao">
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Banco de atividades de estimulação cognitiva</div>
+          <div id="estimFilters" style="margin-bottom:16px"></div>
+          <div class="grid grid-3" id="estimList"></div>
+        </div>
+      </div>
+
+      <!-- EVOLUCAO -->
+      <div class="page" id="page-evolucao">
+        <div class="card">
+          <div class="form-row" style="max-width:340px">
+            <label>Selecione o paciente</label>
+            <select id="evoPaciente" onchange="loadEvolucao()"></select>
+          </div>
+          <div id="evoForm" style="display:none">
+            <div class="grid grid-2">
+              <div class="form-row"><label>Data da sessão</label><input type="date" id="sessData"></div>
+              <div class="form-row"><label>Objetivo trabalhado</label><input type="text" id="sessObj" placeholder="Ex: Atenção sustentada e memória de trabalho"></div>
+            </div>
+            <div class="form-row"><label>Observações da sessão</label><textarea id="sessObs" placeholder="Comportamento, engajamento, evolução observada..."></textarea></div>
+            <button class="btn btn-sm" onclick="saveSessao()">Registrar sessão</button>
+            <div class="section-title" style="margin-top:26px"><span class="dot"></span>Histórico de sessões</div>
+            <div id="sessoesList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAUDOS -->
+      <div class="page" id="page-laudos">
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Gerar laudo neuropsicopedagógico</div>
+          <div class="form-row" style="max-width:340px">
+            <label>Selecione o paciente</label>
+            <select id="laudoPaciente"></select>
+          </div>
+          <div class="form-row"><label>Conclusão / hipótese diagnóstica pedagógica</label><textarea id="laudoConclusao" placeholder="Síntese dos achados da avaliação..."></textarea></div>
+          <div class="form-row"><label>Plano de Intervenção Individualizado (PII) — recomendações</label><textarea id="laudoPII" placeholder="Encaminhamentos, frequência sugerida, áreas prioritárias..."></textarea></div>
+          <button class="btn" onclick="pdfLaudo()">📄 Gerar Laudo em PDF</button>
+          <button class="btn btn-outline" style="margin-left:8px" onclick="pdfAnamnesePDF()">📄 Gerar Anamnese em PDF</button>
+        </div>
+      </div>
+
+      <!-- CLINICA -->
+      <div class="page" id="page-clinica">
+        <div class="card" style="max-width:560px">
+          <div class="section-title"><span class="dot"></span>Dados da clínica / profissional</div>
+          <div class="form-row"><label>Nome do(a) profissional</label><input type="text" id="clNome"></div>
+          <div class="form-row"><label>Registro profissional (CRP / Nº)</label><input type="text" id="clRegistro"></div>
+          <div class="form-row"><label>Nome da clínica</label><input type="text" id="clClinica"></div>
+          <div class="form-row"><label>Telefone / WhatsApp</label><input type="text" id="clTel"></div>
+          <div class="form-row"><label>E-mail</label><input type="text" id="clEmail"></div>
+          <div class="form-row">
+            <label>Logo da clínica / profissional</label>
+            <div class="logo-upload-box" onclick="document.getElementById('clLogoInput').click()">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+              <strong style="font-size:13px;color:var(--dk);display:block;margin-top:6px">Clique para enviar a logo</strong>
+              <p>PNG ou JPG, fundo transparente de preferência</p>
+              <input id="clLogoInput" type="file" accept="image/*" style="display:none" onchange="previewClinicaLogo(event)">
+            </div>
+            <div class="logo-preview-box" id="clLogoPreview">
+              <img id="clLogoImg" src="" alt="Logo">
+              <span>Logo carregada — aparecerá no cabeçalho dos PDFs</span>
+            </div>
+          </div>
+          <button class="btn" onclick="saveClinica()">Salvar dados</button>
+          <button class="btn btn-outline" style="margin-left:8px" onclick="removerLogo()">Remover Logo</button>
+        </div>
+      </div>
+
+      <!-- MANUAL -->
+      <div class="page" id="page-manual">
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Como usar o App Neuropsicopedagogo Pro</div>
+          <div class="manual-step"><div class="n">1</div><div><h4>Cadastre seus pacientes</h4><p>Vá em "Pacientes" e clique em "+ Novo Paciente". Registre nome, idade, responsável, escola e área de dificuldade principal.</p></div></div>
+          <div class="manual-step"><div class="n">2</div><div><h4>Preencha a avaliação neuropsicopedagógica</h4><p>Em "Avaliação", selecione o paciente e percorra as abas: Anamnese, Escala TEA, Escala TDAH, Funções Executivas, Habilidades Acadêmicas e Percepção &amp; Memória.</p></div></div>
+          <div class="manual-step"><div class="n">3</div><div><h4>Consulte os protocolos de intervenção</h4><p>Em "Protocolos", filtre por área (TEA, TDAH, Dislexia, Discalculia, Disgrafia, Funções Executivas) e use as estratégias prontas em sessão.</p></div></div>
+          <div class="manual-step"><div class="n">4</div><div><h4>Monte o plano de estimulação cognitiva</h4><p>Em "Estimulação", filtre atividades por função cognitiva e faixa etária para montar o plano de sessão.</p></div></div>
+          <div class="manual-step"><div class="n">5</div><div><h4>Registre a evolução</h4><p>Em "Evolução", registre cada sessão com data, objetivo e observações — isso vira histórico automático do paciente.</p></div></div>
+          <div class="manual-step"><div class="n">6</div><div><h4>Gere o laudo em PDF</h4><p>Em "Laudos", escreva a conclusão e o Plano de Intervenção Individualizado (PII) e clique em gerar — o PDF sai pronto com seus dados profissionais.</p></div></div>
+          <div class="manual-step"><div class="n">7</div><div><h4>Configure seus dados</h4><p>Em "Clínica", preencha nome, registro profissional e contato — esses dados aparecem automaticamente no cabeçalho de todos os PDFs gerados.</p></div></div>
+          <div style="margin-top:16px;padding:14px;background:var(--pl);border-radius:10px;font-size:12.5px;color:var(--p)"><b>Dica:</b> todos os seus dados ficam salvos neste dispositivo (não é preciso internet depois de carregado). Evite limpar o cache do navegador.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVO PACIENTE -->
+<div class="modal-bg" id="modalNovoPaciente">
+  <div class="modal">
+    <span class="modal-close" onclick="closeModal('modalNovoPaciente')">&times;</span>
+    <h3>Novo Paciente</h3>
+    <div class="form-row"><label>Nome completo</label><input type="text" id="npNome"></div>
+    <div class="form-row"><label>Data de nascimento</label><input type="date" id="npNasc"></div>
+    <div class="form-row"><label>Nome do responsável</label><input type="text" id="npResp"></div>
+    <div class="form-row"><label>Escola</label><input type="text" id="npEscola"></div>
+    <div class="form-row"><label>Área principal de dificuldade</label>
+      <select id="npArea"><option value="TEA">TEA</option><option value="TDAH">TDAH</option><option value="Dislexia">Dislexia</option><option value="Discalculia">Discalculia</option><option value="Disgrafia">Disgrafia</option><option value="Funcoes Executivas">Funções Executivas</option><option value="Outro">Outro / Não definido</option></select>
+    </div>
+    <div class="form-row"><label>Queixa inicial</label><textarea id="npQueixa"></textarea></div>
+    <button class="btn" style="width:100%" onclick="saveNewPatient()">Cadastrar paciente</button>
+  </div>
+</div>
+
+<script>
+/* ============ DB ============ */
+let DB = JSON.parse(localStorage.getItem('neuroDB') || '{"patients":[],"clinica":{}}');
+const save = () => localStorage.setItem('neuroDB', JSON.stringify(DB));
+const DK=[15,23,42], PR=[79,70,229], GR=[100,116,139], AC=[6,182,212];
+
+/* ============ NAV ============ */
+const pageTitles = {
+  dashboard:['Dashboard','Visão geral da sua clínica'],
+  pacientes:['Pacientes','Todos os pacientes cadastrados'],
+  avaliacao:['Avaliação Neuropsicopedagógica','Anamnese e escalas de rastreio'],
+  protocolos:['Protocolos de Intervenção','Estratégias organizadas por área'],
+  estimulacao:['Estimulação Cognitiva','Banco de atividades por função'],
+  evolucao:['Evolução','Histórico de sessões por paciente'],
+  laudos:['Laudos','Geração de laudo e anamnese em PDF'],
+  clinica:['Dados da Clínica','Aparecem nos PDFs gerados'],
+  manual:['Manual de Uso','Como aproveitar 100% do app']
+};
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event && event.currentTarget && event.currentTarget.classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[id][0];
+  document.getElementById('pageSub').textContent = pageTitles[id][1];
+  if(id==='dashboard') renderDashboard();
+  if(id==='pacientes') renderPatients();
+  if(id==='avaliacao'||id==='evolucao'||id==='laudos') populateSelects();
+  if(id==='protocolos') renderProtocolos();
+  if(id==='estimulacao') renderEstimulacao();
+  if(id==='clinica') loadClinica();
+  closeMobileSidebar();
+  document.querySelector('.content').scrollTop=0;window.scrollTo(0,0);
+}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('collapsed');document.getElementById('main').classList.toggle('expanded');}
+function toggleMobileSidebar(){document.getElementById('sidebar').classList.toggle('mobile-open');document.getElementById('sidebarOverlay').classList.toggle('show');}
+function closeMobileSidebar(){document.getElementById('sidebar').classList.remove('mobile-open');document.getElementById('sidebarOverlay').classList.remove('show');}
+function openNewPatient(){document.getElementById('modalNovoPaciente').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+/* ============ PACIENTES ============ */
+function calcAge(nasc){if(!nasc)return'-';const b=new Date(nasc),n=new Date();let a=n.getFullYear()-b.getFullYear();const m=n.getMonth()-b.getMonth();if(m<0||(m===0&&n.getDate()<b.getDate()))a--;return a+' anos';}
+function saveNewPatient(){
+  const nome=document.getElementById('npNome').value.trim();
+  if(!nome){alert('Informe o nome do paciente');return;}
+  DB.patients.push({
+    id:Date.now(),nome,nasc:document.getElementById('npNasc').value,resp:document.getElementById('npResp').value,
+    escola:document.getElementById('npEscola').value,area:document.getElementById('npArea').value,queixa:document.getElementById('npQueixa').value,
+    anamnese:{},tea:{},tdah:{},exec:{},academico:{},percepcao:{},sessoes:[]
+  });
+  save();closeModal('modalNovoPaciente');
+  ['npNome','npNasc','npResp','npEscola','npQueixa'].forEach(id=>document.getElementById(id).value='');
+  renderPatients();renderDashboard();populateSelects();
+}
+function badgeClass(area){return{'TEA':'badge-tea','TDAH':'badge-tdah','Dislexia':'badge-dislexia','Discalculia':'badge-discalculia','Disgrafia':'badge-disgrafia','Funcoes Executivas':'badge-exec'}[area]||'badge-tea';}
+function renderPatients(){
+  const tb=document.getElementById('tblPacientes');
+  document.getElementById('pacientesEmpty').style.display = DB.patients.length?'none':'block';
+  tb.innerHTML = DB.patients.map(p=>`<tr><td><b>${p.nome}</b></td><td>${calcAge(p.nasc)}</td><td>${p.resp||'-'}</td><td>${p.escola||'-'}</td><td><span class="badge ${badgeClass(p.area)}">${p.area}</span></td><td><span class="btn-ghost btn-sm" style="cursor:pointer" onclick="removerPaciente(${p.id})">Remover</span></td></tr>`).join('');
+}
+function removerPaciente(id){if(!confirm('Remover este paciente e todos os dados dele?'))return;DB.patients=DB.patients.filter(p=>p.id!==id);save();renderPatients();renderDashboard();populateSelects();}
+
+function renderDashboard(){
+  document.getElementById('statPacientes').textContent = DB.patients.length;
+  document.getElementById('statAvaliacoes').textContent = DB.patients.filter(p=>p.anamnese&&p.anamnese.data).length;
+  document.getElementById('statSessoes').textContent = DB.patients.reduce((s,p)=>s+(p.sessoes||[]).length,0);
+  document.getElementById('statLaudos').textContent = DB.patients.filter(p=>p.laudoGerado).length;
+  const rows = DB.patients.slice(-6).reverse();
+  document.getElementById('dashEmpty').style.display = rows.length?'none':'block';
+  document.getElementById('dashRecent').innerHTML = rows.map(p=>`<tr><td><b>${p.nome}</b></td><td>${calcAge(p.nasc)}</td><td><span class="badge ${badgeClass(p.area)}">${p.area}</span></td><td>${(p.anamnese&&p.anamnese.data)||'—'}</td></tr>`).join('');
+}
+function populateSelects(){
+  const opts = '<option value="">Selecione...</option>'+DB.patients.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+  ['avalPaciente','evoPaciente','laudoPaciente'].forEach(id=>{const el=document.getElementById(id);const cur=el.value;el.innerHTML=opts;if(cur)el.value=cur;});
+}
+function getPatient(selectId){const id=document.getElementById(selectId).value;return DB.patients.find(x=>x.id==id)||null;}
+
+/* ============ AVALIACAO TABS ============ */
+function switchTab(group,tab){
+  const map={aval:['anamnese','tea','tdah','exec','academico','percepcao']};
+  const tabs=map[group];
+  document.querySelectorAll(`#page-avaliacao .tab`).forEach((t,i)=>t.classList.toggle('active',tabs[i]===tab));
+  tabs.forEach(t=>document.getElementById(`${group}-${t}`).style.display = t===tab?'block':'none');
+}
+function loadAvaliacaoPatient(){
+  const p=getPatient('avalPaciente');
+  if(!p){['anamnese','tea','tdah','exec','academico','percepcao'].forEach(t=>document.getElementById('aval-'+t).innerHTML='');return;}
+  renderAnamnese(p);renderTEA(p);renderTDAH(p);renderExec(p);renderAcademico(p);renderPercepcao(p);
+}
+
+function renderAnamnese(p){
+  const d=p.anamnese;
+  document.getElementById('aval-anamnese').innerHTML=`
+    <div class="grid grid-2">
+      <div class="form-row"><label>Data da avaliação</label><input type="date" id="anData" value="${d.data||''}"></div>
+      <div class="form-row"><label>Encaminhado por</label><input type="text" id="anEncaminhado" value="${d.encaminhado||''}"></div>
+    </div>
+    <div class="form-row"><label>Queixa principal</label><textarea id="anQueixa">${d.queixa||''}</textarea></div>
+    <div class="form-row"><label>Histórico gestacional e de parto</label><textarea id="anGestacional">${d.gestacional||''}</textarea></div>
+    <div class="form-row"><label>Desenvolvimento neuropsicomotor (marcos: sustentar cabeça, sentar, andar, falar)</label><textarea id="anDesenv">${d.desenv||''}</textarea></div>
+    <div class="form-row"><label>Histórico escolar (repetências, adaptações, relação com colegas/professores)</label><textarea id="anEscolar">${d.escolar||''}</textarea></div>
+    <div class="form-row"><label>Histórico familiar (casos semelhantes na família, dinâmica familiar)</label><textarea id="anFamiliar">${d.familiar||''}</textarea></div>
+    <div class="form-row"><label>Histórico de saúde (diagnósticos prévios, medicações, exames)</label><textarea id="anSaude">${d.saude||''}</textarea></div>
+    <button class="btn btn-sm" onclick="saveAnamnese()">Salvar anamnese</button>`;
+}
+function saveAnamnese(){
+  const p=getPatient('avalPaciente');if(!p)return;
+  p.anamnese={data:val('anData'),encaminhado:val('anEncaminhado'),queixa:val('anQueixa'),gestacional:val('anGestacional'),desenv:val('anDesenv'),escolar:val('anEscolar'),familiar:val('anFamiliar'),saude:val('anSaude')};
+  save();alert('Anamnese salva!');renderDashboard();
+}
+function val(id){return document.getElementById(id).value;}
+
+const TEA_ITENS={
+  'Comunicação Social':['Faz contato visual de forma consistente','Responde quando chamado pelo nome','Compartilha interesses apontando ou mostrando objetos','Compreende expressões faciais e tom de voz dos outros','Inicia interações sociais espontaneamente','Mantém conversas recíprocas (turno de fala)'],
+  'Interesses e Comportamentos':['Apresenta interesses muito restritos e intensos','Segue rotinas rígidas e se incomoda com mudanças','Apresenta movimentos repetitivos (mãos, corpo)','Tem reações incomuns a estímulos sensoriais (som, luz, textura)','Alinha ou organiza objetos de forma repetitiva','Ecolalia (repetição de falas/frases ouvidas)']
+};
+function renderTEA(p){
+  const d=p.tea||{};let html='';
+  for(const cat in TEA_ITENS){
+    html+=`<h4 style="margin:16px 0 6px;font-size:13px;color:var(--p)">${cat}</h4>`;
+    TEA_ITENS[cat].forEach((item,i)=>{
+      const key=cat+'_'+i;const v=d[key]||0;
+      html+=`<div class="scale-item"><div class="txt">${item}</div><div class="scale-opts">${[0,1,2,3].map(n=>`<button class="${v==n?'sel':''}" onclick="setScale('tea','${key}',${n},this)">${['N','ÀV','F','S'][n]}</button>`).join('')}</div></div>`;
+    });
+  }
+  html+=`<div style="margin-top:16px;font-size:11.5px;color:var(--gr)">N=Nunca · ÀV=Às vezes · F=Frequentemente · S=Sempre</div><button class="btn btn-sm" style="margin-top:12px" onclick="saveScale('tea')">Salvar Escala TEA</button>`;
+  document.getElementById('aval-tea').innerHTML=html;
+}
+
+const TDAH_ITENS={
+  'Desatenção':['Comete erros por descuido em tarefas escolares','Tem dificuldade em manter atenção em tarefas/brincadeiras','Parece não escutar quando lhe dirigem a palavra','Não segue instruções e não termina tarefas','Tem dificuldade para organizar tarefas e atividades','Evita tarefas que exigem esforço mental prolongado','Perde objetos necessários para tarefas','Distrai-se facilmente com estímulos externos','É esquecido em atividades cotidianas'],
+  'Hiperatividade/Impulsividade':['Mexe as mãos/pés ou se remexe na cadeira','Levanta-se em situações que deveria ficar sentado','Corre ou escala em situações inadequadas','Tem dificuldade em brincar/trabalhar em silêncio','Está "a mil", como se fosse "movido a motor"','Fala em excesso','Responde antes da pergunta terminar','Tem dificuldade para esperar sua vez','Interrompe ou se intromete em conversas/brincadeiras']
+};
+function renderTDAH(p){
+  const d=p.tdah||{};let html='';
+  for(const cat in TDAH_ITENS){
+    html+=`<h4 style="margin:16px 0 6px;font-size:13px;color:var(--p)">${cat}</h4>`;
+    TDAH_ITENS[cat].forEach((item,i)=>{
+      const key=cat+'_'+i;const v=d[key]||0;
+      html+=`<div class="scale-item"><div class="txt">${item}</div><div class="scale-opts">${[0,1,2,3].map(n=>`<button class="${v==n?'sel':''}" onclick="setScale('tdah','${key}',${n},this)">${['N','ÀV','F','S'][n]}</button>`).join('')}</div></div>`;
+    });
+  }
+  html+=`<div style="margin-top:16px;font-size:11.5px;color:var(--gr)">N=Nunca · ÀV=Às vezes · F=Frequentemente · S=Sempre — critério clínico de referência: 6+ itens "Frequentemente/Sempre" em um domínio</div><button class="btn btn-sm" style="margin-top:12px" onclick="saveScale('tdah')">Salvar Escala TDAH</button>`;
+  document.getElementById('aval-tdah').innerHTML=html;
+}
+
+const EXEC_ITENS=['Memória de trabalho (mantém e manipula informação mentalmente)','Flexibilidade cognitiva (alterna entre tarefas/estratégias)','Controle inibitório (contém respostas impulsivas)','Planejamento e organização de etapas','Automonitoramento (percebe próprios erros)','Iniciativa para começar tarefas sem ser cobrado','Gerenciamento do tempo'];
+function renderExec(p){
+  const d=p.exec||{};
+  let html=EXEC_ITENS.map((item,i)=>{
+    const v=d['e'+i]||3;
+    return `<div class="scale-item"><div class="txt">${item}</div><div class="scale-opts">${[1,2,3,4,5].map(n=>`<button class="${v==n?'sel':''}" onclick="setScale('exec','e${i}',${n},this)">${n}</button>`).join('')}</div></div>`;
+  }).join('');
+  html+=`<div style="margin-top:16px;font-size:11.5px;color:var(--gr)">Escala 1 (muito comprometido) a 5 (adequado para idade)</div><button class="btn btn-sm" style="margin-top:12px" onclick="saveScale('exec')">Salvar Funções Executivas</button>`;
+  document.getElementById('aval-exec').innerHTML=html;
+}
+
+const ACAD_ITENS={
+  'Leitura':['Decodificação (junta letras/sílabas com fluência)','Fluência de leitura (velocidade e ritmo adequados)','Compreensão do que lê'],
+  'Escrita':['Ortografia (troca, omite ou inverte letras)','Organização e coerência textual','Qualidade do traçado / caligrafia'],
+  'Matemática':['Senso numérico e noção de quantidade','Cálculo mental e operações básicas','Resolução de problemas matemáticos']
+};
+function renderAcademico(p){
+  const d=p.academico||{};let html='';
+  for(const cat in ACAD_ITENS){
+    html+=`<h4 style="margin:16px 0 6px;font-size:13px;color:var(--p)">${cat}</h4>`;
+    ACAD_ITENS[cat].forEach((item,i)=>{
+      const key=cat+'_'+i;const v=d[key]||3;
+      html+=`<div class="scale-item"><div class="txt">${item}</div><div class="scale-opts">${[1,2,3,4,5].map(n=>`<button class="${v==n?'sel':''}" onclick="setScale('academico','${key}',${n},this)">${n}</button>`).join('')}</div></div>`;
+    });
+  }
+  html+=`<div style="margin-top:16px;font-size:11.5px;color:var(--gr)">Escala 1 (defasagem importante) a 5 (adequado para série/idade)</div><button class="btn btn-sm" style="margin-top:12px" onclick="saveScale('academico')">Salvar Habilidades Acadêmicas</button>`;
+  document.getElementById('aval-academico').innerHTML=html;
+}
+
+const PERCEP_ITENS=['Memória de curto prazo (retém informação recente)','Memória de longo prazo (recupera aprendizados antigos)','Percepção visual (discrimina formas, letras semelhantes)','Percepção auditiva (discrimina sons semelhantes)','Orientação espacial (direita/esquerda, noção espacial)','Orientação temporal (sequência, noção de tempo)'];
+function renderPercepcao(p){
+  const d=p.percepcao||{};
+  let html=PERCEP_ITENS.map((item,i)=>{
+    const v=d['pc'+i]||3;
+    return `<div class="scale-item"><div class="txt">${item}</div><div class="scale-opts">${[1,2,3,4,5].map(n=>`<button class="${v==n?'sel':''}" onclick="setScale('percepcao','pc${i}',${n},this)">${n}</button>`).join('')}</div></div>`;
+  }).join('');
+  html+=`<div style="margin-top:16px;font-size:11.5px;color:var(--gr)">Escala 1 (muito comprometido) a 5 (adequado)</div><button class="btn btn-sm" style="margin-top:12px" onclick="saveScale('percepcao')">Salvar Percepção &amp; Memória</button>`;
+  document.getElementById('aval-percepcao').innerHTML=html;
+}
+
+function setScale(scaleName,key,val,btn){
+  const p=getPatient('avalPaciente');if(!p)return;
+  if(!p[scaleName])p[scaleName]={};
+  p[scaleName][key]=val;
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function saveScale(name){const p=getPatient('avalPaciente');if(p){save();alert('Salvo com sucesso!');renderDashboard();}}
+
+/* ============ PROTOCOLOS ============ */
+const PROTOCOLOS=[
+  {area:'TEA',titulo:'Comunicação e Interação Social',desc:'Estratégias para ampliar iniciativa comunicativa e habilidades sociais.',passos:['Uso de apoio visual (rotina em figuras/PECS) para antecipar atividades','Modelagem de brincadeira compartilhada em pares curtos','Treino de atenção compartilhada (apontar, seguir o olhar)','Histórias sociais para situações específicas de rotina']},
+  {area:'TEA',titulo:'Regulação Sensorial',desc:'Manejo de hipo/hipersensibilidade sensorial em sessão.',passos:['Mapeamento dos gatilhos sensoriais do paciente','Uso de pausas sensoriais estruturadas entre atividades','Introdução gradual de texturas/sons não tolerados','Ambiente com estímulos controlados (luz, ruído)']},
+  {area:'TDAH',titulo:'Organização e Planejamento',desc:'Desenvolvimento de rotina e função executiva de planejamento.',passos:['Uso de agenda visual dividida em blocos curtos de tempo','Checklist de materiais antes de cada tarefa','Técnica pomodoro adaptada (blocos de 10-15min + pausa)','Reforço positivo imediato a cada etapa concluída']},
+  {area:'TDAH',titulo:'Controle Inibitório e Autorregulação',desc:'Redução de impulsividade em tarefas dirigidas.',passos:['Jogos de "sinal de parar" (semáforo comportamental)','Treino de espera de turno em jogos estruturados','Verbalização do plano antes de agir ("penso antes de fazer")','Automonitoramento com tabela de autoavaliação']},
+  {area:'Dislexia',titulo:'Consciência Fonológica',desc:'Base para decodificação leitora.',passos:['Segmentação silábica com apoio de palmas/blocos','Identificação de rima e aliteração em jogos orais','Associação grafema-fonema sistemática e multissensorial','Leitura compartilhada com apontamento da palavra lida']},
+  {area:'Dislexia',titulo:'Fluência e Compreensão Leitora',desc:'Progressão da decodificação para leitura fluente.',passos:['Releitura cronometrada do mesmo texto (repeated reading)','Uso de texto com tamanho de fonte e espaçamento ampliados','Antecipação de vocabulário antes da leitura do texto','Perguntas de compreensão em níveis crescentes de complexidade']},
+  {area:'Discalculia',titulo:'Senso Numérico',desc:'Consolidação da noção de quantidade e valor posicional.',passos:['Uso de material concreto (material dourado, ábaco)','Reta numérica para comparação e ordenação','Jogos de composição e decomposição de números','Associação número-quantidade com apoio visual']},
+  {area:'Discalculia',titulo:'Cálculo e Resolução de Problemas',desc:'Estratégias para operações e raciocínio lógico-matemático.',passos:['Algoritmos com apoio visual passo a passo','Problemas contextualizados com apoio de desenho','Uso de calculadora como apoio, não como meta final','Verbalização da estratégia usada antes de calcular']},
+  {area:'Disgrafia',titulo:'Coordenação e Traçado',desc:'Melhora da qualidade da escrita manual.',passos:['Exercícios de coordenação motora fina (pinça, recorte)','Treino de pressão e pega adequada do lápis','Traçado de letras com pontilhado decrescente','Uso de pauta ampliada e depois pauta padrão']},
+  {area:'Disgrafia',titulo:'Organização Textual',desc:'Estruturação de ideias no papel.',passos:['Uso de organizadores gráficos antes de escrever','Ditado com pausa controlada para organização motora','Revisão de texto em etapas (ideia → ortografia → traçado)','Alternativa de digitação quando o traçado é limitante']},
+  {area:'Funcoes Executivas',titulo:'Memória de Trabalho',desc:'Fortalecimento da retenção e manipulação de informação.',passos:['Jogos de sequência crescente (repetir e adicionar)','Instruções em múltiplas etapas com checagem posterior','Uso de pistas visuais de apoio à memória durante a tarefa','Redução gradual de apoio externo conforme evolução']},
+  {area:'Funcoes Executivas',titulo:'Flexibilidade Cognitiva',desc:'Capacidade de alternar estratégias e se adaptar a mudanças.',passos:['Jogos de classificação com regra que muda no meio da atividade','Antecipação verbal de possíveis mudanças na rotina','Resolução do mesmo problema por mais de uma estratégia','Feedback imediato ao alternar corretamente de estratégia']},
+];
+let protocolFilter='Todos';
+function renderProtocolos(){
+  const areas=['Todos','TEA','TDAH','Dislexia','Discalculia','Disgrafia','Funcoes Executivas'];
+  document.getElementById('protocolFilters').innerHTML = areas.map(a=>`<span class="chip ${protocolFilter===a?'active':''}" onclick="filterProtocolos('${a}')">${a==='Funcoes Executivas'?'Funções Executivas':a}</span>`).join('');
+  const list = PROTOCOLOS.filter(p=>protocolFilter==='Todos'||p.area===protocolFilter);
+  document.getElementById('protocolosList').innerHTML = list.map(p=>`
+    <div class="protocol-card">
+      <span class="badge ${badgeClass(p.area)}" style="margin-bottom:8px">${p.area==='Funcoes Executivas'?'Funções Executivas':p.area}</span>
+      <h4>${p.titulo}</h4><p>${p.desc}</p>
+      <ul>${p.passos.map(s=>`<li>${s}</li>`).join('')}</ul>
+    </div>`).join('');
+}
+function filterProtocolos(a){protocolFilter=a;renderProtocolos();}
+
+/* ============ ESTIMULACAO ============ */
+const ATIVIDADES=[
+  {cat:'Atenção',nome:'Caça-detalhes cronometrado',desc:'Localizar itens específicos em cena com múltiplos elementos, dentro de um tempo definido.',idade:'6-12 anos'},
+  {cat:'Atenção',nome:'Jogo do sinal',desc:'Executar/interromper ação conforme cor apresentada (semáforo comportamental).',idade:'5-10 anos'},
+  {cat:'Atenção',nome:'Leitura com marcação',desc:'Marcar uma letra/palavra-alvo específica ao longo de um texto.',idade:'7+ anos'},
+  {cat:'Memória',nome:'Sequência crescente',desc:'Repetir e adicionar itens a uma sequência (números, objetos, cores).',idade:'5-12 anos'},
+  {cat:'Memória',nome:'Jogo da memória temático',desc:'Pares de cartas associadas ao conteúdo trabalhado em sessão.',idade:'4-10 anos'},
+  {cat:'Memória',nome:'Reconto de história',desc:'Recontar uma história curta ouvida, com apoio de imagens sequenciais.',idade:'5-10 anos'},
+  {cat:'Linguagem',nome:'Categorização semântica',desc:'Agrupar palavras/imagens por categoria (animais, frutas, objetos).',idade:'4-9 anos'},
+  {cat:'Linguagem',nome:'Consciência fonológica em jogo',desc:'Identificar rima, sílaba inicial/final em atividades lúdicas.',idade:'5-8 anos'},
+  {cat:'Linguagem',nome:'Produção de narrativa com apoio visual',desc:'Criar uma história a partir de sequência de 3-4 imagens.',idade:'6-11 anos'},
+  {cat:'Raciocínio Lógico',nome:'Sequência lógica',desc:'Ordenar cenas/objetos seguindo lógica de causa e efeito.',idade:'5-10 anos'},
+  {cat:'Raciocínio Lógico',nome:'Classificação por múltiplos critérios',desc:'Organizar objetos por cor, forma e tamanho simultaneamente.',idade:'6-11 anos'},
+  {cat:'Raciocínio Lógico',nome:'Resolução de enigmas simples',desc:'Charadas e problemas curtos com pistas visuais.',idade:'7+ anos'},
+  {cat:'Funções Executivas',nome:'Planejamento de rotina em cartões',desc:'Montar a sequência de passos de uma tarefa do dia a dia.',idade:'5-11 anos'},
+  {cat:'Funções Executivas',nome:'Jogo de regras que mudam',desc:'Atividade de classificação onde a regra muda no meio, exigindo flexibilidade.',idade:'6-12 anos'},
+  {cat:'Funções Executivas',nome:'Autoavaliação com tabela de carinhas',desc:'Paciente marca como avalia seu próprio desempenho após a tarefa.',idade:'5-10 anos'},
+  {cat:'Percepção',nome:'Discriminação visual de letras espelhadas',desc:'Identificar diferença entre letras semelhantes (b/d, p/q).',idade:'6-9 anos'},
+  {cat:'Percepção',nome:'Quebra-cabeça progressivo',desc:'Montagem de quebra-cabeças com número crescente de peças.',idade:'4-10 anos'},
+  {cat:'Percepção',nome:'Discriminação auditiva de sons semelhantes',desc:'Diferenciar pares de palavras foneticamente próximas.',idade:'5-9 anos'},
+];
+let estimFilter='Todos';
+function renderEstimulacao(){
+  const cats=['Todos','Atenção','Memória','Linguagem','Raciocínio Lógico','Funções Executivas','Percepção'];
+  document.getElementById('estimFilters').innerHTML = cats.map(c=>`<span class="chip ${estimFilter===c?'active':''}" onclick="filterEstim('${c}')">${c}</span>`).join('');
+  const list = ATIVIDADES.filter(a=>estimFilter==='Todos'||a.cat===estimFilter);
+  document.getElementById('estimList').innerHTML = list.map(a=>`
+    <div class="activity-card"><div class="cat">${a.cat}</div><h5>${a.nome}</h5><p>${a.desc}</p><div class="meta">Faixa etária: ${a.idade}</div></div>`).join('');
+}
+function filterEstim(c){estimFilter=c;renderEstimulacao();}
+
+/* ============ EVOLUCAO ============ */
+function loadEvolucao(){
+  const p=getPatient('evoPaciente');
+  document.getElementById('evoForm').style.display = p?'block':'none';
+  if(p)renderSessoes(p);
+}
+function saveSessao(){
+  const p=getPatient('evoPaciente');if(!p)return;
+  const data=val('sessData'),obj=val('sessObj'),obs=val('sessObs');
+  if(!data||!obj){alert('Preencha data e objetivo da sessão');return;}
+  if(!p.sessoes)p.sessoes=[];
+  p.sessoes.push({data,obj,obs});
+  save();document.getElementById('sessData').value='';document.getElementById('sessObj').value='';document.getElementById('sessObs').value='';
+  renderSessoes(p);renderDashboard();
+}
+function renderSessoes(p){
+  const list=(p.sessoes||[]).slice().reverse();
+  document.getElementById('sessoesList').innerHTML = list.length ? list.map(s=>`
+    <div class="session-item"><div class="date">${s.data}</div><div class="obj">${s.obj}</div><div class="obs">${s.obs||''}</div></div>`).join('')
+    : '<div class="empty">Nenhuma sessão registrada ainda.</div>';
+}
+
+/* ============ CLINICA ============ */
+function saveClinica(){
+  const logoData = (DB.clinica && DB.clinica.logoData) || null;
+  DB.clinica={nome:val('clNome'),registro:val('clRegistro'),clinica:val('clClinica'),tel:val('clTel'),email:val('clEmail'),logoData};
+  save();alert('Dados salvos! Eles aparecerão nos PDFs gerados.');
+}
+function loadClinica(){
+  const c=DB.clinica||{};
+  document.getElementById('clNome').value=c.nome||'';
+  document.getElementById('clRegistro').value=c.registro||'';
+  document.getElementById('clClinica').value=c.clinica||'';
+  document.getElementById('clTel').value=c.tel||'';
+  document.getElementById('clEmail').value=c.email||'';
+  if(c.logoData){document.getElementById('clLogoImg').src=c.logoData;document.getElementById('clLogoPreview').style.display='block';}
+  else{document.getElementById('clLogoPreview').style.display='none';}
+}
+function getClinica(){return DB.clinica||{};}
+function previewClinicaLogo(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    if(!DB.clinica)DB.clinica={};
+    DB.clinica.logoData=e.target.result;
+    save();
+    document.getElementById('clLogoImg').src=e.target.result;
+    document.getElementById('clLogoPreview').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+function removerLogo(){
+  if(DB.clinica)DB.clinica.logoData=null;
+  save();
+  document.getElementById('clLogoPreview').style.display='none';
+  document.getElementById('clLogoInput').value='';
+}
+
+/* ============ PDF ============ */
+function pdfBase(titulo,paciente){
+  const doc=new jsPDF('p','mm','a4');
+  const c=getClinica();
+  doc.setFillColor(...PR);doc.rect(0,0,210,26,'F');
+  if(c.logoData){try{doc.addImage(c.logoData,'',176,3,20,20);}catch(e){}}
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(15);
+  doc.text(titulo,14,13);
+  doc.setFont('helvetica','normal');doc.setFontSize(10);
+  doc.text(c.nome? `${c.nome}${c.registro?' — '+c.registro:''}` : 'Neuropsicopedagogo(a)',14,20);
+  let y=36;
+  const txt=(s,x,yy,{sz=10,c=DK,st='normal',al='left'}={})=>{doc.setFontSize(sz);doc.setFont('helvetica',st);doc.setTextColor(...c);doc.text(String(s||'-'),x,yy,{align:al});};
+  txt('PACIENTE',14,y,{sz:9,c:GR,st:'bold'});y+=6;
+  txt(paciente.nome,14,y,{sz:13,st:'bold'});y+=6;
+  txt(`Idade: ${calcAge(paciente.nasc)}   |   Responsável: ${paciente.resp||'-'}   |   Escola: ${paciente.escola||'-'}`,14,y,{sz:9.5,c:GR});y+=10;
+  doc.setDrawColor(...PR);doc.line(14,y,196,y);y+=8;
+  return {doc,txt,y};
+}
+function wrapText(doc,text,x,y,maxW,lh,c=DK,sz=10){
+  doc.setFontSize(sz);doc.setTextColor(...c);doc.setFont('helvetica','normal');
+  const lines=doc.splitTextToSize(text||'-',maxW);
+  doc.text(lines,x,y);return y+lines.length*lh;
+}
+function pdfAnamnesePDF(){
+  const p=getPatient('laudoPaciente');if(!p){alert('Selecione o paciente');return;}
+  const a=p.anamnese||{};
+  let {doc,txt,y}=pdfBase('ANAMNESE NEUROPSICOPEDAGÓGICA',p);
+  const campos=[['Queixa principal',a.queixa],['Histórico gestacional/parto',a.gestacional],['Desenvolvimento neuropsicomotor',a.desenv],['Histórico escolar',a.escolar],['Histórico familiar',a.familiar],['Histórico de saúde',a.saude]];
+  campos.forEach(([label,val])=>{
+    txt(label.toUpperCase(),14,y,{sz:9,c:GR,st:'bold'});y+=5;
+    y=wrapText(doc,val,14,y,182,5.2);y+=7;
+    if(y>265){doc.addPage();y=20;}
+  });
+  doc.save(`Anamnese_${p.nome.replace(/\s+/g,'_')}.pdf`);
+}
+function pdfLaudo(){
+  const p=getPatient('laudoPaciente');if(!p){alert('Selecione o paciente');return;}
+  const conclusao=val('laudoConclusao'),pii=val('laudoPII');
+  let {doc,txt,y}=pdfBase('LAUDO NEUROPSICOPEDAGÓGICO',p);
+  txt('QUEIXA INICIAL',14,y,{sz:9,c:GR,st:'bold'});y+=5;
+  y=wrapText(doc,p.queixa,14,y,182,5.2);y+=8;
+  txt('SÍNTESE DA AVALIAÇÃO',14,y,{sz:9,c:GR,st:'bold'});y+=5;
+  const areasAvaliadas=['Comunicação/Interação Social (Escala TEA)','Atenção e Comportamento (Escala TDAH)','Funções Executivas','Habilidades Acadêmicas (leitura, escrita, matemática)','Percepção e Memória'];
+  y=wrapText(doc,'Foram avaliados os seguintes domínios: '+areasAvaliadas.join('; ')+'.',14,y,182,5.2);y+=8;
+  txt('CONCLUSÃO / HIPÓTESE PEDAGÓGICA',14,y,{sz:9,c:GR,st:'bold'});y+=5;
+  y=wrapText(doc,conclusao,14,y,182,5.2);y+=8;
+  if(y>240){doc.addPage();y=20;}
+  txt('PLANO DE INTERVENÇÃO INDIVIDUALIZADO (PII)',14,y,{sz:9,c:GR,st:'bold'});y+=5;
+  y=wrapText(doc,pii,14,y,182,5.2);y+=14;
+  const c=getClinica();
+  doc.setDrawColor(...GR);doc.line(60,y,150,y);y+=5;
+  txt(c.nome||'Neuropsicopedagogo(a) responsável',105,y,{sz:9.5,al:'center',st:'bold'});y+=5;
+  txt(c.registro||'',105,y,{sz:8.5,al:'center',c:GR});
+  p.laudoGerado=true;save();
+  doc.save(`Laudo_${p.nome.replace(/\s+/g,'_')}.pdf`);
+}
+
+/* ============ INIT ============ */
+populateSelects();renderDashboard();
+</script>
+</body>
+</html>
