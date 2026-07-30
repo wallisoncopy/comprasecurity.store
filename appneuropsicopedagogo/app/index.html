@@ -694,6 +694,7 @@ function removerLogo(){
 
 /* ============ PDF ============ */
 function pdfBase(titulo,paciente){
+  const {jsPDF}=window.jspdf;
   const doc=new jsPDF('p','mm','a4');
   const c=getClinica();
   doc.setFillColor(...PR);doc.rect(0,0,210,26,'F');
