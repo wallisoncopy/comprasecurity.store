@@ -168,6 +168,41 @@ tr:hover td{background:var(--pl)}
 .logo-preview-box{display:none;margin-top:10px;text-align:center;padding:12px;background:var(--pl);border-radius:10px}
 .logo-preview-box img{max-height:60px;max-width:180px;border-radius:6px;background:#fff;padding:4px}
 .logo-preview-box span{display:block;font-size:11px;color:var(--p);margin-top:6px;font-weight:700}
+
+/* TESTES INTERATIVOS */
+.test-card{background:var(--w);border:1px solid var(--lg);border-radius:14px;padding:18px;box-shadow:var(--shadow);cursor:pointer;transition:.15s}
+.test-card:hover{border-color:var(--p);transform:translateY(-2px)}
+.test-card .t-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.test-card h4{font-size:14.5px;margin-bottom:4px}
+.test-card p{font-size:12px;color:var(--gr);line-height:1.45}
+.test-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.test-back{width:36px;height:36px;border-radius:10px;background:var(--pl);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.test-instructions{background:linear-gradient(135deg,var(--p),var(--accent));color:#fff;border-radius:16px;padding:16px 18px;margin-bottom:18px}
+.test-instructions b{display:block;font-size:12.5px;margin-bottom:6px}
+.test-instructions ol{padding-left:18px;font-size:12.5px;line-height:1.7;opacity:.95}
+.cpt-timer{background:var(--pd);color:#fff;font-family:monospace;font-size:16px;font-weight:800;padding:6px 14px;border-radius:10px}
+.cpt-stage{background:var(--w);border:1px solid var(--lg);border-radius:20px;padding:36px 20px;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+.cpt-circle{width:150px;height:150px;border-radius:50%;background:var(--pl);border:6px solid #fff;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;font-size:30px;color:var(--lg)}
+.cpt-circle.go{background:var(--green)}
+.cpt-circle.nogo{background:var(--red)}
+.corsi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:280px;margin:0 auto 16px}
+.corsi-cell{aspect-ratio:1;border-radius:14px;background:var(--pl);border:2px solid var(--lg);cursor:pointer;transition:.15s}
+.corsi-cell.lit{background:var(--p);border-color:var(--pd);transform:scale(.95)}
+.digit-chip{width:38px;height:38px;border-radius:10px;background:var(--pl);color:var(--p);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+.mark-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mark-ok{background:#ECFDF5;color:var(--green);border:1.5px solid #A7F3D0;border-radius:12px;padding:10px;font-weight:700;font-size:13px;cursor:pointer;text-align:center}
+.mark-fail{background:#FEF2F2;color:var(--red);border:1.5px solid #FECACA;border-radius:12px;padding:10px;font-weight:700;font-size:13px;cursor:pointer;text-align:center}
+.fluencia-cat{background:var(--w);border:1px solid var(--lg);border-radius:14px;padding:16px;margin-bottom:12px}
+.fluencia-big-timer{font-size:44px;font-weight:800;color:var(--p);text-align:center}
+.count-row{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:10px}
+.count-btn{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--lg);background:var(--w);font-weight:800;font-size:18px;cursor:pointer;color:var(--gr)}
+.count-num{font-size:24px;font-weight:800;color:var(--p);min-width:44px;text-align:center}
+.test-result-box{background:var(--pl);border-radius:14px;padding:18px;margin-top:16px;text-align:center}
+.test-result-box .big{font-size:34px;font-weight:800;color:var(--p)}
+.test-result-box .lbl{font-size:11.5px;color:var(--gr);font-weight:700;text-transform:uppercase}
+.interp-box{background:var(--g);border-radius:12px;padding:12px 14px;font-size:12.5px;color:var(--dk);line-height:1.5;margin-top:10px}
+.test-hist{margin-top:16px}
+.test-hist-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F4F4FA;font-size:12.5px}
 </style>
 </head>
 <body>
@@ -187,6 +222,7 @@ tr:hover td{background:var(--pl)}
       <div class="nav-item" onclick="goPage('avaliacao')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Avaliação</span></div>
       <div class="nav-item" onclick="goPage('protocolos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Protocolos</span></div>
       <div class="nav-item" onclick="goPage('estimulacao')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/><path d="M9 21h6M10 17h4"/></svg><span>Estimulação</span></div>
+      <div class="nav-item" onclick="goPage('testes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg><span>Testes Interativos</span></div>
       <div class="nav-item" onclick="goPage('evolucao')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 8l-5 5-3-3-4 4"/></svg><span>Evolução</span></div>
       <div class="nav-item" onclick="goPage('laudos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg><span>Laudos</span></div>
       <div class="nav-label">Sistema</div>
@@ -281,6 +317,17 @@ tr:hover td{background:var(--pl)}
         </div>
       </div>
 
+      <!-- TESTES INTERATIVOS -->
+      <div class="page" id="page-testes">
+        <div class="card">
+          <div class="form-row" style="max-width:340px">
+            <label>Selecione o paciente</label>
+            <select id="testesPaciente" onchange="loadTestesList()"></select>
+          </div>
+          <div id="testesArea"></div>
+        </div>
+      </div>
+
       <!-- EVOLUCAO -->
       <div class="page" id="page-evolucao">
         <div class="card">
@@ -351,9 +398,10 @@ tr:hover td{background:var(--pl)}
           <div class="manual-step"><div class="n">2</div><div><h4>Preencha a avaliação neuropsicopedagógica</h4><p>Em "Avaliação", selecione o paciente e percorra as abas: Anamnese, Escala TEA, Escala TDAH, Funções Executivas, Habilidades Acadêmicas e Percepção &amp; Memória.</p></div></div>
           <div class="manual-step"><div class="n">3</div><div><h4>Consulte os protocolos de intervenção</h4><p>Em "Protocolos", filtre por área (TEA, TDAH, Dislexia, Discalculia, Disgrafia, Funções Executivas) e use as estratégias prontas em sessão.</p></div></div>
           <div class="manual-step"><div class="n">4</div><div><h4>Monte o plano de estimulação cognitiva</h4><p>Em "Estimulação", filtre atividades por função cognitiva e faixa etária para montar o plano de sessão.</p></div></div>
-          <div class="manual-step"><div class="n">5</div><div><h4>Registre a evolução</h4><p>Em "Evolução", registre cada sessão com data, objetivo e observações — isso vira histórico automático do paciente.</p></div></div>
-          <div class="manual-step"><div class="n">6</div><div><h4>Gere o laudo em PDF</h4><p>Em "Laudos", escreva a conclusão e o Plano de Intervenção Individualizado (PII) e clique em gerar — o PDF sai pronto com seus dados profissionais.</p></div></div>
-          <div class="manual-step"><div class="n">7</div><div><h4>Configure seus dados</h4><p>Em "Clínica", preencha nome, registro profissional e contato — esses dados aparecem automaticamente no cabeçalho de todos os PDFs gerados.</p></div></div>
+          <div class="manual-step"><div class="n">5</div><div><h4>Aplique os testes interativos</h4><p>Em "Testes Interativos", selecione o paciente e aplique ao vivo: Atenção (CPT), Span de Dígitos, Memória Visual (Corsi) e Fluência Verbal. Os resultados ficam salvos no histórico do paciente.</p></div></div>
+          <div class="manual-step"><div class="n">6</div><div><h4>Registre a evolução</h4><p>Em "Evolução", registre cada sessão com data, objetivo e observações — isso vira histórico automático do paciente.</p></div></div>
+          <div class="manual-step"><div class="n">7</div><div><h4>Gere o laudo em PDF</h4><p>Em "Laudos", escreva a conclusão e o Plano de Intervenção Individualizado (PII) e clique em gerar — o PDF sai pronto com seus dados profissionais.</p></div></div>
+          <div class="manual-step"><div class="n">8</div><div><h4>Configure seus dados</h4><p>Em "Clínica", preencha nome, registro profissional e contato — esses dados aparecem automaticamente no cabeçalho de todos os PDFs gerados.</p></div></div>
           <div style="margin-top:16px;padding:14px;background:var(--pl);border-radius:10px;font-size:12.5px;color:var(--p)"><b>Dica:</b> todos os seus dados ficam salvos neste dispositivo (não é preciso internet depois de carregado). Evite limpar o cache do navegador.</div>
         </div>
       </div>
@@ -392,6 +440,7 @@ const pageTitles = {
   avaliacao:['Avaliação Neuropsicopedagógica','Anamnese e escalas de rastreio'],
   protocolos:['Protocolos de Intervenção','Estratégias organizadas por área'],
   estimulacao:['Estimulação Cognitiva','Banco de atividades por função'],
+  testes:['Testes Interativos','Aplicação ao vivo, direto na tela'],
   evolucao:['Evolução','Histórico de sessões por paciente'],
   laudos:['Laudos','Geração de laudo e anamnese em PDF'],
   clinica:['Dados da Clínica','Aparecem nos PDFs gerados'],
@@ -406,7 +455,8 @@ function goPage(id){
   document.getElementById('pageSub').textContent = pageTitles[id][1];
   if(id==='dashboard') renderDashboard();
   if(id==='pacientes') renderPatients();
-  if(id==='avaliacao'||id==='evolucao'||id==='laudos') populateSelects();
+  if(id==='avaliacao'||id==='evolucao'||id==='laudos'||id==='testes') populateSelects();
+  if(id==='testes') loadTestesList();
   if(id==='protocolos') renderProtocolos();
   if(id==='estimulacao') renderEstimulacao();
   if(id==='clinica') loadClinica();
@@ -427,7 +477,8 @@ function saveNewPatient(){
   DB.patients.push({
     id:Date.now(),nome,nasc:document.getElementById('npNasc').value,resp:document.getElementById('npResp').value,
     escola:document.getElementById('npEscola').value,area:document.getElementById('npArea').value,queixa:document.getElementById('npQueixa').value,
-    anamnese:{},tea:{},tdah:{},exec:{},academico:{},percepcao:{},sessoes:[]
+    anamnese:{},tea:{},tdah:{},exec:{},academico:{},percepcao:{},sessoes:[],
+    testes:{atencao:[],spanDigitos:[],memoriaVisual:[],fluenciaVerbal:[]}
   });
   save();closeModal('modalNovoPaciente');
   ['npNome','npNasc','npResp','npEscola','npQueixa'].forEach(id=>document.getElementById(id).value='');
@@ -452,7 +503,7 @@ function renderDashboard(){
 }
 function populateSelects(){
   const opts = '<option value="">Selecione...</option>'+DB.patients.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
-  ['avalPaciente','evoPaciente','laudoPaciente'].forEach(id=>{const el=document.getElementById(id);const cur=el.value;el.innerHTML=opts;if(cur)el.value=cur;});
+  ['avalPaciente','evoPaciente','laudoPaciente','testesPaciente'].forEach(id=>{const el=document.getElementById(id);const cur=el.value;el.innerHTML=opts;if(cur)el.value=cur;});
 }
 function getPatient(selectId){const id=document.getElementById(selectId).value;return DB.patients.find(x=>x.id==id)||null;}
 
@@ -709,6 +760,335 @@ function renderEstimulacao(){
     <div class="activity-card"><div class="cat">${a.cat}</div><h5>${a.nome}</h5><p>${a.desc}</p><div class="meta">Faixa etária: ${a.idade}</div></div>`).join('');
 }
 function filterEstim(c){estimFilter=c;renderEstimulacao();}
+
+/* ============ TESTES INTERATIVOS ============ */
+const TESTES_INFO=[
+  {id:'atencao',nome:'Atenção (CPT)',desc:'Toque só quando o círculo ficar verde. Mede erros de omissão e comissão.',icon:'🎯',cor:'#4F46E5'},
+  {id:'span',nome:'Span de Dígitos',desc:'Sequência numérica crescente, direto e inverso. Memória de trabalho verbal.',icon:'🔢',cor:'#7C3AED'},
+  {id:'corsi',nome:'Memória Visual (Corsi)',desc:'Sequência de blocos acesos. Memória de trabalho visuoespacial.',icon:'🧩',cor:'#06B6D4'},
+  {id:'fluencia',nome:'Fluência Verbal',desc:'60s falando palavras de uma categoria. Fluência semântica e fonêmica.',icon:'💬',cor:'#0EA5E9'},
+];
+function ensureTestes(p){ if(!p.testes) p.testes={atencao:[],spanDigitos:[],memoriaVisual:[],fluenciaVerbal:[]}; return p.testes; }
+function loadTestesList(){
+  const p=getPatient('testesPaciente');
+  const area=document.getElementById('testesArea');
+  if(!p){ area.innerHTML='<div class="empty">Selecione um paciente para aplicar os testes.</div>'; return; }
+  ensureTestes(p);
+  renderTestesList(p);
+}
+function renderTestesList(p){
+  const area=document.getElementById('testesArea');
+  const t=ensureTestes(p);
+  const hist=[...t.atencao.map(x=>({tipo:'Atenção',...x})),...t.spanDigitos.map(x=>({tipo:'Span',...x})),...t.memoriaVisual.map(x=>({tipo:'Memória Visual',...x})),...t.fluenciaVerbal.map(x=>({tipo:'Fluência Verbal',...x}))];
+  area.innerHTML=`
+    <div class="grid grid-2" id="testesGrid">${TESTES_INFO.map(ti=>`
+      <div class="test-card" onclick="abrirTeste('${ti.id}')">
+        <div class="t-ico" style="background:${ti.cor}22;color:${ti.cor}">${ti.icon}</div>
+        <h4>${ti.nome}</h4><p>${ti.desc}</p>
+      </div>`).join('')}
+    </div>
+    ${hist.length?`<div class="test-hist"><div class="section-title" style="margin-top:20px"><span class="dot"></span>Histórico de testes de ${p.nome}</div>${hist.slice(-8).reverse().map(h=>`<div class="test-hist-item"><span>${h.tipo}</span><span style="color:var(--gr)">${h.data}</span></div>`).join('')}</div>`:''}
+  `;
+}
+function voltarTestes(){ const p=getPatient('testesPaciente'); if(p) renderTestesList(p); }
+function abrirTeste(id){
+  const p=getPatient('testesPaciente'); if(!p) return;
+  if(id==='atencao') renderTesteAtencao(p);
+  if(id==='span') renderTesteSpan(p);
+  if(id==='corsi') renderTesteCorsi(p);
+  if(id==='fluencia') renderTesteFluencia(p);
+}
+
+/* --- TESTE 1: ATENÇÃO (CPT) --- */
+let CPT={};
+function renderTesteAtencao(p){
+  document.getElementById('testesArea').innerHTML=`
+    <div class="test-header"><div class="test-back" onclick="voltarTestes()">←</div><div><h3 style="font-size:16px;font-weight:800">Teste de Atenção (CPT)</h3><div style="font-size:12px;color:var(--gr)">${p.nome}</div></div><div style="margin-left:auto" class="cpt-timer" id="cptTimer">30s</div></div>
+    <div class="test-instructions"><b>Como aplicar</b><ol><li>Entregue o dispositivo ao paciente</li><li>Explique: toque no círculo só quando ficar VERDE</li><li>Não toque se ficar VERMELHO</li><li>Dura 30 segundos</li></ol></div>
+    <div class="cpt-stage">
+      <div id="cptCircle" class="cpt-circle" onclick="cptTap()">👆</div>
+      <button class="btn" id="cptStart" onclick="cptStart()">Começar</button>
+    </div>
+    <div id="cptResultArea"></div>`;
+}
+function cptStart(){
+  CPT={running:true,timeLeft:30,active:false,isGo:false,hits:[],comissao:0,omissao:0,startT:0,timerInt:null,stimTimeout:null};
+  document.getElementById('cptStart').style.display='none';
+  CPT.timerInt=setInterval(()=>{
+    CPT.timeLeft--;
+    const t=document.getElementById('cptTimer'); if(t)t.textContent=CPT.timeLeft+'s';
+    if(CPT.timeLeft<=0) cptEnd();
+  },1000);
+  cptNext();
+}
+function cptNext(){
+  if(!CPT.running) return;
+  CPT.active=false;
+  const circle=document.getElementById('cptCircle'); if(!circle) return;
+  circle.className='cpt-circle'; circle.textContent='👆';
+  const delay=1000+Math.random()*2000;
+  CPT.stimTimeout=setTimeout(()=>{
+    if(!CPT.running) return;
+    CPT.isGo=Math.random()>0.3;
+    CPT.active=true;
+    circle.className='cpt-circle '+(CPT.isGo?'go':'nogo');
+    circle.textContent='';
+    CPT.startT=Date.now();
+    CPT.stimTimeout=setTimeout(()=>{
+      if(CPT.active && CPT.isGo) CPT.omissao++;
+      cptNext();
+    },1000);
+  },delay);
+}
+function cptTap(){
+  if(!CPT.active) return;
+  if(CPT.isGo){ CPT.hits.push(Date.now()-CPT.startT); } else { CPT.comissao++; }
+  CPT.active=false;
+  clearTimeout(CPT.stimTimeout);
+  cptNext();
+}
+function cptEnd(){
+  CPT.running=false;
+  clearInterval(CPT.timerInt); clearTimeout(CPT.stimTimeout);
+  const avg=CPT.hits.length?Math.round(CPT.hits.reduce((a,b)=>a+b,0)/CPT.hits.length):0;
+  const circle=document.getElementById('cptCircle');
+  if(circle){circle.className='cpt-circle';circle.textContent='✅';circle.onclick=null;}
+  let interp;
+  if(CPT.comissao>=4) interp='⚠️ Número elevado de erros por impulsividade (comissão) — sugestivo de dificuldade de controle inibitório.';
+  else if(CPT.omissao>=4) interp='⚠️ Número elevado de erros por desatenção (omissão) — sugestivo de dificuldade atencional.';
+  else interp='✔ Desempenho dentro do esperado para controle inibitório e atenção sustentada.';
+  document.getElementById('cptResultArea').innerHTML=`
+    <div class="test-result-box">
+      <div class="big">${avg}ms</div><div class="lbl">Tempo médio de reação</div>
+      <div style="display:flex;gap:24px;justify-content:center;margin-top:14px">
+        <div><div style="font-size:20px;font-weight:800;color:var(--green)">${CPT.hits.length}</div><div class="lbl">Acertos</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:var(--red)">${CPT.comissao}</div><div class="lbl">Comissão</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:var(--yellow)">${CPT.omissao}</div><div class="lbl">Omissão</div></div>
+      </div>
+      <div class="interp-box">${interp}</div>
+      <button class="btn" style="margin-top:14px" onclick="cptSave()">Salvar Resultado</button>
+    </div>`;
+}
+function cptSave(){
+  const p=getPatient('testesPaciente'); if(!p) return;
+  const t=ensureTestes(p);
+  const avg=CPT.hits.length?Math.round(CPT.hits.reduce((a,b)=>a+b,0)/CPT.hits.length):0;
+  t.atencao.push({data:new Date().toLocaleDateString('pt-BR'),avg,hits:CPT.hits.length,comissao:CPT.comissao,omissao:CPT.omissao});
+  save(); alert('Resultado salvo no paciente!'); voltarTestes();
+}
+
+/* --- TESTE 2: SPAN DE DÍGITOS --- */
+const SPAN_SEQS={direto:[[2,4],[5,8,1],[7,2,9,4],[3,8,1,6,5],[4,9,2,7,1,8],[1,5,3,9,7,2,6]],inverso:[[1,3],[6,2,9],[4,7,1,5],[8,3,9,2,6],[3,7,1,5,9,2]]};
+let SPAN={};
+function renderTesteSpan(p){
+  SPAN={direto:0,inverso:0};
+  document.getElementById('testesArea').innerHTML=`
+    <div class="test-header"><div class="test-back" onclick="voltarTestes()">←</div><div><h3 style="font-size:16px;font-weight:800">Span de Dígitos</h3><div style="font-size:12px;color:var(--gr)">${p.nome}</div></div></div>
+    <div class="test-instructions"><b>Como aplicar</b><ol><li>Fale os dígitos em voz alta, 1 por segundo</li><li>Peça para repetir na ordem correta (direto)</li><li>Depois peça pra repetir ao contrário (inverso)</li><li>Marque Acertou/Errou pra cada sequência</li></ol></div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <span class="chip active" id="spanTabDireto" onclick="spanTab('direto')">▶ Direto</span>
+      <span class="chip" id="spanTabInverso" onclick="spanTab('inverso')">◀ Inverso</span>
+    </div>
+    <div id="spanContent"></div>
+    <div id="spanResultArea"></div>`;
+  spanTab('direto');
+}
+function spanTab(type){
+  document.getElementById('spanTabDireto').classList.toggle('active',type==='direto');
+  document.getElementById('spanTabInverso').classList.toggle('active',type==='inverso');
+  const seqs=SPAN_SEQS[type];
+  document.getElementById('spanContent').innerHTML=seqs.map((seq,i)=>`
+    <div class="card" style="padding:14px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:800;color:var(--p);text-transform:uppercase;margin-bottom:8px">Sequência ${i+1} (${seq.length} dígitos)</div>
+      <div style="display:flex;gap:6px;margin-bottom:10px">${seq.map(d=>`<span class="digit-chip">${d}</span>`).join('')}</div>
+      <div class="mark-row"><span class="mark-ok" onclick="spanMark('${type}',${i},true,this)">✔ Acertou</span><span class="mark-fail" onclick="spanMark('${type}',${i},false,this)">✘ Errou</span></div>
+    </div>`).join('');
+}
+function spanMark(type,idx,ok,btn){
+  const seq=SPAN_SEQS[type][idx];
+  if(ok && seq.length>SPAN[type]) SPAN[type]=seq.length;
+  btn.parentElement.querySelectorAll('.mark-ok,.mark-fail').forEach(b=>b.style.outline='none');
+  btn.style.outline='2px solid '+(ok?'var(--green)':'var(--red)');
+  let interp='';
+  if(SPAN.direto){ if(SPAN.direto<=3) interp+='⚠️ Span direto abaixo da média (esperado ≥5 para 7+ anos). '; else if(SPAN.direto<=5) interp+='✔ Span direto na média. '; else interp+='✨ Span direto acima da média. '; }
+  if(SPAN.inverso){ if(SPAN.inverso<=2) interp+='⚠️ Span inverso reduzido (esperado ≥3).'; else interp+='✔ Span inverso adequado.'; }
+  document.getElementById('spanResultArea').innerHTML=`
+    <div class="test-result-box">
+      <div style="display:flex;gap:24px;justify-content:center">
+        <div><div class="big">${SPAN.direto||'—'}</div><div class="lbl">Span Direto</div></div>
+        <div><div class="big">${SPAN.inverso||'—'}</div><div class="lbl">Span Inverso</div></div>
+      </div>
+      <div class="interp-box">${interp}</div>
+      <button class="btn" style="margin-top:14px" onclick="spanSave()">Salvar Resultado</button>
+    </div>`;
+}
+function spanSave(){
+  const p=getPatient('testesPaciente'); if(!p) return;
+  const t=ensureTestes(p);
+  t.spanDigitos.push({data:new Date().toLocaleDateString('pt-BR'),direto:SPAN.direto,inverso:SPAN.inverso});
+  save(); alert('Resultado salvo no paciente!'); voltarTestes();
+}
+
+/* --- TESTE 3: MEMÓRIA VISUAL (CORSI) --- */
+const CORSI_SEQS=[[0,4],[1,5,7],[2,4,6,0],[3,7,1,5,8],[0,6,2,8,4,1],[5,3,7,0,8,2,4]];
+let CORSI={};
+function renderTesteCorsi(p){
+  CORSI={seqIdx:0,span:0,playing:false};
+  document.getElementById('testesArea').innerHTML=`
+    <div class="test-header"><div class="test-back" onclick="voltarTestes()">←</div><div><h3 style="font-size:16px;font-weight:800">Memória Visual (Corsi)</h3><div style="font-size:12px;color:var(--gr)">${p.nome}</div></div></div>
+    <div class="test-instructions"><b>Como aplicar</b><ol><li>Toque em "Mostrar Sequência"</li><li>Peça pro paciente tocar os blocos na mesma ordem</li><li>Marque Acertou/Errou</li></ol></div>
+    <div class="card" style="text-align:center">
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:12.5px">
+        <span id="corsiLevel" style="font-weight:700;color:var(--p)"></span>
+        <span id="corsiSpanBadge" class="chip" style="cursor:default">Span: —</span>
+      </div>
+      <div class="corsi-grid" id="corsiGrid"></div>
+      <button class="btn" id="corsiShowBtn" onclick="corsiShow()">▶ Mostrar Sequência</button>
+      <div class="mark-row" id="corsiMark" style="display:none"><span class="mark-ok" onclick="corsiMark(true)">✔ Acertou</span><span class="mark-fail" onclick="corsiMark(false)">✘ Errou</span></div>
+    </div>
+    <div id="corsiResultArea"></div>`;
+  document.getElementById('corsiGrid').innerHTML=Array.from({length:9}).map((_,i)=>`<div class="corsi-cell" id="corsiCell${i}" onclick="corsiTap(${i})"></div>`).join('');
+  corsiUpdateLevel();
+}
+function corsiUpdateLevel(){
+  const seq=CORSI_SEQS[CORSI.seqIdx];
+  const el=document.getElementById('corsiLevel');
+  if(seq && el) el.textContent=`Sequência ${CORSI.seqIdx+1} de ${CORSI_SEQS.length} (${seq.length} blocos)`;
+}
+async function corsiShow(){
+  if(CORSI.playing) return;
+  CORSI.playing=true;
+  const seq=CORSI_SEQS[CORSI.seqIdx];
+  document.getElementById('corsiShowBtn').disabled=true;
+  document.getElementById('corsiMark').style.display='none';
+  for(let i=0;i<seq.length;i++){
+    const cell=document.getElementById('corsiCell'+seq[i]); if(!cell) break;
+    cell.classList.add('lit');
+    await new Promise(r=>setTimeout(r,600));
+    cell.classList.remove('lit');
+    await new Promise(r=>setTimeout(r,300));
+  }
+  const btn=document.getElementById('corsiShowBtn');
+  if(btn) btn.disabled=false;
+  const mk=document.getElementById('corsiMark');
+  if(mk) mk.style.display='grid';
+  CORSI.playing=false;
+}
+function corsiTap(i){
+  const cell=document.getElementById('corsiCell'+i);
+  cell.classList.add('lit');
+  setTimeout(()=>cell.classList.remove('lit'),200);
+}
+function corsiMark(ok){
+  const seq=CORSI_SEQS[CORSI.seqIdx];
+  if(ok) CORSI.span=seq.length;
+  document.getElementById('corsiSpanBadge').textContent='Span: '+(CORSI.span||'—');
+  let interp;
+  if(CORSI.span<=2) interp='⚠️ Span visuoespacial muito reduzido (esperado ≥4 para 6+ anos).';
+  else if(CORSI.span<=4) interp='✔ Span visuoespacial na média inferior.';
+  else if(CORSI.span<=5) interp='✔ Span visuoespacial adequado.';
+  else interp='✨ Span visuoespacial acima da média.';
+  document.getElementById('corsiResultArea').innerHTML=`
+    <div class="test-result-box">
+      <div class="big">${CORSI.span||'—'}</div><div class="lbl">Span Visuoespacial</div>
+      <div class="interp-box">${interp}</div>
+      <button class="btn" style="margin-top:14px" onclick="corsiSave()">Salvar Resultado</button>
+    </div>`;
+  CORSI.seqIdx++;
+  if(CORSI.seqIdx<CORSI_SEQS.length && ok){
+    corsiUpdateLevel();
+    document.getElementById('corsiMark').style.display='none';
+  }else{
+    document.getElementById('corsiShowBtn').style.display='none';
+    document.getElementById('corsiMark').style.display='none';
+  }
+}
+function corsiSave(){
+  const p=getPatient('testesPaciente'); if(!p) return;
+  const t=ensureTestes(p);
+  t.memoriaVisual.push({data:new Date().toLocaleDateString('pt-BR'),span:CORSI.span});
+  save(); alert('Resultado salvo no paciente!'); voltarTestes();
+}
+
+/* --- TESTE 4: FLUÊNCIA VERBAL --- */
+const FLUENCIA_CATS=[
+  {tipo:'Semântica',label:'Animais',desc:'Fale o máximo de animais que conseguir em 60 segundos'},
+  {tipo:'Semântica',label:'Frutas',desc:'Fale o máximo de frutas que conseguir em 60 segundos'},
+  {tipo:'Fonêmica',label:'Letra "F"',desc:'Fale palavras que comecem com a letra F em 60 segundos'},
+  {tipo:'Fonêmica',label:'Letra "A"',desc:'Fale palavras que comecem com a letra A em 60 segundos'},
+];
+let FLU={};
+function renderTesteFluencia(p){
+  FLU={counts:[0,0,0,0],results:[],timers:{}};
+  document.getElementById('testesArea').innerHTML=`
+    <div class="test-header"><div class="test-back" onclick="voltarTestes()">←</div><div><h3 style="font-size:16px;font-weight:800">Fluência Verbal</h3><div style="font-size:12px;color:var(--gr)">${p.nome}</div></div></div>
+    <div class="test-instructions"><b>Como aplicar</b><ol><li>Selecione a categoria e explique pro paciente</li><li>Toque em "Iniciar 60s" e conte as palavras corretas</li><li>Ao final, registre o número de palavras válidas</li></ol></div>
+    ${FLUENCIA_CATS.map((c,i)=>`
+      <div class="fluencia-cat">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <b style="font-size:13.5px">${c.label}</b>
+          <span class="chip" style="margin:0;cursor:default">${c.tipo}</span>
+        </div>
+        <p style="font-size:11.5px;color:var(--gr);margin-bottom:10px">${c.desc}</p>
+        <div id="fluTimerBox${i}" style="display:none;margin-bottom:8px">
+          <div class="fluencia-big-timer" id="fluTimerNum${i}">60</div>
+          <div style="text-align:center;font-size:11px;color:var(--gr)">segundos</div>
+        </div>
+        <div id="fluStart${i}"><span class="btn btn-sm" style="cursor:pointer;display:block;text-align:center" onclick="fluStart(${i})">▶ Iniciar 60s</span></div>
+        <div id="fluCountRow${i}" style="display:none">
+          <div class="count-row"><span class="count-btn" onclick="fluAdj(${i},-1)">−</span><span class="count-num" id="fluCount${i}">0</span><span class="count-btn" onclick="fluAdj(${i},1)">+</span></div>
+          <span class="btn btn-sm" style="cursor:pointer;display:block;text-align:center;margin-top:8px;background:var(--green)" onclick="fluSaveCat(${i})">✔ Salvar Categoria</span>
+        </div>
+        <div id="fluSaved${i}" style="display:none;text-align:center;font-size:11.5px;font-weight:700;color:var(--green);margin-top:6px">✔ Salvo!</div>
+      </div>`).join('')}
+    <div id="fluResultArea"></div>`;
+}
+function fluAdj(i,delta){
+  FLU.counts[i]=Math.max(0,(FLU.counts[i]||0)+delta);
+  document.getElementById('fluCount'+i).textContent=FLU.counts[i];
+}
+function fluStart(i){
+  if(FLU.timers[i]) return;
+  let t=60;
+  document.getElementById('fluTimerBox'+i).style.display='block';
+  document.getElementById('fluStart'+i).style.display='none';
+  document.getElementById('fluCountRow'+i).style.display='block';
+  FLU.timers[i]=setInterval(()=>{
+    t--;
+    const el=document.getElementById('fluTimerNum'+i);
+    if(el) el.textContent = t<=0?'Fim!':t;
+    if(t<=0){ clearInterval(FLU.timers[i]); FLU.timers[i]=null; }
+  },1000);
+}
+function fluSaveCat(i){
+  const c=FLUENCIA_CATS[i];
+  FLU.results=FLU.results.filter(r=>r.label!==c.label);
+  FLU.results.push({label:c.label,tipo:c.tipo,count:FLU.counts[i]||0});
+  if(FLU.timers[i]){ clearInterval(FLU.timers[i]); FLU.timers[i]=null; }
+  document.getElementById('fluSaved'+i).style.display='block';
+  document.getElementById('fluCountRow'+i).style.display='none';
+  document.getElementById('fluTimerBox'+i).style.display='none';
+  fluShowResult();
+}
+function fluShowResult(){
+  const sem=FLU.results.filter(r=>r.tipo==='Semântica');
+  const fon=FLU.results.filter(r=>r.tipo==='Fonêmica');
+  let interp='';
+  if(sem.length){ const avg=sem.reduce((a,b)=>a+b.count,0)/sem.length; if(avg<10) interp+='⚠️ Fluência semântica reduzida (esperado ≥12/60s). '; else if(avg<14) interp+='✔ Fluência semântica na média inferior. '; else interp+='✨ Fluência semântica adequada ou acima. '; }
+  if(fon.length){ const avg=fon.reduce((a,b)=>a+b.count,0)/fon.length; if(avg<8) interp+='⚠️ Fluência fonêmica reduzida (esperado ≥10/60s).'; else interp+='✔ Fluência fonêmica dentro do esperado.'; }
+  document.getElementById('fluResultArea').innerHTML=`
+    <div class="test-result-box">
+      ${FLU.results.map(r=>`<div class="test-hist-item"><b>${r.label}</b><span style="font-weight:800;color:var(--p)">${r.count}</span></div>`).join('')}
+      <div class="interp-box">${interp||'Complete mais categorias pra ver a interpretação.'}</div>
+      <button class="btn" style="margin-top:14px" onclick="fluSaveSession()">Salvar Resultado</button>
+    </div>`;
+}
+function fluSaveSession(){
+  const p=getPatient('testesPaciente'); if(!p) return;
+  const t=ensureTestes(p);
+  t.fluenciaVerbal.push({data:new Date().toLocaleDateString('pt-BR'),resultados:FLU.results});
+  save(); alert('Resultado salvo no paciente!'); voltarTestes();
+}
 
 /* ============ EVOLUCAO ============ */
 function loadEvolucao(){
