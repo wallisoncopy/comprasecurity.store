@@ -576,32 +576,108 @@ function saveScale(name){const p=getPatient('avalPaciente');if(p){save();alert('
 
 /* ============ PROTOCOLOS ============ */
 const PROTOCOLOS=[
-  {area:'TEA',titulo:'Comunicação e Interação Social',desc:'Estratégias para ampliar iniciativa comunicativa e habilidades sociais.',passos:['Uso de apoio visual (rotina em figuras/PECS) para antecipar atividades','Modelagem de brincadeira compartilhada em pares curtos','Treino de atenção compartilhada (apontar, seguir o olhar)','Histórias sociais para situações específicas de rotina']},
-  {area:'TEA',titulo:'Regulação Sensorial',desc:'Manejo de hipo/hipersensibilidade sensorial em sessão.',passos:['Mapeamento dos gatilhos sensoriais do paciente','Uso de pausas sensoriais estruturadas entre atividades','Introdução gradual de texturas/sons não tolerados','Ambiente com estímulos controlados (luz, ruído)']},
-  {area:'TDAH',titulo:'Organização e Planejamento',desc:'Desenvolvimento de rotina e função executiva de planejamento.',passos:['Uso de agenda visual dividida em blocos curtos de tempo','Checklist de materiais antes de cada tarefa','Técnica pomodoro adaptada (blocos de 10-15min + pausa)','Reforço positivo imediato a cada etapa concluída']},
-  {area:'TDAH',titulo:'Controle Inibitório e Autorregulação',desc:'Redução de impulsividade em tarefas dirigidas.',passos:['Jogos de "sinal de parar" (semáforo comportamental)','Treino de espera de turno em jogos estruturados','Verbalização do plano antes de agir ("penso antes de fazer")','Automonitoramento com tabela de autoavaliação']},
-  {area:'Dislexia',titulo:'Consciência Fonológica',desc:'Base para decodificação leitora.',passos:['Segmentação silábica com apoio de palmas/blocos','Identificação de rima e aliteração em jogos orais','Associação grafema-fonema sistemática e multissensorial','Leitura compartilhada com apontamento da palavra lida']},
-  {area:'Dislexia',titulo:'Fluência e Compreensão Leitora',desc:'Progressão da decodificação para leitura fluente.',passos:['Releitura cronometrada do mesmo texto (repeated reading)','Uso de texto com tamanho de fonte e espaçamento ampliados','Antecipação de vocabulário antes da leitura do texto','Perguntas de compreensão em níveis crescentes de complexidade']},
-  {area:'Discalculia',titulo:'Senso Numérico',desc:'Consolidação da noção de quantidade e valor posicional.',passos:['Uso de material concreto (material dourado, ábaco)','Reta numérica para comparação e ordenação','Jogos de composição e decomposição de números','Associação número-quantidade com apoio visual']},
-  {area:'Discalculia',titulo:'Cálculo e Resolução de Problemas',desc:'Estratégias para operações e raciocínio lógico-matemático.',passos:['Algoritmos com apoio visual passo a passo','Problemas contextualizados com apoio de desenho','Uso de calculadora como apoio, não como meta final','Verbalização da estratégia usada antes de calcular']},
-  {area:'Disgrafia',titulo:'Coordenação e Traçado',desc:'Melhora da qualidade da escrita manual.',passos:['Exercícios de coordenação motora fina (pinça, recorte)','Treino de pressão e pega adequada do lápis','Traçado de letras com pontilhado decrescente','Uso de pauta ampliada e depois pauta padrão']},
-  {area:'Disgrafia',titulo:'Organização Textual',desc:'Estruturação de ideias no papel.',passos:['Uso de organizadores gráficos antes de escrever','Ditado com pausa controlada para organização motora','Revisão de texto em etapas (ideia → ortografia → traçado)','Alternativa de digitação quando o traçado é limitante']},
-  {area:'Funcoes Executivas',titulo:'Memória de Trabalho',desc:'Fortalecimento da retenção e manipulação de informação.',passos:['Jogos de sequência crescente (repetir e adicionar)','Instruções em múltiplas etapas com checagem posterior','Uso de pistas visuais de apoio à memória durante a tarefa','Redução gradual de apoio externo conforme evolução']},
-  {area:'Funcoes Executivas',titulo:'Flexibilidade Cognitiva',desc:'Capacidade de alternar estratégias e se adaptar a mudanças.',passos:['Jogos de classificação com regra que muda no meio da atividade','Antecipação verbal de possíveis mudanças na rotina','Resolução do mesmo problema por mais de uma estratégia','Feedback imediato ao alternar corretamente de estratégia']},
+  {area:'TEA',titulo:'Comunicação e Interação Social',desc:'Estratégias para ampliar iniciativa comunicativa e habilidades sociais.',passos:['Uso de apoio visual (rotina em figuras/PECS) para antecipar atividades','Modelagem de brincadeira compartilhada em pares curtos','Treino de atenção compartilhada (apontar, seguir o olhar)','Histórias sociais para situações específicas de rotina'],
+    materiais:['Cartões de rotina visual (PECS)','Brinquedo de interesse do paciente','2 objetos iguais para brincadeira compartilhada'],
+    sessao:['Apresente o cartão de rotina visual da sessão (2 min)','Modele a brincadeira compartilhada com os 2 objetos iguais, alternando turnos (8 min)','Treine atenção compartilhada: aponte para um objeto e espere o paciente seguir o olhar (5 min)','Leia uma história social curta ligada à situação trabalhada no dia (5 min)','Registre na Evolução o nível de iniciativa comunicativa observado']},
+  {area:'TEA',titulo:'Regulação Sensorial',desc:'Manejo de hipo/hipersensibilidade sensorial em sessão.',passos:['Mapeamento dos gatilhos sensoriais do paciente','Uso de pausas sensoriais estruturadas entre atividades','Introdução gradual de texturas/sons não tolerados','Ambiente com estímulos controlados (luz, ruído)'],
+    materiais:['Mapa sensorial do paciente (gatilhos conhecidos)','Fone abafador ou objeto sensorial calmante','Texturas variadas para dessensibilização gradual'],
+    sessao:['Revise o mapa sensorial do paciente antes de iniciar (2 min)','Ofereça pausa sensorial estruturada a cada 10-15 min de atividade','Introduza gradualmente uma textura não tolerada, sempre com opção de recusa','Ajuste luz/ruído do ambiente conforme a resposta do paciente','Registre reação e tolerância observadas na Evolução']},
+  {area:'TDAH',titulo:'Organização e Planejamento',desc:'Desenvolvimento de rotina e função executiva de planejamento.',passos:['Uso de agenda visual dividida em blocos curtos de tempo','Checklist de materiais antes de cada tarefa','Técnica pomodoro adaptada (blocos de 10-15min + pausa)','Reforço positivo imediato a cada etapa concluída'],
+    materiais:['Agenda visual em blocos de tempo','Checklist de materiais da sessão','Timer ou cronômetro'],
+    sessao:['Monte com o paciente a agenda visual da sessão em blocos de 10-15 min (3 min)','Antes de cada tarefa, confira juntos o checklist de materiais','Use o timer em cada bloco (técnica pomodoro adaptada)','Reforce positivamente ao final de cada bloco concluído','Registre quantos blocos foram concluídos com autonomia']},
+  {area:'TDAH',titulo:'Controle Inibitório e Autorregulação',desc:'Redução de impulsividade em tarefas dirigidas.',passos:['Jogos de "sinal de parar" (semáforo comportamental)','Treino de espera de turno em jogos estruturados','Verbalização do plano antes de agir ("penso antes de fazer")','Automonitoramento com tabela de autoavaliação'],
+    materiais:['Cartão "sinal de parar" (semáforo)','Jogo de esperar a vez','Tabela de autoavaliação com carinhas'],
+    sessao:['Apresente o jogo do sinal: verde=agir, amarelo=atenção, vermelho=parar (5 min)','Aplique 2-3 rodadas do jogo de espera de turno','Antes de cada atividade, peça para o paciente verbalizar o plano ("penso antes de fazer")','Ao final, preencham juntos a tabela de autoavaliação','Registre o número de interrupções/impulsividade observada']},
+  {area:'Dislexia',titulo:'Consciência Fonológica',desc:'Base para decodificação leitora.',passos:['Segmentação silábica com apoio de palmas/blocos','Identificação de rima e aliteração em jogos orais','Associação grafema-fonema sistemática e multissensorial','Leitura compartilhada com apontamento da palavra lida'],
+    materiais:['Blocos ou fichas para segmentação silábica','Lista de pares de palavras com rima','Alfabeto móvel'],
+    sessao:['Segmente 5 palavras em sílabas com apoio de blocos/palmas (5 min)','Identifique rima em 5 pares de palavras ditas oralmente','Associe grafema-fonema com o alfabeto móvel, uma letra por vez','Faça leitura compartilhada de frase curta, apontando cada palavra lida','Registre acertos e nível de apoio necessário']},
+  {area:'Dislexia',titulo:'Fluência e Compreensão Leitora',desc:'Progressão da decodificação para leitura fluente.',passos:['Releitura cronometrada do mesmo texto (repeated reading)','Uso de texto com tamanho de fonte e espaçamento ampliados','Antecipação de vocabulário antes da leitura do texto','Perguntas de compreensão em níveis crescentes de complexidade'],
+    materiais:['Texto curto adequado ao nível de leitura','Cronômetro','Lista de perguntas de compreensão'],
+    sessao:['Apresente o vocabulário-chave do texto antes da leitura (3 min)','Faça releitura cronometrada do mesmo texto, 2-3 vezes','Aplique perguntas de compreensão em ordem crescente de complexidade','Compare o tempo/fluência entre a 1ª e a última leitura','Registre o progresso de fluência e compreensão']},
+  {area:'Discalculia',titulo:'Senso Numérico',desc:'Consolidação da noção de quantidade e valor posicional.',passos:['Uso de material concreto (material dourado, ábaco)','Reta numérica para comparação e ordenação','Jogos de composição e decomposição de números','Associação número-quantidade com apoio visual'],
+    materiais:['Material dourado ou ábaco','Reta numérica impressa','Fichas numeradas'],
+    sessao:['Trabalhe composição e decomposição de números com material dourado (8 min)','Use a reta numérica para comparar e ordenar quantidades','Associe número à quantidade com as fichas numeradas','Aplique um jogo curto de composição numérica','Registre o nível de autonomia na tarefa']},
+  {area:'Discalculia',titulo:'Cálculo e Resolução de Problemas',desc:'Estratégias para operações e raciocínio lógico-matemático.',passos:['Algoritmos com apoio visual passo a passo','Problemas contextualizados com apoio de desenho','Uso de calculadora como apoio, não como meta final','Verbalização da estratégia usada antes de calcular'],
+    materiais:['Folha com algoritmo passo a passo','Problema contextualizado com apoio de desenho','Calculadora (apoio, não meta)'],
+    sessao:['Apresente o algoritmo com apoio visual passo a passo (5 min)','Resolva um problema contextualizado, incentivando o desenho da situação','Peça para o paciente verbalizar a estratégia antes de calcular','Use a calculadora só pra conferir, nunca pra substituir o raciocínio','Registre as estratégias usadas e o nível de independência']},
+  {area:'Disgrafia',titulo:'Coordenação e Traçado',desc:'Melhora da qualidade da escrita manual.',passos:['Exercícios de coordenação motora fina (pinça, recorte)','Treino de pressão e pega adequada do lápis','Traçado de letras com pontilhado decrescente','Uso de pauta ampliada e depois pauta padrão'],
+    materiais:['Tesoura sem ponta e papel para recorte','Folha com pontilhado decrescente','Lápis triangular / pega adequada'],
+    sessao:['Faça exercícios de coordenação motora fina: recorte e pinça (5 min)','Treine pressão e pega correta do lápis','Trace letras com pontilhado decrescente, do mais guiado ao menos guiado','Use pauta ampliada, reduzindo o tamanho gradualmente','Registre a qualidade do traçado e a fadiga observada']},
+  {area:'Disgrafia',titulo:'Organização Textual',desc:'Estruturação de ideias no papel.',passos:['Uso de organizadores gráficos antes de escrever','Ditado com pausa controlada para organização motora','Revisão de texto em etapas (ideia → ortografia → traçado)','Alternativa de digitação quando o traçado é limitante'],
+    materiais:['Organizador gráfico impresso','Texto para ditado controlado','Checklist de revisão (ideia / ortografia / traçado)'],
+    sessao:['Preencha o organizador gráfico com as ideias antes de escrever (5 min)','Realize ditado com pausas controladas para organização motora','Revise o texto em 3 etapas: ideia, ortografia, traçado','Se o traçado for muito limitante, ofereça digitação como alternativa','Registre a evolução na organização e extensão do texto']},
+  {area:'Funcoes Executivas',titulo:'Memória de Trabalho',desc:'Fortalecimento da retenção e manipulação de informação.',passos:['Jogos de sequência crescente (repetir e adicionar)','Instruções em múltiplas etapas com checagem posterior','Uso de pistas visuais de apoio à memória durante a tarefa','Redução gradual de apoio externo conforme evolução'],
+    materiais:['Cartões de sequência','Lista de instruções em múltiplas etapas','Pistas visuais de apoio'],
+    sessao:['Jogo de sequência crescente: repetir e adicionar itens (5 min)','Dê uma instrução de 2-3 etapas e peça para repetir antes de executar','Use pistas visuais de apoio durante a tarefa','Reduza gradualmente o apoio visual conforme a evolução','Registre quantos itens/etapas o paciente reteve sem apoio']},
+  {area:'Funcoes Executivas',titulo:'Flexibilidade Cognitiva',desc:'Capacidade de alternar estratégias e se adaptar a mudanças.',passos:['Jogos de classificação com regra que muda no meio da atividade','Antecipação verbal de possíveis mudanças na rotina','Resolução do mesmo problema por mais de uma estratégia','Feedback imediato ao alternar corretamente de estratégia'],
+    materiais:['Jogo de classificação (cores/formas)','Cartão de regra que muda no meio','Cronômetro'],
+    sessao:['Inicie a classificação com uma regra fixa, ex: por cor (5 min)','No meio da atividade, mude a regra (ex: por forma) sem aviso prévio','Observe o tempo de adaptação à nova regra','Dê feedback imediato a cada acerto na nova regra','Registre o tempo de adaptação e o número de erros por perseveração']},
 ];
 let protocolFilter='Todos';
+let protocolExpanded=null;
 function renderProtocolos(){
   const areas=['Todos','TEA','TDAH','Dislexia','Discalculia','Disgrafia','Funcoes Executivas'];
   document.getElementById('protocolFilters').innerHTML = areas.map(a=>`<span class="chip ${protocolFilter===a?'active':''}" onclick="filterProtocolos('${a}')">${a==='Funcoes Executivas'?'Funções Executivas':a}</span>`).join('');
   const list = PROTOCOLOS.filter(p=>protocolFilter==='Todos'||p.area===protocolFilter);
-  document.getElementById('protocolosList').innerHTML = list.map(p=>`
+  document.getElementById('protocolosList').innerHTML = list.map((p,i)=>{
+    const idx=PROTOCOLOS.indexOf(p);
+    const open=protocolExpanded===idx;
+    return `
     <div class="protocol-card">
       <span class="badge ${badgeClass(p.area)}" style="margin-bottom:8px">${p.area==='Funcoes Executivas'?'Funções Executivas':p.area}</span>
       <h4>${p.titulo}</h4><p>${p.desc}</p>
       <ul>${p.passos.map(s=>`<li>${s}</li>`).join('')}</ul>
-    </div>`).join('');
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span class="btn-sm btn" style="cursor:pointer" onclick="toggleProtocolo(${idx})">${open?'Ocultar':'▶ Aplicar em Sessão'}</span>
+        <span class="btn-sm btn-outline" style="cursor:pointer" onclick="pdfProtocolo(${idx})">📄 Gerar Ficha em PDF</span>
+      </div>
+      ${open?`
+      <div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--lg)">
+        <div style="font-size:11.5px;font-weight:800;color:var(--p);text-transform:uppercase;margin-bottom:6px">Materiais necessários</div>
+        <ul style="margin-bottom:12px">${p.materiais.map(m=>`<li>${m}</li>`).join('')}</ul>
+        <div style="font-size:11.5px;font-weight:800;color:var(--p);text-transform:uppercase;margin-bottom:6px">Passo a passo da sessão</div>
+        <ol style="padding-left:18px;font-size:12.5px;line-height:1.8">${p.sessao.map(s=>`<li>${s}</li>`).join('')}</ol>
+      </div>`:''}
+    </div>`;
+  }).join('');
 }
 function filterProtocolos(a){protocolFilter=a;renderProtocolos();}
+function toggleProtocolo(idx){protocolExpanded = protocolExpanded===idx ? null : idx; renderProtocolos();}
+function pdfProtocolo(idx){
+  const {jsPDF}=window.jspdf;
+  const p=PROTOCOLOS[idx];
+  const doc=new jsPDF('p','mm','a4');
+  const c=getClinica();
+  doc.setFillColor(...PR);doc.rect(0,0,210,26,'F');
+  if(c.logoData){try{doc.addImage(c.logoData,'',176,3,20,20);}catch(e){}}
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(14);
+  doc.text('FICHA DE APLICAÇÃO — '+(p.area==='Funcoes Executivas'?'FUNÇÕES EXECUTIVAS':p.area.toUpperCase()),14,13);
+  doc.setFont('helvetica','normal');doc.setFontSize(10);
+  doc.text(c.nome? `${c.nome}${c.registro?' — '+c.registro:''}` : 'Neuropsicopedagogo(a)',14,20);
+  let y=36;
+  const txt=(s,x,yy,{sz=10,c=DK,st='normal',al='left'}={})=>{doc.setFontSize(sz);doc.setFont('helvetica',st);doc.setTextColor(...c);doc.text(String(s||'-'),x,yy,{align:al});};
+  txt(p.titulo,14,y,{sz:15,st:'bold'});y+=7;
+  txt(p.desc,14,y,{sz:10,c:GR});y+=10;
+  doc.setDrawColor(...PR);doc.line(14,y,196,y);y+=8;
+
+  txt('MATERIAIS NECESSÁRIOS',14,y,{sz:9,c:GR,st:'bold'});y+=7;
+  p.materiais.forEach(m=>{ txt('•  '+m,16,y,{sz:10.5});y+=6.5; });
+  y+=5;
+  doc.setDrawColor(...GR);doc.setLineWidth(.2);doc.line(14,y,196,y);y+=9;
+
+  txt('PASSO A PASSO DA SESSÃO',14,y,{sz:9,c:GR,st:'bold'});y+=8;
+  p.sessao.forEach((s,i)=>{
+    doc.setFillColor(...PR);doc.circle(18,y-1.5,3,'F');
+    txt(String(i+1),18,y,{sz:8,c:[255,255,255],st:'bold',al:'center'});
+    const lines=doc.splitTextToSize(s,168);
+    doc.setFontSize(10.5);doc.setFont('helvetica','normal');doc.setTextColor(...DK);
+    doc.text(lines,26,y);
+    y+=lines.length*6+4;
+  });
+  y+=6;
+  txt('PACIENTE: _______________________________________     DATA: ____ / ____ / ______',14,y,{sz:9.5,c:GR});
+  doc.save(`Protocolo_${p.titulo.replace(/\s+/g,'_')}.pdf`);
+}
 
 /* ============ ESTIMULACAO ============ */
 const ATIVIDADES=[
