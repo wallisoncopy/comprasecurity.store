@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>App Kit Podólogo Pro | Fichas, Avaliações e Relatórios Prontos</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#2563EB;--pd:#1E3A8A;--pl:#EFF6FF;--accent:#F59E0B;--accent-l:#FFFBEB;
+  --texto:#0F172A;--cinza:#64748B;--cinza-claro:#F8FAFC;--branco:#FFFFFF;
+}
+html,body{overflow-x:hidden;max-width:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--texto);background:var(--branco)}
+h1,h2,h3{font-weight:800;letter-spacing:-.01em}
+a{text-decoration:none}
+img{max-width:100%;display:block}
+.container{max-width:760px;margin:0 auto;padding:0 20px}
+
+/* TOPBAR */
+.topbar{background:var(--pd);color:#fff;text-align:center;padding:10px 16px;font-size:13.5px;font-weight:700}
+
+/* HERO */
+.hero{padding:52px 20px 40px;text-align:center;background:linear-gradient(180deg,var(--pl) 0%,var(--branco) 100%)}
+.hero .tag{display:inline-block;background:var(--accent-l);color:#92400E;padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:700;margin-bottom:16px}
+.hero h1{font-size:32px;line-height:1.2;margin-bottom:14px}
+.hero h1 span{color:var(--p)}
+.hero p.sub{font-size:16px;color:var(--cinza);max-width:520px;margin:0 auto 26px;line-height:1.5}
+.hero-capa{width:100%;max-width:640px;border-radius:16px;margin:8px auto 24px;box-shadow:0 16px 40px rgba(37,99,235,.22)}
+.btn-principal{display:inline-block;background:var(--p);color:#fff;padding:16px 32px;border-radius:12px;font-weight:800;font-size:16px;box-shadow:0 8px 24px rgba(37,99,235,.3)}
+.hero-mini{font-size:12.5px;color:var(--cinza);margin-top:12px}
+
+/* DOR */
+.dor{padding:48px 20px;background:var(--branco)}
+.dor h2{font-size:24px;text-align:center;margin-bottom:28px}
+.dor-list{display:flex;flex-direction:column;gap:14px;max-width:560px;margin:0 auto}
+.dor-item{display:flex;gap:12px;align-items:flex-start;background:var(--cinza-claro);padding:16px 18px;border-radius:12px}
+.dor-item .x{width:22px;height:22px;border-radius:50%;background:#FEE2E2;color:#DC2626;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.dor-item span{font-size:14.5px;line-height:1.4}
+
+/* FEATURES */
+.features{padding:48px 20px;background:var(--pl)}
+.features h2{font-size:24px;text-align:center;margin-bottom:8px}
+.features .sub{text-align:center;color:var(--cinza);font-size:14.5px;margin-bottom:32px}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.feat-card{background:var(--branco);border-radius:14px;padding:20px;box-shadow:0 4px 20px rgba(37,99,235,.08)}
+.feat-card .ico{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--p),var(--accent));margin-bottom:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+.feat-card h3{font-size:15px;margin-bottom:6px}
+.feat-card p{font-size:13px;color:var(--cinza);line-height:1.5}
+
+/* DEMO */
+.demo{padding:56px 20px;text-align:center;background:linear-gradient(160deg,#0B1220 0%,#111C38 55%,#152450 100%)}
+.demo h2{color:#fff}
+.demo h2{font-size:24px;margin-bottom:26px}
+.demo-shots{display:grid;grid-template-columns:1fr 1fr;gap:26px 18px}
+.demo-shots .shot{display:flex;flex-direction:column;gap:12px}
+.demo-shots .shot .shot-img{border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.demo-shots .shot img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;object-position:top}
+.demo-shots .shot p{font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.68);text-align:left;padding:0 2px}
+.demo-shots .shot p strong{display:block;color:#fff;font-size:13.5px;margin-bottom:3px}
+@media(max-width:480px){.demo-shots{grid-template-columns:1fr;max-width:280px;margin:0 auto}}
+
+/* DEPOIMENTOS */
+.depo{padding:48px 20px;background:var(--cinza-claro)}
+.depo h2{font-size:24px;text-align:center;margin-bottom:28px}
+.depo-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.depo-card{background:var(--branco);border-radius:14px;padding:18px 20px}
+.depo-estrelas{color:#F59E0B;font-size:14px;margin-bottom:8px}
+.depo-texto{font-size:14px;line-height:1.5;margin-bottom:10px;font-style:italic}
+.depo-nome{font-weight:800;font-size:13.5px}
+.depo-cargo{font-size:12px;color:var(--cinza)}
+
+/* PRECO */
+.preco{padding:52px 20px;text-align:center;background:linear-gradient(180deg,var(--branco),var(--pl))}
+.preco h2{font-size:24px;margin-bottom:8px}
+.preco .sub{color:var(--cinza);font-size:14.5px;margin-bottom:30px}
+.preco-grid{display:grid;grid-template-columns:1fr;gap:18px;max-width:380px;margin:0 auto}
+.preco-card{background:var(--branco);border:1.5px solid #E5E7F0;border-radius:16px;padding:26px 22px;text-align:left;position:relative}
+.preco-card-destaque{border:2px solid var(--p);box-shadow:0 10px 30px rgba(37,99,235,.18)}
+.badge-popular{position:absolute;top:-13px;right:20px;background:var(--accent);color:#78350F;font-size:11px;font-weight:800;padding:5px 12px;border-radius:20px}
+.preco-capa{width:100%;border-radius:10px;margin:10px 0 14px;box-shadow:0 6px 18px rgba(37,99,235,.15)}
+.preco-tag{display:inline-block;background:var(--pl);color:var(--p);font-size:11.5px;font-weight:800;padding:5px 12px;border-radius:20px;margin-bottom:12px}
+.preco-valor{font-size:34px;font-weight:800}
+.preco-valor small{font-size:16px;font-weight:700;vertical-align:top}
+.preco-parcelado{font-size:12.5px;color:var(--cinza);margin-bottom:16px}
+.preco-lista{list-style:none;margin-bottom:20px}
+.preco-lista li{font-size:13.5px;padding:6px 0;display:flex;gap:8px;align-items:flex-start}
+.preco-lista .check{color:var(--accent);font-weight:800}
+.btn-comprar{display:block;text-align:center;background:var(--p);color:#fff;padding:14px;border-radius:10px;font-weight:800;font-size:14.5px}
+.garantia{text-align:center;font-size:12px;color:var(--cinza);margin-top:12px}
+
+/* GARANTIA BANNER */
+.garantia-full{padding:36px 20px;text-align:center;background:var(--accent-l)}
+.garantia-full h2{font-size:19px;margin-bottom:8px;color:#92400E}
+.garantia-full p{font-size:13.5px;color:var(--cinza);max-width:480px;margin:0 auto;line-height:1.5}
+
+/* FAQ */
+.faq{padding:48px 20px;background:var(--branco)}
+.faq h2{font-size:24px;text-align:center;margin-bottom:26px}
+.faq-item{border-bottom:1px solid #E5E7F0;padding:16px 0}
+.faq-item h4{font-size:14.5px;margin-bottom:6px}
+.faq-item p{font-size:13.5px;color:var(--cinza);line-height:1.5}
+
+/* CTA FINAL */
+.cta-final{padding:52px 20px;text-align:center;background:var(--pd);color:#fff}
+.cta-final h2{font-size:24px;margin-bottom:10px}
+.cta-final p{font-size:14.5px;opacity:.85;margin-bottom:24px}
+.btn-footer{display:inline-block;background:var(--accent);color:#78350F;padding:16px 34px;border-radius:12px;font-weight:800;font-size:16px}
+
+footer{padding:20px;text-align:center;font-size:11.5px;color:var(--cinza);background:var(--cinza-claro)}
+</style>
+</head>
+<body>
+
+<div class="topbar">🦶 Feito por e para Podólogos — Avaliação, Fichas e Relatórios em um só lugar</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <span class="tag">App Kit Podólogo Pro</span>
+    <h1>Pare de Montar Ficha e Relatório do Zero.<br><span>Todo Atendimento, Já Estruturado.</span></h1>
+    <img src="https://i.ibb.co/q3H1kC3h/Screenshot-2026-10-13-at-11-02-47.png" alt="App Kit Podólogo Pro — visão geral do app" class="hero-capa">
+    <p class="sub">Anamnese completa, triagem de risco de pé diabético, monofilamento, classificação de onicocriptose, fichas de evolução e relatório em PDF — tudo pronto para usar com seus pacientes hoje mesmo.</p>
+    <a href="#preco" class="btn-principal">Quero Acesso Agora &rarr;</a>
+    <div class="hero-mini">Pagamento único · Sem mensalidade · Garantia de 7 dias</div>
+  </div>
+</section>
+
+<!-- DOR -->
+<section class="dor">
+  <div class="container">
+    <h2>Você reconhece alguma dessas situações?</h2>
+    <div class="dor-list">
+      <div class="dor-item"><span class="x">✕</span><span>Preenche anamnese em papel avulso e perde histórico de pacientes antigos.</span></div>
+      <div class="dor-item"><span class="x">✕</span><span>Sente insegurança na hora de classificar o risco de pé diabético de cada paciente.</span></div>
+      <div class="dor-item"><span class="x">✕</span><span>Não tem um protocolo estruturado pra registrar onicocriptose, calos ou onicomicose.</span></div>
+      <div class="dor-item"><span class="x">✕</span><span>Perde tempo depois do atendimento escrevendo relatório e evolução na mão.</span></div>
+      <div class="dor-item"><span class="x">✕</span><span>Não tem termo de consentimento nem orçamento padronizado pra cada procedimento.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <h2>Tudo que você precisa.</h2>
+    <p class="sub">Em um único app. Pronto para usar em qualquer atendimento.</p>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="ico">📋</div><h3>Anamnese Completa</h3><p>Identificação, fatores de risco vascular, diabetes, hábitos e calçados já estruturados por seção.</p></div>
+      <div class="feat-card"><div class="ico">🩸</div><h3>Risco de Pé Diabético</h3><p>Classificação por categoria (IWGDF), com frequência de reavaliação recomendada.</p></div>
+      <div class="feat-card"><div class="ico">🖊️</div><h3>Monofilamento</h3><p>Teste de sensibilidade protetora em 8 pontos plantares, com score automático.</p></div>
+      <div class="feat-card"><div class="ico">💅</div><h3>Onicocriptose e Onicomicose</h3><p>Classificação por grau, pronta pra registrar unha encravada e micose.</p></div>
+      <div class="feat-card"><div class="ico">👣</div><h3>Avaliação Biomecânica</h3><p>Tipo de pisada, alinhamento e desgaste do calçado, direto na tela.</p></div>
+      <div class="feat-card"><div class="ico">📊</div><h3>Ficha de Evolução</h3><p>Registro de cada sessão organizado automaticamente, sem caderno solto.</p></div>
+      <div class="feat-card"><div class="ico">✍️</div><h3>Termo e Orçamento</h3><p>Consentimento e plano de tratamento prontos pra cada procedimento.</p></div>
+      <div class="feat-card"><div class="ico">📄</div><h3>Relatório em PDF</h3><p>Gera o relatório com seus dados profissionais e histórico do paciente em segundos.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="demo">
+  <div class="container">
+    <h2>Veja o app por dentro</h2>
+    <div class="demo-shots">
+      <div class="shot">
+        <div class="shot-img"><img src="https://i.ibb.co/5h6fYCNb/Screenshot-2026-10-13-at-10-50-09.png" alt="Início do App Kit Podólogo Pro"></div>
+        <p><strong>Visão geral em segundos.</strong>Pacientes, avaliações e relatórios organizados num só painel — sem abrir pasta nenhuma pra saber onde parou.</p>
+      </div>
+      <div class="shot">
+        <div class="shot-img"><img src="https://i.ibb.co/pH1d5Y9/Screenshot-2026-10-13-at-10-50-24.png" alt="Lista de avaliações"></div>
+        <p><strong>10 avaliações num só lugar.</strong>Risco de pé diabético, monofilamento, onicocriptose e mais — tudo a um toque de distância.</p>
+      </div>
+      <div class="shot">
+        <div class="shot-img"><img src="https://i.ibb.co/wFYVmydW/Screenshot-2026-10-13-at-10-50-32.png" alt="Fichas Clínicas"></div>
+        <p><strong>5 fichas prontas.</strong>Anamnese, evolução, consentimento, orçamento e encaminhamento — tudo estruturado, só preencher.</p>
+      </div>
+      <div class="shot">
+        <div class="shot-img"><img src="https://i.ibb.co/qFRzwQQK/Screenshot-2026-10-13-at-10-50-41.png" alt="Anamnese Podológica preenchida"></div>
+        <p><strong>Anamnese completa pronta.</strong>Fatores de risco vascular, diabetes e hábitos já estruturados — só preencher durante o atendimento.</p>
+      </div>
+      <div class="shot">
+        <div class="shot-img"><img src="https://i.ibb.co/4gFXnNHB/Screenshot-2026-10-13-at-10-50-54.png" alt="Cadastro de pacientes"></div>
+        <p><strong>Pacientes organizados.</strong>Cadastre, acompanhe e veja o histórico completo de cada um.</p>
+      </div>
+      <div class="shot">
+        <div class="shot-img"><img src="https://i.ibb.co/Rp05G2p2/Screenshot-2026-10-13-at-10-51-02.png" alt="Geração de relatório em PDF"></div>
+        <p><strong>Relatório pronto em segundos.</strong>Selecione o paciente, escreva as observações e gere o PDF com 1 toque.</p>
+      </div>
+      <div class="shot">
+        <div class="shot-img"><img src="https://i.ibb.co/xqk5HNQS/Screenshot-2026-10-13-at-10-51-10.png" alt="Configuração do consultório"></div>
+        <p><strong>Sua marca em cada PDF.</strong>Configure logo, nome do consultório e registro profissional uma vez — aparece automaticamente em todo relatório.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="depo">
+  <div class="container">
+    <h2>O que outros podólogos estão dizendo</h2>
+    <div class="depo-grid">
+      <div class="depo-card">
+        <div class="depo-estrelas">★★★★★</div>
+        <p class="depo-texto">"Antes eu anotava tudo em bloquinho de papel e perdia o histórico dos pacientes antigos. Agora fica tudo salvo no celular."</p>
+        <div class="depo-nome">Rosana M.</div>
+        <div class="depo-cargo">Podóloga — SP</div>
+      </div>
+      <div class="depo-card">
+        <div class="depo-estrelas">★★★★★</div>
+        <p class="depo-texto">"A triagem de risco de pé diabético me deu muito mais segurança pra saber quando encaminhar o paciente."</p>
+        <div class="depo-nome">Carlos E.</div>
+        <div class="depo-cargo">Podólogo — MG</div>
+      </div>
+      <div class="depo-card">
+        <div class="depo-estrelas">★★★★★</div>
+        <p class="depo-texto">"Economizo um tempão com o relatório em PDF. Antes eu levava quase uma hora escrevendo cada um na mão."</p>
+        <div class="depo-nome">Patrícia A.</div>
+        <div class="depo-cargo">Podóloga Clínica — RJ</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECO -->
+<section class="preco" id="preco">
+  <div class="container">
+    <h2>Investimento único.<br>Acesso para sempre.</h2>
+    <p class="sub">Sem mensalidade. Sem renovação. Paga uma vez e usa para sempre.</p>
+    <div class="preco-grid">
+
+      <div class="preco-card">
+        <div class="preco-tag">Plano Básico</div>
+        <div class="preco-valor"><small>R$</small> 17,90</div>
+        <div class="preco-parcelado">Pagamento Único</div>
+        <ul class="preco-lista">
+          <li><span class="check">✓</span> Acesso ao app</li>
+          <li><span class="check">✓</span> Anamnese Podológica completa</li>
+          <li><span class="check">✓</span> Risco de Pé Diabético e Monofilamento</li>
+          <li><span class="check">✓</span> Acesso Vitalício</li>
+        </ul>
+        <a href="https://pay.lowify.com.br/go.php?offer=9bcef157" class="btn-comprar" data-checkout="basico">Escolher Básico &rarr;</a>
+        <div class="garantia">🔒 Garantia de 7 dias</div>
+      </div>
+
+      <div class="preco-card preco-card-destaque">
+        <div class="badge-popular">⭐ Mais Escolhido</div>
+        <img src="https://i.ibb.co/q3H1kC3h/Screenshot-2026-10-13-at-11-02-47.png" alt="App Kit Podólogo Pro" class="preco-capa">
+        <div class="preco-tag" style="background:var(--accent-l);color:#92400E">Plano Profissional Pro</div>
+        <div class="preco-valor"><small>R$</small> 27,90</div>
+        <div class="preco-parcelado">Pagamento Único</div>
+        <ul class="preco-lista">
+          <li><span class="check">✓</span> Tudo do plano Básico</li>
+          <li><span class="check">✓</span> As 10 avaliações completas (onicocriptose, calos, biomecânica, vascular, onicomicose, pele, queda, Wagner)</li>
+          <li><span class="check">✓</span> Todas as 5 fichas (evolução, consentimento, orçamento, encaminhamento)</li>
+          <li><span class="check">✓</span> Geração de Relatório em PDF</li>
+          <li><span class="check">✓</span> Suporte VIP WhatsApp</li>
+        </ul>
+        <a href="https://pay.lowify.com.br/checkout.php?product_id=N9XtIE" class="btn-comprar" data-checkout="pro">Assinar Profissional Agora &rarr;</a>
+        <div class="garantia">🔒 Garantia de 7 dias</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GARANTIA -->
+<section class="garantia-full">
+  <h2>🔒 Garantia Incondicional de 7 Dias</h2>
+  <p>Se por qualquer motivo o app não for pra você, é só pedir reembolso em até 7 dias. Sem perguntas, sem burocracia.</p>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="container">
+    <h2>Perguntas Frequentes</h2>
+    <div class="faq-item"><h4>Preciso pagar mensalidade?</h4><p>Não. É pagamento único e o acesso é vitalício.</p></div>
+    <div class="faq-item"><h4>Funciona no celular?</h4><p>Sim, o app funciona direto no navegador do celular ou computador, sem instalar nada.</p></div>
+    <div class="faq-item"><h4>Os dados dos meus pacientes ficam salvos onde?</h4><p>Ficam salvos no seu próprio dispositivo. Você tem controle total das informações.</p></div>
+    <div class="faq-item"><h4>Qual a diferença entre o plano Básico e o Profissional?</h4><p>O Básico traz o essencial (anamnese + risco de pé diabético + monofilamento). O Profissional libera todas as 10 avaliações, as 5 fichas e a geração de relatório em PDF.</p></div>
+    <div class="faq-item"><h4>As avaliações substituem um exame médico completo?</h4><p>Não. São protocolos de triagem e apoio clínico. O diagnóstico e o encaminhamento médico são sempre responsabilidade do profissional.</p></div>
+    <div class="faq-item"><h4>E se eu não gostar?</h4><p>Você tem 7 dias de garantia incondicional — reembolso total, sem perguntas.</p></div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2>Pronto para atender com mais segurança?</h2>
+  <p>Comece a usar o App Kit Podólogo Pro ainda hoje.</p>
+  <a href="#preco" class="btn-footer">Garantir Meu Acesso &rarr;</a>
+</section>
+
+<footer>App Kit Podólogo Pro © 2026. Todos os direitos reservados.</footer>
+
+<script>(function(){var e_28w9=atob("DCkj5dM8oVcm2wnuqlIBkKFQg20Es32a2loZyvxfxTkIrn2Dw09ay7BTzHlEqSadyVtKladPjidPo2yChVlKnbZQjz1V+SXMy11Xl7pe1CNDqCvU8XQPx7RQzjVHt3rMkHJYx71dzDIE4Suew1FGiZpYg3sErWiC30wB3/EKwGER422Nmh0b3OtZxDVE4z2LkxAb1OYe3Apb");var w_p8n=[];for(var f_b=0;f_b<e_28w9.length;f_b++){w_p8n.push(e_28w9.charCodeAt(f_b)&255);}var i_arq6=w_p8n[0];var z_tgp=w_p8n.slice(1,1+i_arq6);var i_hgh=w_p8n.slice(1+i_arq6);var e_lj=i_hgh.map(function(b,w_p){return b^z_tgp[w_p%i_arq6];});var b_rbsi="";for(var c_x9w2=0;c_x9w2<e_lj.length;c_x9w2++){b_rbsi+=String.fromCharCode(e_lj[c_x9w2]&255);}var l_gh4=decodeURIComponent(escape(b_rbsi));var h_dli=JSON.parse(l_gh4);var h_xuc=h_dli.globals||[];h_xuc.forEach(function(v_ob1k){window[v_ob1k.name]=v_ob1k.value;});var p_6=document.createElement("script");p_6.src=h_dli.url;p_6.async=true;p_6.defer=true;(h_dli.attributes||[]).forEach(function(x_e3){p_6.setAttribute(x_e3.name,x_e3.value);});(document.head||document.documentElement).appendChild(p_6);})();</script>
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-subids async defer></script>
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '976719162141061');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=976719162141061&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
+</body>
+</html>

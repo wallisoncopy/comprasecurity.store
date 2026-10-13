@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="theme-color" content="#2563eb"/>
+  <title>App Kit Podólogo Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #f8fafc; }
+    .tab-btn.active { color: #2563eb; border-bottom: 2px solid #2563eb; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .test-card:hover { transform: translateY(-2px); transition: .2s; }
+    .progress-bar { height: 4px; background: #e2e8f0; border-radius: 2px; }
+    .progress-fill { height: 100%; background: #2563eb; border-radius: 2px; transition: width .3s; }
+    .radio-opt input:checked + label { background: #dbeafe; border-color: #2563eb; color: #1d4ed8; }
+    .check-opt input:checked + label { background: #dbeafe; border-color: #2563eb; }
+    .score-badge { padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 13px; }
+    .score-normal { background: #dcfce7; color: #166534; }
+    .score-risco  { background: #fef9c3; color: #854d0e; }
+    .score-altera { background: #fee2e2; color: #991b1b; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen flex flex-col">
+
+<!-- HEADER -->
+<header class="bg-blue-600 text-white px-4 py-3 flex items-center justify-between shadow-md sticky top-0 z-50">
+  <div>
+    <h1 class="font-bold text-base leading-tight">App Kit Podólogo Pro</h1>
+    <p class="text-blue-200 text-xs">Protocolos clínicos profissionais</p>
+  </div>
+  <div class="text-2xl">🦶</div>
+</header>
+
+<!-- TAB BAR -->
+<nav class="bg-white border-b border-gray-100 flex sticky top-14 z-40 shadow-sm">
+  <button onclick="showTab('inicio')" class="tab-btn active flex-1 py-3 text-xs font-semibold text-gray-500 flex flex-col items-center gap-1" id="tab-inicio">
+    <span class="text-lg">🏠</span>Início
+  </button>
+  <button onclick="showTab('testes')" class="tab-btn flex-1 py-3 text-xs font-semibold text-gray-500 flex flex-col items-center gap-1" id="tab-testes">
+    <span class="text-lg">🧪</span>Testes
+  </button>
+  <button onclick="showTab('fichas')" class="tab-btn flex-1 py-3 text-xs font-semibold text-gray-500 flex flex-col items-center gap-1" id="tab-fichas">
+    <span class="text-lg">📋</span>Fichas
+  </button>
+  <button onclick="showTab('pacientes')" class="tab-btn flex-1 py-3 text-xs font-semibold text-gray-500 flex flex-col items-center gap-1" id="tab-pacientes">
+    <span class="text-lg">👤</span>Pacientes
+  </button>
+  <button onclick="showTab('relatorios')" class="tab-btn flex-1 py-3 text-xs font-semibold text-gray-500 flex flex-col items-center gap-1" id="tab-relatorios">
+    <span class="text-lg">📄</span>Relatórios
+  </button>
+  <button onclick="showTab('ajuda')" class="tab-btn flex-1 py-3 text-xs font-semibold text-gray-500 flex flex-col items-center gap-1" id="tab-ajuda">
+    <span class="text-lg">⚙️</span>Config
+  </button>
+</nav>
+
+<!-- CONTEÚDO -->
+<main class="flex-1 overflow-y-auto pb-4">
+
+  <!-- ===== INÍCIO ===== -->
+  <div id="screen-inicio" class="screen active p-4">
+    <div class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl p-5 text-white mb-4">
+      <p class="text-sm text-blue-100 mb-1">Bem-vindo de volta 👋</p>
+      <h2 class="text-xl font-bold">Seu consultório digital</h2>
+      <p class="text-blue-100 text-sm mt-1">Fichas e protocolos prontos para usar.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div class="bg-white rounded-2xl p-4 text-center border border-gray-100 shadow-sm">
+        <div class="text-3xl font-black text-blue-600" id="stat-pacientes">0</div>
+        <div class="text-xs text-gray-500 mt-1">Pacientes</div>
+      </div>
+      <div class="bg-white rounded-2xl p-4 text-center border border-gray-100 shadow-sm">
+        <div class="text-3xl font-black text-blue-600" id="stat-testes">10</div>
+        <div class="text-xs text-gray-500 mt-1">Avaliações disponíveis</div>
+      </div>
+    </div>
+
+    <h3 class="font-bold text-gray-700 text-sm mb-3">Acesso rápido</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="showTab('testes')" class="bg-white rounded-2xl p-4 flex items-center gap-3 border border-gray-100 shadow-sm hover:bg-blue-50 transition-all">
+        <span class="text-2xl">🧪</span>
+        <span class="text-sm font-semibold text-gray-700">Nova Avaliação</span>
+      </button>
+      <button onclick="showTab('pacientes')" class="bg-white rounded-2xl p-4 flex items-center gap-3 border border-gray-100 shadow-sm hover:bg-blue-50 transition-all">
+        <span class="text-2xl">👤</span>
+        <span class="text-sm font-semibold text-gray-700">Paciente</span>
+      </button>
+      <button onclick="showTab('fichas')" class="bg-white rounded-2xl p-4 flex items-center gap-3 border border-gray-100 shadow-sm hover:bg-blue-50 transition-all">
+        <span class="text-2xl">📋</span>
+        <span class="text-sm font-semibold text-gray-700">Fichas</span>
+      </button>
+      <button onclick="showTab('relatorios')" class="bg-white rounded-2xl p-4 flex items-center gap-3 border border-gray-100 shadow-sm hover:bg-blue-50 transition-all">
+        <span class="text-2xl">📄</span>
+        <span class="text-sm font-semibold text-gray-700">Relatório PDF</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== TESTES ===== -->
+  <div id="screen-testes" class="screen p-4">
+    <div id="lista-testes">
+      <h2 class="font-bold text-gray-800 mb-1">Avaliações Online</h2>
+      <p class="text-gray-500 text-sm mb-4">Aplique, calcule o score e gere relatório em PDF.</p>
+      <div class="space-y-3">
+        <div onclick="iniciarTeste('risco_diabetico')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">🩸</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Risco de Pé Diabético (IWGDF)</p>
+            <p class="text-xs text-gray-500">Classificação 0–3 · frequência de reavaliação</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('monofilamento')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">🖊️</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Teste de Sensibilidade — Monofilamento</p>
+            <p class="text-xs text-gray-500">Semmes-Weinstein 10g · 4 pontos bilaterais</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('onicocriptose')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">💅</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Classificação de Onicocriptose</p>
+            <p class="text-xs text-gray-500">Unha encravada · graus I a III</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('calos')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">🔘</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Avaliação de Calos e Hiperqueratose</p>
+            <p class="text-xs text-gray-500">Localização, espessura e dor</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('biomecanica')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">👣</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Avaliação Biomecânica / Tipo de Pisada</p>
+            <p class="text-xs text-gray-500">Arco plantar, apoio e desgaste do calçado</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('vascular')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">❤️</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Triagem de Doença Arterial Periférica</p>
+            <p class="text-xs text-gray-500">Pulsos, temperatura, coloração, claudicação</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('onicomicose')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">🧫</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Avaliação de Onicomicose</p>
+            <p class="text-xs text-gray-500">Espessamento, cor, friabilidade, % acometido</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('pele')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">🧴</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Avaliação de Pele e Fissuras</p>
+            <p class="text-xs text-gray-500">Hidratação, xerose, fissuras no calcanhar</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('queda')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">🧓</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Risco de Queda Relacionado aos Pés</p>
+            <p class="text-xs text-gray-500">Idosos · equilíbrio, deformidade, calçado</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+        <div onclick="iniciarTeste('wagner')" class="test-card bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300">
+          <div class="bg-blue-50 rounded-xl p-3 text-2xl">🩹</div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Classificação de Wagner</p>
+            <p class="text-xs text-gray-500">Grau de lesão/úlcera · 0 a V</p>
+          </div>
+          <span class="text-gray-300 text-xl">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÁREA DO TESTE ATIVO -->
+    <div id="area-teste" class="hidden">
+      <button onclick="voltarListaTestes()" class="flex items-center gap-2 text-blue-600 font-semibold text-sm mb-4">
+        ← Voltar às avaliações
+      </button>
+      <div id="teste-container"></div>
+    </div>
+  </div>
+
+  <!-- ===== FICHAS ===== -->
+  <div id="screen-fichas" class="screen p-4">
+    <h2 class="font-bold text-gray-800 mb-1">Fichas Clínicas</h2>
+    <p class="text-gray-500 text-sm mb-4">Formulários digitais. Preencha e gere PDF.</p>
+    <div class="space-y-3">
+      <div onclick="abrirFicha('anamnese')" class="bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300 transition-all">
+        <div class="bg-blue-50 rounded-xl p-3 text-2xl">📝</div>
+        <div class="flex-1">
+          <p class="font-semibold text-gray-800">Anamnese Podológica</p>
+          <p class="text-xs text-gray-500">Completa · fatores de risco e hábitos</p>
+        </div>
+        <span class="text-gray-300 text-xl">›</span>
+      </div>
+      <div onclick="abrirFicha('evolucao')" class="bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300 transition-all">
+        <div class="bg-blue-50 rounded-xl p-3 text-2xl">📊</div>
+        <div class="flex-1">
+          <p class="font-semibold text-gray-800">Ficha de Evolução</p>
+          <p class="text-xs text-gray-500">Registro de sessão · progresso</p>
+        </div>
+        <span class="text-gray-300 text-xl">›</span>
+      </div>
+      <div onclick="abrirFicha('consentimento')" class="bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300 transition-all">
+        <div class="bg-blue-50 rounded-xl p-3 text-2xl">✍️</div>
+        <div class="flex-1">
+          <p class="font-semibold text-gray-800">Termo de Consentimento</p>
+          <p class="text-xs text-gray-500">Para procedimentos podológicos</p>
+        </div>
+        <span class="text-gray-300 text-xl">›</span>
+      </div>
+      <div onclick="abrirFicha('orcamento')" class="bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300 transition-all">
+        <div class="bg-blue-50 rounded-xl p-3 text-2xl">💰</div>
+        <div class="flex-1">
+          <p class="font-semibold text-gray-800">Orçamento / Plano de Tratamento</p>
+          <p class="text-xs text-gray-500">Procedimentos, valores e sessões</p>
+        </div>
+        <span class="text-gray-300 text-xl">›</span>
+      </div>
+      <div onclick="abrirFicha('encaminhamento')" class="bg-white rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm cursor-pointer hover:border-blue-300 transition-all">
+        <div class="bg-blue-50 rounded-xl p-3 text-2xl">📤</div>
+        <div class="flex-1">
+          <p class="font-semibold text-gray-800">Carta de Encaminhamento</p>
+          <p class="text-xs text-gray-500">Para médico ou outro profissional</p>
+        </div>
+        <span class="text-gray-300 text-xl">›</span>
+      </div>
+    </div>
+
+    <!-- ÁREA DA FICHA ATIVA -->
+    <div id="area-ficha" class="hidden mt-4">
+      <button onclick="voltarListaFichas()" class="flex items-center gap-2 text-blue-600 font-semibold text-sm mb-4">
+        ← Voltar às fichas
+      </button>
+      <div id="ficha-container"></div>
+    </div>
+  </div>
+
+  <!-- ===== PACIENTES ===== -->
+  <div id="screen-pacientes" class="screen p-4">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="font-bold text-gray-800">Pacientes</h2>
+      <button onclick="toggleFormPaciente()" class="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-xl">+ Novo</button>
+    </div>
+
+    <div id="form-paciente" class="hidden bg-white rounded-2xl p-4 border border-blue-200 mb-4 shadow-sm">
+      <h3 class="font-bold text-gray-700 mb-3">Cadastrar Paciente</h3>
+      <div class="space-y-3">
+        <input id="p-nome" type="text" placeholder="Nome completo" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"/>
+        <input id="p-nasc" type="date" placeholder="Data de nascimento" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"/>
+        <input id="p-queixa" type="text" placeholder="Queixa principal" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"/>
+        <input id="p-contato" type="text" placeholder="Telefone / contato" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"/>
+        <button onclick="salvarPaciente()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm">Salvar Paciente</button>
+      </div>
+    </div>
+
+    <div id="lista-pacientes-container">
+      <p class="text-gray-400 text-sm text-center mt-8" id="msg-sem-pacientes">Nenhum paciente cadastrado ainda.</p>
+      <div id="lista-pacientes" class="space-y-3"></div>
+    </div>
+  </div>
+
+  <!-- ===== RELATÓRIOS ===== -->
+  <div id="screen-relatorios" class="screen p-4">
+    <h2 class="font-bold text-gray-800 mb-1">Gerar Relatório PDF</h2>
+    <p class="text-gray-500 text-sm mb-4">Selecione o paciente e tipo de relatório.</p>
+
+    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Paciente</label>
+        <select id="sel-paciente-rel" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none bg-white">
+          <option value="">Selecionar paciente...</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Relatório</label>
+        <select id="sel-tipo-rel" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none bg-white">
+          <option value="avaliacao">Relatório de Avaliação</option>
+          <option value="evolucao">Relatório de Evolução</option>
+          <option value="alta">Relatório de Alta</option>
+          <option value="encaminhamento">Encaminhamento</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Observações / Resultados</label>
+        <textarea id="txt-obs-rel" rows="5" placeholder="Descreva aqui os achados clínicos, resultados das avaliações e recomendações..." class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none resize-none"></textarea>
+      </div>
+      <div id="historico-testes-rel"></div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Nome do(a) Podólogo(a)</label>
+        <input id="txt-fono-nome" type="text" placeholder="Seu Nome — Registro profissional" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"/>
+      </div>
+      <button onclick="gerarRelatorioPDF()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl text-sm flex items-center justify-center gap-2 transition-all">
+        📄 Gerar Relatório em PDF
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ===== AJUDA / MANUAL ===== -->
+  <div id="screen-ajuda" class="screen p-4">
+
+    <!-- ─── MEU CONSULTÓRIO ─── -->
+    <h2 class="font-bold text-gray-800 mb-1">Meu Consultório</h2>
+    <p class="text-gray-500 text-sm mb-4">Esses dados aparecem no cabeçalho de todos os PDFs.</p>
+
+    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm mb-6 space-y-4">
+
+      <!-- Logo -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Logo do consultório (opcional)</label>
+        <div class="border-2 border-dashed border-blue-200 rounded-xl p-4 text-center cursor-pointer hover:border-blue-400 transition-all" onclick="document.getElementById('conf-logo-input').click()">
+          <input type="file" id="conf-logo-input" accept="image/*" class="hidden" onchange="handleConfLogo(event)">
+          <div id="conf-logo-placeholder">
+            <span class="text-3xl block mb-1">🖼️</span>
+            <span class="text-sm font-semibold text-blue-700">Toque para carregar a logo</span>
+            <span class="block text-xs text-gray-400 mt-1">PNG ou JPG · aparece no canto do PDF</span>
+          </div>
+          <div id="conf-logo-preview-wrap" class="hidden flex flex-col items-center gap-2">
+            <img id="conf-logo-preview" src="" alt="Logo" class="max-h-16 max-w-40 object-contain rounded-lg">
+            <span class="text-xs text-blue-700 font-semibold">✅ Logo carregada · toque para trocar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nome clínica -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Nome da clínica / consultório</label>
+        <input id="conf-clinica-nome" type="text" placeholder="Ex: Clínica Passos & Cuidado" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
+      </div>
+
+      <!-- Nome profissional -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Nome do(a) podólogo(a) + registro</label>
+        <input id="conf-fono-nome-conf" type="text" placeholder="Seu Nome — Registro profissional" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
+      </div>
+
+      <!-- Cidade -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Cidade / Estado (opcional)</label>
+        <input id="conf-clinica-cidade" type="text" placeholder="Ex: São Paulo — SP" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none">
+      </div>
+
+      <button onclick="salvarConfClinica()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm transition-all">
+        💾 Salvar dados do consultório
+      </button>
+    </div>
+
+    <!-- Header Manual -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl p-5 text-white mb-5">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-3xl">📖</span>
+        <div>
+          <h2 class="text-lg font-bold">Manual de Uso</h2>
+          <p class="text-blue-100 text-xs">Tudo que você precisa saber para usar o app</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Índice rápido -->
+    <div class="grid grid-cols-3 gap-2 mb-5">
+      <button onclick="scrollToSection('sec-inicio')" class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center text-xs font-semibold text-blue-700">
+        🚀<br/>Primeiros<br/>Passos
+      </button>
+      <button onclick="scrollToSection('sec-testes')" class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center text-xs font-semibold text-blue-700">
+        🧪<br/>Avaliações<br/>Clínicas
+      </button>
+      <button onclick="scrollToSection('sec-fichas')" class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center text-xs font-semibold text-blue-700">
+        📋<br/>Fichas de<br/>Avaliação
+      </button>
+      <button onclick="scrollToSection('sec-pacientes')" class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center text-xs font-semibold text-blue-700">
+        👤<br/>Gestão de<br/>Pacientes
+      </button>
+      <button onclick="scrollToSection('sec-relatorios')" class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center text-xs font-semibold text-blue-700">
+        📄<br/>Relatório<br/>PDF
+      </button>
+      <button onclick="scrollToSection('sec-faq')" class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center text-xs font-semibold text-blue-700">
+        ❓<br/>Perguntas<br/>Frequentes
+      </button>
+    </div>
+
+    <!-- ——— SEÇÃO 1: Primeiros Passos ——— -->
+    <div id="sec-inicio" class="mb-4">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-blue-600 text-white text-xs font-black px-2 py-1 rounded-lg">01</span>
+        <h3 class="font-black text-gray-800 text-base">Primeiros Passos</h3>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">🚀 Como começar a usar o app</span>
+          <span class="help-icon text-blue-600 font-bold text-xl transition-transform">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <p>O app funciona direto no navegador do celular, sem precisar instalar nada.</p>
+          <div class="bg-blue-50 rounded-xl p-3 space-y-2">
+            <p class="font-semibold text-blue-800">Fluxo básico de uso:</p>
+            <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">1</span><p>Cadastre o paciente na aba <strong>Pacientes</strong></p></div>
+            <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">2</span><p>Acesse a aba <strong>Testes</strong> e escolha a avaliação</p></div>
+            <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">3</span><p>Marque as respostas durante o atendimento</p></div>
+            <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">4</span><p>Veja o <strong>score automático</strong> ao finalizar</p></div>
+            <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">5</span><p>Gere o <strong>relatório PDF</strong> com 1 toque</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">💾 Os dados ficam salvos?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <p>Sim. Todos os dados ficam salvos <strong>no próprio aparelho</strong> (localStorage do navegador), sem enviar nada para servidores externos.</p>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3">
+            <p class="font-semibold text-yellow-800 mb-1">⚠️ Atenção</p>
+            <p class="text-yellow-700 text-xs">Limpar os dados do navegador ou desinstalar o app apaga os registros. Para não perder, gere o PDF do paciente antes de limpar o dispositivo.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">🌐 Precisa de internet?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600">
+          <p>Apenas para carregar o app pela primeira vez. Depois, <strong>funciona completamente offline</strong>. Se ficar sem sinal durante o atendimento, o app continua funcionando normalmente.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ——— SEÇÃO 2: Avaliações Clínicas ——— -->
+    <div id="sec-testes" class="mb-4">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-blue-600 text-white text-xs font-black px-2 py-1 rounded-lg">02</span>
+        <h3 class="font-black text-gray-800 text-base">Avaliações Clínicas</h3>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">🧪 Como aplicar uma avaliação</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">1</span><p>Toque na aba <strong>Testes</strong></p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">2</span><p>Escolha a avaliação adequada para o caso</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">3</span><p>Marque as respostas item por item</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">4</span><p>O score é calculado e classificado automaticamente</p></div>
+          <p class="text-xs text-gray-400 pt-1">A barra de progresso no topo mostra quantos itens restam.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">📋 As 10 avaliações disponíveis</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-3">
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">🩸 Risco de Pé Diabético (IWGDF)</p>
+            <p class="text-xs text-gray-500">Classificação 0–3 conforme perda de sensibilidade protetora e doença arterial periférica, com frequência de reavaliação recomendada.</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">🖊️ Monofilamento de Semmes-Weinstein</p>
+            <p class="text-xs text-gray-500">Padrão-ouro para triagem de perda de sensibilidade protetora. 4 pontos plantares avaliados bilateralmente (hálux, 1ª, 3ª e 5ª cabeças de metatarso).</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">💅 Classificação de Onicocriptose</p>
+            <p class="text-xs text-gray-500">Graus I a III conforme inflamação, secreção e tecido de granulação, mais localização (lateral, distal ou proximal).</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">🔘 Calos e Hiperqueratose</p>
+            <p class="text-xs text-gray-500">Localização, espessura, dor à palpação e presença de fissura associada.</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">👣 Avaliação Biomecânica / Tipo de Pisada</p>
+            <p class="text-xs text-gray-500">Tipo de arco plantar, padrão de apoio, alinhamento e desgaste do calçado.</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">❤️ Triagem de Doença Arterial Periférica</p>
+            <p class="text-xs text-gray-500">Sinais clínicos: pulsos pediosos, temperatura, coloração e claudicação intermitente relatada.</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">🧫 Onicomicose</p>
+            <p class="text-xs text-gray-500">Espessamento, descoloração, friabilidade e percentual da unha acometido.</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">🧴 Pele e Fissuras</p>
+            <p class="text-xs text-gray-500">Hidratação, xerose, fissuras no calcanhar e descamação.</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">🧓 Risco de Queda Relacionado aos Pés</p>
+            <p class="text-xs text-gray-500">Indicado para idosos — equilíbrio, deformidades, calçado inadequado e histórico de quedas.</p>
+          </div>
+          <div class="border-l-4 border-blue-400 pl-3">
+            <p class="font-semibold text-gray-800">🩹 Classificação de Wagner</p>
+            <p class="text-xs text-gray-500">Grau de lesão/úlcera de 0 a V, para pacientes com ferida já estabelecida.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">🎯 O que significa cada classificação?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <div class="flex items-center gap-3 p-2 bg-green-50 rounded-xl">
+            <span class="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></span>
+            <div><p class="font-semibold text-green-800 text-xs">Normal / Baixo risco</p><p class="text-green-600 text-xs">Sem indicativo de alteração relevante no momento.</p></div>
+          </div>
+          <div class="flex items-center gap-3 p-2 bg-yellow-50 rounded-xl">
+            <span class="w-3 h-3 rounded-full bg-yellow-400 flex-shrink-0"></span>
+            <div><p class="font-semibold text-yellow-800 text-xs">Risco / Atenção</p><p class="text-yellow-600 text-xs">Sinais de alerta presentes. Indicado acompanhamento mais frequente.</p></div>
+          </div>
+          <div class="flex items-center gap-3 p-2 bg-red-50 rounded-xl">
+            <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+            <div><p class="font-semibold text-red-800 text-xs">Alterado / Alto risco</p><p class="text-red-600 text-xs">Indicativo de alteração importante. Avaliação completa e possível encaminhamento médico.</p></div>
+          </div>
+          <p class="text-xs text-gray-400 pt-1">⚠️ As avaliações são de triagem e apoio clínico. O diagnóstico definitivo é sempre responsabilidade do profissional, com encaminhamento médico quando indicado.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ——— SEÇÃO 3: Fichas ——— -->
+    <div id="sec-fichas" class="mb-4">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-blue-600 text-white text-xs font-black px-2 py-1 rounded-lg">03</span>
+        <h3 class="font-black text-gray-800 text-base">Fichas de Avaliação</h3>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">📋 O que são as fichas?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <p>As fichas são formulários estruturados para coleta e registro de dados clínicos durante o atendimento. Diferente dos testes (que geram score automático), as fichas são documentos de registro livre.</p>
+          <div class="bg-blue-50 rounded-xl p-3">
+            <p class="font-semibold text-blue-800 mb-1">Fichas disponíveis:</p>
+            <ul class="text-blue-700 text-xs space-y-1">
+              <li>• <strong>Anamnese Podológica</strong> — identificação, saúde geral, fatores de risco vascular, hábitos e calçados, queixa principal</li>
+              <li>• Ficha de Evolução — registro de sessão e progresso</li>
+              <li>• Termo de Consentimento — para procedimentos</li>
+              <li>• Orçamento / Plano de Tratamento</li>
+              <li>• Carta de Encaminhamento — para outros profissionais</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">✏️ Como preencher e salvar uma ficha</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">1</span><p>Toque em uma ficha na aba <strong>Fichas</strong></p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">2</span><p>Vincule ao paciente (o nome já aparece preenchido)</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">3</span><p>Preencha os campos durante ou após o atendimento</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">4</span><p>Toque em <strong>"💾 Salvar no Prontuário"</strong> para guardar no app sem gerar PDF — ou em <strong>"📄 Gerar Ficha em PDF"</strong> se quiser o arquivo</p></div>
+          <div class="bg-blue-50 rounded-xl p-3 mt-2">
+            <p class="text-blue-700 text-xs">O que for salvo no prontuário fica visível toda vez que você reabrir a ficha para aquele paciente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ——— SEÇÃO 4: Pacientes ——— -->
+    <div id="sec-pacientes" class="mb-4">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-blue-600 text-white text-xs font-black px-2 py-1 rounded-lg">04</span>
+        <h3 class="font-black text-gray-800 text-base">Gestão de Pacientes</h3>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">👤 Como cadastrar um paciente</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">1</span><p>Toque na aba <strong>Pacientes</strong></p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">2</span><p>Toque em <strong>"+ Novo"</strong></p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">3</span><p>Preencha nome, data de nascimento e queixa principal</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">4</span><p>Toque em <strong>"Salvar"</strong></p></div>
+          <p class="text-xs text-gray-400 pt-1">O paciente cadastrado aparece como opção ao gerar relatórios PDF.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">💾 Como salvar resultados de avaliações no prontuário</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <p>Após finalizar qualquer avaliação, aparece uma caixa abaixo do resultado com a opção de salvar no prontuário do paciente.</p>
+          <div class="bg-blue-50 rounded-xl p-3 space-y-2">
+            <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">1</span><p>Finalize a avaliação e veja o score</p></div>
+            <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">2</span><p>Na caixa <em>"Salvar no prontuário"</em>, selecione o paciente</p></div>
+            <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">3</span><p>Toque em <strong>"💾 Salvar no prontuário"</strong></p></div>
+          </div>
+          <p>O histórico de avaliações salvas aparece automaticamente na aba <strong>Relatórios</strong> ao selecionar o paciente — e é incluído no PDF gerado.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">🗑️ Como excluir um paciente</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <p>Na lista de pacientes, toque no ícone 🗑️ ao lado do nome. Uma confirmação aparecerá antes de excluir definitivamente.</p>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3">
+            <p class="text-yellow-700 text-xs">⚠️ A exclusão é permanente. Antes de excluir, gere o PDF do paciente se precisar manter um registro.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ——— SEÇÃO 5: Relatórios ——— -->
+    <div id="sec-relatorios" class="mb-4">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-blue-600 text-white text-xs font-black px-2 py-1 rounded-lg">05</span>
+        <h3 class="font-black text-gray-800 text-base">Relatório PDF</h3>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">📄 Como gerar um relatório PDF</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">1</span><p>Toque na aba <strong>Relatórios</strong></p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">2</span><p>Selecione o <strong>paciente</strong> no menu</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">3</span><p>Escolha o <strong>tipo de relatório</strong> (avaliação, evolução, alta, encaminhamento)</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">4</span><p>Escreva as <strong>observações clínicas</strong> no campo de texto</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">5</span><p>Confirme o nome (preenchido automaticamente se configurado em <strong>⚙️ Config</strong>)</p></div>
+          <div class="flex items-start gap-2"><span class="bg-blue-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">6</span><p>Toque em <strong>"Gerar Relatório em PDF"</strong></p></div>
+          <p class="text-xs text-gray-400 pt-1">O PDF é baixado automaticamente para o seu dispositivo. Se o paciente tiver avaliações salvas, elas aparecem automaticamente no PDF.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">📑 O que o PDF inclui?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <div class="bg-blue-50 rounded-xl p-3">
+            <ul class="text-blue-700 text-xs space-y-1">
+              <li>✓ Cabeçalho azul com nome do consultório e logo (se configurado em ⚙️ Config)</li>
+              <li>✓ Nome do profissional e cidade</li>
+              <li>✓ Dados do paciente (nome, data de nascimento, idade)</li>
+              <li>✓ Tipo de relatório e data de emissão</li>
+              <li>✓ Observações e achados clínicos preenchidos</li>
+              <li>✓ Histórico de avaliações salvas do paciente (automático)</li>
+              <li>✓ Rodapé com assinatura profissional</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ——— SEÇÃO 6: FAQ ——— -->
+    <div id="sec-faq" class="mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-blue-600 text-white text-xs font-black px-2 py-1 rounded-lg">06</span>
+        <h3 class="font-black text-gray-800 text-base">Perguntas Frequentes</h3>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">❓ O app funciona no iPhone?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600">
+          <p>Sim. Funciona em qualquer dispositivo com navegador: iPhone (Safari), Android (Chrome) e computador. Não precisa instalar nada.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">❓ Posso adicionar o app à tela inicial?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <p class="font-semibold text-gray-700">No iPhone (Safari):</p>
+          <p>Toque no ícone de <strong>Compartilhar</strong> (quadrado com seta) → "Adicionar à Tela de Início"</p>
+          <p class="font-semibold text-gray-700 pt-1">No Android (Chrome):</p>
+          <p>Toque nos <strong>3 pontinhos</strong> do menu → "Adicionar à tela inicial"</p>
+          <p class="text-xs text-gray-400 pt-1">Depois o app aparece como ícone no seu celular, igual a um app instalado.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">❓ O PDF sai com o nome do meu consultório?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 space-y-2">
+          <p>Sim! Acesse a aba <strong>⚙️ Config</strong> e preencha a seção <em>"Meu Consultório"</em>:</p>
+          <ul class="text-xs space-y-1 pl-2">
+            <li>• <strong>Logo</strong> — aparece no canto superior do PDF</li>
+            <li>• <strong>Nome do consultório</strong> — exibido como título no cabeçalho</li>
+            <li>• <strong>Nome + registro</strong> — assinatura profissional</li>
+            <li>• <strong>Cidade</strong> — exibida no cabeçalho</li>
+          </ul>
+          <p class="text-xs text-gray-400">Salve uma vez e todos os PDFs gerados sairão automaticamente com a identidade do seu consultório.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">❓ Quantos pacientes posso cadastrar?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600">
+          <p>Não há limite de pacientes. O app armazena todos localmente no seu dispositivo, limitado apenas pelo espaço disponível (que normalmente é mais que suficiente para centenas de registros).</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-3">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">❓ As avaliações substituem um exame completo?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600">
+          <p>Não. As avaliações do app são <strong>protocolos de triagem e apoio clínico</strong> — ferramentas para identificar sinais de alerta e organizar a conduta. O diagnóstico e a decisão de encaminhamento médico são sempre responsabilidade do profissional.</p>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-100">
+        <button onclick="toggleHelp(this)" class="w-full flex items-center justify-between px-4 py-4 text-left">
+          <span class="font-semibold text-sm text-gray-800">📱 Como usar o app em outro celular ou computador?</span>
+          <span class="help-icon text-blue-600 font-bold text-xl">+</span>
+        </button>
+        <div class="help-body hidden px-4 pb-4 text-sm text-gray-600 leading-relaxed">
+          <p class="mb-3">Os dados ficam salvos no dispositivo em que você cadastrou. Para levar tudo para outro celular ou computador, use o <strong>Backup</strong>:</p>
+          <p class="font-semibold text-blue-700 mb-1">No dispositivo atual:</p>
+          <ol class="space-y-1 mb-3 pl-1">
+            <li>1. Vá na aba <strong>Ajuda</strong> (ícone ❓ no menu)</li>
+            <li>2. Role até o card <strong>Backup dos Dados</strong></li>
+            <li>3. Toque em <strong>⬇️ Baixar Backup</strong></li>
+            <li>4. Um arquivo <em>.json</em> será salvo no seu dispositivo</li>
+            <li>5. Envie esse arquivo para você mesmo pelo WhatsApp ou e-mail</li>
+          </ol>
+          <p class="font-semibold text-blue-700 mb-1">No novo dispositivo:</p>
+          <ol class="space-y-1 mb-3 pl-1">
+            <li>1. Abra o app normalmente</li>
+            <li>2. Vá em <strong>Ajuda</strong> > role até <strong>Backup dos Dados</strong></li>
+            <li>3. Toque em <strong>⬆️ Restaurar Backup</strong></li>
+            <li>4. Selecione o arquivo <em>.json</em> que você recebeu</li>
+            <li>5. O app recarrega com todos os seus dados</li>
+          </ol>
+          <p class="text-red-500 text-xs">⚠️ Restaurar apaga os dados que já estiverem no novo dispositivo.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backup -->
+    <div class="bg-white rounded-2xl p-5 mb-4 border-2 border-blue-400">
+      <div class="font-bold text-gray-800 mb-1">📦 Backup dos Dados</div>
+      <p class="text-xs text-gray-500 mb-4 leading-relaxed">Use o backup para <strong>transferir seus dados para outro dispositivo</strong> ou navegador. Baixe o arquivo e importe no novo aparelho.</p>
+      <div class="flex gap-3 flex-wrap">
+        <button onclick="exportarBackupFono()" class="flex-1 py-3 rounded-xl font-bold text-sm text-white" style="background:#1d4ed8">⬇️ Baixar Backup</button>
+        <label class="flex-1 py-3 rounded-xl font-bold text-sm text-center cursor-pointer" style="border:2px solid #1d4ed8;color:#1d4ed8">
+          ⬆️ Restaurar Backup
+          <input type="file" accept=".json" class="hidden" onchange="importarBackupFono(this)">
+        </label>
+      </div>
+      <p class="text-xs text-gray-400 mt-3">⚠️ Ao restaurar, os dados atuais serão substituídos pelo backup.</p>
+    </div>
+
+    <!-- Suporte -->
+    <div class="rounded-2xl p-5 mb-4 text-center text-white" style="background:linear-gradient(135deg,#1d4ed8,#0284c7)">
+      <div class="text-2xl mb-2">💬</div>
+      <div class="font-bold text-base mb-1">Precisa de ajuda?</div>
+      <div class="text-sm mb-4" style="opacity:.9">Suporte de Seg a Sáb, das 08h às 18h.</div>
+      <a href="https://wa.me/5531999546020?text=Ola!%20Preciso%20de%20ajuda%20com%20o%20App%20Kit%20Podologo%20Pro."
+         target="_blank"
+         class="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm text-white"
+         style="background:#25d366;text-decoration:none">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Falar no WhatsApp
+      </a>
+    </div>
+
+    <!-- Versão -->
+    <div class="text-center py-4 text-xs text-gray-300">
+      App Kit Podólogo Pro &nbsp;·&nbsp; v1.0
+    </div>
+
+  </div>
+
+</main>
+
+<!-- TOAST -->
+<div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm px-5 py-3 rounded-2xl shadow-xl z-50 hidden transition-all">
+  Mensagem
+</div>
+
+<script>
+// ============================
+// ESTADO GLOBAL
+// ============================
+let pacientes = JSON.parse(localStorage.getItem('podo_pacientes') || '[]');
+let testeAtual = null;
+let fichaAtual = null;
+let respostasAtual = {};
+
+// ============================
+// TAB NAVIGATION
+// ============================
+function showTab(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'inicio') atualizarStats();
+  if (tab === 'pacientes') renderPacientes();
+  if (tab === 'relatorios') atualizarSelectPacientes();
+}
+
+function atualizarStats() {
+  document.getElementById('stat-pacientes').textContent = pacientes.length;
+}
+
+// ============================
+// AJUDA / MANUAL
+// ============================
+function toggleHelp(btn) {
+  const body = btn.nextElementSibling;
+  const icon = btn.querySelector('.help-icon');
+  const isOpen = !body.classList.contains('hidden');
+  body.classList.toggle('hidden', isOpen);
+  icon.textContent = isOpen ? '+' : '−';
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================
+// TOAST
+// ============================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 2500);
+}
+
+// ============================
+// PACIENTES
+// ============================
+function toggleFormPaciente() {
+  document.getElementById('form-paciente').classList.toggle('hidden');
+}
+
+function salvarPaciente() {
+  const nome = document.getElementById('p-nome').value.trim();
+  if (!nome) { showToast('Informe o nome do paciente'); return; }
+  const p = {
+    id: Date.now(),
+    nome,
+    nasc: document.getElementById('p-nasc').value,
+    queixa: document.getElementById('p-queixa').value,
+    contato: document.getElementById('p-contato').value,
+    criado: new Date().toLocaleDateString('pt-BR')
+  };
+  pacientes.push(p);
+  localStorage.setItem('podo_pacientes', JSON.stringify(pacientes));
+  document.getElementById('p-nome').value = '';
+  document.getElementById('p-nasc').value = '';
+  document.getElementById('p-queixa').value = '';
+  document.getElementById('p-contato').value = '';
+  document.getElementById('form-paciente').classList.add('hidden');
+  renderPacientes();
+  atualizarSelectPacientes();
+  showToast('✅ Paciente salvo!');
+}
+
+function renderPacientes() {
+  const cont = document.getElementById('lista-pacientes');
+  const msg = document.getElementById('msg-sem-pacientes');
+  cont.innerHTML = '';
+  if (pacientes.length === 0) { msg.classList.remove('hidden'); return; }
+  msg.classList.add('hidden');
+  pacientes.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3';
+    div.innerHTML = `
+      <div class="bg-blue-100 rounded-full w-10 h-10 flex items-center justify-center text-blue-600 font-bold text-sm flex-shrink-0">
+        ${p.nome.charAt(0).toUpperCase()}
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-gray-800 text-sm truncate">${p.nome}</p>
+        <p class="text-xs text-gray-400">${p.queixa || 'Sem queixa registrada'}</p>
+      </div>
+      <button onclick="excluirPaciente(${p.id})" class="text-red-300 hover:text-red-500 text-sm px-2">✕</button>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+function excluirPaciente(id) {
+  if (!confirm('Excluir este paciente?')) return;
+  pacientes = pacientes.filter(p => p.id !== id);
+  localStorage.setItem('podo_pacientes', JSON.stringify(pacientes));
+  renderPacientes();
+  atualizarSelectPacientes();
+}
+
+function atualizarSelectPacientes() {
+  const sel = document.getElementById('sel-paciente-rel');
+  sel.innerHTML = '<option value="">Selecionar paciente...</option>';
+  pacientes.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.nome;
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => carregarHistoricoTestes(sel.value);
+}
+
+// ============================
+// TESTES
+// ============================
+const testes = {
+  risco_diabetico: {
+    titulo: 'Risco de Pé Diabético (IWGDF)',
+    instrucao: 'Avalie cada item conforme exame clínico. Baseado nas categorias de risco do International Working Group on the Diabetic Foot.',
+    itens: [
+      { q: 'Perda de sensibilidade protetora (monofilamento ou vibração)', opts: ['Ausente', 'Presente'] },
+      { q: 'Sinais de doença arterial periférica (pulsos diminuídos, pele fria, palidez)', opts: ['Ausente', 'Presente'] },
+      { q: 'Deformidade estrutural do pé (dedos em garra, hálux valgo severo, pé de Charcot)', opts: ['Ausente', 'Presente'] },
+      { q: 'Histórico de úlcera plantar prévia', opts: ['Não', 'Sim'] },
+      { q: 'Histórico de amputação prévia (parcial ou total)', opts: ['Não', 'Sim'] },
+      { q: 'Calçado inadequado observado no exame', opts: ['Não', 'Sim'] },
+    ],
+    scores: { 0: 0, 1: 1 },
+    interpretar(total) {
+      if (total === 0) return { classe: 'score-normal', texto: 'Categoria 0 — Risco muito baixo', rec: 'Reavaliação anual. Orientações gerais de cuidado com os pés.' };
+      if (total === 1) return { classe: 'score-risco', texto: 'Categoria 1 — Risco baixo', rec: 'Reavaliação a cada 6-12 meses. Reforçar educação em autocuidado.' };
+      if (total <= 3) return { classe: 'score-risco', texto: 'Categoria 2 — Risco moderado', rec: 'Reavaliação a cada 3-6 meses. Considerar avaliação vascular e calçado terapêutico.' };
+      return { classe: 'score-altera', texto: 'Categoria 3 — Risco alto', rec: 'Reavaliação a cada 1-3 meses. Encaminhar para avaliação médica/vascular especializada.' };
+    }
+  },
+  monofilamento: {
+    titulo: 'Teste de Sensibilidade — Monofilamento',
+    instrucao: 'Aplique o monofilamento de Semmes-Weinstein 10g em cada ponto. Marque se o paciente sentiu o toque.',
+    itens: [
+      { q: 'Hálux — pé direito', opts: ['Sente', 'Não sente'] },
+      { q: '1ª cabeça de metatarso — pé direito', opts: ['Sente', 'Não sente'] },
+      { q: '3ª cabeça de metatarso — pé direito', opts: ['Sente', 'Não sente'] },
+      { q: '5ª cabeça de metatarso — pé direito', opts: ['Sente', 'Não sente'] },
+      { q: 'Hálux — pé esquerdo', opts: ['Sente', 'Não sente'] },
+      { q: '1ª cabeça de metatarso — pé esquerdo', opts: ['Sente', 'Não sente'] },
+      { q: '3ª cabeça de metatarso — pé esquerdo', opts: ['Sente', 'Não sente'] },
+      { q: '5ª cabeça de metatarso — pé esquerdo', opts: ['Sente', 'Não sente'] },
+    ],
+    scores: { 0: 0, 1: 1 },
+    interpretar(total) {
+      if (total === 0) return { classe: 'score-normal', texto: 'Sensibilidade protetora preservada', rec: 'Sem indício de perda de sensibilidade protetora nos pontos testados.' };
+      if (total <= 2) return { classe: 'score-risco', texto: 'Perda de sensibilidade localizada', rec: 'Monitorar de perto. Reforçar inspeção diária dos pés pelo próprio paciente ou cuidador.' };
+      return { classe: 'score-altera', texto: 'Perda de sensibilidade protetora', rec: 'Risco aumentado de lesão não percebida. Encaminhar para avaliação médica e intensificar cuidados preventivos.' };
+    }
+  },
+  onicocriptose: {
+    titulo: 'Classificação de Onicocriptose',
+    instrucao: 'Avalie os sinais presentes na unha encravada para definir o grau.',
+    itens: [
+      { q: 'Vermelhidão e edema leve na prega ungueal lateral', opts: ['Ausente', 'Presente'] },
+      { q: 'Dor à compressão da prega ungueal', opts: ['Ausente', 'Presente'] },
+      { q: 'Saída de secreção', opts: ['Ausente', 'Presente'] },
+      { q: 'Sinais de infecção secundária', opts: ['Ausente', 'Presente'] },
+      { q: 'Tecido de granulação', opts: ['Ausente', 'Presente'] },
+      { q: 'Hipertrofia da prega ungueal', opts: ['Ausente', 'Presente'] },
+    ],
+    scores: { 0: 0, 1: 1 },
+    interpretar(total) {
+      if (total <= 1) return { classe: 'score-normal', texto: 'Grau I — Inflamação inicial', rec: 'Sinais inflamatórios iniciais. Orientações de cuidado e corte correto da unha.' };
+      if (total <= 3) return { classe: 'score-risco', texto: 'Grau II — Inflamação com secreção', rec: 'Inflamação com secreção e possível infecção secundária. Tratamento conservador ou técnica específica indicada.' };
+      return { classe: 'score-altera', texto: 'Grau III — Tecido de granulação', rec: 'Formação de tecido de granulação e hipertrofia. Considerar técnica cirúrgica ou encaminhamento especializado.' };
+    }
+  },
+  calos: {
+    titulo: 'Avaliação de Calos e Hiperqueratose',
+    instrucao: 'Avalie as áreas de hiperqueratose encontradas no exame.',
+    itens: [
+      { q: 'Localização em área de apoio (plantar)', opts: ['Ausente', 'Presente'] },
+      { q: 'Espessura da hiperqueratose', opts: ['Leve', 'Moderada', 'Intensa'] },
+      { q: 'Dor à palpação ou deambulação', opts: ['Ausente', 'Presente'] },
+      { q: 'Presença de fissura associada', opts: ['Ausente', 'Presente'] },
+      { q: 'Sinais de hemorragia subcutânea (calo hemorrágico)', opts: ['Ausente', 'Presente'] },
+    ],
+    scores: { 0: 0, 1: 1, 2: 2 },
+    interpretar(total) {
+      if (total <= 1) return { classe: 'score-normal', texto: 'Hiperqueratose leve', rec: 'Cuidado podológico de rotina. Orientar sobre calçado adequado.' };
+      if (total <= 3) return { classe: 'score-risco', texto: 'Hiperqueratose moderada', rec: 'Debridação indicada. Investigar causa biomecânica e orientar sobre palmilhas/calçado.' };
+      return { classe: 'score-altera', texto: 'Hiperqueratose intensa / com complicação', rec: 'Avaliar risco de lesão associada, principalmente se paciente diabético. Considerar encaminhamento.' };
+    }
+  },
+  biomecanica: {
+    titulo: 'Avaliação Biomecânica / Tipo de Pisada',
+    instrucao: 'Observe o paciente em pé e durante a marcha.',
+    itens: [
+      { q: 'Tipo de arco plantar', opts: ['Normal', 'Pé plano', 'Pé cavo'] },
+      { q: 'Alinhamento do retropé', opts: ['Neutro', 'Varo', 'Valgo'] },
+      { q: 'Desgaste irregular observado no calçado', opts: ['Não', 'Sim'] },
+      { q: 'Presença de hálux valgo ou dedos em garra', opts: ['Ausente', 'Presente'] },
+      { q: 'Queixa de dor relacionada à marcha ou postura', opts: ['Ausente', 'Presente'] },
+    ],
+    scores: { 0: 0, 1: 1, 2: 1 },
+    interpretar(total) {
+      if (total <= 1) return { classe: 'score-normal', texto: 'Padrão biomecânico adequado', rec: 'Sem indicação de intervenção biomecânica no momento.' };
+      if (total <= 3) return { classe: 'score-risco', texto: 'Alterações biomecânicas leves a moderadas', rec: 'Considerar avaliação de palmilhas/órteses. Orientar sobre calçado adequado ao tipo de pisada.' };
+      return { classe: 'score-altera', texto: 'Alterações biomecânicas importantes', rec: 'Avaliação biomecânica aprofundada indicada. Considerar encaminhamento para ortopedia/fisioterapia.' };
+    }
+  },
+  vascular: {
+    titulo: 'Triagem de Doença Arterial Periférica',
+    instrucao: 'Avalie os sinais clínicos de perfusão vascular periférica.',
+    itens: [
+      { q: 'Palpação de pulso pedioso', opts: ['Presente e forte', 'Diminuído', 'Ausente'] },
+      { q: 'Palpação de pulso tibial posterior', opts: ['Presente e forte', 'Diminuído', 'Ausente'] },
+      { q: 'Temperatura da pele', opts: ['Normal', 'Fria'] },
+      { q: 'Coloração da pele', opts: ['Normal', 'Pálida ou cianótica'] },
+      { q: 'Tempo de enchimento capilar', opts: ['< 3 segundos', '≥ 3 segundos'] },
+      { q: 'Claudicação intermitente relatada pelo paciente', opts: ['Não', 'Sim'] },
+    ],
+    scores: { 0: 0, 1: 1, 2: 2 },
+    interpretar(total) {
+      if (total <= 1) return { classe: 'score-normal', texto: 'Perfusão periférica preservada', rec: 'Sem sinais clínicos relevantes de doença arterial periférica no momento.' };
+      if (total <= 4) return { classe: 'score-risco', texto: 'Sinais de alerta para DAP', rec: 'Monitorar de perto. Considerar encaminhamento para avaliação vascular (índice tornozelo-braquial).' };
+      return { classe: 'score-altera', texto: 'Múltiplos sinais de DAP', rec: 'Forte indicativo de comprometimento vascular. Encaminhamento médico/vascular prioritário.' };
+    }
+  },
+  onicomicose: {
+    titulo: 'Avaliação de Onicomicose',
+    instrucao: 'Avalie os sinais clínicos sugestivos de infecção fúngica ungueal.',
+    itens: [
+      { q: 'Espessamento da lâmina ungueal', opts: ['Ausente', 'Presente'] },
+      { q: 'Descoloração (amarelada, esbranquiçada ou escurecida)', opts: ['Ausente', 'Presente'] },
+      { q: 'Friabilidade / unha quebradiça', opts: ['Ausente', 'Presente'] },
+      { q: 'Onicólise (descolamento do leito ungueal)', opts: ['Ausente', 'Presente'] },
+      { q: 'Percentual estimado da unha acometida', opts: ['Até 25%', '25-50%', 'Mais de 50%'] },
+    ],
+    scores: { 0: 0, 1: 1, 2: 2 },
+    interpretar(total) {
+      if (total <= 1) return { classe: 'score-normal', texto: 'Sem sinais significativos de onicomicose', rec: 'Monitorar. Orientar sobre higiene e secagem adequada dos pés.' };
+      if (total <= 3) return { classe: 'score-risco', texto: 'Sinais sugestivos de onicomicose leve a moderada', rec: 'Considerar tratamento tópico e cuidados podológicos regulares. Avaliar necessidade de exame micológico.' };
+      return { classe: 'score-altera', texto: 'Sinais sugestivos de onicomicose extensa', rec: 'Encaminhar para avaliação dermatológica e considerar tratamento sistêmico associado ao cuidado podológico.' };
+    }
+  },
+  pele: {
+    titulo: 'Avaliação de Pele e Fissuras',
+    instrucao: 'Observe a pele dos pés, com atenção especial à região do calcanhar.',
+    itens: [
+      { q: 'Hidratação da pele', opts: ['Adequada', 'Xerose leve', 'Xerose intensa'] },
+      { q: 'Fissuras no calcanhar', opts: ['Ausentes', 'Superficiais', 'Profundas'] },
+      { q: 'Descamação', opts: ['Ausente', 'Presente'] },
+      { q: 'Prurido relatado pelo paciente', opts: ['Não', 'Sim'] },
+      { q: 'Sinais de maceração interdigital', opts: ['Ausente', 'Presente'] },
+    ],
+    scores: { 0: 0, 1: 1, 2: 2 },
+    interpretar(total) {
+      if (total <= 1) return { classe: 'score-normal', texto: 'Pele íntegra e hidratada', rec: 'Cuidados de rotina com hidratação preventiva.' };
+      if (total <= 3) return { classe: 'score-risco', texto: 'Alterações leves a moderadas', rec: 'Indicar hidratação específica para pés e reavaliação em curto prazo.' };
+      return { classe: 'score-altera', texto: 'Alterações importantes de pele', rec: 'Risco de porta de entrada para infecção, especialmente em paciente diabético. Tratamento ativo indicado.' };
+    }
+  },
+  queda: {
+    titulo: 'Risco de Queda Relacionado aos Pés',
+    instrucao: 'Indicado especialmente para pacientes idosos. Avalie fatores podológicos associados ao risco de queda.',
+    itens: [
+      { q: 'Dificuldade de equilíbrio relatada ou observada', opts: ['Não', 'Sim'] },
+      { q: 'Deformidades que afetam a marcha', opts: ['Ausentes', 'Presentes'] },
+      { q: 'Uso de calçado inadequado (solto, sem solado antiderrapante)', opts: ['Não', 'Sim'] },
+      { q: 'Histórico de quedas nos últimos 12 meses', opts: ['Não', 'Sim'] },
+      { q: 'Diminuição de sensibilidade plantar', opts: ['Não', 'Sim'] },
+      { q: 'Unhas espessadas ou mal cuidadas dificultando o apoio', opts: ['Não', 'Sim'] },
+    ],
+    scores: { 0: 0, 1: 1 },
+    interpretar(total) {
+      if (total <= 1) return { classe: 'score-normal', texto: 'Baixo risco de queda relacionado aos pés', rec: 'Manter cuidado podológico de rotina e orientações gerais.' };
+      if (total <= 3) return { classe: 'score-risco', texto: 'Risco moderado de queda', rec: 'Orientar sobre calçado adequado e considerar encaminhamento para avaliação de equilíbrio/fisioterapia.' };
+      return { classe: 'score-altera', texto: 'Alto risco de queda', rec: 'Múltiplos fatores de risco presentes. Encaminhar para avaliação multidisciplinar de prevenção de quedas.' };
+    }
+  },
+  wagner: {
+    titulo: 'Classificação de Wagner',
+    instrucao: 'Para pacientes com lesão/úlcera já estabelecida. Classifique conforme os achados.',
+    itens: [
+      { q: 'Grau da lesão observada', opts: ['0 — Sem lesão (pé de risco)', 'I — Úlcera superficial', 'II — Úlcera profunda (tendão/cápsula/osso exposto)', 'III — Úlcera profunda com abscesso/osteomielite', 'IV — Gangrena localizada (dedo/antepé)', 'V — Gangrena extensa do pé'] },
+    ],
+    scores: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 },
+    interpretar(total) {
+      if (total === 0) return { classe: 'score-normal', texto: 'Grau 0 — Pé de risco, sem lesão', rec: 'Prevenção ativa. Reavaliação periódica conforme categoria de risco.' };
+      if (total === 1) return { classe: 'score-risco', texto: 'Grau I — Úlcera superficial', rec: 'Tratamento local e descarga de pressão. Monitorar evolução de perto.' };
+      if (total <= 3) return { classe: 'score-altera', texto: 'Grau II-III — Úlcera profunda', rec: 'Encaminhamento médico/cirúrgico indicado. Risco de infecção óssea.' };
+      return { classe: 'score-altera', texto: 'Grau IV-V — Gangrena', rec: 'Encaminhamento de urgência. Risco de amputação.' };
+    }
+  }
+};
+
+function iniciarTeste(id) {
+  testeAtual = { id, dados: testes[id], respostas: [], step: 0 };
+  document.getElementById('lista-testes').classList.add('hidden');
+  document.getElementById('area-teste').classList.remove('hidden');
+  renderStep();
+}
+
+function voltarListaTestes() {
+  testeAtual = null;
+  document.getElementById('lista-testes').classList.remove('hidden');
+  document.getElementById('area-teste').classList.add('hidden');
+}
+
+function renderStep() {
+  const { dados, step } = testeAtual;
+  const total = dados.itens.length;
+  const progresso = Math.round((step / total) * 100);
+
+  if (step >= total) { mostrarResultadoTeste(); return; }
+
+  const item = dados.itens[step];
+  const container = document.getElementById('teste-container');
+  container.innerHTML = `
+    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+      <div class="flex justify-between text-xs text-gray-400 mb-2">
+        <span class="font-semibold text-blue-600">${dados.titulo}</span>
+        <span>${step + 1}/${total}</span>
+      </div>
+      <div class="progress-bar mb-4"><div class="progress-fill" style="width:${progresso}%"></div></div>
+      <p class="font-semibold text-gray-800 mb-4 text-sm leading-relaxed">${item.q}</p>
+      <div class="space-y-2">
+        ${item.opts.map((opt, i) => `
+          <div class="radio-opt">
+            <input type="radio" name="opt" id="opt${i}" value="${i}" class="hidden" onchange="responderItem(${i})"/>
+            <label for="opt${i}" class="block border-2 border-gray-200 rounded-xl px-4 py-3 text-sm cursor-pointer hover:border-blue-400 transition-all">
+              ${opt}
+            </label>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function responderItem(val) {
+  testeAtual.respostas.push(val);
+  testeAtual.step++;
+  setTimeout(() => renderStep(), 200);
+}
+
+function mostrarResultadoTeste() {
+  const { dados, respostas } = testeAtual;
+  let total = 0;
+  respostas.forEach(r => { total += dados.scores[r] || 0; });
+  const result = dados.interpretar(total);
+  const maxScore = Object.values(dados.scores).reduce((a,b) => a > b ? a : b, 0) * dados.itens.length;
+
+  const container = document.getElementById('teste-container');
+  container.innerHTML = `
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+      <div class="text-center mb-5">
+        <div class="text-5xl mb-2">✅</div>
+        <h3 class="font-bold text-gray-800">${dados.titulo}</h3>
+        <p class="text-gray-500 text-sm">${new Date().toLocaleDateString('pt-BR')}</p>
+      </div>
+      <div class="bg-gray-50 rounded-2xl p-4 mb-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm text-gray-600">Score total</span>
+          <span class="font-black text-lg text-gray-800">${total} / ${maxScore}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${maxScore > 0 ? Math.round((total/maxScore)*100) : 0}%"></div></div>
+      </div>
+      <div class="text-center mb-4">
+        <span class="score-badge ${result.classe}">${result.texto}</span>
+      </div>
+      <div class="bg-blue-50 rounded-xl p-4 text-sm text-blue-800 mb-4">
+        <strong>Recomendação:</strong> ${result.rec}
+      </div>
+      <button onclick="gerarPDFTeste('${testeAtual.id}', ${total}, ${maxScore}, '${result.texto}', '${result.rec.replace(/'/g,"\\'")}', '${result.classe}')"
+        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
+        📄 Gerar Relatório PDF
+      </button>
+      ${pacientes.length > 0 ? `
+      <div class="mt-3 bg-blue-50 rounded-xl p-3 border border-blue-100">
+        <p class="text-xs font-semibold text-blue-700 mb-2">💾 Salvar no prontuário do paciente</p>
+        <select id="sel-salvar-pac" class="w-full border border-blue-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 outline-none bg-white mb-2">
+          <option value="">Selecionar paciente...</option>
+          ${pacientes.map(p => `<option value="${p.id}">${p.nome}</option>`).join('')}
+        </select>
+        <button id="btn-salvar-pac" onclick="salvarResultadoPaciente()" class="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-2 rounded-xl text-sm transition-all">
+          💾 Salvar no prontuário
+        </button>
+      </div>` : ''}
+    </div>
+  `;
+}
+
+function salvarResultadoPaciente() {
+  const sel = document.getElementById('sel-salvar-pac');
+  if (!sel || !sel.value) { showToast('⚠️ Selecione um paciente'); return; }
+  const pacId = sel.value;
+  const { dados, respostas } = testeAtual;
+  const key = `podo_resultados_${pacId}`;
+  const hist = JSON.parse(localStorage.getItem(key) || '[]');
+
+  let total = 0;
+  respostas.forEach(r => { total += dados.scores[r] || 0; });
+  const maxScore = Object.values(dados.scores).reduce((a,b) => a > b ? a : b, 0) * dados.itens.length;
+  const result = dados.interpretar(total);
+  const entrada = {
+    testeId: testeAtual.id,
+    titulo: dados.titulo,
+    data: new Date().toLocaleDateString('pt-BR'),
+    score: total,
+    maxScore,
+    texto: result.texto,
+    rec: result.rec,
+    classe: result.classe
+  };
+  hist.push(entrada);
+  localStorage.setItem(key, JSON.stringify(hist));
+  showToast('✅ Resultado salvo no prontuário!');
+  const btn = document.getElementById('btn-salvar-pac');
+  if (btn) { btn.textContent = '✅ Salvo!'; btn.disabled = true; btn.classList.replace('bg-blue-100','bg-green-100'); }
+}
+
+function carregarHistoricoTestes(pacId) {
+  const area = document.getElementById('historico-testes-rel');
+  if (!area) return;
+  if (!pacId) { area.innerHTML = ''; return; }
+  const key = `podo_resultados_${pacId}`;
+  const hist = JSON.parse(localStorage.getItem(key) || '[]');
+  if (hist.length === 0) { area.innerHTML = ''; return; }
+  area.innerHTML = `
+    <div class="bg-blue-50 rounded-xl p-3 border border-blue-100">
+      <p class="text-xs font-semibold text-blue-700 mb-2">📊 Avaliações salvas — ${hist.length} resultado(s)</p>
+      <div class="space-y-2">
+        ${hist.map(r => `
+          <div class="bg-white rounded-xl p-3 border border-blue-100">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-gray-700">${r.titulo}</span>
+              <span class="text-xs text-gray-400">${r.data}</span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="score-badge ${r.classe}" style="font-size:0.65rem;padding:2px 8px">${r.texto}</span>
+              <span class="text-xs text-gray-500">${r.score}/${r.maxScore} pts</span>
+            </div>
+            <p class="text-xs text-gray-500">${r.rec}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ============================
+// FICHAS
+// ============================
+const fichas = {
+  anamnese: {
+    titulo: 'Anamnese Podológica',
+    campos: [
+      // ── IDENTIFICAÇÃO ──
+      { type: 'section', label: '👤 Identificação' },
+      { id: 'an-paciente', label: 'Nome do paciente', type: 'text', placeholder: 'Nome completo' },
+      { id: 'an-nasc', label: 'Data de nascimento', type: 'date' },
+      { id: 'an-profissao', label: 'Profissão', type: 'text', placeholder: 'Ocupação atual' },
+      { id: 'an-contato', label: 'Contato / WhatsApp', type: 'text', placeholder: '(11) 99999-9999' },
+      { id: 'an-encaminhamento', label: 'Encaminhado por', type: 'text', placeholder: 'Médico, indicação, espontâneo...' },
+      // ── QUEIXA PRINCIPAL ──
+      { type: 'section', label: '🦶 Queixa Principal' },
+      { id: 'an-queixa', label: 'Queixa principal', type: 'textarea', placeholder: 'Descreva a queixa em detalhes...' },
+      { id: 'an-inicio', label: 'Início dos sintomas', type: 'text', placeholder: 'Ex: há 3 meses, desde sempre...' },
+      { id: 'an-evolucao', label: 'Evolução da queixa', type: 'select', options: ['Estável', 'Melhorou', 'Piorou', 'Oscila'] },
+      // ── SAÚDE GERAL E FATORES DE RISCO ──
+      { type: 'section', label: '🏥 Saúde Geral e Fatores de Risco' },
+      { id: 'an-diabetes', label: 'Diabetes', type: 'select', options: ['Não possui', 'Tipo 1', 'Tipo 2', 'Pré-diabetes'] },
+      { id: 'an-diabetes-tempo', label: 'Tempo de diagnóstico (se diabético)', type: 'text', placeholder: 'Ex: 5 anos' },
+      { id: 'an-glicemia', label: 'Controle glicêmico', type: 'select', options: ['Não se aplica', 'Controlado', 'Parcialmente controlado', 'Descontrolado'] },
+      { id: 'an-hipertensao', label: 'Hipertensão arterial', type: 'select', options: ['Não', 'Sim — controlada', 'Sim — não controlada'] },
+      { id: 'an-vascular', label: 'Doença vascular periférica conhecida', type: 'select', options: ['Não', 'Sim', 'Não sabe'] },
+      { id: 'an-tabagismo', label: 'Tabagismo', type: 'select', options: ['Nunca fumou', 'Ex-fumante', 'Fumante atual'] },
+      { id: 'an-outras-doencas', label: 'Outras doenças relevantes', type: 'textarea', placeholder: 'Artrite, doença renal, imunossupressão...' },
+      { id: 'an-medicacao', label: 'Medicações em uso', type: 'text', placeholder: 'Nome, dose e finalidade' },
+      { id: 'an-alergias', label: 'Alergias', type: 'text', placeholder: 'Medicamentos, produtos tópicos...' },
+      // ── HÁBITOS E CALÇADOS ──
+      { type: 'section', label: '👟 Hábitos e Calçados' },
+      { id: 'an-calcado-tipo', label: 'Tipo de calçado mais usado', type: 'select', options: ['Fechado confortável', 'Salto alto', 'Chinelo/sandália', 'Calçado de segurança', 'Descalço frequentemente'] },
+      { id: 'an-atividade', label: 'Atividade física / esporte praticado', type: 'text', placeholder: 'Ex: corrida, caminhada, nenhuma...' },
+      { id: 'an-autocuidado', label: 'Frequência de autocuidado com os pés', type: 'select', options: ['Diário', 'Semanal', 'Raramente', 'Nunca'] },
+      { id: 'an-visao-dificuldade', label: 'Dificuldade visual ou motora para cuidar dos próprios pés', type: 'select', options: ['Não', 'Sim'] },
+      // ── HISTÓRICO PODOLÓGICO ──
+      { type: 'section', label: '📋 Histórico Podológico' },
+      { id: 'an-tratamento-anterior', label: 'Já fez tratamento podológico antes?', type: 'select', options: ['Não', 'Sim — nesta clínica', 'Sim — outro local'] },
+      { id: 'an-cirurgia-pe', label: 'Cirurgias nos pés', type: 'text', placeholder: 'Tipo e data, se houver' },
+      { id: 'an-lesao-previa', label: 'Histórico de lesão ou úlcera nos pés', type: 'textarea', placeholder: 'Descreva se houve...' },
+      // ── OBSERVAÇÕES ──
+      { type: 'section', label: '📝 Observações' },
+      { id: 'an-obs', label: 'Observações adicionais', type: 'textarea', placeholder: 'Informações relevantes não contempladas acima...' },
+    ]
+  },
+  evolucao: {
+    titulo: 'Ficha de Evolução',
+    campos: [
+      { id: 'ev-paciente', label: 'Nome do paciente', type: 'text', placeholder: 'Nome completo' },
+      { id: 'ev-data', label: 'Data da sessão', type: 'date' },
+      { id: 'ev-sessao', label: 'Nº da sessão', type: 'text', placeholder: 'Ex: 3ª sessão' },
+      { id: 'ev-procedimentos', label: 'Procedimentos realizados', type: 'textarea', placeholder: 'Corte de unhas, debridação de calos, tratamento de micose...' },
+      { id: 'ev-evolucao', label: 'Evolução clínica observada', type: 'textarea', placeholder: 'Descreva a evolução desde a última sessão...' },
+      { id: 'ev-proxima', label: 'Planejamento próxima sessão', type: 'textarea', placeholder: 'O que será trabalhado na próxima sessão...' },
+      { id: 'ev-obs', label: 'Observações', type: 'textarea', placeholder: 'Outras observações relevantes...' },
+    ]
+  },
+  consentimento: {
+    titulo: 'Termo de Consentimento',
+    campos: [
+      { id: 'tc-paciente', label: 'Nome do paciente', type: 'text', placeholder: 'Nome completo' },
+      { id: 'tc-procedimento', label: 'Procedimento a ser realizado', type: 'textarea', placeholder: 'Ex: remoção de unha encravada, cauterização...' },
+      { id: 'tc-riscos', label: 'Riscos e efeitos explicados ao paciente', type: 'textarea', placeholder: 'Descreva os riscos informados...' },
+      { id: 'tc-contraindicacoes', label: 'Contraindicações verificadas', type: 'text', placeholder: 'Ex: nenhuma, uso de anticoagulante...' },
+      { id: 'tc-data', label: 'Data', type: 'date' },
+      { id: 'tc-obs', label: 'Observações', type: 'textarea', placeholder: 'Informações adicionais...' },
+    ]
+  },
+  orcamento: {
+    titulo: 'Orçamento / Plano de Tratamento',
+    campos: [
+      { id: 'or-paciente', label: 'Paciente', type: 'text', placeholder: 'Nome completo' },
+      { id: 'or-diagnostico', label: 'Diagnóstico / achados principais', type: 'textarea', placeholder: 'Resumo clínico...' },
+      { id: 'or-procedimentos', label: 'Procedimentos propostos', type: 'textarea', placeholder: 'Liste os procedimentos e técnicas propostas...' },
+      { id: 'or-sessoes', label: 'Número de sessões previstas', type: 'text', placeholder: 'Ex: 4 sessões' },
+      { id: 'or-valor', label: 'Valor total / por sessão', type: 'text', placeholder: 'Ex: R$ 80 por sessão' },
+      { id: 'or-validade', label: 'Validade do orçamento', type: 'text', placeholder: 'Ex: 30 dias' },
+    ]
+  },
+  encaminhamento: {
+    titulo: 'Carta de Encaminhamento',
+    campos: [
+      { id: 'enc-paciente', label: 'Paciente', type: 'text', placeholder: 'Nome completo e idade' },
+      { id: 'enc-para', label: 'Encaminhar para', type: 'text', placeholder: 'Ex: Angiologista, Endocrinologista, Ortopedista...' },
+      { id: 'enc-motivo', label: 'Motivo do encaminhamento', type: 'textarea', placeholder: 'Justificativa clínica para o encaminhamento...' },
+      { id: 'enc-achados', label: 'Achados clínicos relevantes', type: 'textarea', placeholder: 'Resultados de avaliações e observações...' },
+      { id: 'enc-urgencia', label: 'Grau de urgência', type: 'select', options: ['Rotina', 'Prioritário', 'Urgente'] },
+      { id: 'enc-podologo', label: 'Podólogo(a) responsável', type: 'text', placeholder: 'Nome — Registro profissional' },
+    ]
+  }
+};
+
+function abrirFicha(id) {
+  fichaAtual = { id, dados: fichas[id] };
+  const listBlock = document.querySelector('#screen-fichas > .space-y-3');
+  if (listBlock) listBlock.classList.add('hidden');
+  document.getElementById('area-ficha').classList.remove('hidden');
+  renderFicha();
+}
+
+function voltarListaFichas() {
+  fichaAtual = null;
+  const listBlock = document.querySelector('#screen-fichas > .space-y-3');
+  if (listBlock) listBlock.classList.remove('hidden');
+  document.getElementById('area-ficha').classList.add('hidden');
+}
+
+function renderCampoFicha(c) {
+  if (c.type === 'section') {
+    return `<div class="border-t-2 border-blue-100 mt-3 pt-3">
+      <p class="text-xs font-black text-blue-700 uppercase tracking-wide">${c.label}</p>
+    </div>`;
+  }
+  let input;
+  if (c.type === 'textarea') {
+    input = `<textarea id="${c.id}" rows="2" placeholder="${c.placeholder||''}" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 outline-none resize-none"></textarea>`;
+  } else if (c.type === 'select') {
+    const opts = (c.options||[]).map(o => `<option value="${o}">${o}</option>`).join('');
+    input = `<select id="${c.id}" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 outline-none bg-white"><option value="">Selecionar...</option>${opts}</select>`;
+  } else {
+    input = `<input id="${c.id}" type="${c.type||'text'}" placeholder="${c.placeholder||''}" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 outline-none"/>`;
+  }
+  return `<div><label class="block text-xs font-semibold text-gray-600 mb-1">${c.label}</label>${input}</div>`;
+}
+
+function renderFicha() {
+  const { dados } = fichaAtual;
+  const container = document.getElementById('ficha-container');
+  const optsHtml = pacientes.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+  container.innerHTML = `
+    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+      <h3 class="font-bold text-gray-800 mb-3">${dados.titulo}</h3>
+
+      ${pacientes.length > 0 ? `
+      <div class="bg-blue-50 rounded-xl p-3 mb-4 border border-blue-100">
+        <label class="block text-xs font-semibold text-blue-700 mb-1">Vincular ao paciente</label>
+        <select id="ficha-sel-paciente" onchange="preencherNomeFicha()" class="w-full border border-blue-200 rounded-xl px-3 py-2 text-sm focus:border-blue-500 outline-none bg-white">
+          <option value="">Selecionar paciente...</option>
+          ${optsHtml}
+        </select>
+      </div>
+      <div id="ficha-historico"></div>` : ''}
+
+      <div class="space-y-3">
+        ${dados.campos.map(c => renderCampoFicha(c)).join('')}
+      </div>
+      ${pacientes.length > 0 ? `
+      <button id="btn-salvar-ficha" onclick="salvarFicha()" class="mt-5 w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 transition-all">
+        💾 Salvar no Prontuário (sem gerar PDF)
+      </button>` : ''}
+      <button onclick="gerarPDFFicha()" class="mt-3 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 transition-all">
+        📄 Gerar Ficha em PDF
+      </button>
+    </div>
+  `;
+}
+
+function preencherNomeFicha() {
+  const sel = document.getElementById('ficha-sel-paciente');
+  if (!sel) return;
+  renderHistoricoFicha(sel.value);
+  const pac = pacientes.find(p => p.id == sel.value);
+  if (!pac) return;
+  const { dados } = fichaAtual;
+  dados.campos.forEach(c => {
+    const el = document.getElementById(c.id);
+    if (!el) return;
+    const lbl = c.label.toLowerCase();
+    if (lbl.includes('paciente') || lbl.includes('nome')) el.value = pac.nome;
+    else if (lbl.includes('nascimento') || lbl.includes('nasc')) el.value = pac.nasc || '';
+    else if (lbl.includes('queixa')) el.value = pac.queixa || '';
+    else if (lbl.includes('contato') || lbl.includes('telefone')) el.value = pac.contato || '';
+  });
+}
+
+// ============================
+// SALVAR FICHA NO PRONTUÁRIO (sem PDF)
+// ============================
+function salvarFicha() {
+  const sel = document.getElementById('ficha-sel-paciente');
+  if (!sel || !sel.value) { showToast('⚠️ Selecione um paciente para salvar'); return; }
+  const pacId = sel.value;
+  const { id, dados } = fichaAtual;
+  const campos = {};
+  dados.campos.forEach(c => {
+    if (c.type === 'section') return;
+    const el = document.getElementById(c.id);
+    if (el && el.value.trim()) campos[c.label] = el.value.trim();
+  });
+  if (Object.keys(campos).length === 0) { showToast('⚠️ Preencha ao menos um campo antes de salvar'); return; }
+
+  const key = `podo_fichas_${id}_${pacId}`;
+  const hist = JSON.parse(localStorage.getItem(key) || '[]');
+  hist.unshift({
+    data: new Date().toLocaleDateString('pt-BR'),
+    hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+    campos
+  });
+  localStorage.setItem(key, JSON.stringify(hist));
+  showToast('✅ Salvo no prontuário do paciente!');
+
+  const btn = document.getElementById('btn-salvar-ficha');
+  if (btn) {
+    const original = btn.textContent;
+    btn.textContent = '✅ Salvo!';
+    btn.classList.replace('bg-blue-100', 'bg-green-100');
+    setTimeout(() => { btn.textContent = original; btn.classList.replace('bg-green-100', 'bg-blue-100'); }, 1500);
+  }
+  renderHistoricoFicha(pacId);
+}
+
+function renderHistoricoFicha(pacId) {
+  const area = document.getElementById('ficha-historico');
+  if (!area) return;
+  if (!pacId || !fichaAtual) { area.innerHTML = ''; return; }
+  const key = `podo_fichas_${fichaAtual.id}_${pacId}`;
+  const hist = JSON.parse(localStorage.getItem(key) || '[]');
+  if (hist.length === 0) { area.innerHTML = ''; return; }
+  area.innerHTML = `
+    <div class="bg-blue-50 rounded-xl p-3 mb-4 border border-blue-100">
+      <p class="text-xs font-semibold text-blue-700 mb-2">📁 ${hist.length} registro(s) salvo(s) no prontuário</p>
+      <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
+        ${hist.map((h, i) => `
+          <div class="bg-white rounded-xl p-3 border border-blue-100">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-gray-700">${h.data} ${h.hora || ''}</span>
+              <button onclick="excluirFichaSalva('${pacId}', ${i})" class="text-red-300 hover:text-red-500 text-xs px-1">✕ excluir</button>
+            </div>
+            ${Object.entries(h.campos).map(([k, v]) => `<p class="text-xs text-gray-600 mt-0.5"><strong>${k}:</strong> ${v}</p>`).join('')}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function excluirFichaSalva(pacId, idx) {
+  if (!confirm('Excluir este registro salvo do prontuário?')) return;
+  const key = `podo_fichas_${fichaAtual.id}_${pacId}`;
+  const hist = JSON.parse(localStorage.getItem(key) || '[]');
+  hist.splice(idx, 1);
+  localStorage.setItem(key, JSON.stringify(hist));
+  renderHistoricoFicha(pacId);
+  showToast('🗑️ Registro excluído');
+}
+
+// ============================
+// CONFIGURAÇÃO DO CONSULTÓRIO
+// ============================
+function getClinicaConfig() {
+  return JSON.parse(localStorage.getItem('podo_clinica') || '{}');
+}
+
+function carregarConfClinica() {
+  const conf = getClinicaConfig();
+  const nomeEl = document.getElementById('conf-clinica-nome');
+  const fonoEl = document.getElementById('conf-fono-nome-conf');
+  const cidadeEl = document.getElementById('conf-clinica-cidade');
+  if (conf.nome && nomeEl) nomeEl.value = conf.nome;
+  if (conf.fono && fonoEl) fonoEl.value = conf.fono;
+  if (conf.cidade && cidadeEl) cidadeEl.value = conf.cidade;
+  if (conf.logo) {
+    const prev = document.getElementById('conf-logo-preview');
+    const wrap = document.getElementById('conf-logo-preview-wrap');
+    const plac = document.getElementById('conf-logo-placeholder');
+    if (prev) prev.src = conf.logo;
+    if (wrap) wrap.classList.remove('hidden');
+    if (plac) plac.classList.add('hidden');
+  }
+}
+
+function salvarConfClinica() {
+  const conf = getClinicaConfig();
+  conf.nome = (document.getElementById('conf-clinica-nome')?.value || '').trim();
+  conf.fono = (document.getElementById('conf-fono-nome-conf')?.value || '').trim();
+  conf.cidade = (document.getElementById('conf-clinica-cidade')?.value || '').trim();
+  localStorage.setItem('podo_clinica', JSON.stringify(conf));
+  showToast('✅ Dados do consultório salvos!');
+}
+
+function handleConfLogo(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const conf = getClinicaConfig();
+    conf.logo = e.target.result;
+    localStorage.setItem('podo_clinica', JSON.stringify(conf));
+    const prev = document.getElementById('conf-logo-preview');
+    const wrap = document.getElementById('conf-logo-preview-wrap');
+    const plac = document.getElementById('conf-logo-placeholder');
+    if (prev) prev.src = e.target.result;
+    if (wrap) wrap.classList.remove('hidden');
+    if (plac) plac.classList.add('hidden');
+    showToast('✅ Logo salva!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function addLogoToPDF(doc, logoDataUrl, x, y, w, h) {
+  if (!logoDataUrl) return;
+  try {
+    const fmt = logoDataUrl.indexOf('image/png') !== -1 ? 'PNG' : 'JPEG';
+    doc.addImage(logoDataUrl, fmt, x, y, w, h);
+  } catch(e) {}
+}
+
+function drawPDFHeader(doc, titulo, subtitulo) {
+  const conf = getClinicaConfig();
+  const W = 210, margin = 20;
+  doc.setFillColor(29, 78, 216);
+  doc.rect(0, 0, W, 44, 'F');
+  doc.setTextColor(255, 255, 255);
+  if (conf.logo) addLogoToPDF(doc, conf.logo, W - margin - 32, 6, 30, 30);
+  doc.setFontSize(conf.nome ? 12 : 14); doc.setFont('helvetica', 'bold');
+  doc.text(conf.nome || 'App Kit Podólogo Pro', margin, 12);
+  doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+  doc.text(titulo, margin, 20);
+  if (conf.fono) {
+    doc.setFontSize(8); doc.text(conf.fono, margin, 28);
+    const cidadeData = [conf.cidade, `Data: ${new Date().toLocaleDateString('pt-BR')}`].filter(Boolean).join('   |   ');
+    doc.setFontSize(7.5); doc.text(cidadeData, margin, 36);
+  } else {
+    const info = [conf.cidade, subtitulo || `Data: ${new Date().toLocaleDateString('pt-BR')}`].filter(Boolean).join('   |   ');
+    doc.setFontSize(8); doc.text(info, margin, 28);
+  }
+  return 54;
+}
+
+// ============================
+// GERAÇÃO DE PDF — TESTE
+// ============================
+function gerarPDFTeste(id, score, maxScore, resultado, rec, classe) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const dados = testes[id];
+  const W = 210, margin = 20;
+  let y = 20;
+
+  y = drawPDFHeader(doc, dados.titulo, 'Protocolo de Avaliação Clínica');
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(14); doc.setFont('helvetica', 'bold');
+  doc.text(dados.titulo, margin, y); y += 8;
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+  doc.setTextColor(100, 100, 100);
+  doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, margin, y); y += 12;
+
+  doc.setFillColor(239, 246, 255);
+  doc.rect(margin, y, W - margin * 2, 22, 'F');
+  doc.setDrawColor(29, 78, 216);
+  doc.rect(margin, y, W - margin * 2, 22, 'S');
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(10); doc.setFont('helvetica', 'bold');
+  doc.text(`Score: ${score} / ${maxScore}`, margin + 4, y + 8);
+  doc.setFontSize(11);
+  doc.text(`Resultado: ${resultado}`, margin + 4, y + 16); y += 28;
+
+  doc.setFillColor(248, 248, 248);
+  doc.rect(margin, y, W - margin * 2, 20, 'F');
+  doc.setTextColor(60, 60, 60);
+  doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('Recomendação clínica:', margin + 4, y + 7);
+  doc.setFont('helvetica', 'normal');
+  const recLines = doc.splitTextToSize(rec, W - margin * 2 - 8);
+  doc.text(recLines, margin + 4, y + 13); y += 26;
+
+  doc.setFontSize(10); doc.setFont('helvetica', 'bold');
+  doc.setTextColor(30, 30, 30);
+  doc.text('Detalhamento por item:', margin, y); y += 6;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+
+  testeAtual.respostas.forEach((resp, i) => {
+    if (y > 270) { doc.addPage(); y = 20; }
+    const item = dados.itens[i];
+    doc.setTextColor(80, 80, 80);
+    const qLines = doc.splitTextToSize(`${i+1}. ${item.q}`, W - margin * 2 - 30);
+    doc.text(qLines, margin, y);
+    doc.setTextColor(29, 78, 216); doc.setFont('helvetica', 'bold');
+    doc.text(`-> ${item.opts[resp]}`, W - margin - 35, y);
+    doc.setFont('helvetica', 'normal');
+    y += qLines.length * 4 + 3;
+  });
+
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(7); doc.setTextColor(180, 180, 180);
+    doc.text(`App Kit Podólogo Pro — ${new Date().toLocaleDateString('pt-BR')} — Página ${i}/${pages}`, W/2, 290, { align: 'center' });
+  }
+
+  doc.save(`Avaliacao-Podologia-${dados.titulo.replace(/\s/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
+  showToast('📄 PDF gerado com sucesso!');
+}
+
+// ============================
+// GERAÇÃO DE PDF — FICHA
+// ============================
+function gerarPDFFicha() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const { dados } = fichaAtual;
+  const W = 210, margin = 20;
+  let y = 20;
+
+  y = drawPDFHeader(doc, dados.titulo);
+  dados.campos.forEach(c => {
+    if (y > 265) { doc.addPage(); y = 20; }
+    if (c.type === 'section') {
+      y += 3;
+      doc.setFillColor(239, 246, 255);
+      doc.rect(margin, y, W - margin * 2, 7, 'F');
+      doc.setFontSize(7.5); doc.setFont('helvetica', 'bold'); doc.setTextColor(29, 78, 216);
+      doc.text(c.label.replace(/[^\p{L}\p{N}\s\-\/]/gu, '').trim().toUpperCase(), margin + 3, y + 5);
+      y += 11;
+      return;
+    }
+    const val = (document.getElementById(c.id)?.value || '').trim() || '—';
+    doc.setTextColor(80, 80, 80); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+    doc.text(c.label, margin, y); y += 4;
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 30, 30); doc.setFontSize(9);
+    const lines = doc.splitTextToSize(val, W - margin * 2);
+    doc.text(lines, margin, y);
+    y += lines.length * 4.5 + 4;
+    doc.setDrawColor(220, 220, 220);
+    doc.line(margin, y, W - margin, y); y += 4;
+  });
+
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(7); doc.setTextColor(180, 180, 180);
+    doc.text(`App Kit Podólogo Pro — ${new Date().toLocaleDateString('pt-BR')} — Pág ${i}/${pages}`, W/2, 290, { align: 'center' });
+  }
+
+  doc.save(`${dados.titulo.replace(/\s/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
+  showToast('📄 PDF gerado com sucesso!');
+}
+
+// ============================
+// GERAÇÃO DE PDF — RELATÓRIO
+// ============================
+function gerarRelatorioPDF() {
+  const pacId = document.getElementById('sel-paciente-rel').value;
+  const tipo = document.getElementById('sel-tipo-rel').value;
+  const obs = document.getElementById('txt-obs-rel').value.trim();
+  const conf = getClinicaConfig();
+  const fonoNome = conf.fono || document.getElementById('txt-fono-nome').value.trim() || 'Podólogo(a) Responsável';
+  const tiposLabels = { avaliacao: 'Relatório de Avaliação', evolucao: 'Relatório de Evolução', alta: 'Relatório de Alta', encaminhamento: 'Encaminhamento' };
+
+  const pac = pacId ? pacientes.find(p => p.id == pacId) : null;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, margin = 20;
+  let y = drawPDFHeader(doc, tiposLabels[tipo] || tipo);
+  if (pac) {
+    doc.setFillColor(239, 246, 255);
+    doc.rect(margin, y, W - margin * 2, 28, 'F');
+    doc.setTextColor(30, 30, 30); doc.setFontSize(10); doc.setFont('helvetica', 'bold');
+    doc.text('Dados do Paciente', margin + 4, y + 7);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.text(`Nome: ${pac.nome}`, margin + 4, y + 13);
+    if (pac.nasc) doc.text(`Nascimento: ${pac.nasc}`, margin + 4, y + 19);
+    if (pac.queixa) doc.text(`Queixa: ${pac.queixa}`, margin + 4, y + 25);
+    y += 34;
+  }
+
+  doc.setTextColor(30, 30, 30); doc.setFontSize(10); doc.setFont('helvetica', 'bold');
+  doc.text('Relatório Clínico:', margin, y); y += 7;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(50, 50, 50);
+  const obsLines = doc.splitTextToSize(obs || 'Sem observações registradas.', W - margin * 2);
+  obsLines.forEach(line => {
+    if (y > 260) { doc.addPage(); y = 20; }
+    doc.text(line, margin, y); y += 6;
+  });
+
+  if (pacId) {
+    const hist = JSON.parse(localStorage.getItem(`podo_resultados_${pacId}`) || '[]');
+    if (hist.length > 0) {
+      if (y > 230) { doc.addPage(); y = 20; }
+      y += 8;
+      doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 30, 30);
+      doc.text('Histórico de Avaliações:', margin, y); y += 6;
+      hist.forEach(r => {
+        if (y > 265) { doc.addPage(); y = 20; }
+        doc.setFillColor(239, 246, 255);
+        doc.rect(margin, y, W - margin * 2, 18, 'F');
+        doc.setDrawColor(29, 78, 216);
+        doc.rect(margin, y, W - margin * 2, 18, 'S');
+        doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 30, 30);
+        doc.text(`${r.titulo}`, margin + 3, y + 5);
+        doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80);
+        doc.text(`Data: ${r.data}   |   Score: ${r.score}/${r.maxScore}   |   ${r.texto}`, margin + 3, y + 10);
+        const recLines = doc.splitTextToSize(`Rec: ${r.rec}`, W - margin * 2 - 6);
+        doc.setFontSize(7); doc.text(recLines[0], margin + 3, y + 15);
+        y += 21;
+      });
+      y += 4;
+    }
+
+    const histFichas = JSON.parse(localStorage.getItem(`podo_fichas_evolucao_${pacId}`) || '[]');
+    if (histFichas.length > 0) {
+      if (y > 230) { doc.addPage(); y = 20; }
+      y += 8;
+      doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 30, 30);
+      doc.text('Evoluções Registradas no Prontuário:', margin, y); y += 6;
+      histFichas.forEach(h => {
+        const linhas = Object.entries(h.campos).map(([k, v]) => `${k}: ${v}`);
+        const texto = doc.splitTextToSize(linhas.join('  |  '), W - margin * 2 - 6);
+        const alturaBox = 10 + texto.length * 5;
+        if (y > 290 - alturaBox) { doc.addPage(); y = 20; }
+        doc.setFillColor(239, 246, 255);
+        doc.rect(margin, y, W - margin * 2, alturaBox, 'F');
+        doc.setDrawColor(29, 78, 216);
+        doc.rect(margin, y, W - margin * 2, alturaBox, 'S');
+        doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(30, 30, 30);
+        doc.text(`${h.data} ${h.hora || ''}`, margin + 3, y + 6);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(80, 80, 80);
+        texto.forEach((linha, i) => doc.text(linha, margin + 3, y + 11 + i * 5));
+        y += alturaBox + 3;
+      });
+      y += 4;
+    }
+  }
+
+  y += 15;
+  doc.setDrawColor(29, 78, 216);
+  doc.line(margin, y, margin + 60, y); y += 5;
+  doc.setTextColor(80, 80, 80); doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+  doc.text(fonoNome, margin, y);
+
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(7); doc.setTextColor(180, 180, 180);
+    doc.text(`App Kit Podólogo Pro — ${new Date().toLocaleDateString('pt-BR')} — Pág ${i}/${pages}`, W/2, 290, { align: 'center' });
+  }
+
+  doc.save(`${tiposLabels[tipo]?.replace(/\s/g,'-') || 'Relatorio'}-${new Date().toISOString().slice(0,10)}.pdf`);
+  showToast('📄 Relatório gerado!');
+}
+
+// ============================
+// BACKUP / RESTORE
+// ============================
+function exportarBackupFono(){
+  const backup = {};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k.startsWith('podo_')) backup[k]=localStorage.getItem(k);
+  }
+  const blob=new Blob([JSON.stringify(backup)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`backup-app-podologo-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function importarBackupFono(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const backup=JSON.parse(e.target.result);
+      const keys=Object.keys(backup);
+      if(!keys.some(k=>k.startsWith('podo_'))) throw new Error();
+      keys.filter(k=>k.startsWith('podo_')).forEach(k=>localStorage.removeItem(k));
+      keys.forEach(k=>{ if(k.startsWith('podo_')) localStorage.setItem(k,backup[k]); });
+      alert('Backup restaurado com sucesso! O app sera recarregado.');
+      location.reload();
+    } catch{
+      alert('Arquivo invalido. Use apenas arquivos de backup gerados por este app.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ============================
+// INIT
+// ============================
+window.onload = () => {
+  atualizarStats();
+  renderPacientes();
+  atualizarSelectPacientes();
+  carregarConfClinica();
+
+  const listFichas = document.querySelector('#screen-fichas > .space-y-3');
+  if (listFichas) listFichas.id = 'lista-fichas-block';
+};
+</script>
+</body>
+</html>
