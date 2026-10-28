@@ -659,8 +659,9 @@
         // a Hotmart só devolve no webhook o que vai em sck/src
         if (saved.utm_content && !u.searchParams.has("sck")) u.searchParams.set("sck", saved.utm_content);
         if (!u.searchParams.has("src")) u.searchParams.set("src", sid);
-      } else if (!u.searchParams.has("click_id")) {
-        u.searchParams.set("click_id", sid);
+      } else if (saved.utm_content) {
+        // a Lowify troca o click_id pelo dela, mas devolve o utm_content intacto: o id da visita vai depois de "::"
+        u.searchParams.set("utm_content", saved.utm_content.split("::")[0] + "::" + sid);
       }
       a.href = u.toString();
     };
