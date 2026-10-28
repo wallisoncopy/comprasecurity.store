@@ -324,8 +324,9 @@ footer{padding:20px;text-align:center;font-size:11.5px;color:var(--cinza);backgr
     touch();
 
     var send = function (type) {
+      var fbp = (document.cookie.match(/(?:^|; )_fbp=([^;]+)/) || [])[1];
       var body = JSON.stringify({ sid: sid, type: type, page: location.host + location.pathname,
-        utm_content: saved.utm_content, utm_source: saved.utm_source });
+        utm_content: saved.utm_content, utm_source: saved.utm_source, fbclid: saved.fbclid, fbp: fbp });
       try {
         if (!(navigator.sendBeacon && navigator.sendBeacon(ENDPOINT, body))) {
           fetch(ENDPOINT, { method: "POST", body: body, keepalive: true, mode: "no-cors" });
