@@ -1049,5 +1049,32 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   defer
 ></script>
 
+<!-- trackeamento: repassa UTMs para o checkout Lowify -->
+<script>
+(function () {
+  try {
+    var KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "src", "sck"];
+    var params = new URLSearchParams(location.search), saved = {};
+    try { saved = JSON.parse(localStorage.getItem("trk_utm") || "{}"); } catch (e) {}
+    if (KEYS.some(function (k) { return params.get(k); })) {
+      saved = {};
+      KEYS.forEach(function (k) { if (params.get(k)) saved[k] = params.get(k); });
+      try { localStorage.setItem("trk_utm", JSON.stringify(saved)); } catch (e) {}
+    }
+    var fix = function (a) {
+      var u = new URL(a.href);
+      KEYS.forEach(function (k) { if (saved[k] && !u.searchParams.has(k)) u.searchParams.set(k, saved[k]); });
+      a.href = u.toString();
+    };
+    var run = function () { document.querySelectorAll('a[href*="lowify.com.br"]').forEach(fix); };
+    run();
+    document.addEventListener("DOMContentLoaded", run);
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest('a[href*="lowify.com.br"]');
+      if (a) fix(a);
+    }, true);
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>
