@@ -274,22 +274,29 @@
   try {
     var ENDPOINT = "https://trackeamento.wallisoncopy.workers.dev/t";
     var KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "src", "sck"];
-    var params = new URLSearchParams(location.search), saved = {};
-    try { saved = JSON.parse(localStorage.getItem("trk_utm") || "{}"); } catch (e) {}
+    // UTM e id da visita guardados POR PÁGINA: várias ofertas dividem o mesmo domínio e a UTM de
+    // um anúncio do fono não pode ir para uma venda do psico. A UTM vale 7 dias.
+    var PAGE = location.pathname.replace(/\/+$/, "") || "/";
+    var UTM_KEY = "trk_utm:" + PAGE, SID_KEY = "trk_sid:" + PAGE;
+    var params = new URLSearchParams(location.search), saved = {}, now = Date.now();
+    try {
+      var st = JSON.parse(localStorage.getItem(UTM_KEY) || "{}");
+      if (st.t && now - st.t < 7 * 86400e3) saved = st.v || {};
+    } catch (e) {}
     if (KEYS.some(function (k) { return params.get(k); })) {
       saved = {};
       KEYS.forEach(function (k) { if (params.get(k)) saved[k] = params.get(k); });
-      try { localStorage.setItem("trk_utm", JSON.stringify(saved)); } catch (e) {}
+      try { localStorage.setItem(UTM_KEY, JSON.stringify({ v: saved, t: now })); } catch (e) {}
     }
 
     // id da visita: mantido por 30 min de inatividade
-    var sid, now = Date.now();
+    var sid;
     try {
-      var s = JSON.parse(localStorage.getItem("trk_sid") || "{}");
+      var s = JSON.parse(localStorage.getItem(SID_KEY) || "{}");
       sid = s.id && now - s.t < 30 * 60e3 ? s.id : null;
     } catch (e) {}
     sid = sid || (Math.random().toString(36).slice(2) + now.toString(36)).slice(0, 20);
-    var touch = function () { try { localStorage.setItem("trk_sid", JSON.stringify({ id: sid, t: Date.now() })); } catch (e) {} };
+    var touch = function () { try { localStorage.setItem(SID_KEY, JSON.stringify({ id: sid, t: Date.now() })); } catch (e) {} };
     touch();
 
     var send = function (type) {
