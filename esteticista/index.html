@@ -1049,7 +1049,7 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   defer
 ></script>
 
-<!-- trackeamento: repassa UTMs para o checkout Lowify + registra visita -->
+<!-- trackeamento: repassa UTMs para o checkout Lowify/Hotmart + registra visita -->
 <script>
 (function () {
   try {
@@ -1090,17 +1090,24 @@ document.querySelectorAll('.faq-item').forEach(item=>{
       if (++pings >= 30) clearInterval(timer); // para após 15 min
     }, 30000);
 
+    var CHECKOUT = 'a[href*="lowify.com.br"], a[href*="hotmart.com"]';
     var fix = function (a) {
       var u = new URL(a.href);
       KEYS.forEach(function (k) { if (saved[k] && !u.searchParams.has(k)) u.searchParams.set(k, saved[k]); });
-      if (!u.searchParams.has("click_id")) u.searchParams.set("click_id", sid);
+      if (/hotmart\.com/.test(u.host)) {
+        // a Hotmart só devolve no webhook o que vai em sck/src
+        if (saved.utm_content && !u.searchParams.has("sck")) u.searchParams.set("sck", saved.utm_content);
+        if (!u.searchParams.has("src")) u.searchParams.set("src", sid);
+      } else if (!u.searchParams.has("click_id")) {
+        u.searchParams.set("click_id", sid);
+      }
       a.href = u.toString();
     };
-    var run = function () { document.querySelectorAll('a[href*="lowify.com.br"]').forEach(fix); };
+    var run = function () { document.querySelectorAll(CHECKOUT).forEach(fix); };
     run();
     document.addEventListener("DOMContentLoaded", run);
     document.addEventListener("click", function (e) {
-      var a = e.target.closest && e.target.closest('a[href*="lowify.com.br"]');
+      var a = e.target.closest && e.target.closest(CHECKOUT);
       if (a) { fix(a); send("checkout"); }
     }, true);
   } catch (e) {}
