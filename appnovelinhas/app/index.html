@@ -149,9 +149,8 @@
 </div></nav>
 <div class="toast" id="toast"></div>
 
-<script src="catalogo.js"></script>
 <script>
-(function(){
+window.__app=function(){
   var C=window.CATALOGO||[], CFG=window.APP_CONFIG||{};
   var $=function(id){return document.getElementById(id)};
   var store={get:function(k,d){try{var v=localStorage.getItem('nv_'+k);return v?JSON.parse(v):d}catch(e){return d}},
@@ -262,7 +261,11 @@
   $('mod').addEventListener('click',function(e){if(e.target===$('mod'))$('mod').classList.remove('on')});
 
   lerLink().then(render);
-})();
+};
+/* catálogo sempre fresco: o Cloudflare guarda cópia por 4h, o carimbo de tempo evita versão velha */
+(function(){var sc=document.createElement('script');sc.src='catalogo.js?t='+Date.now();sc.onload=function(){window.__app()};
+  sc.onerror=function(){document.getElementById('tela').innerHTML='<p class="empty">Não foi possível carregar. Verifique sua internet e tente de novo.</p>'};
+  document.head.appendChild(sc)})();
 </script>
 </body>
 </html>
