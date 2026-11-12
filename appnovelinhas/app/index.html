@@ -165,7 +165,8 @@
   function liberada(s){return premium||lib.indexOf(s.id)>=0}
   function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on')},2200)}
-  function pct(s){var p=prog[s.id];return p&&p.d?Math.min(100,p.t/p.d*100):0}
+  function eps(s){return s.episodios||[]}
+  function pct(s){var p=prog[s.id],n=eps(s).length||1;if(!p||!p.d)return 0;if(p.fim)return 100;return Math.min(100,((p.e||0)+p.t/p.d)/n*100)}
 
   /* ---- acesso pelo link recebido: ?acesso=CODIGO  ou  ?s=ID&k=CODIGO ---- */
   function lerLink(){
@@ -220,21 +221,29 @@
       '<button class="bplay" data-play="'+s.id+'">'+(liberada(s)?'<svg width="16" height="16" viewBox="0 0 24 24" fill="#111"><path d="M7 4v16l13-8z"/></svg>'+(p>1&&p<97?'Continuar':'Assistir agora'):'🔒 Desbloquear')+'</button>'+
       '<button class="bfav" data-fav="'+s.id+'">'+(f?'✓ Na minha lista':'+ Minha lista')+'</button>'+
       '<p class="sin">'+esc(s.sinopse||'')+'</p>'+
-      '<p class="ep-t">Episódios</p><button class="ep" data-play="'+s.id+'"><img src="'+esc(s.capa)+'" alt=""><div><b>Completo</b><span>'+esc(s.duracao||'')+(p>1?' · '+Math.round(p)+'% assistido':'')+'</span></div><span class="pl"><svg width="14" height="14" viewBox="0 0 24 24" fill="#111"><path d="M7 4v16l13-8z"/></svg></span></button></div>';
+      '<p class="ep-t">Episódios</p>'+eps(s).map(function(ep,i){var pr=prog[s.id],at=pr&&(pr.e||0)===i&&!pr.fim;
+        return '<button class="ep" style="margin-bottom:8px" data-play="'+s.id+'" data-ep="'+i+'"><img src="'+esc(s.capa)+'" alt=""><div><b>'+esc(ep.titulo||('Episódio '+(i+1)))+'</b><span>'+esc(ep.duracao||'')+(at?' · assistindo':'')+'</span></div><span class="pl">'+(liberada(s)?'<svg width="14" height="14" viewBox="0 0 24 24" fill="#111"><path d="M7 4v16l13-8z"/></svg>':'🔒')+'</span></button>'}).join('')+'</div>';
     $('det').classList.add('on'); $('det').scrollTop=0;
   }
 
-  var vid=$('vid'), tocando=null, salvo=0;
-  function play(id){
+  var vid=$('vid'), tocando=null, epAtual=0, salvo=0;
+  function play(id,e){
     var s=C.find(function(x){return x.id===id}); if(!s) return;
     if(!liberada(s)){$('mod').classList.add('on');return}
-    tocando=s; $('ply-err').style.display='none'; vid.style.display='';
-    if(!/^https?:|\.mp4$/i.test(s.video)){vid.style.display='none';$('ply-err').style.display='block';$('ply').classList.add('on');return}
-    vid.src=s.video; var p=prog[s.id];
-    vid.onloadedmetadata=function(){if(p&&p.t&&p.t<vid.duration-15)vid.currentTime=p.t};
-    $('ply').classList.add('on'); vid.play().catch(function(){});
+    var p=prog[s.id], lista=eps(s);
+    if(e==null||e==='') e=(p&&!p.fim)?(p.e||0):0; e=+e;
+    var ep=lista[e];
+    tocando=s; epAtual=e; $('ply-err').style.display='none'; vid.style.display='';
+    $('ply').classList.add('on');
+    if(!ep||!/^https?:|\.mp4$/i.test(ep.video)){vid.style.display='none';$('ply-err').style.display='block';return}
+    vid.src=ep.video;
+    vid.onloadedmetadata=function(){if(p&&!p.fim&&(p.e||0)===e&&p.t&&p.t<vid.duration-15)vid.currentTime=p.t};
+    vid.play().catch(function(){});
   }
-  function salvar(){if(!tocando||!vid.duration)return;prog[tocando.id]={t:vid.currentTime,d:vid.duration};store.set('prog',prog)}
+  function salvar(){if(!tocando||!vid.duration)return;prog[tocando.id]={e:epAtual,t:vid.currentTime,d:vid.duration};store.set('prog',prog)}
+  vid.addEventListener('ended',function(){if(!tocando)return;var n=eps(tocando).length;
+    if(epAtual+1<n){prog[tocando.id]={e:epAtual+1,t:0,d:1};store.set('prog',prog);play(tocando.id,epAtual+1)}
+    else{prog[tocando.id]={e:epAtual,t:0,d:1,fim:true};store.set('prog',prog);toast('Fim da novelinha ❤️')}});
   vid.addEventListener('timeupdate',function(){if(Date.now()-salvo>4000){salvo=Date.now();salvar()}});
   vid.addEventListener('pause',salvar);
   vid.addEventListener('error',function(){if(tocando){vid.style.display='none';$('ply-err').style.display='block'}});
@@ -242,7 +251,7 @@
 
   document.addEventListener('click',function(e){
     var t=e.target.closest('[data-id],[data-play],[data-fav],[data-back],[data-tab]'); if(!t) return;
-    if(t.dataset.play){play(t.dataset.play)}
+    if(t.dataset.play){play(t.dataset.play,t.dataset.ep)}
     else if(t.dataset.fav){var i=fav.indexOf(t.dataset.fav);if(i>=0)fav.splice(i,1);else{fav.push(t.dataset.fav);toast('Salva na sua lista')}store.set('fav',fav);abrirDet(t.dataset.fav)}
     else if(t.hasAttribute('data-back')){$('det').classList.remove('on');render()}
     else if(t.dataset.tab){tab=t.dataset.tab;document.querySelectorAll('.nav button').forEach(function(b){b.classList.toggle('on',b===t)});render();scrollTo(0,0)}
