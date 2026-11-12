@@ -3,7 +3,7 @@
    Para adicionar uma novelinha nova: copie um bloco { ... } e
    preencha. A mais nova fica em PRIMEIRO na lista (vira destaque).
    - capa:   imagem vertical 9:16 em capas/
-   - video:  link do mp4 (Cloudflare R2)
+   - episodios: lista de { titulo, duracao, video } (mp4 no R2: videos.comprasecurity.store/{id}/epN.mp4)
    - chave:  sha256 do código individual (link de quem comprou só ela)
    ============================================================ */
 window.APP_CONFIG = {
@@ -25,7 +25,10 @@ window.CATALOGO = [
     novo: true,
     sinopse: "Humilhada e expulsa pelo próprio noivo, a herdeira da Casa Visser perde o título, o lar e tudo o que tinha numa única noite de chuva. Sem ter para onde ir, ela aceita o único trabalho que restou: ser babá do filho teimoso do temido Lorde Dragão — um homem frio que avisa logo no primeiro dia que não tem interesse em romance. Mas o destino tinha outros planos...",
     capa: "capas/baba-por-contrato.jpg",
-    video: "VIDEO_URL_BABA",
+    episodios: [
+      { titulo: "Episódio 1", duracao: "42 min", video: "https://videos.comprasecurity.store/baba-por-contrato/ep1.mp4" },
+      { titulo: "Episódio 2", duracao: "36 min", video: "https://videos.comprasecurity.store/baba-por-contrato/ep2.mp4" }
+    ],
     chave: "1421ed8507066361d6c27980e962242cee9ef66168786a8c2233f7595ea65709"
   }
 ];
