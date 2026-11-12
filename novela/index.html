@@ -1,7 +1,16 @@
 <!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>Novelinhas</title>
-<!-- atalho fixo: aponta para a série do momento. Trocar só o DESTINO quando lançar série nova. -->
-<script>var DESTINO="https://comprasecurity.store/novelinhas/baba-por-contrato/";
-location.replace(DESTINO+"?utm_source=instagram&utm_medium=organico&utm_content=bio-novelinhas");</script>
-<meta http-equiv="refresh" content="1;url=https://comprasecurity.store/novelinhas/baba-por-contrato/?utm_source=instagram&utm_medium=organico&utm_content=bio-novelinhas">
+<!-- link FIXO da bio/legenda: vai sempre para a página de vendas da série MAIS NOVA do app
+     (primeira da lista em appnovelinhas/app/catalogo.js). Ninguém precisa trocar nada a cada lançamento. -->
+<script>
+(function(){
+  var UTM="?utm_source=instagram&utm_medium=organico&utm_content=bio-novelinhas", RESERVA="https://comprasecurity.store/novelinhas/baba-por-contrato/";
+  function ir(u){location.replace(u+UTM)}
+  var t=setTimeout(function(){ir(RESERVA)},4000);
+  var sc=document.createElement('script'); sc.src='/appnovelinhas/app/catalogo.js?t='+Date.now();
+  sc.onload=function(){clearTimeout(t);var s=(window.CATALOGO||[])[0];ir(s?'https://comprasecurity.store/novelinhas/'+s.id+'/':RESERVA)};
+  sc.onerror=function(){clearTimeout(t);ir(RESERVA)};
+  document.head.appendChild(sc);
+})();
+</script>
 </head><body style="background:#0f0f1a"></body></html>
