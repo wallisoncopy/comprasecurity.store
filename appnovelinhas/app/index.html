@@ -115,7 +115,7 @@
 <div class="app">
   <header class="hdr">
     <div class="logo"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M7 4v16l13-8z"/></svg></i><span id="nome">Novelinhas</span></div>
-    <span class="pill" id="plano">Visitante</span>
+    <button class="pill" id="plano">Entrar</button>
   </header>
   <main id="tela"></main>
 </div>
@@ -127,7 +127,7 @@
 <div class="ply" id="ply">
   <button class="back" id="ply-x" aria-label="Voltar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
   <video id="vid" controls playsinline preload="metadata"></video>
-  <p class="ply-err" id="ply-err">Este vídeo ainda está sendo preparado. Volte em instantes 🙏</p>
+  <p class="ply-err" id="ply-err">Não foi possível carregar este episódio agora. Verifique sua internet e tente de novo 🙏</p>
 </div>
 
 <!-- modal premium -->
@@ -139,6 +139,21 @@
     <div class="pp">R$ 10,00<span style="font-size:16px">/mês</span></div>
     <a id="mod-buy" href="#" target="_blank" rel="noopener">Quero o Premium</a>
     <button id="mod-x">Agora não</button>
+  </div>
+</div>
+
+<!-- modal login (e-mail da compra) -->
+<div class="mod" id="log">
+  <div class="mod-b">
+    <h3>Entrar no app</h3>
+    <p>Digite o <b>e-mail que você usou na compra</b> para liberar suas novelinhas.</p>
+    <form id="log-f" autocomplete="on">
+      <input id="log-e" type="email" inputmode="email" autocomplete="email" required placeholder="seuemail@exemplo.com"
+        style="width:100%;padding:15px 14px;border-radius:12px;border:1px solid #3a3a55;background:#0f0f1c;color:#fff;font-size:16px;font-family:inherit;margin-bottom:10px">
+      <p id="log-msg" style="font-size:13px;color:#ff8a9a;margin:0 0 10px;min-height:0"></p>
+      <button type="submit" id="log-b" style="display:block;width:100%;padding:15px;border-radius:12px;background:#d4a853;color:#1a1a2e;font-weight:800;text-transform:uppercase;font-size:14px;margin-bottom:10px">Entrar</button>
+    </form>
+    <button id="log-x">Agora não</button>
   </div>
 </div>
 
@@ -155,28 +170,54 @@ window.__app=function(){
   var $=function(id){return document.getElementById(id)};
   var store={get:function(k,d){try{var v=localStorage.getItem('nv_'+k);return v?JSON.parse(v):d}catch(e){return d}},
              set:function(k,v){try{localStorage.setItem('nv_'+k,JSON.stringify(v))}catch(e){}}};
-  var premium=store.get('premium',false), lib=store.get('lib',[]), fav=store.get('fav',[]), prog=store.get('prog',{});
+  var API=CFG.api;
+  var tok=store.get('tok',''), premium=false, lib=[], links={}, linksAte=0, fav=store.get('fav',[]), prog=store.get('prog',{});
   var tab='inicio', atual=null;
   $('nome').textContent=CFG.nome||'Novelinhas';
   $('mod-buy').href=CFG.checkoutPremium||'#';
+  // limpa dados da trava antiga (códigos no link)
+  try{localStorage.removeItem('nv_premium');localStorage.removeItem('nv_lib')}catch(e){}
 
-  function sha(t){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')})}
   function liberada(s){return premium||lib.indexOf(s.id)>=0}
+  function todasKeys(){var k=[];C.forEach(function(s){eps(s).forEach(function(ep){k.push(ep.video)})});return k}
+  function aplicar(r){premium=!!r.premium;lib=r.series||[];links=r.links||{};linksAte=Date.now()+5*3600e3}
+  function sair(msg){tok='';store.set('tok','');premium=false;lib=[];links={};render();if(msg)toast(msg)}
+  // consulta o servidor: acesso atual + links assinados dos vídeos liberados
+  function atualizar(){
+    if(!tok) return Promise.resolve();
+    return fetch(API+'/acesso?t='+encodeURIComponent(tok)+'&keys='+encodeURIComponent(todasKeys().join(',')))
+      .then(function(r){return r.json()}).then(function(r){if(r.ok)aplicar(r);else if(r.sair)sair(r.erro)})
+      .catch(function(){});
+  }
+  function abrirLogin(msg){$('log-msg').textContent=msg||'';$('log').classList.add('on');setTimeout(function(){$('log-e').focus()},150)}
+  $('log-f').addEventListener('submit',function(ev){
+    ev.preventDefault(); var b=$('log-b'); b.disabled=true; b.textContent='Verificando...'; $('log-msg').textContent='';
+    fetch(API+'/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('log-e').value})})
+      .then(function(r){return r.json()}).then(function(r){
+        if(!r.ok){$('log-msg').textContent=r.erro||'Não foi possível entrar.';return}
+        tok=r.token; store.set('tok',tok); $('log').classList.remove('on');
+        return atualizar().then(function(){render();toast(premium?'Premium liberado ✨':'Novelinha liberada ✨')});
+      }).catch(function(){$('log-msg').textContent='Sem conexão. Tente de novo.'})
+      .then(function(){b.disabled=false;b.textContent='Entrar'});
+  });
+  $('log-x').addEventListener('click',function(){$('log').classList.remove('on')});
+  $('log').addEventListener('click',function(e){if(e.target===$('log'))$('log').classList.remove('on')});
+  $('plano').addEventListener('click',function(){
+    if(!tok) return abrirLogin();
+    if(confirm('Sair da sua conta neste aparelho?')) sair('Você saiu da conta');
+  });
   function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on')},2200)}
   function eps(s){return s.episodios||[]}
   function pct(s){var p=prog[s.id],n=eps(s).length||1;if(!p||!p.d)return 0;if(p.fim)return 100;return Math.min(100,((p.e||0)+p.t/p.d)/n*100)}
 
-  /* ---- acesso pelo link recebido: ?acesso=CODIGO  ou  ?s=ID&k=CODIGO ---- */
+  /* ---- link de entrega da Lowify (?acesso= / ?s=): só abre o login ---- */
   function lerLink(){
-    var q=new URLSearchParams(location.search), jobs=[];
-    var a=(q.get('acesso')||'').trim().toUpperCase();
-    if(a) jobs.push(sha(a).then(function(h){if(h===CFG.premium){premium=true;store.set('premium',true);toast('Premium liberado ✨')}}));
-    var sid=q.get('s'), k=(q.get('k')||'').trim().toUpperCase();
-    if(sid&&k){var s=C.find(function(x){return x.id===sid});
-      if(s) jobs.push(sha(k).then(function(h){if(h===s.chave&&lib.indexOf(s.id)<0){lib.push(s.id);store.set('lib',lib);toast('Novelinha liberada ✨')}}));}
+    var q=new URLSearchParams(location.search);
+    var veioDaCompra=q.has('acesso')||q.has('s');
     if(q.toString()) history.replaceState(null,'',location.pathname+location.hash);
-    return Promise.all(jobs);
+    if(veioDaCompra&&!tok) setTimeout(function(){abrirLogin()},300);
+    return atualizar();
   }
 
   function card(s){
@@ -190,7 +231,7 @@ window.__app=function(){
   var soon='<div class="soon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>Novas novelinhas em breve</div>';
 
   function render(){
-    $('plano').textContent=premium?'Premium':(lib.length?'Meu acesso':'Visitante');
+    $('plano').textContent=!tok?'Entrar':(premium?'Premium':'Meu acesso');
     $('plano').className='pill'+(premium?' vip':'');
     var h='';
     if(tab==='inicio'){
@@ -228,14 +269,16 @@ window.__app=function(){
   var vid=$('vid'), tocando=null, epAtual=0, salvo=0;
   function play(id,e){
     var s=C.find(function(x){return x.id===id}); if(!s) return;
-    if(!liberada(s)){$('mod').classList.add('on');return}
+    if(!liberada(s)){ if(!tok) abrirLogin('Já comprou? Entre com o e-mail da compra.'); else $('mod').classList.add('on'); return }
+    // links assinados expiram: renova antes de tocar se estiverem velhos
+    if(Date.now()>linksAte){ return atualizar().then(function(){ if(liberada(s)) play(id,e) }) }
     var p=prog[s.id], lista=eps(s);
     if(e==null||e==='') e=(p&&!p.fim)?(p.e||0):0; e=+e;
-    var ep=lista[e];
+    var ep=lista[e], src=ep&&links[ep.video];
     tocando=s; epAtual=e; $('ply-err').style.display='none'; vid.style.display='';
     $('ply').classList.add('on');
-    if(!ep||!/^https?:|\.mp4$/i.test(ep.video)){vid.style.display='none';$('ply-err').style.display='block';return}
-    vid.src=ep.video;
+    if(!src){vid.style.display='none';$('ply-err').style.display='block';return}
+    vid.src=src;
     vid.onloadedmetadata=function(){if(p&&!p.fim&&(p.e||0)===e&&p.t&&p.t<vid.duration-15)vid.currentTime=p.t};
     vid.play().catch(function(){});
   }
