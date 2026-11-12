@@ -11,7 +11,7 @@ window.APP_CONFIG = {
   // sha256 do código PREMIUM (libera todas as novelinhas)
   premium: "6f36180240f85572a5b0bff862c740dad1aaf3195667c56e2ea5eefa9f4bd19e",
   // checkout do Premium R$10 (upsell para quem comprou só uma)
-  checkoutPremium: "https://pay.lowify.com.br/checkout?product_id=LOWIFY_PREMIUM"
+  checkoutPremium: "https://pay.lowify.com.br/checkout.php?product_id=xAWXvo"
 };
 
 window.CATALOGO = [
