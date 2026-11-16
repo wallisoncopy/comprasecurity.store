@@ -21,13 +21,14 @@ window.CATALOGO = [
     titulo: "O Bobinho Cativo do Dragão",
     subtitulo: "A Noiva do Rei das Feras",
     generos: ["Fantasia", "Romance"],
-    duracao: "21 min",
+    duracao: "1h29",
     idioma: "Dublado",
     novo: true,
     sinopse: "Humilhada pela própria família por não ter magia, Sylph é obrigada a se casar no lugar da irmã com Astur, o temido Rei das Feras, envenenado e à beira da morte. Todos acham que ela vai virar viúva... mas a garota guarda um poder capaz de mudar o destino dos dois.",
     capa: "capas/o-bobinho-cativo-do-dragao.jpg",
     episodios: [
-      { titulo: "Episódios 1 a 8", duracao: "21 min", video: "o-bobinho-cativo-do-dragao/ep1.mp4" }
+      { titulo: "Episódio 1", duracao: "45 min", video: "o-bobinho-cativo-do-dragao/ep1.mp4" },
+      { titulo: "Episódio 2", duracao: "45 min", video: "o-bobinho-cativo-do-dragao/ep2.mp4" }
     ]
   },
   {
