@@ -12,8 +12,9 @@ window.APP_CONFIG = {
   nome: "Novelinhas",
   // servidor de acesso (login por e-mail + vídeos assinados)
   api: "https://novelinhas.wallisoncopy.workers.dev",
-  // checkout do Premium R$10 (upsell para quem comprou só uma)
-  checkoutPremium: "https://pay.lowify.com.br/checkout.php?product_id=xAWXvo"
+  // checkout do Premium VITALÍCIO R$15,90 (pagamento único) — oferta do app desde 16/11
+  // (o mensal R$10 xAWXvo segue valendo para quem já assinou)
+  checkoutPremium: "https://pay.lowify.com.br/checkout?product_id=890QER"
 };
 
 window.CATALOGO = [
