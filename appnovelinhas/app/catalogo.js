@@ -17,13 +17,27 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "o-bobinho-cativo-do-dragao",
+    titulo: "O Bobinho Cativo do Dragão",
+    subtitulo: "A Noiva do Rei das Feras",
+    generos: ["Fantasia", "Romance"],
+    duracao: "21 min",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Humilhada pela própria família por não ter magia, Sylph é obrigada a se casar no lugar da irmã com Astur, o temido Rei das Feras, envenenado e à beira da morte. Todos acham que ela vai virar viúva... mas a garota guarda um poder capaz de mudar o destino dos dois.",
+    capa: "capas/o-bobinho-cativo-do-dragao.jpg",
+    episodios: [
+      { titulo: "Episódios 1 a 8", duracao: "21 min", video: "o-bobinho-cativo-do-dragao/ep1.mp4" }
+    ]
+  },
+  {
     id: "meu-marido-fez-o-ceu-se-render",
     titulo: "Meu Marido Fez o Céu se Render",
     subtitulo: "O Rei dos Demônios",
     generos: ["Fantasia", "Romance"],
     duracao: "1h19",
     idioma: "Dublado",
-    novo: true,
+    novo: false,
     sinopse: "Ele vive escondido como um simples ferreiro, mas é Diablo, o Rei de Todos os Demônios. Seis anos depois de salvar uma anja de seis asas, ela volta com uma surpresa: os gêmeos dele. Agora ela precisa de um marido — e o céu inteiro vai descobrir quem ele realmente é...",
     capa: "capas/meu-marido-fez-o-ceu-se-render.jpg",
     episodios: [
