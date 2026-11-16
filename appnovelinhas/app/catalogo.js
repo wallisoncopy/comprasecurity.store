@@ -19,6 +19,21 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "troquei-de-noivo-e-virei-a-rainha-da-mafia",
+    titulo: "Troquei de Noivo e Virei a Rainha da Máfia",
+    subtitulo: "Renascida no Casamento",
+    generos: ["Romance", "Máfia", "Vingança"],
+    duracao: "4 min",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Na vida passada, ela se casou com o homem que todos amavam, enquanto a irmã ficou com o Don mais temido da cidade — e as duas tiveram finais trágicos. Agora ela acordou um dia antes do casamento... e decidiu trocar de noivo. Determinada a se vingar, ela entra no submundo da máfia para construir seu império e conquistar o homem que todos temem.",
+    capa: "capas/troquei-de-noivo-e-virei-a-rainha-da-mafia.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=19cGpi",
+    episodios: [
+      { titulo: "Episódio 1", duracao: "4 min", video: "troquei-de-noivo-e-virei-a-rainha-da-mafia/ep1.mp4" }
+    ]
+  },
+  {
     id: "o-bobinho-cativo-do-dragao",
     titulo: "O Bobinho Cativo do Dragão",
     subtitulo: "A Noiva do Rei das Feras",
