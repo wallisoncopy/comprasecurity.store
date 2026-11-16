@@ -149,13 +149,13 @@
 <!-- modal premium -->
 <div class="mod" id="mod">
   <div class="mod-b">
-    <span class="pb" id="mod-pb">Upgrade Premium</span>
+    <span class="pb" id="mod-pb">Premium Vitalício</span>
     <h3 id="mod-h">Libere TODAS as novelinhas</h3>
     <button id="mod-in" class="jacomprei" style="display:none">✅ Já comprei — <u>entrar com meu e-mail</u></button>
     <div id="mod-sug"></div>
-    <p id="mod-p">Acesso a todas as novelinhas do app, inclusive as novas que forem entrando. Cancele quando quiser.</p>
-    <div class="pp">R$ 10,00<span style="font-size:16px">/mês</span></div>
-    <a id="mod-buy" href="#" target="_blank" rel="noopener">Quero o Premium · todas as séries</a>
+    <p id="mod-p">Acesso a todas as novelinhas do app, inclusive as novas que forem entrando. Pagamento único, para sempre.</p>
+    <div class="pp">R$ 15,90<span style="font-size:16px"> · 1x</span></div>
+    <a id="mod-buy" href="#" target="_blank" rel="noopener">Quero o Vitalício · todas as séries</a>
     <a id="mod-one" class="alt" href="#" target="_blank" rel="noopener" style="display:none">Só esta série por R$ 5,00</a>
     <button id="mod-x">Agora não</button>
   </div>
@@ -199,10 +199,10 @@ window.__app=function(){
   /* oferta (bottom-sheet): s = série trancada (opcional), fim = série que acabou de terminar */
   function oferta(s,fim){
     var sug=s&&fim?'<div class="sug"><img src="'+esc(s.capa)+'" alt=""><div><b>'+esc(s.titulo)+'</b><span>'+esc(s.subtitulo||'')+' · '+esc(s.duracao||'')+' · '+esc(s.idioma||'')+'</span></div></div>':'';
-    $('mod-pb').textContent=fim?'Gostou? Tem mais 😍':(s?'🔒 Novelinha bloqueada':'Upgrade Premium');
+    $('mod-pb').textContent=fim?'Gostou? Tem mais 😍':(s?'🔒 Novelinha bloqueada':'Premium Vitalício');
     $('mod-h').textContent=fim?'Assista também':(s?s.titulo:'Libere TODAS as novelinhas');
     $('mod-sug').innerHTML=sug;
-    $('mod-p').textContent=s?'Com o Premium você libera esta e TODAS as outras novelinhas do app, inclusive os lançamentos. Cancele quando quiser.':'Acesso a todas as novelinhas do app, inclusive as novas que forem entrando. Cancele quando quiser.';
+    $('mod-p').textContent=s?'Com o Vitalício você libera esta e TODAS as outras novelinhas do app, inclusive os lançamentos. Pagamento único, para sempre.':'Acesso a todas as novelinhas do app, inclusive as novas que forem entrando. Pagamento único, para sempre.';
     $('mod-buy').href=ck(CFG.checkoutPremium,fim?'fim':(s?'bloqueada':'faixa'));
     var one=$('mod-one'); if(s&&s.checkout){one.href=ck(s.checkout,fim?'fim':'bloqueada');one.textContent=(fim?'Só ':'Só esta série ')+'por R$ 5,00 (pagamento único)';one.style.display='block'}else one.style.display='none';
     $('mod-in').style.display=tok?'none':'block';
@@ -277,7 +277,7 @@ window.__app=function(){
         '<div class="chips">'+[d.idioma,d.duracao].concat(d.generos||[]).filter(Boolean).map(function(g){return '<span class="chip">'+esc(g)+'</span>'}).join('')+'</div>'+
         '<div class="row-btn"><button class="bplay" data-play="'+d.id+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="#111"><path d="M7 4v16l13-8z"/></svg>'+(pct(d)>1?'Continuar':'Assistir')+'</button>'+
         '<button class="binfo" data-id="'+d.id+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r=".6" fill="#fff"/></svg>Detalhes</button></div></div></section>';}
-      if(!premium) h+='<button class="vipbar" data-vip><i>👑</i><div><b>Premium:</b> todas as novelinhas + lançamentos por <b>R$ 10/mês</b></div><span>Liberar</span></button>';
+      if(!premium) h+='<button class="vipbar" data-vip><i>👑</i><div><b>Vitalício:</b> todas as novelinhas + lançamentos <b>para sempre por R$ 15,90</b></div><span>Liberar</span></button>';
       var cont=C.filter(function(s){var p=pct(s);return p>1&&p<97});
       if(cont.length) h+='<section class="sec"><h4>Continuar assistindo</h4><div class="rail">'+cont.map(card).join('')+'</div></section>';
       h+='<section class="sec"><h4>Lançamentos 🔥</h4><div class="rail">'+C.slice(0,10).map(card).join('')+soon+'</div></section>';
