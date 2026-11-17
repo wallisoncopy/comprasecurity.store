@@ -1,16 +1,65 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>Novelinhas</title>
-<!-- link FIXO da bio/legenda: vai sempre para a página de vendas da série MAIS NOVA do app
-     (primeira da lista em appnovelinhas/app/catalogo.js). Ninguém precisa trocar nada a cada lançamento. -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Novelinhas — completas e dubladas</title>
+<!-- VITRINE da bio/legenda: lista TODAS as séries do app (lidas do catalogo.js, a mais nova primeiro).
+     Cada card leva para a página de vendas da série. Série nova entra sozinha — ninguém troca link. -->
+<style>
+  :root{--bg:#0b0b14;--card:#15152a;--line:#2a2a45;--gold:#d4a853;--mut:#b9b6cc}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  .w{max-width:560px;margin:0 auto;padding:18px 16px 50px}
+  .hd{display:flex;align-items:center;gap:10px;justify-content:center;margin:6px 0 4px}
+  .hd i{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ffb800,#ff4d5a);display:flex;align-items:center;justify-content:center}
+  .hd b{font-size:22px}
+  .sub{text-align:center;color:var(--mut);font-size:14px;margin-bottom:16px}
+  .vip{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,rgba(212,168,83,.25),rgba(212,168,83,.08));border:1px solid rgba(212,168,83,.5);border-radius:16px;padding:13px 14px;margin-bottom:18px;color:#fff;text-decoration:none}
+  .vip .t{flex:1;font-size:14px;line-height:1.35}.vip .t b{color:var(--gold)}
+  .vip .c{font-size:13px;font-weight:800;background:var(--gold);color:#1a1a2e;padding:9px 12px;border-radius:10px;white-space:nowrap}
+  h2{font-size:15px;color:var(--mut);font-weight:700;margin:4px 0 12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .s{display:block;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;color:#fff;text-decoration:none}
+  .s .im{position:relative;aspect-ratio:3/4;background:#000}
+  .s img{width:100%;height:100%;object-fit:cover;display:block}
+  .s .nv{position:absolute;top:8px;left:8px;background:#e50914;font-size:11px;font-weight:800;padding:4px 8px;border-radius:7px}
+  .s .db{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.75);font-size:11px;font-weight:700;padding:4px 8px;border-radius:7px}
+  .s .tx{padding:10px 10px 12px}
+  .s .tt{font-size:14px;font-weight:700;line-height:1.25;min-height:35px}
+  .s .bt{margin-top:9px;text-align:center;background:var(--gold);color:#1a1a2e;font-weight:800;font-size:12.5px;padding:9px 6px;border-radius:10px}
+  .ja{display:block;text-align:center;margin-top:22px;color:var(--mut);font-size:14px}
+  .ja b{color:var(--gold)}
+  .load{text-align:center;color:var(--mut);padding:40px 0}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="hd"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M7 4v16l13-8z"/></svg></i><b>Novelinhas</b></div>
+  <p class="sub">Completas e dubladas em português · R$ 5 cada</p>
+  <a class="vip" id="vip" href="#"><span style="font-size:22px">👑</span><span class="t"><b>Vitalício:</b> todas as novelinhas + lançamentos para sempre por <b>R$ 15,90</b></span><span class="c">Liberar</span></a>
+  <h2>Escolha a sua novelinha 👇</h2>
+  <div class="grid" id="g"><p class="load">Carregando…</p></div>
+  <a class="ja" href="https://comprasecurity.store/appnovelinhas/app/">Já comprou? <b>Entrar no app</b></a>
+</div>
 <script>
 (function(){
-  var UTM="?utm_source=instagram&utm_medium=organico&utm_content=bio-novelinhas", RESERVA="https://comprasecurity.store/novelinhas/baba-por-contrato/";
-  function ir(u){location.replace(u+UTM)}
-  var t=setTimeout(function(){ir(RESERVA)},4000);
-  var sc=document.createElement('script'); sc.src='/appnovelinhas/app/catalogo.js?t='+Date.now();
-  sc.onload=function(){clearTimeout(t);var s=(window.CATALOGO||[])[0];ir(s?'https://comprasecurity.store/novelinhas/'+s.id+'/':RESERVA)};
-  sc.onerror=function(){clearTimeout(t);ir(RESERVA)};
+  var UTM = "?utm_source=instagram&utm_medium=organico&utm_content=bio-novelinhas"; // trocado em cada atalho (bio do Instagram / legenda do Facebook)
+  function esc(t){return String(t||"").replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  var sc=document.createElement("script"); sc.src="/appnovelinhas/app/catalogo.js?t="+Date.now();
+  sc.onload=function(){
+    var C=window.CATALOGO||[], CFG=window.APP_CONFIG||{};
+    if(CFG.checkoutPremium) document.getElementById("vip").href=CFG.checkoutPremium+(CFG.checkoutPremium.indexOf("?")>=0?"&":"?")+UTM.replace(/^\?/,"");
+    document.getElementById("g").innerHTML=C.map(function(s,i){
+      return '<a class="s" href="https://comprasecurity.store/novelinhas/'+esc(s.id)+'/'+UTM+'"><div class="im"><img loading="lazy" src="/appnovelinhas/app/'+esc(s.capa)+'" alt="">'+
+        (i<2?'<span class="nv">NOVO</span>':'')+'<span class="db">🎙️ '+esc(s.idioma||"Dublado")+'</span></div>'+
+        '<div class="tx"><div class="tt">'+esc(s.titulo)+'</div><div class="bt">▶ Assistir completo · R$ 5</div></div></a>';
+    }).join("");
+  };
+  sc.onerror=function(){location.replace("https://comprasecurity.store/appnovelinhas/app/")};
   document.head.appendChild(sc);
 })();
 </script>
-</head><body style="background:#0f0f1a"></body></html>
+</body>
+</html>
