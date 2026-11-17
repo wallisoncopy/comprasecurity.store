@@ -14,7 +14,10 @@ window.APP_CONFIG = {
   api: "https://novelinhas.wallisoncopy.workers.dev",
   // checkout do Premium VITALÍCIO R$15,90 (pagamento único) — oferta do app desde 16/11
   // (o mensal R$10 xAWXvo segue valendo para quem já assinou)
-  checkoutPremium: "https://pay.lowify.com.br/checkout?product_id=890QER"
+  checkoutPremium: "https://pay.lowify.com.br/checkout?product_id=890QER",
+  // UPGRADE R$10,90 (desde 17/11): Vitalício para quem JÁ comprou uma série — paga só a diferença.
+  // O app só mostra esse preço para quem está logado com compra e ainda não é Premium.
+  checkoutUpgrade: "https://pay.lowify.com.br/checkout.php?product_id=5J0Fbv"
 };
 
 window.CATALOGO = [
