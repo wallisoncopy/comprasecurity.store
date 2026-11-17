@@ -142,7 +142,8 @@
 <!-- player -->
 <div class="ply" id="ply">
   <button class="back" id="ply-x" aria-label="Voltar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-  <video id="vid" controls playsinline preload="metadata"></video>
+  <!-- x-webkit-airplay: botão AirPlay no iPhone; Chrome/Android mostra "Transmitir" nos controles nativos -->
+  <video id="vid" controls playsinline preload="metadata" x-webkit-airplay="allow"></video>
   <p class="ply-err" id="ply-err">Não foi possível carregar este episódio agora. Verifique sua internet e tente de novo 🙏</p>
 </div>
 
