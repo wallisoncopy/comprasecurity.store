@@ -107,6 +107,13 @@
   .mod-b .sug span{font-size:12px;color:#cfcfe0}
   .mod-b .ou{font-size:12px;color:#888;margin:2px 0 10px}
   .mod-b button.jacomprei{display:block;width:100%;margin:6px 0 16px;padding:14px;border-radius:12px;background:#22c55e;color:#06210f;font-size:15px;font-weight:800}
+  .mod-b .locks{display:flex;gap:8px;justify-content:center;margin:2px 0 14px}
+  .mod-b .locks div{position:relative;width:58px;height:84px;border-radius:9px;overflow:hidden;flex:none}
+  .mod-b .locks img{width:100%;height:100%;object-fit:cover}
+  .mod-b .locks span{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .mod-b .ancora{font-size:13px;color:#cfcfe0;margin:-4px 0 4px}
+  .mod-b .ancora s{color:#888}
+  .mod-b .pp small{display:block;font-size:12px;color:#22c55e;font-weight:700;margin-top:2px}
   .pill.entrar{background:#d4a853;color:#1a1a2e;border-color:#d4a853;font-weight:800}
 
   /* faixa Premium (tela inicial, só p/ quem não é Premium) */
@@ -155,7 +162,9 @@
     <button id="mod-in" class="jacomprei" style="display:none">✅ Já comprei — <u>entrar com meu e-mail</u></button>
     <div id="mod-sug"></div>
     <p id="mod-p">Acesso a todas as novelinhas do app, inclusive as novas que forem entrando. Pagamento único, para sempre.</p>
-    <div class="pp">R$ 15,90<span style="font-size:16px"> · 1x</span></div>
+    <div id="mod-locks"></div>
+    <p class="ancora" id="mod-anc"></p>
+    <div class="pp" id="mod-pp">R$ 15,90<span style="font-size:16px"> · 1x</span></div>
     <a id="mod-buy" href="#" target="_blank" rel="noopener">Quero o Vitalício · todas as séries</a>
     <a id="mod-one" class="alt" href="#" target="_blank" rel="noopener" style="display:none">Só esta série por R$ 5,00</a>
     <button id="mod-x">Agora não</button>
@@ -198,13 +207,30 @@ window.__app=function(){
   // links de checkout saídos do app levam UTM própria → no painel aparecem como "app-novelinhas"
   function ck(u,onde){if(!u)return '#';return u+(u.indexOf('?')>=0?'&':'?')+'utm_source=app&utm_medium=app&utm_content=app-novelinhas-'+onde}
   /* oferta (bottom-sheet): s = série trancada (opcional), fim = série que acabou de terminar */
+  // quem já comprou alguma série (logado, não Premium) paga só a diferença: R$10,90
+  function upgrade(){return !!(tok&&!premium&&lib.length&&CFG.checkoutUpgrade)}
+  function trancadas(){return C.filter(function(x){return !liberada(x)})}
   function oferta(s,fim){
     var sug=s&&fim?'<div class="sug"><img src="'+esc(s.capa)+'" alt=""><div><b>'+esc(s.titulo)+'</b><span>'+esc(s.subtitulo||'')+' · '+esc(s.duracao||'')+' · '+esc(s.idioma||'')+'</span></div></div>':'';
     $('mod-pb').textContent=fim?'Gostou? Tem mais 😍':(s?'🔒 Novelinha bloqueada':'Premium Vitalício');
     $('mod-h').textContent=fim?'Assista também':(s?s.titulo:'Libere TODAS as novelinhas');
     $('mod-sug').innerHTML=sug;
     $('mod-p').textContent=s?'Com o Vitalício você libera esta e TODAS as outras novelinhas do app, inclusive os lançamentos. Pagamento único, para sempre.':'Acesso a todas as novelinhas do app, inclusive as novas que forem entrando. Pagamento único, para sempre.';
-    $('mod-buy').href=ck(CFG.checkoutPremium,fim?'fim':(s?'bloqueada':'faixa'));
+    var up=upgrade(), tr=trancadas(), onde=fim?'fim':(s?'bloqueada':(oferta.onde||'faixa')); oferta.onde=null;
+    $('mod-locks').innerHTML=tr.length?'<div class="locks">'+tr.slice(0,4).map(function(x){return '<div><img src="'+esc(x.capa)+'" alt=""><span>🔒</span></div>'}).join('')+'</div>':'';
+    $('mod-anc').innerHTML=tr.length>1?'Separadas: <s>R$ '+(tr.length*5)+',00</s> · e as próximas também':'';
+    if(up){
+      $('mod-pb').textContent='Oferta só para quem já comprou';
+      if(!s) $('mod-h').textContent='Você já pagou R$ 5. Falta só R$ 10,90 para ter TODAS 😍';
+      $('mod-p').textContent='Libere '+(tr.length>1?'as outras '+tr.length+' novelinhas':'todas as novelinhas')+' + todos os lançamentos que forem entrando. Pagamento único, para sempre — no mesmo e-mail da sua compra.';
+      $('mod-pp').innerHTML='R$ 10,90<span style="font-size:16px"> · 1x</span><small>desconto de R$ 5 pelo que você já pagou</small>';
+      $('mod-buy').textContent='Quero todas por R$ 10,90';
+      $('mod-buy').href=ck(CFG.checkoutUpgrade,'upgrade-'+onde);
+    }else{
+      $('mod-pp').innerHTML='R$ 15,90<span style="font-size:16px"> · 1x</span>';
+      $('mod-buy').textContent='Quero o Vitalício · todas as séries';
+      $('mod-buy').href=ck(CFG.checkoutPremium,onde);
+    }
     var one=$('mod-one'); if(s&&s.checkout){one.href=ck(s.checkout,fim?'fim':'bloqueada');one.textContent=(fim?'Só ':'Só esta série ')+'por R$ 5,00 (pagamento único)';one.style.display='block'}else one.style.display='none';
     $('mod-in').style.display=tok?'none':'block';
     $('mod').classList.add('on');
@@ -278,9 +304,13 @@ window.__app=function(){
         '<div class="chips">'+[d.idioma,d.duracao].concat(d.generos||[]).filter(Boolean).map(function(g){return '<span class="chip">'+esc(g)+'</span>'}).join('')+'</div>'+
         '<div class="row-btn"><button class="bplay" data-play="'+d.id+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="#111"><path d="M7 4v16l13-8z"/></svg>'+(pct(d)>1?'Continuar':'Assistir')+'</button>'+
         '<button class="binfo" data-id="'+d.id+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r=".6" fill="#fff"/></svg>Detalhes</button></div></div></section>';}
-      if(!premium) h+='<button class="vipbar" data-vip><i>👑</i><div><b>Vitalício:</b> todas as novelinhas + lançamentos <b>para sempre por R$ 15,90</b></div><span>Liberar</span></button>';
+      if(!premium) h+=upgrade()
+        ?'<button class="vipbar" data-vip><i>👑</i><div><b>Só para quem já comprou:</b> libere TODAS as novelinhas + lançamentos <b>por só R$ 10,90</b></div><span>Liberar</span></button>'
+        :'<button class="vipbar" data-vip><i>👑</i><div><b>Vitalício:</b> todas as novelinhas + lançamentos <b>para sempre por R$ 15,90</b></div><span>Liberar</span></button>';
       var cont=C.filter(function(s){var p=pct(s);return p>1&&p<97});
       if(cont.length) h+='<section class="sec"><h4>Continuar assistindo</h4><div class="rail">'+cont.map(card).join('')+'</div></section>';
+      var tr=tok&&!premium?trancadas():[];
+      if(tr.length) h+='<section class="sec"><h4>🔒 Desbloqueie também '+(upgrade()?'<span style="color:#d4a853;font-size:13px">· todas por R$ 10,90</span>':'')+'</h4><div class="rail">'+tr.map(card).join('')+'</div></section>';
       h+='<section class="sec"><h4>Lançamentos 🔥</h4><div class="rail">'+C.slice(0,10).map(card).join('')+soon+'</div></section>';
     }else if(tab==='lista'){
       var l=C.filter(function(s){return fav.indexOf(s.id)>=0});
@@ -332,7 +362,9 @@ window.__app=function(){
   vid.addEventListener('timeupdate',function(){if(Date.now()-salvo>4000){salvo=Date.now();salvar()}});
   vid.addEventListener('pause',salvar);
   vid.addEventListener('error',function(){if(tocando){vid.style.display='none';$('ply-err').style.display='block'}});
-  function fecharPly(){salvar();vid.pause();vid.removeAttribute('src');vid.load();tocando=null;$('ply').classList.remove('on');render();if(atual&&$('det').classList.contains('on'))abrirDet(atual.id)}
+  var ofertouSaida=false;
+  function fecharPly(){var assistiu=tocando&&vid.currentTime>240; salvar();vid.pause();vid.removeAttribute('src');vid.load();tocando=null;$('ply').classList.remove('on');render();if(atual&&$('det').classList.contains('on'))abrirDet(atual.id);
+    if(assistiu&&!ofertouSaida&&!premium&&trancadas().length){ofertouSaida=true;setTimeout(function(){if(!$('mod').classList.contains('on')&&!$('ply').classList.contains('on')){oferta.onde='saida';oferta()}},600)}}
 
   document.addEventListener('click',function(e){
     var t=e.target.closest('[data-id],[data-play],[data-fav],[data-back],[data-tab],[data-vip]'); if(!t) return;
