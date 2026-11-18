@@ -75,6 +75,20 @@
   .ck i{width:16px;height:16px;border-radius:50%;background:var(--premium);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center}
   .bp{display:block;padding:14px 16px;background:var(--premium);color:#1a1a2e;font-size:14px;font-weight:800;border-radius:10px;text-decoration:none;text-transform:uppercase;margin-bottom:8px}
   .bs{display:block;padding:11px 16px;color:#999;font-size:12px;font-weight:500;border-radius:10px;text-decoration:none;border:1px solid #444}
+  /* popup vitalício agressivo (18/11) */
+  .pop-box{padding:18px 16px 16px}
+  .pop .pb{background:#e50914;color:#fff;margin-bottom:8px}
+  .pop h3{font-size:21px;line-height:1.2;margin-bottom:10px}
+  .pop h3 em{font-style:normal;color:var(--premium)}
+  .ban{display:block;width:100%;height:auto !important;max-height:none;object-fit:contain;border-radius:12px;margin:0 0 12px;border:1px solid rgba(212,168,83,.5)}
+  .anc{font-size:13px;color:#cfcfe0;margin-bottom:2px}.anc s{color:#ff8a9a}
+  .eco{display:inline-block;background:rgba(37,211,102,.15);color:#3ee07a;font-size:12px;font-weight:800;padding:4px 10px;border-radius:8px;margin:4px 0 12px}
+  .bp{font-size:15px;padding:16px;animation:pulsa 1.4s infinite;box-shadow:0 0 0 0 rgba(212,168,83,.7)}
+  @keyframes pulsa{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(212,168,83,.7)}70%{transform:scale(1.03);box-shadow:0 0 0 12px rgba(212,168,83,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(212,168,83,0)}}
+  .inc strong{color:#fff;font-weight:800}
+  .pop .pp{font-size:34px}
+  .gar{font-size:11.5px;color:#aaa;margin:2px 0 12px}
+  .bs{border:0;text-decoration:underline;padding:6px}
 </style>
 
 <!-- Meta Pixel (oficial) — PageView na página; InitiateCheckout fica com o checkout da Lowify -->
@@ -162,21 +176,24 @@ fbq('track', 'PageView');
 <div class="pop" id="pop">
   <div class="pop-box">
     <button class="x" id="fechar" aria-label="Fechar">&times;</button>
-    <span class="pb">Premium Vitalício</span>
-    <h3>App de Novelinhas</h3>
+    <span class="pb">🔥 Oferta liberada só agora</span>
+    <h3>Espera! Por só <em>+ R$ 10,90</em> você leva <em>TODAS</em> as novelinhas 😱</h3>
+    <img class="ban" src="/novelinhas/vitalicio-banner.jpg" width="720" height="640" alt="Todas as novelinhas por R$ 15,90">
+    <p class="anc">Separadas: <s>R$ 25,00</s> + as que ainda vão lançar</p>
     <div class="pp">R$ 15,90</div>
-    <p class="pv">Pagamento único · acesso para sempre</p>
-    <div class="inc">
-      <b>Inclui:</b>
-      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i>Troquei de Noivo e Virei a Rainha da Máfia completa</div>
-      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i>Todas as novelinhas do nosso app</div>
-      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i>Novas novelinhas entrando no app sem pagar nada a mais</div>
-      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i>Assista direto no celular, sem baixar nada</div>
-      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i>Pague 1 vez e assista para sempre, sem mensalidade 😍</div>
-    </div>
+    <span class="eco">✅ VITALÍCIO · você nunca mais paga nada</span><br>
     <!-- checkouts Lowify: precisam ser <a> para o tracking repassar UTMs -->
-    <a class="bp" href="https://pay.lowify.com.br/checkout?product_id=890QER">QUERO O VITALÍCIO POR R$ 15,90</a>
-    <a class="bs" href="https://pay.lowify.com.br/checkout?product_id=19cGpi">Quero só a série por R$5</a>
+    <a class="bp" href="https://pay.lowify.com.br/checkout?product_id=890QER">SIM! QUERO TODAS POR R$ 15,90</a>
+    <p class="gar">🔒 7 dias de garantia · PIX ou cartão · acesso imediato</p>
+    <div class="inc">
+      <b>Você recebe na hora:</b>
+      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span><strong>Troquei de Noivo e Virei a Rainha da Máfia</strong> completa (a que você escolheu)</span></div>
+      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span><strong>Bobinho do Dragão + Céu se Render</strong> + todas as outras do app</span></div>
+      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span><strong>Toda semana novelinha nova</strong> liberada para você sem pagar nada</span></div>
+      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span>Assista no celular quando quiser, <strong>para sempre</strong></span></div>
+      <div class="ck"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span><strong>Sem mensalidade</strong> — paga 1 vez e nunca mais</span></div>
+    </div>
+    <a class="bs" href="https://pay.lowify.com.br/checkout?product_id=19cGpi">Não, quero pagar R$5 só nesta série</a>
   </div>
 </div>
 
@@ -267,5 +284,5 @@ fbq('track', 'PageView');
   } catch (e) {}
 })();
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5c9d09bde62f025',t:'MTc5NTAzNDY4NA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5c9d09bde62f025',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
