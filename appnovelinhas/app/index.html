@@ -259,7 +259,7 @@ window.__app=function(){
       .then(function(r){return r.json()}).then(function(r){
         if(!r.ok){$('log-msg').style.color='#ff8a9a';$('log-msg').textContent=r.erro||'Não foi possível entrar.';return}
         tok=r.token; store.set('tok',tok); $('log').classList.remove('on');
-        return atualizar().then(function(){render();toast(premium?'Premium liberado ✨':'Novelinha liberada ✨')});
+        return atualizar().then(function(){render();toast(premium?'Premium liberado ✨':'Novelinha liberada ✨');ofertaEntrada()});
       }).catch(function(){$('log-msg').style.color='#ff8a9a';$('log-msg').textContent='Sem conexão. Tente de novo.'})
       .then(function(){b.disabled=false;b.textContent='Entrar'});
   });
@@ -274,6 +274,15 @@ window.__app=function(){
   function eps(s){return s.episodios||[]}
   function pct(s){var p=prog[s.id],n=eps(s).length||1;if(!p||!p.d)return 0;if(p.fim)return 100;return Math.min(100,((p.e||0)+p.t/p.d)/n*100)}
 
+  /* oferta de ENTRADA: quem comprou só série(s) de R$5 cai no app já vendo o Upgrade R$10,90 (1x por abertura do app) */
+  function ofertaEntrada(){
+    if(!upgrade()||!trancadas().length) return;
+    try{if(sessionStorage.getItem('nv_of_ent'))return;sessionStorage.setItem('nv_of_ent','1')}catch(e){}
+    setTimeout(function(){
+      if(['mod','ply','log','det'].some(function(id){var e=$(id);return e&&e.classList.contains('on')}))return;
+      oferta.onde='entrada'; oferta();
+    },1200);
+  }
   /* ---- link de entrega da Lowify (?acesso= / ?s=): só abre o login ---- */
   function lerLink(){
     var q=new URLSearchParams(location.search);
@@ -379,7 +388,7 @@ window.__app=function(){
   $('mod-x').addEventListener('click',function(){$('mod').classList.remove('on')});
   $('mod').addEventListener('click',function(e){if(e.target===$('mod'))$('mod').classList.remove('on')});
 
-  lerLink().then(render);
+  lerLink().then(function(){render();ofertaEntrada()});
 };
 /* catálogo sempre fresco: o Cloudflare guarda cópia por 4h, o carimbo de tempo evita versão velha */
 (function(){var sc=document.createElement('script');sc.src='catalogo.js?t='+Date.now();sc.onload=function(){window.__app()};
