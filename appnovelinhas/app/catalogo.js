@@ -22,6 +22,21 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "a-herdeira-magica-retorna",
+    titulo: "A Herdeira Mágica Retorna",
+    subtitulo: "A Filha Trocada ao Nascer",
+    generos: ["Fantasia", "Família", "Magia"],
+    duracao: "24 min",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Trocada ao nascer, Selena cresceu pobre cuidando da mãe doente — uma magia que não tem cura. Até que descobre ser a filha perdida da Casa Aurel, a família nobre de magos mais poderosa da capital. Mas lá todos preferem a filha adotiva mimada... e ninguém imagina o poder que ela esconde.",
+    capa: "capas/a-herdeira-magica-retorna.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=wbi83X",
+    episodios: [
+      { titulo: "Episódio 1", duracao: "24 min", video: "a-herdeira-magica-retorna/ep1.mp4" }
+    ]
+  },
+  {
     id: "troquei-de-noivo-e-virei-a-rainha-da-mafia",
     titulo: "Troquei de Noivo e Virei a Rainha da Máfia",
     subtitulo: "Renascida no Casamento",
