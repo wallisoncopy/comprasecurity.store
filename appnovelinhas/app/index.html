@@ -114,6 +114,14 @@
   .mod-b .ancora{font-size:13px;color:#cfcfe0;margin:-4px 0 4px}
   .mod-b .ancora s{color:#888}
   .mod-b .pp small{display:block;font-size:12px;color:#22c55e;font-weight:700;margin-top:2px}
+  /* oferta com banner (18/11) */
+  .mod-b{max-height:94vh;overflow-y:auto;padding-top:18px}
+  .mod-b .ban{display:block;width:100%;max-width:340px;height:auto;margin:0 auto 12px;border-radius:12px;border:1px solid rgba(212,168,83,.5)}
+  .mod-b .pb.quente{background:#e50914;color:#fff}
+  .mod-b h3 em{font-style:normal;color:#d4a853}
+  .mod-b a#mod-buy{font-size:15px;padding:16px;animation:pulsa 1.4s infinite}
+  @keyframes pulsa{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(212,168,83,.7)}70%{transform:scale(1.03);box-shadow:0 0 0 12px rgba(212,168,83,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(212,168,83,0)}}
+  .mod-b .gar{font-size:11.5px;color:#999;margin:-2px 0 6px}
   .pill.entrar{background:#d4a853;color:#1a1a2e;border-color:#d4a853;font-weight:800}
 
   /* faixa Premium (tela inicial, só p/ quem não é Premium) */
@@ -159,6 +167,7 @@
   <div class="mod-b">
     <span class="pb" id="mod-pb">Premium Vitalício</span>
     <h3 id="mod-h">Libere TODAS as novelinhas</h3>
+    <img id="mod-ban" class="ban" alt="Todas as novelinhas" style="display:none">
     <button id="mod-in" class="jacomprei" style="display:none">✅ Já comprei — <u>entrar com meu e-mail</u></button>
     <div id="mod-sug"></div>
     <p id="mod-p">Acesso a todas as novelinhas do app, inclusive as novas que forem entrando. Pagamento único, para sempre.</p>
@@ -166,6 +175,7 @@
     <p class="ancora" id="mod-anc"></p>
     <div class="pp" id="mod-pp">R$ 15,90<span style="font-size:16px"> · 1x</span></div>
     <a id="mod-buy" href="#" target="_blank" rel="noopener">Quero o Vitalício · todas as séries</a>
+    <p class="gar" id="mod-gar">🔒 7 dias de garantia · PIX ou cartão · libera na hora</p>
     <a id="mod-one" class="alt" href="#" target="_blank" rel="noopener" style="display:none">Só esta série por R$ 5,00</a>
     <button id="mod-x">Agora não</button>
   </div>
@@ -230,6 +240,19 @@ window.__app=function(){
       $('mod-pp').innerHTML='R$ 15,90<span style="font-size:16px"> · 1x</span>';
       $('mod-buy').textContent='Quero o Vitalício · todas as séries';
       $('mod-buy').href=ck(CFG.checkoutPremium,onde);
+    }
+    // banner das capas (não no "assista também" do fim, que já mostra a capa sugerida)
+    var ban=$('mod-ban'); if(!sug){ban.src=up?'capas/banner-upgrade.jpg':'capas/banner-vitalicio.jpg';ban.style.display='block';$('mod-locks').innerHTML=''}else ban.style.display='none';
+    $('mod-pb').classList.toggle('quente',!sug);
+    if(!sug){
+      if(up){$('mod-pb').textContent='🔥 Desconto só para quem já comprou';
+        $('mod-h').innerHTML='Você já pagou R$ 5. Por só <em>+ R$ 10,90</em> leva <em>TODAS</em> 😱';
+        $('mod-p').textContent='Libera '+(tr.length>1?'as outras '+tr.length+' novelinhas':'todas as novelinhas')+' + toda semana novelinha nova, sem pagar mais nada. Vitalício, no mesmo e-mail da sua compra.';
+        $('mod-buy').textContent='Sim! Quero todas por R$ 10,90';}
+      else{$('mod-pb').textContent=s?'🔒 '+s.titulo:'🔥 Oferta Vitalício';
+        $('mod-h').innerHTML='Leve <em>TODAS</em> as novelinhas por só <em>R$ 15,90</em> 😱';
+        $('mod-p').textContent='Esta e todas as outras + toda semana novelinha nova liberada sem pagar nada. Paga 1 vez e assiste para sempre.';
+        $('mod-buy').textContent='Sim! Quero todas por R$ 15,90';}
     }
     var one=$('mod-one'); if(s&&s.checkout){one.href=ck(s.checkout,fim?'fim':'bloqueada');one.textContent=(fim?'Só ':'Só esta série ')+'por R$ 5,00 (pagamento único)';one.style.display='block'}else one.style.display='none';
     $('mod-in').style.display=tok?'none':'block';
