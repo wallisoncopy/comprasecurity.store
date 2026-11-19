@@ -22,6 +22,22 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "a-mendiga-e-o-bilionario",
+    titulo: "A Mendiga e o Bilionário",
+    subtitulo: "A Médica Genial Disfarçada",
+    generos: ["Romance", "Bilionário", "Vingança"],
+    duracao: "1h15",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Todos acham que Mia é só uma mendiga de rua. Ninguém imagina que ela é uma médica genial. Quando o bilionário Edward Black cai em coma com uma doença que nenhum médico do mundo consegue explicar, só ela pode salvá-lo... mas antes vai ter que enfrentar a humilhação do ex-noivo e da ex-melhor amiga.",
+    capa: "capas/a-mendiga-e-o-bilionario.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=GvbiI8",
+    episodios: [
+      { titulo: "Parte 1", duracao: "37 min", video: "a-mendiga-e-o-bilionario/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "38 min", video: "a-mendiga-e-o-bilionario/ep2.mp4" }
+    ]
+  },
+  {
     id: "a-herdeira-magica-retorna",
     titulo: "A Herdeira Mágica Retorna",
     subtitulo: "A Filha Trocada ao Nascer",
