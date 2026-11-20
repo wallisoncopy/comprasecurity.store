@@ -89,6 +89,27 @@
   .pop .pp{font-size:34px}
   .gar{font-size:11.5px;color:#aaa;margin:2px 0 12px}
   .bs{border:0;text-decoration:underline;padding:6px}
+
+  /* 2 planos (20/11) */
+  .planos{margin-top:34px;display:flex;flex-direction:column;gap:14px}
+  .pl{border-radius:18px;padding:20px 18px;text-align:center;position:relative}
+  .pl-v{background:#1a1a2e;border:2px solid var(--premium);box-shadow:0 0 40px #d4a85338}
+  .pl-b{background:var(--card);border:1px solid #3a3a52}
+  .pl-tag{display:inline-block;background:#e50914;color:#fff;font-size:11px;font-weight:800;padding:5px 12px;border-radius:14px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+  .pl-tag.g{background:#3a3a52}
+  .pl h3{font-size:19px;font-weight:800;line-height:1.25;margin-bottom:10px}
+  .pl h3 em{font-style:normal;color:var(--premium)}
+  .pl .ban{margin:0 0 12px}
+  .pl-it{display:flex;gap:9px;align-items:flex-start;text-align:left;font-size:14px;line-height:1.4;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+  .pl-it:last-of-type{border:0}
+  .pl-it i{width:18px;height:18px;border-radius:50%;background:var(--premium);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
+  .pl-b .pl-it i{background:#55556e}
+  .pl-it strong{color:#fff;font-weight:800}
+  .pl .anc{margin-top:12px}
+  .pl-pr{font-size:44px;font-weight:800;color:var(--premium);line-height:1.05}
+  .pl-b .pl-pr{font-size:32px;color:#fff}
+  .pl-bt{display:block;width:100%;padding:16px;background:var(--premium);color:#1a1a2e;font-size:15px;font-weight:800;border-radius:12px;text-decoration:none;text-transform:uppercase;margin-top:12px;border:0;cursor:pointer;font-family:inherit;animation:pulsa 1.4s infinite}
+  .pl-b .pl-bt{background:transparent;color:#ddd;border:1px solid #6a6a85;animation:none;font-size:14px;text-transform:none;font-weight:700}
 </style>
 
 <!-- Meta Pixel (oficial) — PageView na página; InitiateCheckout fica com o checkout da Lowify -->
@@ -119,16 +140,30 @@ fbq('track', 'PageView');
   </section>
 
   <!-- OFERTA -->
-  <div class="offer center">
-    <span class="badge">O que você vai receber:</span>
-    <div style="text-align:left">
-      <div class="item"><span class="dot"></span>Temporada Completa (Todos os episódios)</div>
-      <div class="item"><span class="dot"></span>Acesso Vitalício e imediato</div>
-      <div class="item"><span class="dot"></span>Sem mensalidade (Pagamento único)</div>
+  <div class="planos">
+    <div class="pl pl-v">
+      <span class="pl-tag">⭐ Mais escolhido</span>
+      <h3>VITALÍCIO: esta + <em>TODAS</em> as novelinhas</h3>
+      <img class="ban" src="/novelinhas/vitalicio-banner.jpg" width="720" height="640" alt="Todas as novelinhas por R$ 15,90">
+      <div class="pl-it"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span><strong>A Mendiga e o Bilionário</strong> completa</span></div>
+      <div class="pl-it"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span><strong>Bobinho do Dragão + Rainha da Máfia</strong> + todas as outras do app</span></div>
+      <div class="pl-it"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span><strong>Toda novelinha nova</strong> liberada pra você sem pagar nada</span></div>
+      <div class="pl-it"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span><strong>Sem mensalidade</strong>: paga 1 vez e assiste pra sempre</span></div>
+      <p class="anc">Separadas: <s>R$ 30,00</s></p>
+      <div class="pl-pr">R$ 15,90</div>
+      <span class="eco">✅ PAGAMENTO ÚNICO · VITALÍCIO</span>
+      <!-- checkouts Lowify: precisam ser <a> para o tracking repassar UTMs -->
+      <a class="pl-bt" href="https://pay.lowify.com.br/checkout?product_id=890QER">Quero todas por R$ 15,90</a>
+      <p class="gar" style="margin:10px 0 0">🔒 7 dias de garantia · PIX ou cartão · acesso imediato</p>
     </div>
-    <p class="price-lbl">(Pagamento único)</p>
-    <span class="price">R$ 5,00</span>
-    <button type="button" class="btn" id="abrir">Quero completo por 5,00</button>
+    <div class="pl pl-b">
+      <span class="pl-tag g">Básico</span>
+      <h3>Só esta novelinha</h3>
+      <div class="pl-it"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span>A Mendiga e o Bilionário completa (todos os episódios)</span></div>
+      <div class="pl-it"><i><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></i><span>Acesso vitalício · pagamento único</span></div>
+      <div class="pl-pr" style="margin-top:10px">R$ 5,00</div>
+      <button type="button" class="pl-bt" id="abrir">Quero só esta por R$ 5,00</button>
+    </div>
   </div>
 
   <!-- PROVAS (iguais ao modelo) -->
