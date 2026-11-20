@@ -110,6 +110,11 @@
   .pl-b .pl-pr{font-size:32px;color:#fff}
   .pl-bt{display:block;width:100%;padding:16px;background:var(--premium);color:#1a1a2e;font-size:15px;font-weight:800;border-radius:12px;text-decoration:none;text-transform:uppercase;margin-top:12px;border:0;cursor:pointer;font-family:inherit;animation:pulsa 1.4s infinite}
   .pl-b .pl-bt{background:transparent;color:#ddd;border:1px solid #6a6a85;animation:none;font-size:14px;text-transform:none;font-weight:700}
+
+  /* autoplay mudo + botão de som (20/11) */
+  .vwrap{position:relative;width:70%;margin:0 auto}
+  .vwrap .vid{width:100%}
+  .som{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);background:rgba(229,9,20,.95);color:#fff;border:0;border-radius:24px;padding:11px 18px;font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.5);animation:pulse 1.6s ease-in-out infinite}
 </style>
 
 <!-- Meta Pixel (oficial) — PageView na página; InitiateCheckout fica com o checkout da Lowify -->
@@ -135,8 +140,8 @@ fbq('track', 'PageView');
     <p class="sinopse fade d2">Humilhada pela própria família por não ter magia, Sylph é obrigada a se casar no lugar da irmã com Astur, o temido Rei das Feras, que está envenenado e à beira da morte. Todos acham que ela vai virar viúva... mas a garota guarda um poder capaz de mudar o destino dos dois.</p>
     <img class="poster" src="capa.jpg" alt="Capa da novelinha O Bobinho Cativo do Dragão">
 
-    <p class="tag" style="margin-top:18px">▶ Assista a Parte 1 completa</p>
-    <video class="vid" src="parte1.mp4" poster="trailer-capa.jpg" controls playsinline preload="metadata"></video>
+    <p class="tag" style="margin-top:18px">▶ Assista o começo agora</p>
+    <div class="vwrap"><video class="vid" id="pv" src="parte1c.mp4" poster="trailer-capa.jpg" autoplay muted playsinline controls preload="auto"></video><button type="button" class="som" id="som">🔊 Toque para ouvir</button></div>
   </section>
 
   <!-- OFERTA -->
@@ -247,6 +252,14 @@ fbq('track', 'PageView');
 })();
 </script>
 
+<script>
+(function(){var v=document.getElementById('pv'),b=document.getElementById('som');if(!v||!b)return;
+  function liga(){v.muted=false;v.currentTime=0;v.play();b.style.display='none'}
+  b.addEventListener('click',liga);
+  v.addEventListener('volumechange',function(){if(!v.muted)b.style.display='none'});
+  var p=v.play();if(p&&p.catch)p.catch(function(){});
+})();
+</script>
 <!-- trackeamento: repassa UTMs para o checkout Lowify/Hotmart + registra visita -->
 <script>
 (function () {
