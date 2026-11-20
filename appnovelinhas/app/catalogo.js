@@ -22,6 +22,22 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "a-lagrima-da-sereia",
+    titulo: "A Lágrima da Sereia",
+    subtitulo: "O Casamento por Contrato",
+    generos: ["Romance", "Fantasia", "Bilionário"],
+    duracao: "1h43",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Freya é uma sereia que abriu mão do oceano para viver entre os humanos e cuidar do homem que salvou sua vida. Casada por contrato com o frio bilionário Anderson Lockwood, ela passa três anos sendo humilhada e trocada pela ambiciosa Chloe... até o dia em que decide ir embora para sempre.",
+    capa: "capas/a-lagrima-da-sereia.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=CBhWRv",
+    episodios: [
+      { titulo: "Parte 1", duracao: "52 min", video: "a-lagrima-da-sereia/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "52 min", video: "a-lagrima-da-sereia/ep2.mp4" }
+    ]
+  },
+  {
     id: "a-mendiga-e-o-bilionario",
     titulo: "A Mendiga e o Bilionário",
     subtitulo: "A Médica Genial Disfarçada",
