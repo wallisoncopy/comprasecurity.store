@@ -22,6 +22,22 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "a-vinganca-do-deus-do-surf",
+    titulo: "A Vingança do Deus do Surf",
+    subtitulo: "O Marido Imortal",
+    generos: ["Romance", "Fantasia", "Vingança"],
+    duracao: "1h14",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Duke Koa é o Deus da Ilha: imortal e o maior surfista que o mar já viu. Para quebrar o feitiço da Bruxa do Mar, ele aceita um pacto — casar com a filha dela, Kai, e cuidar dela por cinco anos sem revelar quem é. Mas Kai tem vergonha do marido que todos chamam de \"encostado\"... e quando o quinto aniversário de casamento chegar, ela vai descobrir quem perdeu.",
+    capa: "capas/a-vinganca-do-deus-do-surf.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=BpvM7U",
+    episodios: [
+      { titulo: "Parte 1", duracao: "37 min", video: "a-vinganca-do-deus-do-surf/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "37 min", video: "a-vinganca-do-deus-do-surf/ep2.mp4" }
+    ]
+  },
+  {
     id: "mae-solo-em-fuga-e-seu-marido-bilionario",
     titulo: "Mãe Solo em Fuga e Seu Marido Bilionário",
     subtitulo: "O Casamento por Contrato",
