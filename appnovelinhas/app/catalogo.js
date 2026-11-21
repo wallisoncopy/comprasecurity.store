@@ -22,6 +22,22 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "mae-solo-em-fuga-e-seu-marido-bilionario",
+    titulo: "Mãe Solo em Fuga e Seu Marido Bilionário",
+    subtitulo: "O Casamento por Contrato",
+    generos: ["Romance", "Drama", "Bilionário"],
+    duracao: "1h28",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Grace foi humilhada pelo ex durante anos, até ser expulsa de casa só com a filha nos braços. Sem dinheiro e sem ter pra onde ir, ela recebe uma proposta inesperada: casar por contrato com Ethan, um bilionário numa cadeira de rodas que precisa de uma esposa. O que começa como um acordo vai virar a vida dos dois de cabeça pra baixo... e o ex vai se arrepender de cada humilhação.",
+    capa: "capas/mae-solo-em-fuga-e-seu-marido-bilionario.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=3zEypu",
+    episodios: [
+      { titulo: "Parte 1", duracao: "44 min", video: "mae-solo-em-fuga-e-seu-marido-bilionario/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "44 min", video: "mae-solo-em-fuga-e-seu-marido-bilionario/ep2.mp4" }
+    ]
+  },
+  {
     id: "a-lagrima-da-sereia",
     titulo: "A Lágrima da Sereia",
     subtitulo: "O Casamento por Contrato",
