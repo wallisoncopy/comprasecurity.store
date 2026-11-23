@@ -22,6 +22,22 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "uma-coelhinha-domou-o-rei-dragao",
+    titulo: "Uma Coelhinha Domou o Rei Dragão",
+    subtitulo: "A Noiva do Sacrifício",
+    generos: ["Romance", "Fantasia", "Realeza"],
+    duracao: "1h25",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Princesa só no nome, ela é tratada como escrava pela própria família por causa da gagueira. Quando o temido Rei Dragão exige uma noiva virgem como tributo de paz, ela é oferecida em sacrifício para salvar o seu povo — e não pode deixar que ele ouça sua gagueira, ou o reino inteiro morre. Mas o rei cruel que todos temem carrega uma maldição... e só ela consegue acalmá-la.",
+    capa: "capas/uma-coelhinha-domou-o-rei-dragao.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=q2hHQA",
+    episodios: [
+      { titulo: "Parte 1", duracao: "43 min", video: "uma-coelhinha-domou-o-rei-dragao/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "42 min", video: "uma-coelhinha-domou-o-rei-dragao/ep2.mp4" }
+    ]
+  },
+  {
     id: "a-vinganca-do-deus-do-surf",
     titulo: "A Vingança do Deus do Surf",
     subtitulo: "O Marido Imortal",
