@@ -22,6 +22,22 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "renascida-fiz-do-renegado-meu-alfa",
+    titulo: "Renascida, Fiz do Renegado Meu Alfa",
+    subtitulo: "A Segunda Chance da Luna",
+    generos: ["Romance", "Fantasia", "Vingança"],
+    duracao: "1h26",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Na vida passada, Sorlene escolheu o Alfa Breckon — e ele a traiu, a prendeu, a torturou por anos e matou o filhote dos dois. Mas a Deusa da Lua lhe deu uma segunda chance: ela acorda dez dias antes da cerimônia em que deve escolher seu companheiro. Desta vez, diante de toda a alcateia, ela escolhe Lóric — o irmão renegado que todos chamam de monstro — e faz dele o novo Alfa. Enquanto o ex implora por perdão, traições mortais se aproximam.",
+    capa: "capas/renascida-fiz-do-renegado-meu-alfa.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=k7iOm8",
+    episodios: [
+      { titulo: "Parte 1", duracao: "44 min", video: "renascida-fiz-do-renegado-meu-alfa/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "42 min", video: "renascida-fiz-do-renegado-meu-alfa/ep2.mp4" }
+    ]
+  },
+  {
     id: "uma-coelhinha-domou-o-rei-dragao",
     titulo: "Uma Coelhinha Domou o Rei Dragão",
     subtitulo: "A Noiva do Sacrifício",
