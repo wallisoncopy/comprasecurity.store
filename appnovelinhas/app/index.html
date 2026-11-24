@@ -184,8 +184,8 @@
 <!-- modal login (e-mail da compra) -->
 <div class="mod" id="log">
   <div class="mod-b">
-    <h3>Entrar no app</h3>
-    <p>Digite o <b>e-mail que você usou na compra</b> para liberar suas novelinhas.</p>
+    <h3>Já comprou? Entre aqui 👇</h3>
+    <p>Digite o <b>e-mail que você usou na compra</b> e a sua novelinha abre na hora.</p>
     <form id="log-f" autocomplete="on">
       <input id="log-e" type="email" inputmode="email" autocomplete="email" required placeholder="seuemail@exemplo.com"
         style="width:100%;padding:15px 14px;border-radius:12px;border:1px solid #3a3a55;background:#0f0f1c;color:#fff;font-size:16px;font-family:inherit;margin-bottom:10px">
@@ -274,7 +274,7 @@ window.__app=function(){
       .catch(function(){});
   }
   var serieLogin=null; // série que a pessoa tocou antes de entrar (p/ "ver ofertas")
-  function abrirLogin(msg,s){serieLogin=s||null;$('log-msg').style.color='#cfcfe0';$('log-msg').textContent=msg||'';$('log-of').style.display=s?'inline-block':'none';$('log').classList.add('on');setTimeout(function(){$('log-e').focus()},150)}
+  function abrirLogin(msg,s){serieLogin=s||null;$('log-msg').style.color='#cfcfe0';$('log-msg').textContent=msg||'';$('log-of').style.display='inline-block';$('log').classList.add('on');setTimeout(function(){$('log-e').focus()},150)}
   $('log-of').addEventListener('click',function(){$('log').classList.remove('on');oferta(serieLogin)});
   $('log-f').addEventListener('submit',function(ev){
     ev.preventDefault(); var b=$('log-b'); b.disabled=true; b.textContent='Verificando...'; $('log-msg').textContent='';
@@ -282,7 +282,7 @@ window.__app=function(){
       .then(function(r){return r.json()}).then(function(r){
         if(!r.ok){$('log-msg').style.color='#ff8a9a';$('log-msg').textContent=r.erro||'Não foi possível entrar.';return}
         tok=r.token; store.set('tok',tok); $('log').classList.remove('on');
-        return atualizar().then(function(){render();toast(premium?'Premium liberado ✨':'Novelinha liberada ✨');ofertaEntrada()});
+        return atualizar().then(function(){render();irParaCompra()});
       }).catch(function(){$('log-msg').style.color='#ff8a9a';$('log-msg').textContent='Sem conexão. Tente de novo.'})
       .then(function(){b.disabled=false;b.textContent='Entrar'});
   });
@@ -297,7 +297,15 @@ window.__app=function(){
   function eps(s){return s.episodios||[]}
   function pct(s){var p=prog[s.id],n=eps(s).length||1;if(!p||!p.d)return 0;if(p.fim)return 100;return Math.min(100,((p.e||0)+p.t/p.d)/n*100)}
 
-  /* oferta de ENTRADA: quem comprou só série(s) de R$5 cai no app já vendo o Upgrade R$10,90 (1x por abertura do app) */
+  /* depois do login: Vitalício → app todo liberado; série avulsa → abre direto a(s) novelinha(s) dela */
+  function minhas(){return C.filter(function(x){return lib.indexOf(x.id)>=0})}
+  function irParaCompra(){
+    if(premium){toast('Vitalício ativo: TODAS liberadas ✨');scrollTo(0,0);return}
+    var m=minhas();
+    if(m.length===1){toast('Sua novelinha está liberada ✨');abrirDet(m[0].id)}
+    else{toast('Suas novelinhas estão liberadas ✨');tab='inicio';render();scrollTo(0,0)}
+  }
+  /* oferta de ENTRADA (desligada: atrapalhava quem acabou de comprar): quem comprou só série(s) de R$5 cai no app já vendo o Upgrade R$10,90 (1x por abertura do app) */
   function ofertaEntrada(){
     if(!upgrade()||!trancadas().length) return;
     try{if(sessionStorage.getItem('nv_of_ent'))return;sessionStorage.setItem('nv_of_ent','1')}catch(e){}
@@ -311,7 +319,7 @@ window.__app=function(){
     var q=new URLSearchParams(location.search);
     var veioDaCompra=q.has('acesso')||q.has('s');
     if(q.toString()) history.replaceState(null,'',location.pathname+location.hash);
-    if(veioDaCompra&&!tok) setTimeout(function(){abrirLogin()},300);
+    if(!tok) setTimeout(function(){abrirLogin()},veioDaCompra?300:600);
     return atualizar();
   }
 
@@ -331,7 +339,7 @@ window.__app=function(){
     $('plano').className='pill'+(premium?' vip':'')+(!tok?' entrar':'');
     var h='';
     if(tab==='inicio'){
-      var d=C[0];
+      var m=tok&&!premium?minhas():[], d=m[0]||C[0];
       if(d){h+='<section class="hero"><img src="'+esc(d.capa)+'" alt=""><div class="hero-c"><h2>'+esc(d.titulo)+'</h2><h3>'+esc(d.subtitulo||'')+'</h3>'+
         '<div class="chips">'+[d.idioma,d.duracao].concat(d.generos||[]).filter(Boolean).map(function(g){return '<span class="chip">'+esc(g)+'</span>'}).join('')+'</div>'+
         '<div class="row-btn"><button class="bplay" data-play="'+d.id+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="#111"><path d="M7 4v16l13-8z"/></svg>'+(pct(d)>1?'Continuar':'Assistir')+'</button>'+
@@ -339,6 +347,7 @@ window.__app=function(){
       if(!premium) h+=upgrade()
         ?'<button class="vipbar" data-vip><i>👑</i><div><b>Só para quem já comprou:</b> libere TODAS as novelinhas + lançamentos <b>por só R$ 10,90</b></div><span>Liberar</span></button>'
         :'<button class="vipbar" data-vip><i>👑</i><div><b>Vitalício:</b> todas as novelinhas + lançamentos <b>para sempre por R$ 15,90</b></div><span>Liberar</span></button>';
+      if(m.length) h+='<section class="sec"><h4>✅ Suas novelinhas</h4><div class="rail">'+m.map(card).join('')+'</div></section>';
       var cont=C.filter(function(s){var p=pct(s);return p>1&&p<97});
       if(cont.length) h+='<section class="sec"><h4>Continuar assistindo</h4><div class="rail">'+cont.map(card).join('')+'</div></section>';
       var tr=tok&&!premium?trancadas():[];
@@ -411,7 +420,7 @@ window.__app=function(){
   $('mod-x').addEventListener('click',function(){$('mod').classList.remove('on')});
   $('mod').addEventListener('click',function(e){if(e.target===$('mod'))$('mod').classList.remove('on')});
 
-  lerLink().then(function(){render();ofertaEntrada()});
+  lerLink().then(function(){render()});
 };
 /* catálogo sempre fresco: o Cloudflare guarda cópia por 4h, o carimbo de tempo evita versão velha */
 (function(){var sc=document.createElement('script');sc.src='catalogo.js?t='+Date.now();sc.onload=function(){window.__app()};
