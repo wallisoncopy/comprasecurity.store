@@ -168,7 +168,7 @@
     <span class="pb" id="mod-pb">Premium Vitalício</span>
     <h3 id="mod-h">Libere TODAS as novelinhas</h3>
     <img id="mod-ban" class="ban" alt="Todas as novelinhas" style="display:none">
-    <button id="mod-in" class="jacomprei" style="display:none">✅ Já comprei — <u>entrar com meu e-mail</u></button>
+    <button id="mod-in" class="jacomprei" style="display:none">✅ Já comprei — <u>entrar com e-mail ou telefone</u></button>
     <div id="mod-sug"></div>
     <p id="mod-p">Acesso a todas as novelinhas do app, inclusive as novas que forem entrando. Pagamento único, para sempre.</p>
     <div id="mod-locks"></div>
@@ -185,9 +185,9 @@
 <div class="mod" id="log">
   <div class="mod-b">
     <h3>Já comprou? Entre aqui 👇</h3>
-    <p>Digite o <b>e-mail que você usou na compra</b> e a sua novelinha abre na hora.</p>
+    <p>Digite o <b>e-mail ou o telefone (com DDD)</b> que você usou na compra e a sua novelinha abre na hora.</p>
     <form id="log-f" autocomplete="on">
-      <input id="log-e" type="email" inputmode="email" autocomplete="email" required placeholder="seuemail@exemplo.com"
+      <input id="log-e" type="text" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="e-mail ou telefone com DDD"
         style="width:100%;padding:15px 14px;border-radius:12px;border:1px solid #3a3a55;background:#0f0f1c;color:#fff;font-size:16px;font-family:inherit;margin-bottom:10px">
       <p id="log-msg" style="font-size:13px;color:#ff8a9a;margin:0 0 10px;min-height:0"></p>
       <button type="submit" id="log-b" style="display:block;width:100%;padding:15px;border-radius:12px;background:#d4a853;color:#1a1a2e;font-weight:800;text-transform:uppercase;font-size:14px;margin-bottom:10px">Entrar</button>
@@ -258,7 +258,7 @@ window.__app=function(){
     $('mod-in').style.display=tok?'none':'block';
     $('mod').classList.add('on');
   }
-  $('mod-in').addEventListener('click',function(){$('mod').classList.remove('on');abrirLogin('Entre com o e-mail da compra.')});
+  $('mod-in').addEventListener('click',function(){$('mod').classList.remove('on');abrirLogin('Entre com o e-mail ou telefone da compra.')});
   // limpa dados da trava antiga (códigos no link)
   try{localStorage.removeItem('nv_premium');localStorage.removeItem('nv_lib')}catch(e){}
 
@@ -278,7 +278,7 @@ window.__app=function(){
   $('log-of').addEventListener('click',function(){$('log').classList.remove('on');oferta(serieLogin)});
   $('log-f').addEventListener('submit',function(ev){
     ev.preventDefault(); var b=$('log-b'); b.disabled=true; b.textContent='Verificando...'; $('log-msg').textContent='';
-    fetch(API+'/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('log-e').value})})
+    fetch(API+'/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('log-e').value.trim()})})
       .then(function(r){return r.json()}).then(function(r){
         if(!r.ok){$('log-msg').style.color='#ff8a9a';$('log-msg').textContent=r.erro||'Não foi possível entrar.';return}
         tok=r.token; store.set('tok',tok); $('log').classList.remove('on');
@@ -380,7 +380,7 @@ window.__app=function(){
   function play(id,e){
     var s=C.find(function(x){return x.id===id}); if(!s) return;
     // ainda não entrou: primeiro o LOGIN (quem comprou não pode achar que "não liberou"); oferta fica como opção
-    if(!liberada(s)){ if(!tok) abrirLogin('Já comprou? Digite o e-mail que você usou na compra para assistir.',s); else oferta(s); return }
+    if(!liberada(s)){ if(!tok) abrirLogin('Já comprou? Digite o e-mail ou telefone que você usou na compra para assistir.',s); else oferta(s); return }
     // links assinados expiram: renova antes de tocar se estiverem velhos
     if(Date.now()>linksAte){ return atualizar().then(function(){ if(liberada(s)) play(id,e) }) }
     var p=prog[s.id], lista=eps(s);
