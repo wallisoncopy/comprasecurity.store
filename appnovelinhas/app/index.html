@@ -352,7 +352,7 @@ window.__app=function(){
       if(cont.length) h+='<section class="sec"><h4>Continuar assistindo</h4><div class="rail">'+cont.map(card).join('')+'</div></section>';
       var tr=tok&&!premium?trancadas():[];
       if(tr.length) h+='<section class="sec"><h4>🔒 Desbloqueie também '+(upgrade()?'<span style="color:#d4a853;font-size:13px">· todas por R$ 10,90</span>':'')+'</h4><div class="rail">'+tr.map(card).join('')+'</div></section>';
-      h+='<section class="sec"><h4>Lançamentos 🔥</h4><div class="rail">'+C.slice(0,10).map(card).join('')+soon+'</div></section>';
+      h+='<section class="sec"><h4>Lançamentos 🔥</h4><div class="rail">'+C.map(card).join('')+soon+'</div></section>';
     }else if(tab==='lista'){
       var l=C.filter(function(s){return fav.indexOf(s.id)>=0});
       h+='<section class="sec" style="margin-top:8px"><h4>Minha lista</h4>'+(l.length?'<div class="grid">'+l.map(card).join('')+'</div>':'<p class="empty">Você ainda não salvou nenhuma novelinha.<br>Toque em <b>+ Minha lista</b> na página da novelinha.</p>')+'</section>';
