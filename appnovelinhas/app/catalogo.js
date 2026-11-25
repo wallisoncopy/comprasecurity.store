@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "a-noiva-secreta-do-rei-leao",
+    titulo: "A Noiva Secreta do Rei Leão",
+    subtitulo: "A Coelhinha Predestinada",
+    generos: ["Romance", "Fantasia", "Realeza"],
+    duracao: "1h37",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Aeve é uma coelha curandeira, plebeia e sem família. Na floresta, ela salva um guerreiro ferido que diz não ter tribo, sem saber que ele é o temido Rei Leão, o deus da guerra invicto do Império. No mesmo dia, o noivo com quem cresceu a troca pela filha de um conde e a humilha diante de toda a tribo. Ela rompe o vínculo para sempre… mas o Rei Leão já decidiu: aquela coelhinha é a companheira predestinada dele.",
+    capa: "capas/a-noiva-secreta-do-rei-leao.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=l3tIQz",
+    episodios: [
+      { titulo: "Parte 1", duracao: "32 min", video: "a-noiva-secreta-do-rei-leao/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "32 min", video: "a-noiva-secreta-do-rei-leao/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "32 min", video: "a-noiva-secreta-do-rei-leao/ep3.mp4" }
+    ]
+  },
+  {
     id: "renascida-fiz-do-renegado-meu-alfa",
     titulo: "Renascida, Fiz do Renegado Meu Alfa",
     subtitulo: "A Segunda Chance da Luna",
