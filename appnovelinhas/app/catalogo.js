@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "casada-com-o-rei-dragao",
+    titulo: "Casada com o Rei Dragão",
+    subtitulo: "A Escolha de Riley",
+    generos: ["Romance", "Fantasia", "Vingança"],
+    duracao: "1h31",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Assassinada pela própria irmã invejosa, Riley renasce no dia da cerimônia de cortejo. Desta vez, ela muda o destino: deixa o cobiçado chefe do Clã dos Leões para a irmã e escolhe um companheiro do clã mais fraco, que todos tratam como um inseto… sem saber que ele é, na verdade, o lendário Rei das Feras.",
+    capa: "capas/casada-com-o-rei-dragao.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=rV9fiw",
+    episodios: [
+      { titulo: "Parte 1", duracao: "31 min", video: "casada-com-o-rei-dragao/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "31 min", video: "casada-com-o-rei-dragao/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "31 min", video: "casada-com-o-rei-dragao/ep3.mp4" }
+    ]
+  },
+  {
     id: "a-noiva-secreta-do-rei-leao",
     titulo: "A Noiva Secreta do Rei Leão",
     subtitulo: "A Coelhinha Predestinada",
