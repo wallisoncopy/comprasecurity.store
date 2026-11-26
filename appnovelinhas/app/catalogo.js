@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "baba-do-chefao-da-mafia",
+    titulo: "Babá do Chefão da Máfia",
+    subtitulo: "Uma Noite de Chuva",
+    generos: ["Romance", "Máfia", "Drama"],
+    duracao: "1h22",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Sem dinheiro para a cirurgia da irmã e prestes a ficar sem teto, ela encontra na chuva um homem ferido e uma menininha que não fala. Mesmo sem ter nada, leva os dois para casa e cuida deles a noite inteira. O que ela não sabe é que acabou de salvar o chefão da máfia — e que ao lado dela ele dormiu bem pela primeira vez em anos…",
+    capa: "capas/baba-do-chefao-da-mafia.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=9ogncC",
+    episodios: [
+      { titulo: "Parte 1", duracao: "28 min", video: "baba-do-chefao-da-mafia/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "28 min", video: "baba-do-chefao-da-mafia/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "28 min", video: "baba-do-chefao-da-mafia/ep3.mp4" }
+    ]
+  },
+  {
     id: "minha-ex-esposa-e-uma-princesa-da-mafia",
     titulo: "Minha Ex-Esposa É uma Princesa da Máfia",
     subtitulo: "Sete Anos de Casamento",
