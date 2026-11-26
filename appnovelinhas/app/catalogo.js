@@ -22,6 +22,22 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "a-boa-garota-da-rainha-da-mafia",
+    titulo: "A Boa Garota da Rainha da Máfia",
+    subtitulo: "O Jogo de Sete Dias",
+    generos: ["Romance", "Máfia", "Drama"],
+    duracao: "1h16",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Lívia tem três empregos, uma mãe internada e contas atrasadas. Numa noite no trem, uma mulher ferida a obriga a beijá-la para despistar os bandidos — e Lívia, enfermeira, a leva para casa para salvar sua vida. Só depois descobre quem ela é: Valentina Montenegro, a rainha da máfia que a cidade inteira teme. E Valentina não deixa escapar nada do que considera seu…",
+    capa: "capas/a-boa-garota-da-rainha-da-mafia.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=vOTgIi",
+    episodios: [
+      { titulo: "Parte 1", duracao: "39 min", video: "a-boa-garota-da-rainha-da-mafia/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "38 min", video: "a-boa-garota-da-rainha-da-mafia/ep2.mp4" }
+    ]
+  },
+  {
     id: "casada-com-o-rei-dragao",
     titulo: "Casada com o Rei Dragão",
     subtitulo: "A Escolha de Riley",
