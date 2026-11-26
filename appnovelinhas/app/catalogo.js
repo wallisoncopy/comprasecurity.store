@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "minha-ex-esposa-e-uma-princesa-da-mafia",
+    titulo: "Minha Ex-Esposa É uma Princesa da Máfia",
+    subtitulo: "Sete Anos de Casamento",
+    generos: ["Romance", "Máfia", "Vingança"],
+    duracao: "1h46",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Depois de sete anos de casamento, Mindy finalmente engravida do marido mafioso, Dante Belandi. No mesmo dia descobre que Amanda, o amor de infância dele, também está grávida — e Dante decide assumir o filho dela, dando a ele o sobrenome, o lugar de herdeiro e a herança. A família chama o bebê de Mindy de bastardo e a obriga a assinar o divórcio. Eles só não fazem ideia de quem ela realmente é…",
+    capa: "capas/minha-ex-esposa-e-uma-princesa-da-mafia.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=v1YNNA",
+    episodios: [
+      { titulo: "Parte 1", duracao: "35 min", video: "minha-ex-esposa-e-uma-princesa-da-mafia/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "35 min", video: "minha-ex-esposa-e-uma-princesa-da-mafia/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "36 min", video: "minha-ex-esposa-e-uma-princesa-da-mafia/ep3.mp4" }
+    ]
+  },
+  {
     id: "mimada-pelos-meus-tres-irmaos-posticos-cowboys",
     titulo: "Mimada Pelos Meus Três Irmãos Postiços Cowboys",
     subtitulo: "Uma Segunda Chance no Rancho",
