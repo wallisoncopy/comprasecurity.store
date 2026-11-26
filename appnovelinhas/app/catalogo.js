@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "mimada-pelos-meus-tres-irmaos-posticos-cowboys",
+    titulo: "Mimada Pelos Meus Três Irmãos Postiços Cowboys",
+    subtitulo: "Uma Segunda Chance no Rancho",
+    generos: ["Romance", "Renascimento", "Faroeste"],
+    duracao: "1h44",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Na primeira vida, River escolheu ficar com o pai — e ele a vendeu para um velho de 60 anos cujas esposas morreram todas. Ela morreu e acordou de novo aos 18, no dia do divórcio dos pais. Desta vez, escolhe a mãe e vai para o rancho dos Garrison, os três irmãos cowboys mais temidos da região… que agora são seus irmãos postiços.",
+    capa: "capas/mimada-pelos-meus-tres-irmaos-posticos-cowboys.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=jrfELO",
+    episodios: [
+      { titulo: "Parte 1", duracao: "35 min", video: "mimada-pelos-meus-tres-irmaos-posticos-cowboys/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "34 min", video: "mimada-pelos-meus-tres-irmaos-posticos-cowboys/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "36 min", video: "mimada-pelos-meus-tres-irmaos-posticos-cowboys/ep3.mp4" }
+    ]
+  },
+  {
     id: "a-boa-garota-da-rainha-da-mafia",
     titulo: "A Boa Garota da Rainha da Máfia",
     subtitulo: "O Jogo de Sete Dias",
