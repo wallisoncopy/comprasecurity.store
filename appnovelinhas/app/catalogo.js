@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "casei-com-tres-homens-fera-e-virei-uma-rainha",
+    titulo: "Casei com Três Homens-Fera e Virei uma Rainha",
+    subtitulo: "O Sistema de Casamento",
+    generos: ["Romance", "Fantasia", "Reencarnação"],
+    duracao: "1h15",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Ela dormiu lendo um romance e acordou dentro do livro — no corpo de Valora, a filha rejeitada da família York, cheia de sardas e expulsa de casa. Obrigada a escolher um marido entre escravos homens-fera num leilão, ela ativa um misterioso Sistema de Casamento: quanto mais os maridos se apaixonam, mais beleza, riqueza e poder ela ganha. Só tem um detalhe… ela vai ficar com os três.",
+    capa: "capas/casei-com-tres-homens-fera-e-virei-uma-rainha.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=TE5TRl",
+    episodios: [
+      { titulo: "Parte 1", duracao: "25 min", video: "casei-com-tres-homens-fera-e-virei-uma-rainha/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "25 min", video: "casei-com-tres-homens-fera-e-virei-uma-rainha/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "25 min", video: "casei-com-tres-homens-fera-e-virei-uma-rainha/ep3.mp4" }
+    ]
+  },
+  {
     id: "baba-do-chefao-da-mafia",
     titulo: "Babá do Chefão da Máfia",
     subtitulo: "Uma Noite de Chuva",
