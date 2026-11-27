@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "meu-medico-era-o-chefao-da-mafia-disfarcado",
+    titulo: "Meu Médico Era o Chefão da Máfia Disfarçado",
+    subtitulo: "O Anjinho do Chefão",
+    generos: ["Romance", "Máfia", "Vingança"],
+    duracao: "1h22",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Jenna foi empurrada pra um casamento arranjado pra pagar o hospital da mãe — e, um ano depois, o marido nem encosta nela. Numa consulta de rotina, o médico mascarado reconhece a cicatriz no pulso dela: é a menina que o salvou quando eram crianças, e que ele procura há quinze anos. Só que ele não é médico de verdade. Ele é Wayne, o chefão mais temido da máfia… e agora quer saber tudo sobre o marido dela.",
+    capa: "capas/meu-medico-era-o-chefao-da-mafia-disfarcado.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=KYLSuD",
+    episodios: [
+      { titulo: "Parte 1", duracao: "27 min", video: "meu-medico-era-o-chefao-da-mafia-disfarcado/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "27 min", video: "meu-medico-era-o-chefao-da-mafia-disfarcado/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "27 min", video: "meu-medico-era-o-chefao-da-mafia-disfarcado/ep3.mp4" }
+    ]
+  },
+  {
     id: "presa-na-neve-com-o-irmao-da-minha-melhor-amiga",
     titulo: "Presa na Neve com o Irmão da Minha Melhor Amiga",
     subtitulo: "Dez Dias no Chalé",
