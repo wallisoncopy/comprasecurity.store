@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "presa-na-neve-com-o-irmao-da-minha-melhor-amiga",
+    titulo: "Presa na Neve com o Irmão da Minha Melhor Amiga",
+    subtitulo: "Dez Dias no Chalé",
+    generos: ["Romance", "Inimigos para Amantes", "Natal"],
+    duracao: "54 min",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Riley e Caleb, o irmão da melhor amiga dela, se odeiam há dez anos. Depois de descobrir a traição do namorado por um vídeo enviado por engano, ela foge pra passar o Natal no chalé da família da amiga, no alto da montanha… e acaba dormindo no quarto dele, sem saber que ele resolveu aparecer de última hora. Dias depois, uma avalanche soterra os dois sozinhos no chalé — e, a vinte graus abaixo de zero, o calor do corpo dele é a única coisa que a mantém viva.",
+    capa: "capas/presa-na-neve-com-o-irmao-da-minha-melhor-amiga.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=sAfNnN",
+    episodios: [
+      { titulo: "Parte 1", duracao: "18 min", video: "presa-na-neve-com-o-irmao-da-minha-melhor-amiga/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "18 min", video: "presa-na-neve-com-o-irmao-da-minha-melhor-amiga/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "18 min", video: "presa-na-neve-com-o-irmao-da-minha-melhor-amiga/ep3.mp4" }
+    ]
+  },
+  {
     id: "o-mafioso-e-a-noiva-hacker",
     titulo: "O Mafioso e a Noiva Hacker",
     subtitulo: "Uma Noite com o Chefão",
