@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "o-mafioso-e-a-noiva-hacker",
+    titulo: "O Mafioso e a Noiva Hacker",
+    subtitulo: "Uma Noite com o Chefão",
+    generos: ["Romance", "Máfia", "Vingança"],
+    duracao: "1h27",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "Camilla foi expulsa do país pelo próprio pai, que roubou a herança deixada pelo avô — o homem que comandou o submundo de Chicago. Quinze anos depois, ela volta como Nightingale, a maior hacker do mundo, pra recuperar tudo. Só tem um porém: pra herdar, ela precisa se casar com Dom Moretti, um noivo que nunca viu. Na véspera, ela salva um desconhecido de uma emboscada e passa a noite com ele… sem saber que ele é o chefão mais perigoso da máfia.",
+    capa: "capas/o-mafioso-e-a-noiva-hacker.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=V0xlxW",
+    episodios: [
+      { titulo: "Parte 1", duracao: "29 min", video: "o-mafioso-e-a-noiva-hacker/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "29 min", video: "o-mafioso-e-a-noiva-hacker/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "29 min", video: "o-mafioso-e-a-noiva-hacker/ep3.mp4" }
+    ]
+  },
+  {
     id: "casei-com-tres-homens-fera-e-virei-uma-rainha",
     titulo: "Casei com Três Homens-Fera e Virei uma Rainha",
     subtitulo: "O Sistema de Casamento",
