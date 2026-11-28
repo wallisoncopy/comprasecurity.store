@@ -22,6 +22,23 @@ window.APP_CONFIG = {
 
 window.CATALOGO = [
   {
+    id: "um-pecado-chamado-amor",
+    titulo: "Um Pecado Chamado Amor",
+    subtitulo: "A Noiva do Rei da Máfia",
+    generos: ["Romance", "Máfia", "Casamento"],
+    duracao: "1h11",
+    idioma: "Dublado",
+    novo: true,
+    sinopse: "No dia do seu aniversário de 18 anos, Zora — filha do pastor, que rezava por um marido gentil e temente a Deus — descobre que o próprio pai a apostou no cassino da máfia. Agora ela é a noiva de Mateo Accardi, o rei da máfia. Forçada a se casar, Zora propõe um trato: trinta dias. Se não se apaixonar, ele a deixa ir. Mas Mateo é possessivo, protetor… e não pretende perder.",
+    capa: "capas/um-pecado-chamado-amor.jpg",
+    checkout: "https://pay.lowify.com.br/checkout?product_id=HRlIku",
+    episodios: [
+      { titulo: "Parte 1", duracao: "23 min", video: "um-pecado-chamado-amor/ep1.mp4" },
+      { titulo: "Parte 2", duracao: "22 min", video: "um-pecado-chamado-amor/ep2.mp4" },
+      { titulo: "Parte 3", duracao: "26 min", video: "um-pecado-chamado-amor/ep3.mp4" }
+    ]
+  },
+  {
     id: "meu-medico-era-o-chefao-da-mafia-disfarcado",
     titulo: "Meu Médico Era o Chefão da Máfia Disfarçado",
     subtitulo: "O Anjinho do Chefão",
